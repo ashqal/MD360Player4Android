@@ -18,7 +18,6 @@ package com.asha.md360player4android;
 
 import android.app.Activity;
 import android.content.Context;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -61,11 +60,11 @@ public class MD360PlayerActivity extends Activity {
         }
 
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            GLES20.glViewport(0, 0, width, height);
+            //GLES20.glViewport(0, 0, width, height);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            GLES20.glClearColor( 0, 0xCC*1.0f/0xFF, 0x66*1.0f/0xFF, 1);
+            //GLES20.glClearColor( 0, 0xCC*1.0f/0xFF, 0x66*1.0f/0xFF, 1);
             renderer = new MDRenderer();
             renderer.update();
             renderer.setupGL(getBaseContext());
@@ -82,7 +81,7 @@ public class MD360PlayerActivity extends Activity {
         // Create our surface view and set it as the content of our
         // Activity
         mGLSurfaceView = new GLSurfaceView(this);
-        mGLSurfaceView.setEGLContextClientVersion(2);
+        mGLSurfaceView.setEGLContextClientVersion(3);
         mGLSurfaceView.setRenderer(new Renderer());
         setContentView(mGLSurfaceView);
     }

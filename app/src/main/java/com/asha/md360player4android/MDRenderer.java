@@ -1,13 +1,12 @@
 package com.asha.md360player4android;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
+
+import com.asha.md360player4android.common.TextureHelper;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -22,6 +21,7 @@ public class MDRenderer {
     private static final String TAG = "MDRenderer";
     private int[] uniforms = new int[UNIFORM.NUM_UNIFORMS.ordinal()];
     private int vertexTexCoordAttributeIndex;
+    private int vertexAttributeIndex;
     private MDGLProgram program;
     private Sphere sphere;
     IntBuffer vertexArrayId;
@@ -42,15 +42,10 @@ public class MDRenderer {
             0.0f, -0.213f, 2.112f,
             1.793f, -0.533f, 0.0f};
 
-    public enum NS_ENUM {
-        GLKVertexAttribPosition,
-                GLKVertexAttribNormal,
-                GLKVertexAttribColor,
-                GLKVertexAttribTexCoord0,
-                GLKVertexAttribTexCoord1
-    }
-
+    int texture;
     public void draw(Context context){
+        //update();
+
         program.use();
 
         GLES30.glBindVertexArray(vertexArrayId.get(0));
@@ -59,10 +54,8 @@ public class MDRenderer {
         // obtain video buffer
         // ..
 
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-
         // Read in the resource
-        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.demo, options);
+        //final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.demo, options);
 
 
         int width = 0;
@@ -70,14 +63,19 @@ public class MDRenderer {
         Buffer buffer = ByteBuffer.allocate(1);
 
         // texture
-        IntBuffer textures = IntBuffer.allocate(2);
-        GLES20.glGenTextures(2, textures);
+        if ( texture == 0 ){
+            texture = TextureHelper.loadTexture(context,R.drawable.demo);
+        }
+
+        //IntBuffer textures = IntBuffer.allocate(2);
+        //GLES20.glGenTextures(2, textures);
 
         // Y-plane
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
 
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textures.get(0));
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textures.get(0));
+        //GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
 
         // lumaTexture target, name
         // GLES20.glBindTexture(CVOpenGLESTextureGetTarget(_lumaTexture), CVOpenGLESTextureGetName(_lumaTexture));
@@ -87,7 +85,7 @@ public class MDRenderer {
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         //GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES30.GL_RED, width, height, 0, GLES30.GL_RED, GLES20.GL_UNSIGNED_BYTE, buffer);
 
-        bitmap.recycle();
+        //bitmap.recycle();
         /*
 
         // UV-plane.
@@ -220,32 +218,32 @@ public class MDRenderer {
         vertexBufferId = IntBuffer.allocate(1);
         GLES20.glGenBuffers(1,vertexBufferId);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,vertexBufferId.get(0));
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, numVertices, vertices, GLES20.GL_STATIC_DRAW);
-        GLES20.glEnableVertexAttribArray(NS_ENUM.GLKVertexAttribPosition.ordinal());
-        GLES20.glVertexAttribPointer(NS_ENUM.GLKVertexAttribPosition.ordinal(),3,GLES20.GL_FLOAT,false,3,0);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, numVertices*3*4, vertices, GLES20.GL_STATIC_DRAW);
+        GLES20.glVertexAttribPointer(vertexAttributeIndex,3,GLES20.GL_FLOAT,false,0,0);
+        GLES20.glEnableVertexAttribArray(vertexAttributeIndex);
 
         // Texture Coordinates
         vertexTexCoordId = IntBuffer.allocate(1);
         GLES20.glGenBuffers(1,vertexTexCoordId);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,vertexTexCoordId.get(0));
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER,numVertices*2,textCoord,GLES20.GL_DYNAMIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER,numVertices*2*4,textCoord,GLES20.GL_DYNAMIC_DRAW);
+        GLES20.glVertexAttribPointer(vertexTexCoordAttributeIndex,2,GLES20.GL_FLOAT,false,0,0);
         GLES20.glEnableVertexAttribArray(vertexTexCoordAttributeIndex);
-        GLES20.glVertexAttribPointer(vertexTexCoordAttributeIndex,2,GLES20.GL_FLOAT,false,2,0);
 
         // Indices
         vertexIndicesBufferId = IntBuffer.allocate(1);
         GLES20.glGenBuffers(1,vertexIndicesBufferId);
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,vertexIndicesBufferId.get(0));
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER,numIndices,indices,GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER,numIndices*4,indices,GLES20.GL_STATIC_DRAW);
 
         // CVOpenGLESTextureCacheCreate
         // TODO: 16/1/7  CVOpenGLESTextureCacheCreate
 
-        FloatBuffer preferredConversion = FloatBuffer.wrap(kColorConversion709);
+        float[] preferredConversion = kColorConversion709;
         program.use();
         GLES20.glUniform1i(uniforms[UNIFORM.UNIFORM_Y.ordinal()],0);
         GLES20.glUniform1i(uniforms[UNIFORM.UNIFORM_UV.ordinal()],1);
-        GLES20.glUniformMatrix3fv(uniforms[UNIFORM.UNIFORM_COLOR_CONVERSION_MATRIX.ordinal()],1,false,preferredConversion);
+        GLES20.glUniformMatrix3fv(uniforms[UNIFORM.UNIFORM_COLOR_CONVERSION_MATRIX.ordinal()],1,false,preferredConversion,0);
 
     }
 
@@ -259,6 +257,7 @@ public class MDRenderer {
             Log.e(TAG,"program link failed!");
         }
 
+        vertexAttributeIndex = program.indexOfAttribute("position");
         vertexTexCoordAttributeIndex = program.indexOfAttribute("texCoord");
 
         uniforms[UNIFORM.UNIFORM_MODELVIEWPROJECTION_MATRIX.ordinal()] = program.indexOfUniform("modelViewProjectionMatrix");
@@ -269,53 +268,4 @@ public class MDRenderer {
         return program;
 
     }
-
-    private static class Sphere{
-        public float[] vertices;
-        public float[] texCoords;
-        public int[] indices;
-        public int numIndices;
-        public int numVertices;
-        public Sphere(int numSlices, float radius) {
-            createSphere(numSlices,radius);
-        }
-
-        private int createSphere(int numSlices, float radius){
-            int i,j;
-            int numParallels = numSlices >> 1;
-            float angleStep = (float) ((2.0f * Math.PI) / (float) numSlices);
-            numVertices = (numParallels + 1) * (numSlices + 1);
-            numIndices = numParallels * numSlices * 6;
-            vertices = new float[3 * numVertices];
-            texCoords = new float[2 * numVertices];
-            indices = new int[numIndices];
-
-            for ( i = 0; i < numParallels + 1; i++ ){
-                for ( j = 0; j < numSlices + 1; j++ ){
-                    int vertex = ( i * (numSlices + 1) + j ) * 3;
-                    vertices[vertex] = (float) (radius * Math.sin(angleStep*i) * Math.sin(angleStep*j));
-                    vertices[vertex + 1] = (float) (radius * Math.cos(angleStep*i));
-                    vertices[vertex + 2] = (float) (radius * Math.sin(angleStep*i) * Math.cos(angleStep*j));
-
-                    int texIndex = ( i * (numSlices + 1) + j ) * 2;
-                    texCoords[texIndex] = (float) j / (float) numSlices;
-                    texCoords[texIndex + 1] = 1.0f - ((float) i / (float) (numParallels));
-                }
-            }
-
-            for ( i = 0; i < numParallels ; i++ ) {
-                for ( j = 0; j < numSlices; j++ ) {
-                    indices[i*6]  = i * ( numSlices + 1 ) + j;
-                    indices[i*6+1] = ( i + 1 ) * ( numSlices + 1 ) + j;
-                    indices[i*6+2] = ( i + 1 ) * ( numSlices + 1 ) + ( j + 1 );
-
-                    indices[i*6+3] = i * ( numSlices + 1 ) + j;
-                    indices[i*6+4] = ( i + 1 ) * ( numSlices + 1 ) + ( j + 1 );
-                    indices[i*6+5] = i * ( numSlices + 1 ) + ( j + 1 );
-                }
-            }
-            return numIndices;
-        }
-    }
-
 }

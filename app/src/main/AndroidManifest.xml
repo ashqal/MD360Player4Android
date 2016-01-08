@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MD360PlayerActivity" android:screenOrientation="landscape">
+        <activity android:name=".lesson4.LessonFourActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

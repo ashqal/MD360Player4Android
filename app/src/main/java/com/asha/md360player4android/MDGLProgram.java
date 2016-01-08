@@ -53,6 +53,7 @@ public class MDGLProgram {
         int[] status = new int[1];
         GLES20.glLinkProgram(mProgram);
         GLES20.glGetProgramiv(mProgram,GLES20.GL_LINK_STATUS,status,0);
+        Log.e(TAG,"link:" + status[0]);
         if ( status[0] == GLES20.GL_FALSE ) return false;
 
         if(mVShader != 0) GLES20.glDeleteShader(mVShader);
