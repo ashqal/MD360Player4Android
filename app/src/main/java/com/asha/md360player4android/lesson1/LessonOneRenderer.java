@@ -4,11 +4,20 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import com.asha.md360player4android.Sphere;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMathDegreesToRadians;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Identity;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4MakePerspective;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Multiply;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Rotate;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Scale;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -44,23 +53,14 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 	/** This will be used to pass in model color information. */
 	private int mColorHandle;
 
-	/** How many bytes per float. */
-	private final int mBytesPerFloat = 4;
-
-	/** How many elements per vertex. */
-	private final int mStrideBytes = 7 * mBytesPerFloat;
-
-	/** Offset of the position data. */
-	private final int mPositionOffset = 0;
-
 	/** Size of the position data in elements. */
 	private final int mPositionDataSize = 3;
 
-	/** Offset of the color data. */
-	private final int mColorOffset = 3;
 
 	/** Size of the color data in elements. */
 	private final int mColorDataSize = 4;
+
+	private Sphere sphere = new Sphere(50,1.0f);
 
 	/**
 	 * Initialize the model data.
@@ -69,32 +69,35 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 	{	
 		// Define points for equilateral triangles.
 	}
-	
+
+
+	private static final float DEFAULT_OVERTURE = 85.0f;
+
+
+	private float[] projectionMatrix = new float[16];
+	private float[] modelViewMatrix = new float[16];
+	//private float[] mMVPMatrix = new float[16];
+
+	public void update(){
+		float aspect = 1.5f;
+		GLKMatrix4MakePerspective(GLKMathDegreesToRadians(DEFAULT_OVERTURE),aspect, 0.1f, 400.0f,projectionMatrix);
+		GLKMatrix4Rotate(projectionMatrix, (float) Math.PI, 1.0f, 0.0f, 0.0f);
+
+		GLKMatrix4Identity(modelViewMatrix);
+		modelViewMatrix = GLKMatrix4Scale(modelViewMatrix, 300.0f, 300.0f, 300.0f);
+
+		GLKMatrix4Multiply(projectionMatrix,modelViewMatrix,mMVPMatrix);
+	}
+
+
+
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) 
 	{
 		// Set the background clear color to gray.
 		GLES20.glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
-	
-		// Position the eye behind the origin.
-		final float eyeX = 0.0f;
-		final float eyeY = 0.0f;
-		final float eyeZ = 1.5f;
 
-		// We are looking toward the distance
-		final float lookX = 0.0f;
-		final float lookY = 0.0f;
-		final float lookZ = -5.0f;
-
-		// Set our up vector. This is where our head would be pointing were we holding the camera.
-		final float upX = 0.0f;
-		final float upY = 1.0f;
-		final float upZ = 0.0f;
-
-		// Set the view matrix. This matrix can be said to represent the camera position.
-		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-		// view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-		Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+		update();
 
 		final String vertexShader =
 			"uniform mat4 u_MVPMatrix;      \n"		// A constant representing the combined model/view/projection matrix.
@@ -119,7 +122,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 		  											// triangle per fragment.			  
 		  + "void main()                    \n"		// The entry point for our fragment shader.
 		  + "{                              \n"
-		  + "   gl_FragColor = v_Color;     \n"		// Pass the color directly through the pipeline.		  
+		  + "   gl_FragColor = v_Color;     \n"		// Pass the color directly through the pipeline.
 		  + "}                              \n";												
 		
 		// Load in the vertex shader.
@@ -222,33 +225,19 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
         GLES20.glUseProgram(programHandle);
 
 
-		initTriangle();
+		initSphere();
 	}
 
-	private void initTriangle() {
-		// This triangle is red, green, and blue.
-		final float[] triangle1VerticesData = {
-				// X, Y, Z,
-				-0.5f, -0.25f, 0.0f,
+	private void initSphere() {
 
-				0.5f, -0.25f, 0.0f,
-
-				0.0f, 0.559016994f, 0.0f,
-		};
-
-		final float[] colorVerticesData = {
-				// R, G, B, A
-				1.0f, 0.0f, 0.0f, 1.0f,
-
-				0.0f, 0.0f, 1.0f, 1.0f,
-
-				0.0f, 1.0f, 0.0f, 1.0f
-		};
 		IntBuffer vertexBufferId = IntBuffer.allocate(1);
 		IntBuffer colorBufferId = IntBuffer.allocate(1);
-		FloatBuffer vertexBuffer = FloatBuffer.wrap(triangle1VerticesData);
-		FloatBuffer colorBuffer = FloatBuffer.wrap(colorVerticesData);
-		int numVertices = 3;
+		IntBuffer vertexIndicesBufferId = IntBuffer.allocate(1);
+		FloatBuffer vertexBuffer = FloatBuffer.wrap(sphere.vertices);
+		FloatBuffer colorBuffer = FloatBuffer.wrap(sphere.colors);
+		IntBuffer indicesBuffer = IntBuffer.wrap(sphere.indices);
+		int numVertices = sphere.numVertices;
+		int numIndices = sphere.numIndices;
 
 		GLES20.glGenBuffers(1,vertexBufferId);
 		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferId.get(0));
@@ -261,6 +250,10 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, numVertices*4*4, colorBuffer, GLES20.GL_DYNAMIC_DRAW);
 		GLES20.glVertexAttribPointer(mColorHandle,mColorDataSize,GLES20.GL_FLOAT, false, 0, 0);
 		GLES20.glEnableVertexAttribArray(mColorHandle);
+
+		GLES20.glGenBuffers(1,vertexIndicesBufferId);
+		GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,vertexIndicesBufferId.get(0));
+		GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER,numIndices*4,indicesBuffer,GLES20.GL_STATIC_DRAW);
 	}
 
 	@Override
@@ -300,11 +293,11 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 	 */
 	private void draw()
 	{
-		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+		//Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+		//Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
-
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+		//GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,sphere.numVertices);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, sphere.numIndices,GLES20.GL_UNSIGNED_SHORT,0);
 	}
 }

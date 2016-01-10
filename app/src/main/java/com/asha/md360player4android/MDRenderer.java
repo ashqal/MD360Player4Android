@@ -3,7 +3,6 @@ package com.asha.md360player4android;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
-import android.opengl.Matrix;
 import android.util.Log;
 
 import com.asha.md360player4android.common.TextureHelper;
@@ -12,6 +11,13 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMathDegreesToRadians;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Identity;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4MakePerspective;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Multiply;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Rotate;
+import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMatrix4Scale;
 
 /**
  * Created by hzqiujiadi on 16/1/7.
@@ -116,74 +122,6 @@ public class MDRenderer {
     private static final float MIN_OVERTURE = 25.0f;
     private static final float DEFAULT_OVERTURE = 85.0f;
 
-    private float GLKMathDegreesToRadians(float degrees) {
-        return (float) (degrees * (Math.PI / 180));
-    }
-
-    private float GLKMathRadiansToDegrees(float angle) {
-        return (float) (angle * 180 / Math.PI );
-    }
-
-    private void GLKMatrix4MakePerspective(float fovyRadians, float aspect, float nearZ, float farZ, float[] out) {
-        float cotan = (float) (1.0f / Math.tan(fovyRadians / 2.0f));
-        out[0] = cotan / aspect;
-        out[1] = 0.0f;
-        out[2] = 0.0f;
-        out[3] = 0.0f;
-
-        out[4] = 0.0f;
-        out[5] = cotan;
-        out[6] = 0.0f;
-        out[7] = 0.0f;
-
-        out[8] = 0.0f;
-        out[9] = 0.0f;
-        out[10] = (farZ + nearZ) / (nearZ - farZ);
-        out[11] = -1.0f;
-
-        out[12] = 0.0f;
-        out[13] = 0.0f;
-        out[14] = (2.0f * farZ * nearZ) / (nearZ - farZ);
-        out[15] = 0.0f;
-    }
-
-    private void GLKMatrix4Identity(float[] out){
-        out[0] = 1.0f;
-        out[1] = 0.0f;
-        out[2] = 0.0f;
-        out[3] = 0.0f;
-
-        out[4] = 0.0f;
-        out[5] = 1.0f;
-        out[6] = 0.0f;
-        out[7] = 0.0f;
-
-        out[8] = 0.0f;
-        out[9] = 0.0f;
-        out[10] = 1.0f;
-        out[11] = 0.0f;
-
-        out[12] = 0.0f;
-        out[13] = 0.0f;
-        out[14] = 0.0f;
-        out[15] = 1.0f;
-    }
-
-    private float[] GLKMatrix4Scale(float[] m, float sx, float sy, float sz){
-        float[] a = {m[0] * sx,m[1] * sx, m[2] * sx, m[3] * sx,
-                m[4] * sy, m[5] * sy, m[6] * sy, m[7] * sy,
-                m[8] * sz, m[9] * sz, m[10] * sz, m[11] * sz,
-                m[12], m[13], m[14], m[15]};
-        return a;
-    }
-
-    private void GLKMatrix4Multiply(float[] matrixLeft, float[] matrixRight, float[] out){
-        Matrix.multiplyMM(out,0,matrixLeft,0,matrixRight,0);
-    }
-
-    private void GLKMatrix4Rotate(float[] matrix, float radians, float x, float y, float z){
-        Matrix.rotateM(matrix,0,GLKMathRadiansToDegrees(radians),x,y,z);
-    }
 
     private float[] projectionMatrix = new float[16];
     private float[] modelViewMatrix = new float[16];
