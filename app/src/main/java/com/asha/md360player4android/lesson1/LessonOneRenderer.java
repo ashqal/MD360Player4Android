@@ -76,17 +76,65 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 
 	private float[] projectionMatrix = new float[16];
 	private float[] modelViewMatrix = new float[16];
-	//private float[] mMVPMatrix = new float[16];
 
-	public void update(){
+	public void update(int width,int height){
+		GLES20.glViewport(-width, 0, width*2, height);
+
 		float aspect = 1.5f;
 		GLKMatrix4MakePerspective(GLKMathDegreesToRadians(DEFAULT_OVERTURE),aspect, 0.1f, 400.0f,projectionMatrix);
 		GLKMatrix4Rotate(projectionMatrix, (float) Math.PI, 1.0f, 0.0f, 0.0f);
 
 		GLKMatrix4Identity(modelViewMatrix);
-		modelViewMatrix = GLKMatrix4Scale(modelViewMatrix, 300.0f, 300.0f, 300.0f);
+		modelViewMatrix = GLKMatrix4Scale(modelViewMatrix, 100.0f, 100.0f, 100.0f);
 
 		GLKMatrix4Multiply(projectionMatrix,modelViewMatrix,mMVPMatrix);
+	}
+
+	private void update1(int width,int height){
+
+		// Set the OpenGL viewport to the same size as the surface.
+		// GLES20.glViewport(0, 0, width, height);
+
+		// Create a new perspective projection matrix. The height will stay the same
+		// while the width will vary as per aspect ratio.
+
+		GLES20.glViewport(0, 0, width, height);
+
+		// Draw the triangle facing straight on.
+		Matrix.setIdentityM(mModelMatrix, 0);
+
+		final float ratio = (float) width / height;
+		final float left = -ratio;
+		final float right = ratio;
+		final float bottom = -1.0f;
+		final float top = 1.0f;
+		final float near = 1.0f;
+		final float far = 10.0f;
+		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+
+		// Position the eye behind the origin.
+		final float eyeX = 0.0f;
+		final float eyeY = 0.0f;
+		final float eyeZ = 1.5f;
+
+		// We are looking toward the distance
+		final float lookX = 0.0f;
+		final float lookY = 0.0f;
+		final float lookZ = -5.0f;
+
+		// Set our up vector. This is where our head would be pointing were we holding the camera.
+		final float upX = 0.0f;
+		final float upY = 1.0f;
+		final float upZ = 0.0f;
+
+		// Set the view matrix. This matrix can be said to represent the camera position.
+		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
+		// view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
+		Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+
+		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+
 	}
 
 
@@ -97,7 +145,9 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 		// Set the background clear color to gray.
 		GLES20.glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 
-		update();
+		//update();
+
+		//update1(600,600);
 
 		final String vertexShader =
 			"uniform mat4 u_MVPMatrix;      \n"		// A constant representing the combined model/view/projection matrix.
@@ -123,8 +173,8 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 		  + "void main()                    \n"		// The entry point for our fragment shader.
 		  + "{                              \n"
 		  + "   gl_FragColor = v_Color;     \n"		// Pass the color directly through the pipeline.
-		  + "}                              \n";												
-		
+		  + "}                              \n";
+
 		// Load in the vertex shader.
 		int vertexShaderHandle = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
 
@@ -259,30 +309,14 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) 
 	{
-		// Set the OpenGL viewport to the same size as the surface.
-		GLES20.glViewport(0, 0, width, height);
-
-		// Create a new perspective projection matrix. The height will stay the same
-		// while the width will vary as per aspect ratio.
-		final float ratio = (float) width / height;
-		final float left = -ratio;
-		final float right = ratio;
-		final float bottom = -1.0f;
-		final float top = 1.0f;
-		final float near = 1.0f;
-		final float far = 10.0f;
-		
-		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
-
+		//update1(width,height);
+		update(width,height);
 	}
 
 	@Override
 	public void onDrawFrame(GL10 glUnused) 
 	{
 		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);			        
-
-        // Draw the triangle facing straight on.
-        Matrix.setIdentityM(mModelMatrix, 0);
 
 		draw();
 	}
@@ -293,8 +327,6 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 	 */
 	private void draw()
 	{
-		//Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-		//Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
 		//GLES20.glDrawArrays(GLES20.GL_TRIANGLES,0,sphere.numVertices);
