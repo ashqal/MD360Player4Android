@@ -1,19 +1,16 @@
-package com.asha.md360player4android.lesson4;
+package com.asha.md360player4android.demo;
 
 import android.content.Context;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.asha.md360player4android.R;
-import com.asha.md360player4android.Sphere;
+import com.asha.md360player4android.common.MeshBufferHelper;
 import com.asha.md360player4android.common.RawResourceReader;
 import com.asha.md360player4android.common.ShaderHelper;
 import com.asha.md360player4android.common.TextureHelper;
-
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import com.asha.md360player4android.common.WaveFrontObjHelper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -23,7 +20,7 @@ import javax.microedition.khronos.opengles.GL10;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonFourRenderer implements GLSurfaceView.Renderer 
+public class DemoRenderer implements GLSurfaceView.Renderer
 {	
 	/** Used for debug logs. */
 	private static final String TAG = "LessonFourRenderer";
@@ -61,15 +58,27 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 	/** This will be used to pass in the modelview matrix. */
 	private int mMVMatrixHandle;
 	
+	/** This will be used to pass in the light position. */
+	private int mLightPosHandle;
+	
 	/** This will be used to pass in the texture. */
 	private int mTextureUniformHandle;
 	
 	/** This will be used to pass in model position information. */
 	private int mPositionHandle;
 	
+	/** This will be used to pass in model color information. */
+	private int mColorHandle;
+	
+	/** This will be used to pass in model normal information. */
+	private int mNormalHandle;
+	
 	/** This will be used to pass in model texture coordinate information. */
 	private int mTextureCoordinateHandle;
 
+	/** How many bytes per float. */
+	private final int mBytesPerFloat = 4;	
+	
 	/** Size of the position data in elements. */
 	private final int mPositionDataSize = 3;	
 	
@@ -104,20 +113,20 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Initialize the model data.
 	 */
-	public LessonFourRenderer(final Context activityContext)
+	public DemoRenderer(final Context activityContext)
 	{	
 		mActivityContext = activityContext;
-		sphere = new Sphere(mActivityContext);
+		
 	}
 	
 	protected String getVertexShader()
 	{
-		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_vertex_shader);
+		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.unlit_vertex);
 	}
 	
 	protected String getFragmentShader()
 	{
-		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_fragment_shader);
+		return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.gl_oes_fragment);
 	}
 	
 	@Override
@@ -133,7 +142,7 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 		
 		init();
-		initSphere2();
+		initSphere();
 	}
 
 
@@ -145,7 +154,7 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
 		mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-				new String[] {"a_Position", "a_TexCoordinate"});
+				new String[] {"a_Position",  "a_TexCoordinate"});
 
 		// Load the texture
 		mTextureDataHandle = TextureHelper.loadTexture(mActivityContext, R.drawable.demo);
@@ -155,50 +164,20 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
 		mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
 		mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
+
 		mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
 		mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
 	}
 
 	private void initSphere(){
-		IntBuffer vertexBufferId = IntBuffer.allocate(1);
-		IntBuffer textureBufferId = IntBuffer.allocate(1);
-		IntBuffer vertexIndicesBufferId = IntBuffer.allocate(1);
-		FloatBuffer vertexBuffer = sphere.getVerticesBuffer();
-		FloatBuffer textureBuffer = sphere.getTexCoordsBuffer();
-		IntBuffer indicesBuffer = sphere.getIndicesBuffer();
-		int numVertices = sphere.numVertices;
-		int numIndices = sphere.numIndices;
-
-		GLES20.glGenBuffers(1,vertexBufferId);
-		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vertexBufferId.get(0));
-		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, numVertices*3*4, vertexBuffer, GLES20.GL_STATIC_DRAW);
-		GLES20.glVertexAttribPointer(mPositionHandle,mPositionDataSize,GLES20.GL_FLOAT, false, 0, 0);
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		GLES20.glGenBuffers(1,textureBufferId);
-		GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, textureBufferId.get(0));
-		GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, numVertices*2*4, textureBuffer, GLES20.GL_DYNAMIC_DRAW);
-		GLES20.glVertexAttribPointer(mTextureCoordinateHandle,mTextureCoordinateDataSize,GLES20.GL_FLOAT, false, 0, 0);
-		GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
-
-		GLES20.glGenBuffers(1,vertexIndicesBufferId);
-		GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,vertexIndicesBufferId.get(0));
-		GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER,numIndices*4,indicesBuffer,GLES20.GL_STATIC_DRAW);
+		meshBufferHelper = WaveFrontObjHelper.loadObj(mActivityContext, R.raw.sphere);
+		renderMesh(meshBufferHelper);
 	}
 
-	private void initSphere2(){
 
-		FloatBuffer vertexBuffer = sphere.getVerticesBuffer();
-		FloatBuffer textureBuffer = sphere.getTexCoordsBuffer();
-		vertexBuffer.position(0);
-		textureBuffer.position(0);
-
-		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false, 0, vertexBuffer);
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		GLES20.glVertexAttribPointer(mTextureCoordinateHandle, 2, GLES20.GL_FLOAT, false, 0, textureBuffer);
-		GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
-	}
+	private static final float          Z_NEAR              = 1.0f;
+	private static final float          Z_FAR               = 500.0f;
+	private static final float          CAMERA_Z            = 0.01f;
 
 
 	private void update1(int width, int height){
@@ -212,7 +191,7 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		// Position the eye in front of the origin.
 		final float eyeX = 0.0f;
 		final float eyeY = 0.0f;
-		final float eyeZ = 20.0f;
+		final float eyeZ = 3.0f;
 
 		// We are looking toward the distance
 		final float lookX = 0.0f;
@@ -243,8 +222,8 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		final float right = 0.5f;
 		final float bottom = -0.5f;
 		final float top = 0.5f;
-		final float near = 1;
-		final float far = 500;
+		final float near = Z_NEAR;
+		final float far = Z_FAR;
 		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
 
 		// This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
@@ -256,6 +235,8 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVMatrix, 0);
 	}
 
+	private static final float DEFAULT_OVERTURE = 45.0f;
+
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) 
 	{
@@ -263,7 +244,6 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 		GLES20.glViewport(0, 0, width, height);
 
 		update1(width,height);
-
 
 	}
 
@@ -281,12 +261,14 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         
         // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureDataHandle);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
         
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
+        GLES20.glUniform1i(mTextureUniformHandle, 0);        
         
-		drawCube();
+		drawCube(meshBufferHelper);
+
+
 
         // Draw a point to indicate the light.
         // GLES20.glUseProgram(mPointProgramHandle);
@@ -297,16 +279,33 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer
 	 * Draws a cube.
 	 */
 
-	Sphere sphere;
-	private void drawCube()
-	{
+	MeshBufferHelper meshBufferHelper;
 
-        // Pass in the combined matrix.
+	private void renderMesh(MeshBufferHelper renderMesh) {
+
+		renderMesh.getBuffer()[0].position(0);
+		GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, 0, renderMesh.getBuffer()[0]);
+		GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+		renderMesh.getBuffer()[1].position(0);
+		GLES20.glVertexAttribPointer(mTextureCoordinateHandle, 2, GLES20.GL_FLOAT, false, 0, renderMesh.getBuffer()[1]);
+		GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+
+		renderMesh.getBuffer()[2].position(0);
+		GLES20.glVertexAttribPointer(mNormalHandle, 3, GLES20.GL_FLOAT, false, 0, renderMesh.getBuffer()[2]);
+		GLES20.glEnableVertexAttribArray(mNormalHandle);
+
+	}
+
+	private void drawCube(MeshBufferHelper renderMesh)
+	{
+		GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVMatrix, 0);
+
+		// Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         
         // Draw the cube.
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, sphere.numIndices);
-		//GLES20.glDrawElements(GLES20.GL_TRIANGLES, sphere.numIndices,GLES20.GL_UNSIGNED_SHORT,0);
-	}	
+		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, renderMesh.getCount());
+	}
 
 }

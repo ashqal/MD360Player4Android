@@ -9,7 +9,6 @@ import com.asha.md360player4android.common.TextureHelper;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static com.asha.md360player4android.common.GLKMatrixUtil.GLKMathDegreesToRadians;
@@ -143,9 +142,9 @@ public class MDRenderer {
         sphere = new Sphere(200,1.0f);
         int numVertices = sphere.numVertices;
         int numIndices = sphere.numIndices;
-        Buffer vertices = FloatBuffer.wrap(sphere.vertices);
-        Buffer textCoord = FloatBuffer.wrap(sphere.texCoords);
-        Buffer indices = IntBuffer.wrap(sphere.indices);
+        Buffer vertices = sphere.getVerticesBuffer();
+        Buffer textCoord = sphere.getTexCoordsBuffer();
+        Buffer indices = sphere.getIndicesBuffer();
 
         // GLES3.0
         vertexArrayId = IntBuffer.allocate(1);

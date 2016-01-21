@@ -75,4 +75,16 @@ public class GLKMatrixUtil {
     public static void GLKMatrix4Rotate(float[] matrix, float radians, float x, float y, float z){
         Matrix.rotateM(matrix,0,GLKMathRadiansToDegrees(radians),x,y,z);
     }
+
+
+    public static float[] getScreenScaleRatioRotation(float fTilt, float fScale, int iWidth, int iHeight) {
+        final float[]   transform = new float[4];
+
+        transform[0]    =   fTilt;
+        transform[1]    =   1.0f*fScale;
+        transform[2]    =   (float)iHeight/(float)iWidth*fScale;
+        transform[3]    =   1.0f;
+
+        return transform;
+    }
 }

@@ -283,9 +283,10 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer
 		IntBuffer vertexBufferId = IntBuffer.allocate(1);
 		IntBuffer colorBufferId = IntBuffer.allocate(1);
 		IntBuffer vertexIndicesBufferId = IntBuffer.allocate(1);
-		FloatBuffer vertexBuffer = FloatBuffer.wrap(sphere.vertices);
-		FloatBuffer colorBuffer = FloatBuffer.wrap(sphere.colors);
-		IntBuffer indicesBuffer = IntBuffer.wrap(sphere.indices);
+		FloatBuffer vertexBuffer = sphere.getVerticesBuffer();
+		IntBuffer indicesBuffer = sphere.getIndicesBuffer();
+		FloatBuffer colorBuffer = sphere.getColorsBuffer();
+
 		int numVertices = sphere.numVertices;
 		int numIndices = sphere.numIndices;
 
