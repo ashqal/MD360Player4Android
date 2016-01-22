@@ -1,4 +1,4 @@
-package com.asha.md360player4android.demo;
+package com.asha.md360player4android;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -7,7 +7,7 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-public class DemoActivity extends Activity
+public class MD360DemoActivity extends Activity
 {
 	/** Hold a reference to our GLSurfaceView */
 	private GLSurfaceView mGLSurfaceView;
@@ -30,7 +30,7 @@ public class DemoActivity extends Activity
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new DemoRenderer(this));
+			mGLSurfaceView.setRenderer(new MD360Renderer(this));
 		} 
 		else 
 		{

@@ -8,7 +8,7 @@ import android.opengl.GLUtils;
 
 /**
  * Created by nitro888 on 15. 4. 5..
- *
+ * https://github.com/Nitro888/NitroAction360
  */
 public class TextureHelper {
     public static int loadTexture(final Context context, final int resourceId)

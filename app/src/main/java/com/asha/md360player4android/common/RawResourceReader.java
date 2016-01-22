@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 
 /**
  * Created by nitro888 on 15. 4. 5..
- *
+ * https://github.com/Nitro888/NitroAction360
  */
 public class RawResourceReader
 {

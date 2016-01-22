@@ -2,6 +2,8 @@ package com.asha.md360player4android.common;
 
 import android.content.Context;
 
+import com.asha.md360player4android.objects.MDAbsObject3D;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,11 +17,16 @@ import java.util.ArrayList;
  * Created by nitro888 on 15. 4. 5..
  * Exports Option is -Z Foward, Y Up and UV and Normal
  * UV mirror - Y Axis
+ * https://github.com/Nitro888/NitroAction360
+ *
+ * modify by hzqiujiadi on 16/1/22.
+ * hzqiujiadi ashqalcn@gmail.com
+ *
  */
-public class WaveFrontObjHelper {
-    private static final String TAG                     = WaveFrontObjHelper.class.getSimpleName();
+public class LoadObjectHelper {
+    private static final String TAG = "LoadObjectHelper";
 
-    public static MeshBufferHelper loadObj(final Context context, final int resourceId) {
+    public static void load(final Context context, final int resourceId, final MDAbsObject3D output) {
         ArrayList<String> vertexes  = new ArrayList<String>();
         ArrayList<String> textures  = new ArrayList<String>();
         ArrayList<String> normals   = new ArrayList<String>();
@@ -41,13 +48,12 @@ public class WaveFrontObjHelper {
         }
 
         final float[] vertexBuffer  = new float[faces.size() * 3 * 3];
-        final float[] normalBuffer  = new float[faces.size() * 3 * 3];
         final float[] textureBuffer = new float[faces.size() * 3 * 2];
         final short[] indexBuffer   = new short[faces.size() * 3];
 
         int vertexIndex = 0;
         int textureIndex= 0;
-        int normalIndex = 0;
+        // int normalIndex = 0;
         int faceIndex   = 0;
 
         for (String i : faces) {
@@ -58,27 +64,32 @@ public class WaveFrontObjHelper {
                 // only support f v/t/n mode
                 String vertex   = vertexes.get(Integer.parseInt(faceComponent[0]) - 1);
                 String texture  = textures.get(Integer.parseInt(faceComponent[1]) - 1);
-                String normal   = normals.get(Integer.parseInt(faceComponent[2]) - 1);
+                //String normal   = normals.get(Integer.parseInt(faceComponent[2]) - 1);
 
                 String vertexComp[]     = vertex.split(" ");
                 String textureComp[]    = texture.split(" ");
-                String normalComp[]     = normal.split(" ");
+                //String normalComp[]     = normal.split(" ");
 
                 for (String v : vertexComp)     vertexBuffer[vertexIndex++]= Float.parseFloat(v);
                 for (String t : textureComp)    textureBuffer[textureIndex++]  = Float.parseFloat(t);
-                for (String n : normalComp)     normalBuffer[normalIndex++]= Float.parseFloat(n);
+                //for (String n : normalComp)     normalBuffer[normalIndex++]= Float.parseFloat(n);
             }
         }
 
-        final FloatBuffer[] mesh = new FloatBuffer[3];  // vertex, texture, normal
+        // Vertex
+        FloatBuffer vertex = ByteBuffer.allocateDirect(vertexBuffer.length * 4)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer().put(vertexBuffer);
+        vertex.position(0);
 
-        mesh[0] = ByteBuffer.allocateDirect(vertexBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mesh[0].put(vertexBuffer).position(0);
-        mesh[1] = ByteBuffer.allocateDirect(textureBuffer.length* 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mesh[1].put(textureBuffer).position(0);
-        mesh[2] = ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mesh[2].put(normalBuffer).position(0);
+        // Texture Coordinate
+        FloatBuffer texture = ByteBuffer.allocateDirect(textureBuffer.length * 4).
+                order(ByteOrder.nativeOrder()).asFloatBuffer().put(textureBuffer);
+        texture.position(0);
 
-        return new MeshBufferHelper(indexBuffer.length,mesh);
+        output.setVerticesBuffer(vertex);
+        output.setTexCoordinateBuffer(texture);
+        output.setNumIndices(indexBuffer.length);
+
+        //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);
     }
 }
