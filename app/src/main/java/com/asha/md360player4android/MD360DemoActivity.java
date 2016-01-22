@@ -7,14 +7,17 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-public class MD360DemoActivity extends Activity
-{
+/**
+ * Created by hzqiujiadi on 16/1/22.
+ * hzqiujiadi ashqalcn@gmail.com
+ */
+public class MD360DemoActivity extends Activity {
+
 	/** Hold a reference to our GLSurfaceView */
 	private GLSurfaceView mGLSurfaceView;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) 
-	{
+	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		
 		mGLSurfaceView = new GLSurfaceView(this);
@@ -24,16 +27,13 @@ public class MD360DemoActivity extends Activity
 		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
 		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
-		if (supportsEs2) 
-		{
+		if (supportsEs2){
 			// Request an OpenGL ES 2.0 compatible context.
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
 			mGLSurfaceView.setRenderer(new MD360Renderer(this));
-		} 
-		else 
-		{
+		} else {
 			// This is where you could create an OpenGL ES 1.x compatible
 			// renderer if you wanted to support both ES 1 and ES 2.
 			return;
@@ -43,16 +43,14 @@ public class MD360DemoActivity extends Activity
 	}
 
 	@Override
-	protected void onResume() 
-	{
+	protected void onResume(){
 		// The activity must call the GL surface view's onResume() on activity onResume().
 		super.onResume();
 		mGLSurfaceView.onResume();
 	}
 
 	@Override
-	protected void onPause() 
-	{
+	protected void onPause(){
 		// The activity must call the GL surface view's onPause() on activity onPause().
 		super.onPause();
 		mGLSurfaceView.onPause();

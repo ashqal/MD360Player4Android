@@ -15,7 +15,10 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-
+/**
+ * Created by hzqiujiadi on 16/1/22.
+ * hzqiujiadi ashqalcn@gmail.com
+ */
 public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private static final String TAG = "LessonFourRenderer";
