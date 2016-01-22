@@ -8,7 +8,7 @@ import android.opengl.Matrix;
 
 import com.asha.md360player4android.common.TextureHelper;
 import com.asha.md360player4android.objects.MDAbsObject3D;
-import com.asha.md360player4android.objects.MDSphere3D;
+import com.asha.md360player4android.objects.MDDome3D;
 
 import java.nio.FloatBuffer;
 
@@ -40,7 +40,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	
 	public MD360Renderer(final Context activityContext){
 		mContext = activityContext;
-		mObject3D = new MDSphere3D();
+		mObject3D = new MDDome3D();
 		mProgram = new MD360Program();
 	}
 	
@@ -109,7 +109,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		// Model Matrix
 		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.setRotateM(mModelMatrix,0,180,0,1,0);
+		// Matrix.setRotateM(mModelMatrix,0,180,0,1,0);
 
 		// Projection Matrix
 		final float ratio = (float) width / height;
