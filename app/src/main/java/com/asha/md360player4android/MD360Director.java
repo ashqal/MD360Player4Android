@@ -2,7 +2,6 @@ package com.asha.md360player4android;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -20,6 +19,11 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
+    private float mEyeZ = 12;
+    private float mAngle = 0;
+    private float mRatio = 1.5f;
+    private float mNear = 1;
+
     public MD360Director() {
 
     }
@@ -31,12 +35,12 @@ public class MD360Director {
 
     private void initCamera() {
         // View Matrix
-        updateCameraDistance(12);
+        updateCameraDistance(mEyeZ);
     }
 
     private void initModel(){
         // Model Matrix
-        updateModelRotate(0);
+        updateModelRotate(mAngle);
     }
 
     public void shot(MD360Program program) {
@@ -56,10 +60,10 @@ public class MD360Director {
     }
 
     public void updateCameraDistance(float z) {
-        Log.d(TAG,"updateCameraDistance:" + z);
+        mEyeZ = z;
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
-        final float eyeZ = z;
+        final float eyeZ = mEyeZ;
         final float lookX = 0.0f;
         final float lookY = 0.0f;
         final float lookZ = 0.0f;
@@ -71,12 +75,11 @@ public class MD360Director {
     }
 
     public void updateModelRotate(float a) {
+        mAngle = a;
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.setRotateM(mModelMatrix,0,a,0,1,0);
     }
 
-    private float mRatio = 1.5f;
-    private float mNear = 1;
     public void updateProjection(int width, int height){
         // Projection Matrix
         mRatio = width * 1.0f / height;

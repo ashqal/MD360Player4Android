@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import com.asha.md360player4android.MD360Program;
-import com.asha.md360player4android.common.LoadObjectHelper;
+import com.asha.md360player4android.common.Object3DHelper;
 
 import java.nio.FloatBuffer;
 
@@ -40,7 +40,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void loadObj(Context context){
-        LoadObjectHelper.load(context, obtainObjResId(), this);
+        Object3DHelper.load(context, obtainObjResId(), this);
     }
 
     protected abstract int obtainObjResId();

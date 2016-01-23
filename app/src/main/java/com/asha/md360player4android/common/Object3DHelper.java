@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * hzqiujiadi ashqalcn@gmail.com
  *
  */
-public class LoadObjectHelper {
+public class Object3DHelper {
     private static final String TAG = "LoadObjectHelper";
 
     public static void load(final Context context, final int resourceId, final MDAbsObject3D output) {

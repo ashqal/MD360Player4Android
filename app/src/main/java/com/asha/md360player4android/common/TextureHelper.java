@@ -11,16 +11,14 @@ import android.opengl.GLUtils;
  * https://github.com/Nitro888/NitroAction360
  */
 public class TextureHelper {
-    public static int loadTexture(final Context context, final int resourceId)
-    {
+    public static int loadTexture(final Context context, final int resourceId) {
         final int[] textureHandle = new int[1];
 
         GLES20.glGenTextures(1, textureHandle, 0);
 
-        if (textureHandle[0] != 0)
-        {
+        if (textureHandle[0] != 0) {
             final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;	// No pre-scaling
+            options.inScaled = false;    // No pre-scaling
 
             // Read in the resource
             final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
@@ -39,8 +37,7 @@ public class TextureHelper {
             bitmap.recycle();
         }
 
-        if (textureHandle[0] == 0)
-        {
+        if (textureHandle[0] == 0) {
             throw new RuntimeException("Error loading texture.");
         }
 
