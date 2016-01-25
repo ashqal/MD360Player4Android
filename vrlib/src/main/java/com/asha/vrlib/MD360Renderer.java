@@ -136,7 +136,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		public MD360Renderer build(){
 			checkIfNull(player,TAG + " player can't be null!");
-			checkIfNull(director,TAG + " director can't be null!");
+			if (director == null) director = new MD360Director();
 			return new MD360Renderer(this);
 		}
 

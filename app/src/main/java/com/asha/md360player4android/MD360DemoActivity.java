@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.asha.vrlib.MD360Director;
@@ -24,21 +23,19 @@ import java.io.IOException;
 public class MD360DemoActivity extends Activity implements MediaPlayer.OnPreparedListener{
 
     private static final String TAG = "MD360DemoActivity";
+
     /** Hold a reference to our GLSurfaceView */
 	private GLSurfaceView mGLSurfaceView;
-    private MD360Director mDirector;
     private MediaPlayer mPlayer;
+    protected MD360Director mDirector;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         mPlayer = new MediaPlayer();
         mPlayer.setOnPreparedListener(this);
         mDirector = new MD360Director();
-        initOpenGL();
-        initSeekBar();
 	}
 
     public void play(){
@@ -63,8 +60,8 @@ public class MD360DemoActivity extends Activity implements MediaPlayer.OnPrepare
         }
     }
 
-    private void initOpenGL(){
-        mGLSurfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
+    protected void initOpenGL(int glSurfaceViewResId){
+        mGLSurfaceView = (GLSurfaceView) findViewById(glSurfaceViewResId);
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -89,47 +86,7 @@ public class MD360DemoActivity extends Activity implements MediaPlayer.OnPrepare
         }
     }
 
-    private static float progressToValue(int progress, int min, int max){
-        int range = max - min;
-        float result = progress * 1.0f * range / 100.0f + min;
-        return result;
-    }
-
-    private void initSeekBar() {
-        SeekBar viewSeekBar = (SeekBar) findViewById(R.id.seek_bar_view);
-        SeekBar modelSeekBar = (SeekBar) findViewById(R.id.seek_bar_model);
-        SeekBar projectionSeekBar = (SeekBar) findViewById(R.id.seek_bar_projection);
-
-        viewSeekBar.setOnSeekBarChangeListener(new SeekBarOnChangeListenerAdapter() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int min = 2;
-                int max = 50;
-                mDirector.updateCameraDistance(progressToValue(progress,min,max));
-            }
-        });
-
-        modelSeekBar.setOnSeekBarChangeListener(new SeekBarOnChangeListenerAdapter() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int min = 0;
-                int max = 360;
-                mDirector.updateModelRotate(progressToValue(progress,min,max));
-            }
-        });
-
-        projectionSeekBar.setOnSeekBarChangeListener(new SeekBarOnChangeListenerAdapter() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int min = 1;
-                int max = 12;
-                mDirector.updateProjectionNear(progressToValue(progress,min,max));
-            }
-        });
-
-    }
-
-	@Override
+    @Override
 	protected void onResume(){
 		// The activity must call the GL surface view's onResume() on activity onResume().
 		super.onResume();
@@ -151,17 +108,4 @@ public class MD360DemoActivity extends Activity implements MediaPlayer.OnPrepare
     public void onPlayButtonClicked(View view) {
         play();
     }
-
-    public static abstract class SeekBarOnChangeListenerAdapter implements SeekBar.OnSeekBarChangeListener{
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            // nope
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-            // nope
-        }
-    }
-
 }

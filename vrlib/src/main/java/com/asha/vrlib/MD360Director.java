@@ -19,10 +19,10 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private float mEyeZ = 12;
+    private float mEyeZ = 12.5f;
     private float mAngle = 0;
     private float mRatio = 1.5f;
-    private float mNear = 1;
+    private float mNear = 1.55f;
 
     public MD360Director() {
 
@@ -94,5 +94,26 @@ public class MD360Director {
         final float top = 0.5f;
         final float far = 500;
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNear, far);
+    }
+
+    public float getEyeZ() {
+        return mEyeZ;
+    }
+
+    public float getAngle() {
+        return mAngle;
+    }
+
+    public float getNear() {
+        return mNear;
+    }
+
+    @Override
+    public String toString() {
+        return "MD360Director{" +
+                "eyeZ=" + mEyeZ +
+                ", angle=" + mAngle +
+                ", near=" + mNear +
+                '}';
     }
 }
