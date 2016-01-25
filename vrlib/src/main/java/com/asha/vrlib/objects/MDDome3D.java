@@ -1,6 +1,7 @@
-package com.asha.md360player4android.objects;
+package com.asha.vrlib.objects;
 
-import com.asha.md360player4android.R;
+
+import com.asha.vrlib.R;
 
 /**
  * Created by hzqiujiadi on 16/1/22.

@@ -1,4 +1,4 @@
-package com.asha.md360player4android;
+package com.asha.vrlib;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;

@@ -1,4 +1,4 @@
-package com.asha.md360player4android;
+package com.asha.vrlib;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
@@ -7,11 +7,16 @@ import android.view.Surface;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import static com.asha.md360player4android.common.GLUtil.glCheck;
+import static com.asha.vrlib.common.GLUtil.glCheck;
+
 
 /**
  * Created by hzqiujiadi on 16/1/25.
  * hzqiujiadi ashqalcn@gmail.com
+ *
+ * copied from surfaceTexture
+ * Created by nitro888 on 15. 4. 5..
+ * https://github.com/Nitro888/NitroAction360
  */
 public class MD360Surface {
     public static final int SURFACE_TEXTURE_EMPTY = 0;
@@ -19,6 +24,8 @@ public class MD360Surface {
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
     private int mGlSurfaceTexture;
+    private int mWidth;
+    private int mHeight;
 
     public MD360Surface() {
 
@@ -28,8 +35,6 @@ public class MD360Surface {
         return mSurface;
     }
 
-    private int mWidth;
-    private int mHeight;
     public void resize(int width,int height){
         mWidth = width;
         mHeight = height;

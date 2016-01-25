@@ -1,12 +1,14 @@
-package com.asha.md360player4android.objects;
+package com.asha.vrlib.objects;
 
 import android.content.Context;
 import android.opengl.GLES20;
 
-import com.asha.md360player4android.MD360Program;
-import com.asha.md360player4android.common.Object3DHelper;
+import com.asha.vrlib.MD360Program;
 
 import java.nio.FloatBuffer;
+
+import static com.asha.vrlib.common.GLUtil.loadObject3D;
+
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -40,7 +42,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void loadObj(Context context){
-        Object3DHelper.load(context, obtainObjResId(), this);
+        loadObject3D(context, obtainObjResId(), this);
     }
 
     protected abstract int obtainObjResId();

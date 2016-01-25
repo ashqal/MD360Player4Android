@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.MD360Renderer;
+
 import java.io.IOException;
 
 /**
@@ -72,8 +75,14 @@ public class MD360DemoActivity extends Activity implements MediaPlayer.OnPrepare
             // Request an OpenGL ES 2.0 compatible context.
             mGLSurfaceView.setEGLContextClientVersion(2);
 
+            // Create MD360Renderer now!
+            GLSurfaceView.Renderer renderer = MD360Renderer.with(this)
+                    .attachPlayer(mPlayer)
+                    .attachDirector(mDirector)
+                    .build();
+
             // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new MD360Renderer(this,mDirector,mPlayer));
+            mGLSurfaceView.setRenderer(renderer);
         } else {
             mGLSurfaceView.setVisibility(View.GONE);
             Toast.makeText(MD360DemoActivity.this, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();

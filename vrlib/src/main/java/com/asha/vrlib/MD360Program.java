@@ -1,10 +1,11 @@
-package com.asha.md360player4android;
-
+package com.asha.vrlib;
 import android.content.Context;
 import android.opengl.GLES20;
 
-import com.asha.md360player4android.common.RawResourceReader;
-import com.asha.md360player4android.common.ShaderHelper;
+import static com.asha.vrlib.common.GLUtil.compileShader;
+import static com.asha.vrlib.common.GLUtil.createAndLinkProgram;
+import static com.asha.vrlib.common.GLUtil.readTextFileFromRaw;
+
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -26,10 +27,10 @@ public class MD360Program {
         final String vertexShader = getVertexShader(context);
         final String fragmentShader = getFragmentShader(context);
 
-        final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
-        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+        mProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
                 new String[] {"a_Position", "a_TexCoordinate"});
 
         // Set program handles for cube drawing.
@@ -41,11 +42,11 @@ public class MD360Program {
     }
 
     protected String getVertexShader(Context context){
-        return RawResourceReader.readTextFileFromRawResource(context, R.raw.per_pixel_vertex_shader);
+        return readTextFileFromRaw(context, R.raw.per_pixel_vertex_shader);
     }
 
     protected String getFragmentShader(Context context){
-        return RawResourceReader.readTextFileFromRawResource(context, R.raw.per_pixel_fragment_shader);
+        return readTextFileFromRaw(context, R.raw.per_pixel_fragment_shader);
     }
 
     public void use() {
