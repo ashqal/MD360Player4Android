@@ -16,6 +16,11 @@
        android:layout_height="wrap_content"
        android:orientation="vertical">
 
+      <Button
+          android:text="Play"
+          android:onClick="onPlayButtonClicked"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
       <TextView
           android:text="View"
           android:textColor="#FFFFFF"

@@ -4,32 +4,61 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 /**
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MD360DemoActivity extends Activity {
+public class MD360DemoActivity extends Activity implements MediaPlayer.OnPreparedListener{
 
     private static final String TAG = "MD360DemoActivity";
     /** Hold a reference to our GLSurfaceView */
 	private GLSurfaceView mGLSurfaceView;
     private MD360Director mDirector;
+    private MediaPlayer mPlayer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPlayer = new MediaPlayer();
+        mPlayer.setOnPreparedListener(this);
         mDirector = new MD360Director();
         initOpenGL();
         initSeekBar();
 	}
+
+    public void play(){
+        try {
+            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
+            if ( afd == null ) return;
+            mPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(), afd.getLength());
+            afd.close();
+            mPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if ( mPlayer != null ){
+            if (mPlayer.isPlaying()) mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+    }
 
     private void initOpenGL(){
         mGLSurfaceView = (GLSurfaceView) findViewById(R.id.surface_view);
@@ -44,7 +73,7 @@ public class MD360DemoActivity extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new MD360Renderer(this,mDirector));
+            mGLSurfaceView.setRenderer(new MD360Renderer(this,mDirector,mPlayer));
         } else {
             mGLSurfaceView.setVisibility(View.GONE);
             Toast.makeText(MD360DemoActivity.this, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();
@@ -104,6 +133,15 @@ public class MD360DemoActivity extends Activity {
 		super.onPause();
 		mGLSurfaceView.onPause();
 	}
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
+    }
+
+    public void onPlayButtonClicked(View view) {
+        play();
+    }
 
     public static abstract class SeekBarOnChangeListenerAdapter implements SeekBar.OnSeekBarChangeListener{
         @Override

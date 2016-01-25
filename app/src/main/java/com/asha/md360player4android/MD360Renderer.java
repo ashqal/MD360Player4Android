@@ -1,11 +1,10 @@
 package com.asha.md360player4android;
 
 import android.content.Context;
-import android.opengl.GLES11Ext;
+import android.media.MediaPlayer;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.asha.md360player4android.common.TextureHelper;
 import com.asha.md360player4android.objects.MDAbsObject3D;
 import com.asha.md360player4android.objects.MDSphere3D;
 
@@ -22,17 +21,38 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private final Context mContext;
 
-	private int mTextureDataHandle;
-
 	private MDAbsObject3D mObject3D;
 	private MD360Program mProgram;
 	private final MD360Director mDirector;
+	private MD360Surface mSurface;
+	private MediaPlayer mPlayer;
 	
-	public MD360Renderer(final Context activityContext, MD360Director director){
+	public MD360Renderer(final Context activityContext, MD360Director director, MediaPlayer player){
 		mContext = activityContext;
 		mObject3D = new MDSphere3D();
 		mProgram = new MD360Program();
+		mSurface = new MD360Surface();
 		mDirector = director;
+		mPlayer = player;
+	}
+
+	private void initProgram(){
+		mProgram.build(mContext);
+	}
+
+	private void initTexture(){
+		// Load the texture
+		// mTextureDataHandle = TextureHelper.loadTexture(mContext, R.drawable.demo);
+		mSurface.createSurface();
+		mPlayer.setSurface(mSurface.getSurface());
+	}
+
+	private void initObject3D(){
+		// load
+		mObject3D.loadObj(mContext);
+
+		// upload
+		mObject3D.uploadDataToProgram(mProgram);
 	}
 
 	@Override
@@ -52,28 +72,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		initObject3D();
 	}
 
-
-	private void initProgram(){
-		mProgram.build(mContext);
-	}
-
-	private void initTexture(){
-		// Load the texture
-		mTextureDataHandle = TextureHelper.loadTexture(mContext, R.drawable.demo);
-	}
-
-	private void initObject3D(){
-		// load
-		mObject3D.loadObj(mContext);
-
-		// upload
-		mObject3D.uploadDataToProgram(mProgram);
-	}
-
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height){
 		// Set the OpenGL viewport to the same size as the surface.
 		GLES20.glViewport(0, 0, width, height);
+
+		// Update surface
+		mSurface.resize(width,height);
 
 		// Update Projection
 		mDirector.updateProjection(width,height);
@@ -91,7 +96,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         
         // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureDataHandle);
+        // GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureDataHandle);
+		mSurface.onDrawFrame();
         
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
