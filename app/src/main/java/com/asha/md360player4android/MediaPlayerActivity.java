@@ -23,6 +23,15 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 
         mPlayer = new MediaPlayer();
         mPlayer.setOnPreparedListener(this);
+
+        AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
+        if (afd == null) return;
+        try {
+            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public MediaPlayer getPlayer() {
@@ -30,27 +39,29 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
     }
 
     public void play() {
+        stop();
         if (mPlayer == null) return;
-        if (mPlayer.isPlaying()) mPlayer.stop();
-        try {
-            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
-            if (afd == null) return;
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
-            mPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
+        mPlayer.prepareAsync();
+    }
+
+    private void stop(){
+        if (mPlayer == null) return;
+        if (mPlayer.isPlaying()){
+            mPlayer.stop();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPlayer != null) {
-            if (mPlayer.isPlaying()) mPlayer.stop();
-            mPlayer.release();
-            mPlayer = null;
-        }
+        if (mPlayer != null) mPlayer.release();
+        mPlayer = null;
     }
 
     @Override
