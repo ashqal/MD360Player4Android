@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MD360RenderDemoActivity">
+    tools:context=".MD360RendererDemoActivity">
 
    <com.asha.vrlib.MDGLSurfaceView
        android:id="@+id/md_surface_view"

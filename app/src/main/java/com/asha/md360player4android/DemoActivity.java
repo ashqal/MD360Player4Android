@@ -25,7 +25,7 @@ public class DemoActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start(MD360RenderDemoActivity.class);
+                start(MD360RendererDemoActivity.class);
             }
         });
     }
