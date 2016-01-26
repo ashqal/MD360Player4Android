@@ -10,8 +10,8 @@ It is a lite library to render 360 dgree panorama video for Android.
 [MD360PlayerDemo.apk(21.7M, 360 demo video included)](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/MD360PlayerDemo.apk)
 
 ## NOTICE
-OpenGLES 2.0 required
-Android 4.0.3 (IceCreamSandwich API-15) required
+* OpenGLES 2.0 required
+* Android 4.0.3 (IceCreamSandwich API-15) required
 
 ## Gradle
 Coming soon.
