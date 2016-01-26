@@ -19,7 +19,7 @@ Coming soon.
 ## USAGE
 There are two way to use this library depend on your requirement,
 ### Using MDGLSurfaceView
-**SETP1** define `com.asha.vrlib.MDGLSurfaceView` in the layout xml.
+**STEP1** define `com.asha.vrlib.MDGLSurfaceView` in the layout xml.
 ```java
 ...
    <com.asha.vrlib.MDGLSurfaceView
@@ -29,7 +29,7 @@ There are two way to use this library depend on your requirement,
 ...
 ```
 
-**SETP2** attach the `android.view.Surface` to your MediaPlayer or something else when the surface is ready.
+**STEP2** attach the `android.view.Surface` to your MediaPlayer or something else when the surface is ready.
 ```java
 public class MDGLSurfaceViewDemoActivity extends MediaPlayerActivity {
 
@@ -51,7 +51,7 @@ public class MDGLSurfaceViewDemoActivity extends MediaPlayerActivity {
 ```
 
 ### More Flexible Way: MD360Renderer
-**SETP1** build a `MD360Renderer` and attach the `android.view.Surface`.
+**STEP1** build a `MD360Renderer` and attach the `android.view.Surface`.
 ```java
 public class MD360RenderDemoActivity extends MediaPlayerActivity {
 
@@ -77,7 +77,7 @@ public class MD360RenderDemoActivity extends MediaPlayerActivity {
 }
 ```
 
-**SETP2** init OpenGL by yourself, and set the `MD360Renderer` to your `android.opengl.GLSurfaceView`
+**STEP2** init OpenGL by yourself, and set the `MD360Renderer` to your `android.opengl.GLSurfaceView`
 ```java
 private void initOpenGL(int glSurfaceViewResId) {
     mGLSurfaceView = (GLSurfaceView) findViewById(glSurfaceViewResId);
