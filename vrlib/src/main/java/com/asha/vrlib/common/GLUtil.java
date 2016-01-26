@@ -1,6 +1,8 @@
 package com.asha.vrlib.common;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.opengl.GLES20;
 import android.util.Log;
 
@@ -27,6 +29,20 @@ import java.util.ArrayList;
 public class GLUtil {
 
     private static final String TAG = "GLUtil";
+
+
+    /**
+     * Check if the system supports OpenGL ES 2.0.
+     *
+     * @param context
+     * @return true:supported
+     */
+    public static boolean supportsEs2(Context context){
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
+        return supportsEs2;
+    }
 
     public static void glCheck(String op) {
         int error;

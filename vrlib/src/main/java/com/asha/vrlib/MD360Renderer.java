@@ -1,9 +1,10 @@
 package com.asha.vrlib;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
+import android.view.Surface;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDSphere3D;
@@ -29,48 +30,31 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	// final
 	private final Context mContext;
 	private final MD360Director mDirector;
-	private final MediaPlayer mPlayer;
+
+	private IOnSurfaceReadyListener mListener;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
-		mDirector = params.director;
-		mPlayer = params.player;
+		mListener = params.listener;
+		mDirector = new MD360Director();
 		mObject3D = new MDSphere3D();
 		mProgram = new MD360Program();
 		mSurface = new MD360Surface();
 	}
 
-	private void initProgram(){
-		mProgram.build(mContext);
-	}
-
-	private void initTexture(){
-		// Load the texture
-		// mTextureDataHandle = TextureHelper.loadTexture(mContext, R.drawable.demo);
-		mSurface.createSurface();
-		mPlayer.setSurface(mSurface.getSurface());
-	}
-
-	private void initObject3D(){
-		// load
-		mObject3D.loadObj(mContext);
-
-		// upload
-		mObject3D.uploadDataToProgram(mProgram);
-	}
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config){
-		// Set the background clear color to black.
+		// set the background clear color to black.
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
-		// Use culling to remove back faces.
+		// use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		
-		// Enable depth testing
+		// enable depth testing
 		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-		mDirector.prepare();
+		// init
 		initProgram();
 		initTexture();
 		initObject3D();
@@ -86,7 +70,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		// Update Projection
 		mDirector.updateProjection(width,height);
-
 	}
 
 	@Override
@@ -113,6 +96,33 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mObject3D.getNumIndices());
 	}
 
+	private void initProgram(){
+		mProgram.build(mContext);
+	}
+
+	private void initTexture(){
+		mSurface.createSurface();
+		if (mListener != null) mListener.onSurfaceReady(mSurface.getSurface());
+	}
+
+	private void initObject3D(){
+		// load
+		mObject3D.loadObj(mContext);
+
+		// upload
+		mObject3D.uploadDataToProgram(mProgram);
+	}
+
+	/**
+	 * handle touch touch to rotate the model
+	 *
+	 * @param event
+	 * @return true if handled.
+	 */
+	public boolean handleTouchEvent(MotionEvent event) {
+		return mDirector.handleTouchEvent(event);
+	}
+
 	public static Builder with(Context context) {
 		Builder builder = new Builder();
 		builder.context = context;
@@ -121,29 +131,28 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	public static class Builder{
 		private Context context;
-		private MD360Director director;
-		private MediaPlayer player;
+		private IOnSurfaceReadyListener listener;
 
-		public Builder attachPlayer(MediaPlayer player){
-			this.player = player;
-			return this;
-		}
-
-		public Builder attachDirector(MD360Director director){
-			this.director = director;
-			return this;
+		private Builder() {
 		}
 
 		public MD360Renderer build(){
-			checkIfNull(player,TAG + " player can't be null!");
-			if (director == null) director = new MD360Director();
 			return new MD360Renderer(this);
 		}
 
-		private static void checkIfNull(Object obj,String msg){
-			if ( obj == null )
-				throw new IllegalArgumentException(msg);
+		/**
+		 * add IOnSurfaceReadyListener listener
+		 * the render will invoke the callback if the Surface is ready
+		 * @param listener onSurfaceReady(Surface surface)
+		 */
+		public Builder listenSurfaceReady(IOnSurfaceReadyListener listener){
+			this.listener = listener;
+			return this;
 		}
+	}
+
+	public interface IOnSurfaceReadyListener{
+		void onSurfaceReady(Surface surface);
 	}
 
 }

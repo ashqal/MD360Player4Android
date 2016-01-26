@@ -6,7 +6,6 @@ import static com.asha.vrlib.common.GLUtil.compileShader;
 import static com.asha.vrlib.common.GLUtil.createAndLinkProgram;
 import static com.asha.vrlib.common.GLUtil.readTextFileFromRaw;
 
-
 /**
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
@@ -23,6 +22,15 @@ public class MD360Program {
     public MD360Program() {
     }
 
+    /**
+     * build the program
+     *
+     * 1. create a program handle
+     * 2. compileShader
+     * 3. link program
+     * 4. get attribute handle && uniform handle
+     * @param context
+     */
     public void build(Context context){
         final String vertexShader = getVertexShader(context);
         final String fragmentShader = getFragmentShader(context);
