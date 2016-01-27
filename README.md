@@ -14,7 +14,9 @@ It is a lite library to render 360 degree panorama video for Android.
 * Android 4.0.3 (IceCreamSandwich API-15) required
 
 ## Gradle
-Coming soon.
+```java
+compile 'com.asha:vrlib:0.1'
+```
 
 ## USAGE
 There are two way to use this library depend on your requirement,
