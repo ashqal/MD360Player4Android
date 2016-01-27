@@ -19,9 +19,6 @@ import java.util.ArrayList;
 
 /**
  * Created by nitro888 on 15. 4. 5..
- * Exports Option is -Z Foward, Y Up and UV and Normal
- * UV mirror - Y Axis
- * https://github.com/Nitro888/NitroAction360
  *
  * modify by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com

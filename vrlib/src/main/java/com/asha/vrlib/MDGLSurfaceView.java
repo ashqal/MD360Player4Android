@@ -16,8 +16,7 @@ import com.asha.vrlib.common.GLUtil;
 public class MDGLSurfaceView extends GLSurfaceView {
 
     private static final String TAG = "MDGLSurfaceView";
-    private MD360Renderer mRender;
-    private MD360Renderer.IOnSurfaceReadyListener mListener;
+    private MD360Renderer mRenderer;
 
     public MDGLSurfaceView(Context context) {
         this(context,null);
@@ -28,13 +27,13 @@ public class MDGLSurfaceView extends GLSurfaceView {
     }
 
     public void init(MD360Renderer.IOnSurfaceReadyListener listener){
-        mRender = MD360Renderer.with(getContext()).listenSurfaceReady(listener).build();
+        mRenderer = MD360Renderer.with(getContext()).listenSurfaceReady(listener).build();
         if (GLUtil.supportsEs2(getContext())) {
             // Request an OpenGL ES 2.0 compatible context.
             this.setEGLContextClientVersion(2);
 
             // Set the renderer to our demo renderer, defined below.
-            this.setRenderer(mRender);
+            this.setRenderer(mRenderer);
         } else {
             Log.e(TAG,"this device do not support OpenGL ES 2!");
             this.setVisibility(View.GONE);
@@ -43,7 +42,7 @@ public class MDGLSurfaceView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return mRender.handleTouchEvent(event) || super.onTouchEvent(event);
+        return mRenderer.handleTouchEvent(event) || super.onTouchEvent(event);
     }
 
 }

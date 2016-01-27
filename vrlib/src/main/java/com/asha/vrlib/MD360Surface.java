@@ -85,7 +85,7 @@ public class MD360Surface {
     }
 
     public void onDrawFrame() {
-        if(mGlSurfaceTexture==SURFACE_TEXTURE_EMPTY)
+        if(mGlSurfaceTexture == SURFACE_TEXTURE_EMPTY)
             return;
 
         synchronized (this){
