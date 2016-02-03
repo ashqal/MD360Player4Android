@@ -6,16 +6,21 @@ android {
 
     defaultConfig {
         applicationId "com.asha.md360player4android"
-        minSdkVersion 18
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dexOptions{
+        dexInProcess false
     }
 }
 
