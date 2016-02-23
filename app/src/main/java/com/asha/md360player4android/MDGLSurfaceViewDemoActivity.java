@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
 
-import com.asha.vrlib.MD360Renderer;
+import com.asha.vrlib.MD360Surface;
 import com.asha.vrlib.MDGLSurfaceView;
 
 /**
@@ -23,7 +23,7 @@ public class MDGLSurfaceViewDemoActivity extends MediaPlayerActivity {
         setContentView(R.layout.activity_md_gl_surface);
 
         mGLSurfaceView = (MDGLSurfaceView) findViewById(R.id.md_surface_view);
-        mGLSurfaceView.init(new MD360Renderer.IOnSurfaceReadyListener() {
+        mGLSurfaceView.init(new MD360Surface.IOnSurfaceReadyListener() {
             @Override
             public void onSurfaceReady(Surface surface) {
                 getPlayer().setSurface(surface);

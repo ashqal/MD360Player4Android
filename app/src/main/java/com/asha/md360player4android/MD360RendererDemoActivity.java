@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.MD360Renderer;
+import com.asha.vrlib.MD360Surface;
 import com.asha.vrlib.common.GLUtil;
 
 /**
@@ -27,7 +28,7 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
         setContentView(R.layout.activity_md_render);
 
         mRenderer = MD360Renderer.with(this)
-                .listenSurfaceReady(new MD360Renderer.IOnSurfaceReadyListener() {
+                .defaultSurface(new MD360Surface.IOnSurfaceReadyListener() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
                         getPlayer().setSurface(surface);

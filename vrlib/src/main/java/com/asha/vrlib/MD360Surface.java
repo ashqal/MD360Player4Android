@@ -26,22 +26,27 @@ public class MD360Surface {
     private int mGlSurfaceTexture;
     private int mWidth;
     private int mHeight;
+    private IOnSurfaceReadyListener mOnSurfaceReadyListener;
 
-    public MD360Surface() {
-
-    }
-
-    public Surface getSurface() {
-        return mSurface;
+    public MD360Surface(IOnSurfaceReadyListener onSurfaceReadyListener) {
+        this.mOnSurfaceReadyListener = onSurfaceReadyListener;
     }
 
     public void resize(int width,int height){
+        boolean changed = false;
+        if (mWidth == width && mHeight == height) changed = true;
         mWidth = width;
         mHeight = height;
+
+        // resize the texture
+        if (changed && mSurfaceTexture != null)
+            mSurfaceTexture.setDefaultBufferSize(mWidth,mHeight);
+
     }
 
     public void createSurface() {
-            //Log.d(TAG,"private class surfaceTexture onSurfaceChanged : "+mTextureWidth+","+mTextureHeight);
+        if (mSurface != null) return;
+
         releaseSurface();
         mGlSurfaceTexture = createTexture();
         if (mGlSurfaceTexture != SURFACE_TEXTURE_EMPTY) {
@@ -50,6 +55,8 @@ public class MD360Surface {
             mSurfaceTexture = new SurfaceTexture(mGlSurfaceTexture);
             mSurfaceTexture.setDefaultBufferSize(mWidth, mHeight);
             mSurface = new Surface(mSurfaceTexture);
+            if (mOnSurfaceReadyListener != null)
+                mOnSurfaceReadyListener.onSurfaceReady(mSurface);
         }
     }
 
@@ -91,5 +98,9 @@ public class MD360Surface {
         synchronized (this){
             mSurfaceTexture.updateTexImage();
         }
+    }
+
+    public interface IOnSurfaceReadyListener{
+        void onSurfaceReady(Surface surface);
     }
 }

@@ -26,8 +26,8 @@ public class MDGLSurfaceView extends GLSurfaceView {
         super(context, attrs);
     }
 
-    public void init(MD360Renderer.IOnSurfaceReadyListener listener){
-        mRenderer = MD360Renderer.with(getContext()).listenSurfaceReady(listener).build();
+    public void init(MD360Surface.IOnSurfaceReadyListener listener){
+        mRenderer = MD360Renderer.with(getContext()).defaultSurface(listener).build();
         if (GLUtil.supportsEs2(getContext())) {
             // Request an OpenGL ES 2.0 compatible context.
             this.setEGLContextClientVersion(2);

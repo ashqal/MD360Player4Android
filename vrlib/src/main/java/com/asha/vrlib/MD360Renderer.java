@@ -4,7 +4,6 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
-import android.view.Surface;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDSphere3D;
@@ -31,17 +30,14 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private final Context mContext;
 	private final MD360Director mDirector;
 
-	private IOnSurfaceReadyListener mListener;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
-		mListener = params.listener;
+		mSurface = params.surface;
 		mDirector = new MD360Director();
 		mObject3D = new MDSphere3D();
 		mProgram = new MD360Program();
-		mSurface = new MD360Surface();
 	}
-
 
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config){
@@ -102,7 +98,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private void initTexture(){
 		mSurface.createSurface();
-		if (mListener != null) mListener.onSurfaceReady(mSurface.getSurface());
 	}
 
 	private void initObject3D(){
@@ -131,7 +126,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	public static class Builder{
 		private Context context;
-		private IOnSurfaceReadyListener listener;
+		private MD360Surface surface;
 
 		private Builder() {
 		}
@@ -141,18 +136,23 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		}
 
 		/**
+		 * set surface{@link MD360Surface} to this render
+		 * @param surface {@link MD360Surface} surface may used by multiple render{@link MD360Renderer}
+		 * @return builder
+		 */
+		public Builder setSurface(MD360Surface surface){
+			this.surface = surface;
+			return this;
+		}
+
+		/**
 		 * add IOnSurfaceReadyListener listener
 		 * the render will invoke the callback if the Surface is ready
 		 * @param listener onSurfaceReady(Surface surface)
 		 */
-		public Builder listenSurfaceReady(IOnSurfaceReadyListener listener){
-			this.listener = listener;
+		public Builder defaultSurface(MD360Surface.IOnSurfaceReadyListener listener){
+			this.surface = new MD360Surface(listener);
 			return this;
 		}
 	}
-
-	public interface IOnSurfaceReadyListener{
-		void onSurfaceReady(Surface surface);
-	}
-
 }
