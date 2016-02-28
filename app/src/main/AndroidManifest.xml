@@ -16,6 +16,7 @@
         </activity>
         <activity android:label="MDGLSurfaceViewDemoActivity" android:name=".MDGLSurfaceViewDemoActivity" android:configChanges="screenSize|orientation"/>
         <activity android:label="MD360RenderDemoActivity" android:name=".MD360RendererDemoActivity" android:configChanges="screenSize|orientation"/>
+        <activity android:label="MultiMD360RendererDemoActivity" android:name=".MultiMD360RendererDemoActivity" android:configChanges="screenSize|orientation"/>
     </application>
 
 </manifest>

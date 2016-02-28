@@ -1,8 +1,11 @@
 package com.asha.vrlib;
 
+import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.os.Build;
+import android.util.Log;
 import android.view.Surface;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -23,7 +26,6 @@ public class MD360Surface {
 
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
-    private int mGlSurfaceTexture;
     private int mWidth;
     private int mHeight;
     private IOnSurfaceReadyListener mOnSurfaceReadyListener;
@@ -44,15 +46,21 @@ public class MD360Surface {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void createSurface() {
-        if (mSurface != null) return;
+        int glSurfaceTexture = createTexture();
 
-        releaseSurface();
-        mGlSurfaceTexture = createTexture();
-        if (mGlSurfaceTexture != SURFACE_TEXTURE_EMPTY) {
+        Log.d("asha",Thread.currentThread().toString() + ",surface texture=" + glSurfaceTexture);
+
+        if (glSurfaceTexture != SURFACE_TEXTURE_EMPTY)
+            mLocalGLSurfaceTexture.set(glSurfaceTexture);
+        else return;
+
+        if ( mSurfaceTexture == null ) {
             //attach the texture to a surface.
             //It's a clue class for rendering an android view to gl level
-            mSurfaceTexture = new SurfaceTexture(mGlSurfaceTexture);
+            mSurfaceTexture = new SurfaceTexture(0);
+            mSurfaceTexture.detachFromGLContext();
             mSurfaceTexture.setDefaultBufferSize(mWidth, mHeight);
             mSurface = new Surface(mSurfaceTexture);
             if (mOnSurfaceReadyListener != null)
@@ -72,7 +80,6 @@ public class MD360Surface {
     }
 
     private int createTexture() {
-        mGlSurfaceTexture = SURFACE_TEXTURE_EMPTY;
         int[] textures = new int[1];
 
         // Generate the texture to where android view will be rendered
@@ -90,14 +97,19 @@ public class MD360Surface {
 
         return textures[0];
     }
+    ThreadLocal<Integer> mLocalGLSurfaceTexture = new ThreadLocal<>();
 
-    public void onDrawFrame() {
-        if(mGlSurfaceTexture == SURFACE_TEXTURE_EMPTY)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public synchronized void onDrawFrame() {
+        int glSurfaceTexture = mLocalGLSurfaceTexture.get();
+        //Log.d("asha",Thread.currentThread().toString() + ",surface texture=" + glSurfaceTexture);
+        if(glSurfaceTexture == SURFACE_TEXTURE_EMPTY)
             return;
+        mSurfaceTexture.attachToGLContext(glSurfaceTexture);
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, glSurfaceTexture);
+        mSurfaceTexture.updateTexImage();
+        mSurfaceTexture.detachFromGLContext();
 
-        synchronized (this){
-            mSurfaceTexture.updateTexImage();
-        }
     }
 
     public interface IOnSurfaceReadyListener{

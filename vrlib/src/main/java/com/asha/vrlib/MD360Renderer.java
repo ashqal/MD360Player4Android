@@ -76,10 +76,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mProgram.use();
 
         // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         
         // Bind the texture to this unit.
-        // GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureDataHandle);
+		// GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
+
 		mSurface.onDrawFrame();
         
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.

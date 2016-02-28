@@ -28,6 +28,13 @@ public class DemoActivity extends AppCompatActivity {
                 start(MD360RendererDemoActivity.class);
             }
         });
+
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start(MultiMD360RendererDemoActivity.class);
+            }
+        });
     }
 
     private void start(Class clz){
