@@ -30,6 +30,8 @@ public class MDGLSurfaceViewDemoActivity extends MediaPlayerActivity {
             }
         });
 
+        openLocalFile();
+
         // play button
         findViewById(R.id.btn_play).setOnClickListener(new View.OnClickListener() {
             @Override

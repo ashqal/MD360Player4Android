@@ -23,12 +23,22 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 
         mPlayer = new MediaPlayer();
         mPlayer.setOnPreparedListener(this);
+    }
 
+    protected void openLocalFile(){
         AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
         if (afd == null) return;
         try {
             mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void openRemoteFile(){
+        try {
+            mPlayer.setDataSource("http://vod.moredoo.com/u/7575/mp4/0x0/c64ee42b01cc0e875ca123a85a199cb3.mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }

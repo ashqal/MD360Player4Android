@@ -36,6 +36,8 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
                 })
                 .build();
 
+        openRemoteFile();
+
         // init OpenGL
         initOpenGL(R.id.surface_view);
 

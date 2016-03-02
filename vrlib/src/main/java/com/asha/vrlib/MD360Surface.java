@@ -60,7 +60,7 @@ public class MD360Surface {
             //attach the texture to a surface.
             //It's a clue class for rendering an android view to gl level
             mSurfaceTexture = new SurfaceTexture(0);
-            mSurfaceTexture.detachFromGLContext();
+            //mSurfaceTexture.detachFromGLContext();
             mSurfaceTexture.setDefaultBufferSize(mWidth, mHeight);
             mSurface = new Surface(mSurfaceTexture);
             if (mOnSurfaceReadyListener != null)
@@ -105,10 +105,10 @@ public class MD360Surface {
         //Log.d("asha",Thread.currentThread().toString() + ",surface texture=" + glSurfaceTexture);
         if(glSurfaceTexture == SURFACE_TEXTURE_EMPTY)
             return;
-        mSurfaceTexture.attachToGLContext(glSurfaceTexture);
+        // mSurfaceTexture.attachToGLContext(glSurfaceTexture);
         GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, glSurfaceTexture);
         mSurfaceTexture.updateTexImage();
-        mSurfaceTexture.detachFromGLContext();
+        // mSurfaceTexture.detachFromGLContext();
 
     }
 
