@@ -15,7 +15,8 @@ public class MD360Director {
 
     private static final String TAG = "MD360Director";
     private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
-    private static final float sDamping = 5.0f;
+    private static final float sDamping = 0.2f;
+
     private float[] mModelMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
@@ -23,7 +24,7 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private float mEyeZ = 12.5f;
+    private float mEyeZ = 9.5f;
     private float mAngle = 0;
     private float mRatio = 1.5f;
     private float mNear = 1.55f;
@@ -55,10 +56,10 @@ public class MD360Director {
             float y = event.getY();
 
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                float deltaX = (x - mPreviousX) / sDensity / sDamping;
-                float deltaY = (y - mPreviousY) / sDensity / sDamping;
-                mDeltaX -= deltaX;
-                mDeltaY -= deltaY;
+                float deltaX = (x - mPreviousX) / sDensity * sDamping ;
+                float deltaY = (y - mPreviousY) / sDensity * sDamping ;
+                mDeltaX += deltaX;
+                mDeltaY += deltaY;
             }
             mPreviousX = x;
             mPreviousY = y;
@@ -85,15 +86,11 @@ public class MD360Director {
         Matrix.setIdentityM(mModelMatrix, 0);
 
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
-        mDeltaX = 0.0f;
-        mDeltaY = 0.0f;
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
-        // Multiply the current rotation by the accumulated rotation, and then
         // set the accumulated rotation to the result.
-        Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-        System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);
+        System.arraycopy(mCurrentRotation, 0, mAccumulatedRotation, 0, 16);
 
         // Rotate the cube taking the overall rotation into account.
         Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
