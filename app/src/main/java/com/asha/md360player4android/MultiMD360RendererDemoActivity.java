@@ -69,7 +69,7 @@ public class MultiMD360RendererDemoActivity extends MediaPlayerActivity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // build render
-            MD360Renderer renderer = MD360Renderer.with(this).setSurface(mMD360Surface).build();
+            MD360Renderer renderer = MD360Renderer.with(this).build();
             mRenderers.add(renderer);
 
             // Set the renderer to our demo renderer, defined below.
