@@ -16,7 +16,17 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Gradle
 ```java
-compile 'com.asha:vrlib:0.1'
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+```java
+dependencies {
+    compile 'com.github.ashqal:MD360Player4Android:0.2'
+}
 ```
 
 ## USAGE
@@ -103,6 +113,7 @@ private void initOpenGL(int glSurfaceViewResId) {
 * [HTY360Player(360 VR Player for iOS)](https://github.com/hanton/HTY360Player)
 * [NitroAction360(VR player for Android)](https://github.com/Nitro888/NitroAction360)
 * [Learn-OpenGLES-Tutorials](https://github.com/learnopengles/Learn-OpenGLES-Tutorials)
+* [ANDROID高性能图形处理之二.OPENGL ES](http://tangzm.com/blog/?p=20)
 
 ## LICENSE
 ```
