@@ -1,11 +1,8 @@
 package com.asha.vrlib;
 
-import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
-import android.os.Build;
-import android.util.Log;
 import android.view.Surface;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -46,11 +43,8 @@ public class MD360Surface {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void createSurface() {
         int glSurfaceTexture = createTexture();
-
-        Log.d("asha",Thread.currentThread().toString() + ",surface texture=" + glSurfaceTexture);
 
         if (glSurfaceTexture != SURFACE_TEXTURE_EMPTY)
             mLocalGLSurfaceTexture.set(glSurfaceTexture);
@@ -59,8 +53,8 @@ public class MD360Surface {
         if ( mSurfaceTexture == null ) {
             //attach the texture to a surface.
             //It's a clue class for rendering an android view to gl level
-            mSurfaceTexture = new SurfaceTexture(0);
-            //mSurfaceTexture.detachFromGLContext();
+            mSurfaceTexture = new SurfaceTexture(glSurfaceTexture);
+            mSurfaceTexture.detachFromGLContext();
             mSurfaceTexture.setDefaultBufferSize(mWidth, mHeight);
             mSurface = new Surface(mSurfaceTexture);
             if (mOnSurfaceReadyListener != null)
@@ -68,7 +62,7 @@ public class MD360Surface {
         }
     }
 
-    private void releaseSurface() {
+    public void releaseSurface() {
         if (mSurface != null) {
             mSurface.release();
         }
@@ -99,17 +93,22 @@ public class MD360Surface {
     }
     ThreadLocal<Integer> mLocalGLSurfaceTexture = new ThreadLocal<>();
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public synchronized void onDrawFrame() {
+    public synchronized void syncDrawInContext(ISyncDrawCallback callback){
         int glSurfaceTexture = mLocalGLSurfaceTexture.get();
-        //Log.d("asha",Thread.currentThread().toString() + ",surface texture=" + glSurfaceTexture);
         if(glSurfaceTexture == SURFACE_TEXTURE_EMPTY)
             return;
-        // mSurfaceTexture.attachToGLContext(glSurfaceTexture);
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, glSurfaceTexture);
-        mSurfaceTexture.updateTexImage();
-        // mSurfaceTexture.detachFromGLContext();
+        mSurfaceTexture.attachToGLContext(glSurfaceTexture);
 
+        mSurfaceTexture.updateTexImage();
+
+        callback.onDrawOpenGL();
+
+        mSurfaceTexture.detachFromGLContext();
+    }
+
+
+    public interface ISyncDrawCallback {
+        void onDrawOpenGL();
     }
 
     public interface IOnSurfaceReadyListener{

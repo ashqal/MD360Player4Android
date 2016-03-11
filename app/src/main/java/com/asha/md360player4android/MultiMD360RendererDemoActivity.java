@@ -7,8 +7,10 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
+import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Renderer;
 import com.asha.vrlib.MD360Surface;
+import com.asha.vrlib.MD360SecondDirector;
 import com.asha.vrlib.common.GLUtil;
 
 import java.util.LinkedList;
@@ -23,7 +25,7 @@ import java.util.List;
 public class MultiMD360RendererDemoActivity extends MediaPlayerActivity {
 
     private MD360Surface mMD360Surface;
-    private List<MD360Renderer> mRenderers = new LinkedList<>();
+    private List<MD360Renderer> mRendererList = new LinkedList<>();
     private List<GLSurfaceView> mSurfaceViews = new LinkedList<>();
 
     @Override
@@ -40,8 +42,8 @@ public class MultiMD360RendererDemoActivity extends MediaPlayerActivity {
         });
 
         // init OpenGL
-        initOpenGL(R.id.surface_view1);
-        initOpenGL(R.id.surface_view2);
+        initOpenGL(R.id.surface_view1,new MD360Director());
+        initOpenGL(R.id.surface_view2, new MD360SecondDirector());
 
         // play button
         findViewById(R.id.btn_play).setOnClickListener(new View.OnClickListener() {
@@ -50,18 +52,20 @@ public class MultiMD360RendererDemoActivity extends MediaPlayerActivity {
                 play();
             }
         });
+
+        openLocalFile();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean handled = false;
-        for (MD360Renderer renderer : mRenderers){
+        for (MD360Renderer renderer : mRendererList){
             handled |= renderer.handleTouchEvent(event);
         }
         return handled || super.onTouchEvent(event);
     }
 
-    private void initOpenGL(int glSurfaceViewResId) {
+    private void initOpenGL(int glSurfaceViewResId, MD360Director md360Director) {
         GLSurfaceView mGLSurfaceView = (GLSurfaceView) findViewById(glSurfaceViewResId);
 
         if (GLUtil.supportsEs2(this)) {
@@ -69,8 +73,9 @@ public class MultiMD360RendererDemoActivity extends MediaPlayerActivity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // build render
-            MD360Renderer renderer = MD360Renderer.with(this).build();
-            mRenderers.add(renderer);
+            MD360Renderer renderer = MD360Renderer.with(this)
+                    .setSurface(mMD360Surface).setDirector(md360Director).build();
+            mRendererList.add(renderer);
 
             // Set the renderer to our demo renderer, defined below.
             mGLSurfaceView.setRenderer(renderer);

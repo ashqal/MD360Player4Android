@@ -28,6 +28,7 @@ public class MD360Director {
     private float mAngle = 0;
     private float mRatio = 1.5f;
     private float mNear = 1.55f;
+
     private float[] mCurrentRotation = new float[16];
     private float[] mAccumulatedRotation = new float[16];
     private float[] mTemporaryMatrix = new float[16];
@@ -87,7 +88,7 @@ public class MD360Director {
 
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngle, 0.0f, 1.0f, 0.0f);
 
         // set the accumulated rotation to the result.
         System.arraycopy(mCurrentRotation, 0, mAccumulatedRotation, 0, 16);
@@ -132,10 +133,8 @@ public class MD360Director {
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
     }
 
-    private void updateModelRotate(float a) {
+    protected void updateModelRotate(float a) {
         mAngle = a;
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.setRotateM(mModelMatrix,0,a,0,1,0);
     }
 
     private void updateProjectionNear(float near){

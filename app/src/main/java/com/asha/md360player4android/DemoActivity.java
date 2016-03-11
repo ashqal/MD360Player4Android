@@ -32,13 +32,6 @@ public class DemoActivity extends AppCompatActivity {
         findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start(MDTextureViewDemoActivity.class);
-            }
-        });
-
-        findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 start(MultiMD360RendererDemoActivity.class);
             }
         });

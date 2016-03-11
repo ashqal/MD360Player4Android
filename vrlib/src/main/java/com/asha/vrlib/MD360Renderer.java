@@ -11,6 +11,8 @@ import com.asha.vrlib.objects.MDSphere3D;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import static com.asha.vrlib.common.GLUtil.glCheck;
+
 /**
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
@@ -18,7 +20,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @see Builder
  * @see #with(Context)
  */
-public class MD360Renderer implements GLSurfaceView.Renderer {
+public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISyncDrawCallback {
 
 	private static final String TAG = "MD360Renderer";
 
@@ -34,7 +36,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private MD360Renderer(Builder params){
 		mContext = params.context;
 		mSurface = params.surface;
-		mDirector = new MD360Director();
+		mDirector = params.director;
 		mObject3D = new MDSphere3D();
 		mProgram = new MD360Program();
 	}
@@ -70,21 +72,20 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 glUnused){
+		mSurface.syncDrawInContext(this);
+	}
+
+	@Override
+	public void onDrawOpenGL() {
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.
 		mProgram.use();
+		glCheck("mProgram use");
 
-        // Set the active texture unit to texture unit 0.
-        // GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        
-        // Bind the texture to this unit.
-		// GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
-
-		mSurface.onDrawFrame();
-        
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
+		// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+		GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
+		glCheck("glUniform1i");
 
 		// Pass in the combined matrix.
 		mDirector.shot(mProgram);
@@ -128,11 +129,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public static class Builder{
 		private Context context;
 		private MD360Surface surface;
+		private MD360Director director;
 
 		private Builder() {
 		}
 
 		public MD360Renderer build(){
+			if (director == null) director = new MD360Director();
 			return new MD360Renderer(this);
 		}
 
@@ -143,6 +146,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		 */
 		public Builder setSurface(MD360Surface surface){
 			this.surface = surface;
+			return this;
+		}
+
+		public Builder setDirector(MD360Director director) {
+			this.director = director;
 			return this;
 		}
 
