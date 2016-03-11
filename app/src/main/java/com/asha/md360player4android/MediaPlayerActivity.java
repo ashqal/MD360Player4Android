@@ -38,7 +38,7 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
 
     protected void openRemoteFile(){
         try {
-            mPlayer.setDataSource("http://vod.moredoo.com/u/7575/mp4/0x0/c64ee42b01cc0e875ca123a85a199cb3.mp4");
+            mPlayer.setDataSource("http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8");
         } catch (IOException e) {
             e.printStackTrace();
         }
