@@ -1,5 +1,6 @@
 # MD360Player4Android
 It is a lite library to render 360 degree panorama video for Android.
+[![](https://jitpack.io/v/ashqal/MD360Player4Android.svg)](https://jitpack.io/#ashqal/MD360Player4Android)
 
 ## Preview
 ![ScreenShot](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/preview.jpg)
@@ -11,7 +12,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## NOTICE
 * OpenGLES 2.0 required
-* Android 4.0.3 (IceCreamSandwich API-15) required
+* Android 4.1 (JellyBean API-16) required
 
 ## Gradle
 ```java
@@ -107,5 +108,5 @@ private void initOpenGL(int glSurfaceViewResId) {
 ```
 The MIT License (MIT)
 
-Copyright (c) 2016 Asha
+Copyright (c) 2016 Moredoo.com
 ```
