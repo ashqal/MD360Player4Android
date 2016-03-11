@@ -40,11 +40,11 @@ public class MDGLSurfaceViewDemoActivity extends MediaPlayerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_md_gl_surface);
 
-        MDGLSurfaceView mGLSurfaceView = (MDGLSurfaceView) findViewById(R.id.md_surface_view);
-        mGLSurfaceView.init(new MD360Renderer.IOnSurfaceReadyListener() {
+        mGLSurfaceView = (MDGLSurfaceView) findViewById(R.id.md_surface_view);
+        mGLSurfaceView.init(new MD360Surface.IOnSurfaceReadyListener() {
             @Override
             public void onSurfaceReady(Surface surface) {
-                //MediaPlayer or something else.
+                // MediaPlayer or something else.
                 getPlayer().setSurface(surface);
             }
         });
@@ -65,13 +65,14 @@ public class MD360RenderDemoActivity extends MediaPlayerActivity {
         setContentView(R.layout.activity_md_render);
 
         mRenderer = MD360Renderer.with(this)
-                .listenSurfaceReady(new MD360Renderer.IOnSurfaceReadyListener() {
-                    @Override
-                    public void onSurfaceReady(Surface surface) {
-                        getPlayer().setSurface(surface);
-                    }
-                })
-                .build();
+                    .defaultSurface(new MD360Surface.IOnSurfaceReadyListener() {
+                        @Override
+                        public void onSurfaceReady(Surface surface) {
+                            // MediaPlayer or something else.
+                            getPlayer().setSurface(surface);
+                        }
+                    })
+                    .build();
                 
         // init OpenGL
         initOpenGL(R.id.surface_view);
