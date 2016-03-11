@@ -7,6 +7,7 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
+import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Renderer;
 import com.asha.vrlib.MD360Surface;
 import com.asha.vrlib.common.GLUtil;
@@ -21,13 +22,16 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
 
     private GLSurfaceView mGLSurfaceView;
     private MD360Renderer mRenderer;
+    private MD360Director mDirector;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_md_render);
 
-        mRenderer = MD360Renderer.with(this)
+        mDirector = new MD360Director();
+
+        mRenderer = MD360Renderer.with(this).setDirector(mDirector)
                 .defaultSurface(new MD360Surface.IOnSurfaceReadyListener() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
@@ -36,7 +40,7 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
                 })
                 .build();
 
-        openRemoteFile();
+        openLocalFile();
 
         // init OpenGL
         initOpenGL(R.id.surface_view);
@@ -75,6 +79,7 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
         // The activity must call the GL surface view's onResume() on activity onResume().
         super.onResume();
         mGLSurfaceView.onResume();
+        mDirector.registerSensor(this);
     }
 
     @Override
@@ -82,5 +87,6 @@ public class MD360RendererDemoActivity extends MediaPlayerActivity {
         // The activity must call the GL surface view's onPause() on activity onPause().
         super.onPause();
         mGLSurfaceView.onPause();
+        mDirector.unregisterSensor(this);
     }
 }

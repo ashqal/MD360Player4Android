@@ -1,6 +1,11 @@
 package com.asha.vrlib;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.view.MotionEvent;
@@ -11,7 +16,7 @@ import android.view.MotionEvent;
  *
  * response for model * view * projection
  */
-public class MD360Director {
+public class MD360Director implements SensorEventListener {
 
     private static final String TAG = "MD360Director";
     private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
@@ -24,14 +29,16 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private float mEyeZ = 9.5f;
+    private float mEyeZ = 0f;
     private float mAngle = 0;
     private float mRatio = 1.5f;
-    private float mNear = 1.55f;
+    private float mNear = 0.7f;
 
     private float[] mCurrentRotation = new float[16];
     private float[] mAccumulatedRotation = new float[16];
     private float[] mTemporaryMatrix = new float[16];
+
+    private float[] mSensorMatrix = new float[16];
 
     public MD360Director() {
         initCamera();
@@ -78,6 +85,7 @@ public class MD360Director {
 
     private void initModel(){
         Matrix.setIdentityM(mAccumulatedRotation, 0);
+        Matrix.setIdentityM(mSensorMatrix, 0);
         // Model Matrix
         updateModelRotate(mAngle);
     }
@@ -89,6 +97,7 @@ public class MD360Director {
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngle, 0.0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
 
         // set the accumulated rotation to the result.
         System.arraycopy(mCurrentRotation, 0, mAccumulatedRotation, 0, 16);
@@ -125,7 +134,7 @@ public class MD360Director {
         final float eyeZ = mEyeZ;
         final float lookX = 0.0f;
         final float lookY = 0.0f;
-        final float lookZ = 0.0f;
+        final float lookZ = -1.0f;
         final float upX = 0.0f;
         final float upY = 1.0f;
         final float upZ = 0.0f;
@@ -139,11 +148,53 @@ public class MD360Director {
 
     private void updateProjectionNear(float near){
         mNear = near;
-        final float left = -mRatio;
-        final float right = mRatio;
+        final float left = -mRatio/2;
+        final float right = mRatio/2;
         final float bottom = -0.5f;
         final float top = 0.5f;
         final float far = 500;
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNear, far);
+    }
+
+    private float[] tmp = new float[16];
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.accuracy != 0){
+            int type = event.sensor.getType();
+            switch (type){
+                case Sensor.TYPE_GYROSCOPE:
+                    break;
+                case Sensor.TYPE_ROTATION_VECTOR:
+                    float[] values = event.values;
+                    SensorManager.getRotationMatrixFromVector(tmp, values);
+                    SensorManager.remapCoordinateSystem(tmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, mSensorMatrix);
+
+                    //values[1] = -values[1];
+                    //values[2] = -values[2];
+
+                    Matrix.rotateM(mSensorMatrix, 0, 90.0F, 1.0F, 0.0F, 0.0F);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    public void registerSensor(Context context){
+        SensorManager mSensorManager = (SensorManager) context
+                .getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+        mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    public void unregisterSensor(Context context){
+        SensorManager mSensorManager = (SensorManager) context
+                .getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager.unregisterListener(this);
     }
 }
