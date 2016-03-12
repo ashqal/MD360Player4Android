@@ -1,10 +1,13 @@
 package com.asha.md360player4android;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import com.asha.vrlib.MDVRLibrary;
 
@@ -40,6 +43,30 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 
         // media player play!
         play();
+
+        // mode switcher
+        final Button button = (Button) findViewById(R.id.mode_switcher);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVRLibrary.switchMode(MDVRLibraryDemoActivity.this);
+                updateButtonText(button);
+            }
+        });
+        updateButtonText(button);
+    }
+
+    private void updateButtonText(Button button){
+        String text = null;
+        switch (mVRLibrary.getCurrentMode()){
+            case MDVRLibrary.MODE_MOTION:
+                text = "MOTION";
+                break;
+            case MDVRLibrary.MODE_TOUCH:
+                text = "TOUCH";
+                break;
+        }
+        if (!TextUtils.isEmpty(text)) button.setText(text);
     }
 
     private void initVRLibrary(){

@@ -24,21 +24,19 @@ import java.util.List;
  */
 public class MDVRLibrary implements SensorEventListener {
 
-    private static final int MODE_MOTION = 1;
-    private static final int MODE_TOUCH  = 2;
+    public static final int MODE_MOTION = 1;
+    public static final int MODE_TOUCH  = 2;
     private int mMode = MODE_MOTION;
     private float[] mSensorMatrix = new float[16];
     private float[] mTmp = new float[16];
     private boolean isResumed = false;
     private List<MD360Director> mDirectorList;
-    private List<MD360Renderer> mRendererList;
     private List<GLSurfaceView> mGLSurfaceViewList;
     private MD360Surface mSurface;
 
 
     public MDVRLibrary(IOnSurfaceReadyCallback surfaceReadyListener) {
         mDirectorList = new LinkedList<>();
-        mRendererList = new LinkedList<>();
         mGLSurfaceViewList = new LinkedList<>();
         mSurface = new MD360Surface(surfaceReadyListener);
     }
@@ -65,12 +63,16 @@ public class MDVRLibrary implements SensorEventListener {
             glSurfaceView.setRenderer(renderer);
 
             mDirectorList.add(director);
-            mRendererList.add(renderer);
             mGLSurfaceViewList.add(glSurfaceView);
         } else {
             glSurfaceView.setVisibility(View.GONE);
             Toast.makeText(context, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void switchMode(Context context) {
+        int nextMode = mMode == MODE_MOTION ? MODE_TOUCH : MODE_MOTION;
+        switchMode (context, nextMode);
     }
 
     public void switch2MotionMode(Context context){
@@ -84,15 +86,19 @@ public class MDVRLibrary implements SensorEventListener {
     private void switchMode(Context context, int mode){
         if (mode == mMode) return;
         mMode = mode;
-        if (isResumed){
-            switch (mode){
-                case MODE_MOTION:
-                    registerSensor(context);
-                    break;
-                case MODE_TOUCH:
-                    unregisterSensor(context);
-                    break;
-            }
+        switch (mode){
+            case MODE_MOTION:
+                if (isResumed) registerSensor(context);
+                for (MD360Director director : mDirectorList){
+                    director.resetTouch();
+                }
+                break;
+            case MODE_TOUCH:
+                if (isResumed) unregisterSensor(context);
+                for (MD360Director director : mDirectorList){
+                    director.resetMotion();
+                }
+                break;
         }
     }
 
@@ -129,6 +135,7 @@ public class MDVRLibrary implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (mMode != MODE_MOTION) return;
         if (event.accuracy != 0){
             int type = event.sensor.getType();
             switch (type){
@@ -153,11 +160,16 @@ public class MDVRLibrary implements SensorEventListener {
     }
 
     public boolean handleTouchEvent(MotionEvent event) {
+        if (mMode != MODE_TOUCH) return false;
         boolean handled = false;
-        for (MD360Renderer renderer : mRendererList){
-            handled |= renderer.handleTouchEvent(event);
+        for (MD360Director director : mDirectorList){
+            handled |= director.handleTouchEvent(event);
         }
         return handled;
+    }
+
+    public int getCurrentMode() {
+        return mMode;
     }
 
     public interface IOnSurfaceReadyCallback {

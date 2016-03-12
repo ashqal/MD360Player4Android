@@ -154,4 +154,12 @@ public class MD360Director {
     public void updateSensorMatrix(float[] sensorMatrix) {
         System.arraycopy(sensorMatrix,0,mSensorMatrix,0,16);
     }
+
+    public void resetTouch() {
+        mDeltaX = mDeltaY = mPreviousX = mPreviousY = 0;
+    }
+
+    public void resetMotion(){
+        Matrix.setIdentityM(mSensorMatrix,0);
+    }
 }
