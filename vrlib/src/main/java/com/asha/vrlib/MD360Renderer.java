@@ -3,8 +3,8 @@ package com.asha.vrlib;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.view.MotionEvent;
 
+import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDSphere3D;
 
@@ -27,11 +27,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 	private MDAbsObject3D mObject3D;
 	private MD360Program mProgram;
 	private MD360Surface mSurface;
+	private Fps mFps = new Fps();
 
 	// final
 	private final Context mContext;
 	private final MD360Director mDirector;
-
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
@@ -73,6 +73,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 		mSurface.syncDrawInContext(this);
+		// mFps.step();
 	}
 
 	@Override
@@ -108,16 +109,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 
 		// upload
 		mObject3D.uploadDataToProgram(mProgram);
-	}
-
-	/**
-	 * handle touch touch to rotate the model
-	 *
-	 * @param event
-	 * @return true if handled.
-	 */
-	public boolean handleTouchEvent(MotionEvent event) {
-		return mDirector.handleTouchEvent(event);
 	}
 
 	public static Builder with(Context context) {

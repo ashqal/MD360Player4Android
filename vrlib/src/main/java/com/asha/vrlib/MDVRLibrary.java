@@ -7,13 +7,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.common.VRUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,15 +25,17 @@ import java.util.List;
  */
 public class MDVRLibrary implements SensorEventListener {
 
+    private static final String TAG = "MDVRLibrary";
     public static final int MODE_MOTION = 1;
     public static final int MODE_TOUCH  = 2;
+
     private int mMode = MODE_MOTION;
     private float[] mSensorMatrix = new float[16];
-    private float[] mTmp = new float[16];
     private boolean isResumed = false;
     private List<MD360Director> mDirectorList;
     private List<GLSurfaceView> mGLSurfaceViewList;
     private MD360Surface mSurface;
+    private int mDeviceRotation;
 
 
     public MDVRLibrary(IOnSurfaceReadyCallback surfaceReadyListener) {
@@ -42,7 +45,7 @@ public class MDVRLibrary implements SensorEventListener {
     }
 
     public void initWithGLSurfaceViewIds(Activity activity, int... glSurfaceViewIds){
-
+        mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         for (int id:glSurfaceViewIds){
             GLSurfaceView glSurfaceView = (GLSurfaceView) activity.findViewById(id);
             initOpenGL(activity,glSurfaceView,mSurface);
@@ -124,6 +127,11 @@ public class MDVRLibrary implements SensorEventListener {
                 .getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
+        if (sensor == null){
+            Log.e(TAG,"TYPE_ROTATION_VECTOR sensor not support!");
+            return;
+        }
+
         mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
     }
 
@@ -139,13 +147,8 @@ public class MDVRLibrary implements SensorEventListener {
         if (event.accuracy != 0){
             int type = event.sensor.getType();
             switch (type){
-                case Sensor.TYPE_GYROSCOPE:
-                    break;
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    float[] values = event.values;
-                    SensorManager.getRotationMatrixFromVector(mTmp, values);
-                    SensorManager.remapCoordinateSystem(mTmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, mSensorMatrix);
-                    Matrix.rotateM(mSensorMatrix, 0, 90.0F, 1.0F, 0.0F, 0.0F);
+                    VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
                     for (MD360Director director : mDirectorList){
                         director.updateSensorMatrix(mSensorMatrix);
                     }
@@ -159,6 +162,12 @@ public class MDVRLibrary implements SensorEventListener {
 
     }
 
+    /**
+     * handle touch touch to rotate the model
+     *
+     * @param event
+     * @return true if handled.
+     */
     public boolean handleTouchEvent(MotionEvent event) {
         if (mMode != MODE_TOUCH) return false;
         boolean handled = false;
