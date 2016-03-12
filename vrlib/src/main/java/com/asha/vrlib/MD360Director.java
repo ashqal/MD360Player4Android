@@ -1,11 +1,6 @@
 package com.asha.vrlib;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.view.MotionEvent;
@@ -16,7 +11,7 @@ import android.view.MotionEvent;
  *
  * response for model * view * projection
  */
-public class MD360Director implements SensorEventListener {
+public class MD360Director {
 
     private static final String TAG = "MD360Director";
     private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
@@ -156,45 +151,7 @@ public class MD360Director implements SensorEventListener {
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNear, far);
     }
 
-    private float[] tmp = new float[16];
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.accuracy != 0){
-            int type = event.sensor.getType();
-            switch (type){
-                case Sensor.TYPE_GYROSCOPE:
-                    break;
-                case Sensor.TYPE_ROTATION_VECTOR:
-                    float[] values = event.values;
-                    SensorManager.getRotationMatrixFromVector(tmp, values);
-                    SensorManager.remapCoordinateSystem(tmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, mSensorMatrix);
-
-                    //values[1] = -values[1];
-                    //values[2] = -values[2];
-
-                    Matrix.rotateM(mSensorMatrix, 0, 90.0F, 1.0F, 0.0F, 0.0F);
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    public void registerSensor(Context context){
-        SensorManager mSensorManager = (SensorManager) context
-                .getSystemService(Context.SENSOR_SERVICE);
-        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-
-        mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
-    }
-
-    public void unregisterSensor(Context context){
-        SensorManager mSensorManager = (SensorManager) context
-                .getSystemService(Context.SENSOR_SERVICE);
-        mSensorManager.unregisterListener(this);
+    public void updateSensorMatrix(float[] sensorMatrix) {
+        System.arraycopy(sensorMatrix,0,mSensorMatrix,0,16);
     }
 }

@@ -25,9 +25,9 @@ public class MD360Surface {
     private SurfaceTexture mSurfaceTexture;
     private int mWidth;
     private int mHeight;
-    private IOnSurfaceReadyListener mOnSurfaceReadyListener;
+    private MDVRLibrary.IOnSurfaceReadyCallback mOnSurfaceReadyListener;
 
-    public MD360Surface(IOnSurfaceReadyListener onSurfaceReadyListener) {
+    public MD360Surface(MDVRLibrary.IOnSurfaceReadyCallback onSurfaceReadyListener) {
         this.mOnSurfaceReadyListener = onSurfaceReadyListener;
     }
 
@@ -109,9 +109,5 @@ public class MD360Surface {
 
     public interface ISyncDrawCallback {
         void onDrawOpenGL();
-    }
-
-    public interface IOnSurfaceReadyListener{
-        void onSurfaceReady(Surface surface);
     }
 }

@@ -159,7 +159,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		 * the render will invoke the callback if the Surface is ready
 		 * @param listener onSurfaceReady(Surface surface)
 		 */
-		public Builder defaultSurface(MD360Surface.IOnSurfaceReadyListener listener){
+		public Builder defaultSurface(MDVRLibrary.IOnSurfaceReadyCallback listener){
 			this.surface = new MD360Surface(listener);
 			return this;
 		}

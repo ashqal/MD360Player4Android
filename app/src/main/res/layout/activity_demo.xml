@@ -3,18 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <Button
-        android:text="MDGLSurfaceViewActivity"
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:text="MD360RenderDemoActivity"
+        android:text="Local file"
         android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:text="Multi MDTexture DemoActivity"
-        android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

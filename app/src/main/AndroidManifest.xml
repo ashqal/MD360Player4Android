@@ -14,8 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:label="MDGLSurfaceViewDemoActivity" android:name=".MDGLSurfaceViewDemoActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
-        <activity android:label="MD360RenderDemoActivity" android:name=".MD360RendererDemoActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
+        <activity android:label="MDVRLibraryDemoActivity" android:name=".MDVRLibraryDemoActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

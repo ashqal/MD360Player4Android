@@ -15,17 +15,10 @@ public class DemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
 
-        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start(MDGLSurfaceViewDemoActivity.class);
-            }
-        });
-
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                start(MD360RendererDemoActivity.class);
+                start(MDVRLibraryDemoActivity.class);
             }
         });
     }
