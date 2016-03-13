@@ -15,6 +15,7 @@
             </intent-filter>
         </activity>
         <activity android:label="MDVRLibraryDemoActivity" android:name=".MDVRLibraryDemoActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
+        <activity android:label="MDMultiDemoActivity" android:name=".MDMultiDemoActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

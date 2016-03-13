@@ -4,6 +4,11 @@
     android:layout_height="match_parent">
     <Button
         android:text="Local file"
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="Remote file"
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

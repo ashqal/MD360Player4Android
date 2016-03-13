@@ -56,7 +56,7 @@ public class MDVRLibrary implements SensorEventListener {
         if (GLUtil.supportsEs2(context)) {
             // Request an OpenGL ES 2.0 compatible context.
             glSurfaceView.setEGLContextClientVersion(2);
-            MD360Director director = new MD360Director();
+            MD360Director director = MD360DirectorFactory.createDirector(mDirectorList.size());
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setSurface(surface)
                     .setDirector(director)
