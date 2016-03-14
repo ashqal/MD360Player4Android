@@ -32,6 +32,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 	// final
 	private final Context mContext;
 	private final MD360Director mDirector;
+	private MDVRLibrary.Status mStatus;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
@@ -72,14 +73,18 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 
 	@Override
 	public void onDrawFrame(GL10 glUnused){
-		mSurface.syncDrawInContext(this);
+		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+		if (mStatus == null) return;
+		if (mStatus.isAllReady()){
+			mSurface.syncDrawInContext(this);
+		} else {
+			mStatus.ready();
+		}
 		// mFps.step();
 	}
 
 	@Override
 	public void onDrawOpenGL() {
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
 		// Set our per-vertex lighting program.
 		mProgram.use();
 		glCheck("mProgram use");
@@ -115,6 +120,10 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		Builder builder = new Builder();
 		builder.context = context;
 		return builder;
+	}
+
+	public void setStatus(MDVRLibrary.Status mStatus) {
+		this.mStatus = mStatus;
 	}
 
 	public static class Builder{

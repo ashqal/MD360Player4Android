@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:text="Local file"
-        android:id="@+id/button1"
+    <EditText
+        android:text="http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8"
+        android:id="@+id/edit_text_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
-        android:text="Remote file"
+        android:text="Play"
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

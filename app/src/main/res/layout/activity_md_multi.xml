@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MDVRLibraryDemoActivity">
+    tools:context=".MD360PlayerActivity">
 
    <LinearLayout
        android:orientation="horizontal"
@@ -23,16 +23,31 @@
 
 
    <LinearLayout
-       android:padding="10dp"
        android:layout_width="match_parent"
-       android:layout_height="66dp"
-       android:orientation="horizontal">
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:layout_margin="10dp">
       <Button
-          android:id="@+id/mode_switcher"
+          android:padding="5dp"
+          android:id="@+id/button_interactive_mode_switcher"
+          android:background="@drawable/selector_button"
+          android:textColor="#FFFFFF"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent" />
+      <Button
+          android:padding="5dp"
+          android:layout_marginLeft="10dp"
+          android:id="@+id/button_display_mode_switcher"
           android:background="@drawable/selector_button"
           android:textColor="#FFFFFF"
           android:layout_width="wrap_content"
           android:layout_height="match_parent" />
    </LinearLayout>
+
+   <ProgressBar
+       android:layout_centerInParent="true"
+       android:id="@+id/progress"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
 
 </RelativeLayout>

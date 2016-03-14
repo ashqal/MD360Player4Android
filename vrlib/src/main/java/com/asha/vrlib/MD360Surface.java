@@ -106,7 +106,6 @@ public class MD360Surface {
         mSurfaceTexture.detachFromGLContext();
     }
 
-
     public interface ISyncDrawCallback {
         void onDrawOpenGL();
     }

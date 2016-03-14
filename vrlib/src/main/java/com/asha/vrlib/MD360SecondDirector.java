@@ -6,6 +6,6 @@ package com.asha.vrlib;
  */
 public class MD360SecondDirector extends MD360Director {
     public MD360SecondDirector() {
-        updateModelRotate(-20);
+        updateModelRotate(0);
     }
 }
