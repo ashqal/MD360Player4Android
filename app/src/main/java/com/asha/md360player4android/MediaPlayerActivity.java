@@ -1,7 +1,6 @@
 package com.asha.md360player4android;
 
 import android.app.Activity;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +24,7 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         mPlayer.setOnPreparedListener(this);
     }
 
+    /*
     protected void openLocalFile(){
         AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
         if (afd == null) return;
@@ -35,6 +35,7 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
             e.printStackTrace();
         }
     }
+    */
 
     protected void openRemoteFile(String url){
         try {
