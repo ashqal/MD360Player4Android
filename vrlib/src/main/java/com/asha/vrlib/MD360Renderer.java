@@ -135,7 +135,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		}
 
 		public MD360Renderer build(){
-			if (director == null) director = new MD360Director();
+			if (director == null) director = MD360Director.builder().build();
 			return new MD360Renderer(this);
 		}
 

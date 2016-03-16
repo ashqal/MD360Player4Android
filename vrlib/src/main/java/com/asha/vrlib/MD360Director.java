@@ -25,20 +25,16 @@ public class MD360Director {
     private float[] mMVPMatrix = new float[16];
 
     private float mEyeZ = 0f;
-    private float mAngle = 0;
-    private float mRatio = 1.5f;
-    private float mNear = 0.7f;
+    private float mEyeX = 0f;
+    private float mAngle = 0f;
+    private float mRatio = 0f;
+    private float mNear = 0f;
+    private float mLookX = 0f;
 
     private float[] mCurrentRotation = new float[16];
     private float[] mAccumulatedRotation = new float[16];
     private float[] mTemporaryMatrix = new float[16];
-
     private float[] mSensorMatrix = new float[16];
-
-    public MD360Director() {
-        initCamera();
-        initModel();
-    }
 
     private float mPreviousX;
     private float mPreviousY;
@@ -46,6 +42,16 @@ public class MD360Director {
     private float mDeltaX;
     private float mDeltaY;
 
+    private MD360Director(Builder builder) {
+        this.mEyeZ = builder.mEyeZ;
+        this.mRatio = builder.mRatio;
+        this.mNear = builder.mNear;
+        this.mAngle = builder.mAngle;
+        this.mEyeX = builder.mEyeX;
+        this.mLookX = builder.mLookX;
+        initCamera();
+        initModel();
+    }
 
     /**
      * handle touch touch to rotate the model
@@ -75,7 +81,7 @@ public class MD360Director {
 
     private void initCamera() {
         // View Matrix
-        updateCameraDistance(mEyeZ);
+        updateViewMatrix();
     }
 
     private void initModel(){
@@ -122,12 +128,11 @@ public class MD360Director {
         updateProjectionNear(mNear);
     }
 
-    private void updateCameraDistance(float z) {
-        mEyeZ = z;
-        final float eyeX = 0.0f;
+    private void updateViewMatrix() {
+        final float eyeX = mEyeX;
         final float eyeY = 0.0f;
         final float eyeZ = mEyeZ;
-        final float lookX = 0.0f;
+        final float lookX = mLookX;
         final float lookY = 0.0f;
         final float lookZ = -1.0f;
         final float upX = 0.0f;
@@ -161,5 +166,52 @@ public class MD360Director {
 
     public void resetMotion(){
         Matrix.setIdentityM(mSensorMatrix,0);
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder {
+        private float mEyeZ = 0f;
+        private float mAngle = 0;
+        private float mRatio = 1.5f;
+        private float mNear = 0.7f;
+        private float mEyeX = 0f;
+        private float mLookX = 0f;
+
+        public Builder setLookX(float mLookX) {
+            this.mLookX = mLookX;
+            return this;
+        }
+
+        public Builder setEyeX(float mEyeX) {
+            this.mEyeX = mEyeX;
+            return this;
+        }
+
+        public Builder setEyeZ(float mEyeZ) {
+            this.mEyeZ = mEyeZ;
+            return this;
+        }
+
+        public Builder setAngle(float mAngle) {
+            this.mAngle = mAngle;
+            return this;
+        }
+
+        public Builder setRatio(float mRatio) {
+            this.mRatio = mRatio;
+            return this;
+        }
+
+        public Builder setNear(float mNear) {
+            this.mNear = mNear;
+            return this;
+        }
+
+        public MD360Director build(){
+            return new MD360Director(this);
+        }
     }
 }

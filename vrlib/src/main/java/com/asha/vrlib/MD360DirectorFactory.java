@@ -7,8 +7,8 @@ package com.asha.vrlib;
 public class MD360DirectorFactory {
     public static MD360Director createDirector(int index){
         switch (index){
-            case 1:   return new MD360SecondDirector();
-            default:  return new MD360Director();
+            case 1:   return MD360Director.builder().setEyeX(-2.0f).setLookX(-2.0f).build();
+            default:  return MD360Director.builder().build();
         }
     }
 }
