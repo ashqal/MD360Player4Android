@@ -32,7 +32,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 	// final
 	private final Context mContext;
 	private final MD360Director mDirector;
-	private MDVRLibrary.Status mStatus;
+	private MDStatusManager.Status mStatus;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
@@ -122,7 +122,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		return builder;
 	}
 
-	public void setStatus(MDVRLibrary.Status mStatus) {
+	public void setStatus(MDStatusManager.Status mStatus) {
 		this.mStatus = mStatus;
 	}
 

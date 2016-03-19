@@ -160,11 +160,8 @@ public class MD360Director {
         System.arraycopy(sensorMatrix,0,mSensorMatrix,0,16);
     }
 
-    public void resetTouch() {
+    public void reset(){
         mDeltaX = mDeltaY = mPreviousX = mPreviousY = 0;
-    }
-
-    public void resetMotion(){
         Matrix.setIdentityM(mSensorMatrix,0);
     }
 

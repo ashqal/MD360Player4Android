@@ -81,7 +81,7 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
         displayModeSwitcher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVRLibrary.switchDisplayMode();
+                mVRLibrary.switchDisplayMode(MD360PlayerActivity.this);
                 updateDisplayModeText(displayModeSwitcher);
             }
         });
@@ -116,7 +116,7 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
     }
 
     private void initVRLibrary(){
-        mVRLibrary = MDVRLibrary.builder()
+        mVRLibrary = MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
                 .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
@@ -124,9 +124,8 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
                     public void onSurfaceReady(Surface surface) {
                         getPlayer().setSurface(surface);
                     }
-                }).build();
-
-        mVRLibrary.initWithGLSurfaceViewIds(this,R.id.surface_view1,R.id.surface_view2);
+                })
+                .build(R.id.surface_view1,R.id.surface_view2);
     }
 
     @Override
