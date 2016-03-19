@@ -1,14 +1,5 @@
 # MD360Player4Android
 It is a lite library to render 360 degree panorama video for Android.
-[![](https://jitpack.io/v/ashqal/MD360Player4Android.svg)](https://jitpack.io/#ashqal/MD360Player4Android)
-
-## Preview
-![ScreenShot](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/preview.jpg)
-* [Gif Preview(5.2M)](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/DemoPreview.gif)
-* [Demo Preview on YouTube](https://youtu.be/_m1f2I3i-pg)
-
-## Demo APK
-[MD360PlayerDemo.apk(20.9M, 360 demo video included)](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/MD360PlayerDemo.apk)
 
 ## NOTICE
 * OpenGLES 2.0 required
@@ -96,10 +87,3 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 * [NitroAction360(VR player for Android)](https://github.com/Nitro888/NitroAction360)
 * [Learn-OpenGLES-Tutorials](https://github.com/learnopengles/Learn-OpenGLES-Tutorials)
 * [ANDROID高性能图形处理之二.OPENGL ES](http://tangzm.com/blog/?p=20)
-
-## LICENSE
-```
-The MIT License (MIT)
-
-Copyright (c) 2016 Moredoo.com
-```
