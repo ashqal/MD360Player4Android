@@ -47,15 +47,16 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 
     private void initVRLibrary(){
         // new instance
-        mVRLibrary = new MDVRLibrary(new MDVRLibrary.IOnSurfaceReadyCallback() {
-            @Override
-            public void onSurfaceReady(Surface surface) {
-                getPlayer().setSurface(surface);
-            }
-        });
-
-        // init with glSurfaceView id
-        mVRLibrary.initWithGLSurfaceViewIds(this,R.id.surface_view);
+        mVRLibrary = MDVRLibrary.with(this)
+                        .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
+                        .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
+                        .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                            @Override
+                            public void onSurfaceReady(Surface surface) {
+                                getPlayer().setSurface(surface);
+                            }
+                        })
+                        .build(R.id.surface_view1,R.id.surface_view2);
     }
 }
 ```
@@ -87,3 +88,21 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 * [NitroAction360(VR player for Android)](https://github.com/Nitro888/NitroAction360)
 * [Learn-OpenGLES-Tutorials](https://github.com/learnopengles/Learn-OpenGLES-Tutorials)
 * [ANDROID高性能图形处理之二.OPENGL ES](http://tangzm.com/blog/?p=20)
+* [Moredoo.com](http://www.moredoo.com/)
+
+##LICENSE
+```
+Copyright 2016 Asha
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
