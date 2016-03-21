@@ -5,6 +5,14 @@ It is a lite library to render 360 degree panorama video for Android.
 * OpenGLES 2.0 required
 * Android 4.1 (JellyBean API-16) required
 
+## Release Note
+
+**1.0.0**
+* Motion Sensor
+* Glass Mode(multi-screen)
+* Fix a few bugs.
+* More easier.
+
 ## Gradle
 ```java
 allprojects {
@@ -16,7 +24,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:0.4'
+    compile 'com.github.ashqal:MD360Player4Android:1.0.0'
 }
 ```
 
@@ -48,15 +56,16 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     private void initVRLibrary(){
         // new instance
         mVRLibrary = MDVRLibrary.with(this)
-                        .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
-                        .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                        .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
-                            @Override
-                            public void onSurfaceReady(Surface surface) {
-                                getPlayer().setSurface(surface);
-                            }
-                        })
-                        .build(R.id.surface_view1,R.id.surface_view2);
+                    .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
+                    .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
+                    .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                        @Override
+                        public void onSurfaceReady(Surface surface) {
+                            // IjkMediaPlayer or MediaPlayer
+                            getPlayer().setSurface(surface);
+                        }
+                    })
+                    .build(R.id.surface_view);
     }
 }
 ```
