@@ -37,13 +37,13 @@ public class DemoActivity extends AppCompatActivity {
         findViewById(R.id.bitmap_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = getDrawbleUri(R.drawable.bitmap360);
+                Uri uri = getDrawableUri(R.drawable.bitmap360);
                 MD360PlayerActivity.startBitmap(DemoActivity.this, uri);
             }
         });
     }
 
-    private Uri getDrawbleUri(@DrawableRes int resId){
+    private Uri getDrawableUri(@DrawableRes int resId){
         Resources resources = getResources();
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
     }
