@@ -12,6 +12,9 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
+**1.0.1**
+* Bitmap supported. For more info, See [BitmapPlayerActivity](https://github.com/ashqal/MD360Player4Android/tree/master/app/src/main/java/com/asha/md360player4android/BitmapPlayerActivity.java) in demo.
+
 **1.0.0**
 * Motion Sensor
 * Glass Mode(multi-screen)
@@ -76,7 +79,7 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 }
 ```
 
-**STEP3** Addition call in `onTouchEvent` `onResume` `onPause`.
+**STEP3** Addition call in `onTouchEvent` `onResume` `onPause` `onDestroy`.
 ```java
 public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     @Override
