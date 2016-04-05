@@ -1,25 +1,18 @@
 package com.asha.md360player4android;
 
-import android.app.Activity;
 import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.view.View;
 
 import java.io.IOException;
 
 /**
- * Created by hzqiujiadi on 16/1/22.
+ * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPreparedListener {
-
-    private static final String TAG = "MediaPlayerActivity";
+public class MediaPlayerWrapper implements MediaPlayer.OnPreparedListener {
     protected MediaPlayer mPlayer;
+    private MediaPlayer.OnPreparedListener mPreparedListener;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void init(){
         mPlayer = new MediaPlayer();
         mPlayer.setOnPreparedListener(this);
     }
@@ -46,6 +39,7 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         }
     }
 
+
     public MediaPlayer getPlayer() {
         return mPlayer;
     }
@@ -63,25 +57,22 @@ public class MediaPlayerActivity extends Activity implements MediaPlayer.OnPrepa
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    public void onStop() {
         stop();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroy() {
         if (mPlayer != null) mPlayer.release();
         mPlayer = null;
+    }
+
+    public void setPreparedListener(MediaPlayer.OnPreparedListener mPreparedListener) {
+        this.mPreparedListener = mPreparedListener;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
-    }
-
-    public void onPlayButtonClicked(View view) {
-        play();
+        if (mPreparedListener != null) mPreparedListener.onPrepared(mp);
     }
 }

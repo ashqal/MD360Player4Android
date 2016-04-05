@@ -1,7 +1,10 @@
 package com.asha.md360player4android;
 
-import android.content.Intent;
+import android.content.ContentResolver;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,16 +27,24 @@ public class DemoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String url = et.getText().toString();
                 if (!TextUtils.isEmpty(url)){
-                    MD360PlayerActivity.start(DemoActivity.this,url);
+                    MD360PlayerActivity.startVideo(DemoActivity.this, Uri.parse(url));
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        findViewById(R.id.bitmap_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = getDrawbleUri(R.drawable.bitmap360);
+                MD360PlayerActivity.startBitmap(DemoActivity.this, uri);
+            }
+        });
     }
 
-    private void start(Class clz){
-        Intent i = new Intent(this, clz);
-        startActivity(i);
+    private Uri getDrawbleUri(@DrawableRes int resId){
+        Resources resources = getResources();
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
     }
 }

@@ -2,14 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <EditText
-        android:text="http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8"
-        android:id="@+id/edit_text_url"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:text="Video"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:text="http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8"
+            android:id="@+id/edit_text_url"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="Go"
+            android:id="@+id/button2"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:text="Bitmap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <Button
-        android:text="Play"
-        android:id="@+id/button2"
+        android:text="Play with bitmap"
+        android:id="@+id/bitmap_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

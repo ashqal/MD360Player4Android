@@ -1,17 +1,16 @@
 package com.asha.md360player4android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
 
@@ -21,13 +20,19 @@ import com.asha.vrlib.MDVRLibrary;
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MD360PlayerActivity extends MediaPlayerActivity {
+public abstract class MD360PlayerActivity extends Activity {
 
-    private static final String URL = "URL";
+    public static void startVideo(Context context, Uri uri){
+        start(context, uri, VideoPlayerActivity.class);
+    }
 
-    public static void start(Context context, String url){
-        Intent i = new Intent(context,MD360PlayerActivity.class);
-        i.putExtra(URL,url);
+    public static void startBitmap(Context context, Uri uri){
+        start(context, uri, BitmapPlayerActivity.class);
+    }
+
+    private static void start(Context context, Uri uri, Class<? extends Activity> clz){
+        Intent i = new Intent(context,clz);
+        i.setData(uri);
         context.startActivity(i);
     }
 
@@ -36,15 +41,6 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = getIntent();
-        if (i == null || TextUtils.isEmpty(i.getStringExtra(URL))){
-            this.finish();
-            Toast.makeText(MD360PlayerActivity.this, "url is empty!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String url = i.getStringExtra(URL);
-
 
         // no title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -57,13 +53,7 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
         setContentView(R.layout.activity_md_multi);
 
         // init VR Library
-        initVRLibrary();
-
-        // open local file for media player
-        openRemoteFile(url);
-
-        // media player play!
-        play();
+        mVRLibrary = createVRLibrary();
 
         // interactive mode switcher
         final Button interactiveModeSwitcher = (Button) findViewById(R.id.button_interactive_mode_switcher);
@@ -115,24 +105,7 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
         if (!TextUtils.isEmpty(text)) button.setText(text);
     }
 
-    private void initVRLibrary(){
-        mVRLibrary = MDVRLibrary.with(this)
-                .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
-                .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
-                    @Override
-                    public void onSurfaceReady(Surface surface) {
-                        getPlayer().setSurface(surface);
-                    }
-                })
-                .build(R.id.surface_view1,R.id.surface_view2);
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mp) {
-        super.onPrepared(mp);
-        findViewById(R.id.progress).setVisibility(View.GONE);
-    }
+    abstract protected MDVRLibrary createVRLibrary();
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -149,5 +122,23 @@ public class MD360PlayerActivity extends MediaPlayerActivity {
     protected void onPause() {
         super.onPause();
         mVRLibrary.onPause(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mVRLibrary.onDestroy();
+    }
+
+    protected Uri getUri() {
+        Intent i = getIntent();
+        if (i == null || i.getData() == null){
+            return null;
+        }
+        return i.getData();
+    }
+
+    public void cancelBusy(){
+        findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }

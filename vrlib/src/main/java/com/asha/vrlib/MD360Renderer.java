@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDSphere3D;
+import com.asha.vrlib.surface.MD360Surface;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -39,7 +40,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		mSurface = params.surface;
 		mDirector = params.director;
 		mObject3D = new MDSphere3D();
-		mProgram = new MD360Program();
+		mProgram = new MD360Program(params.contentType);
 	}
 
 	@Override
@@ -130,6 +131,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		private Context context;
 		private MD360Surface surface;
 		private MD360Director director;
+		private int contentType = MDVRLibrary.ContentType.DEFAULT;
 
 		private Builder() {
 		}
@@ -137,6 +139,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		public MD360Renderer build(){
 			if (director == null) director = MD360Director.builder().build();
 			return new MD360Renderer(this);
+		}
+
+		public Builder setContentType(int contentType) {
+			this.contentType = contentType;
+			return this;
 		}
 
 		/**
@@ -151,16 +158,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 
 		public Builder setDirector(MD360Director director) {
 			this.director = director;
-			return this;
-		}
-
-		/**
-		 * add IOnSurfaceReadyListener listener
-		 * the render will invoke the callback if the Surface is ready
-		 * @param listener onSurfaceReady(Surface surface)
-		 */
-		public Builder defaultSurface(MDVRLibrary.IOnSurfaceReadyCallback listener){
-			this.surface = new MD360Surface(listener);
 			return this;
 		}
 	}

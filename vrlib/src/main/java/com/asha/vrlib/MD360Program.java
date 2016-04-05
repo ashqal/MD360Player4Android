@@ -18,8 +18,13 @@ public class MD360Program {
     private int mPositionHandle;
     private int mTextureCoordinateHandle;
     private int mProgramHandle;
+    private int mContentType = MDVRLibrary.ContentType.VIDEO;
 
     public MD360Program() {
+    }
+
+    public MD360Program(int type) {
+        mContentType = type;
     }
 
     /**
@@ -54,7 +59,7 @@ public class MD360Program {
     }
 
     protected String getFragmentShader(Context context){
-        return readTextFileFromRaw(context, R.raw.per_pixel_fragment_shader);
+        return FragmentShaderFactory.fs(context, mContentType);
     }
 
     public void use() {
@@ -79,5 +84,22 @@ public class MD360Program {
 
     public int getTextureCoordinateHandle() {
         return mTextureCoordinateHandle;
+    }
+
+    private static class FragmentShaderFactory{
+
+        static String fs(Context context, int type){
+            int resId;
+            switch (type){
+                case MDVRLibrary.ContentType.BITMAP:
+                    resId = R.raw.per_pixel_fragment_shader_bitmap;
+                    break;
+                case MDVRLibrary.ContentType.VIDEO:
+                default:
+                    resId = R.raw.per_pixel_fragment_shader;
+                    break;
+            }
+            return readTextFileFromRaw(context, resId);
+        }
     }
 }

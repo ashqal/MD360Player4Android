@@ -11,9 +11,14 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
+import com.asha.vrlib.surface.MD360BitmapSurface;
+import com.asha.vrlib.surface.MD360Surface;
+import com.asha.vrlib.surface.MD360VideoSurface;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.asha.vrlib.common.VRUtil.notNull;
 
 /**
  * Created by hzqiujiadi on 16/3/12.
@@ -39,11 +44,14 @@ public class MDVRLibrary {
     private List<GLSurfaceView> mGLSurfaceViewList;
     private MD360Surface mSurface;
     private MDStatusManager mMDStatusManager;
+    private int mContentType;
 
     private MDVRLibrary(Builder builder) {
+        mContentType = builder.contentType;
+        mSurface = builder.surface;
+
         mDirectorList = new LinkedList<>();
         mGLSurfaceViewList = new LinkedList<>();
-        mSurface = new MD360Surface(builder.callback);
         mMDStatusManager = new MDStatusManager();
 
         // init glSurfaceViews
@@ -75,6 +83,7 @@ public class MDVRLibrary {
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setSurface(surface)
                     .setDirector(director)
+                    .setContentType(mContentType)
                     .build();
             renderer.setStatus(mMDStatusManager.newChild());
 
@@ -114,6 +123,10 @@ public class MDVRLibrary {
         }
     }
 
+    public void onDestroy(){
+        if (mSurface != null) mSurface.release();
+    }
+
     /**
      * handle touch touch to rotate the model
      *
@@ -136,6 +149,10 @@ public class MDVRLibrary {
         void onSurfaceReady(Surface surface);
     }
 
+    public interface IBitmapProvider {
+        void onProvideBitmap(MD360BitmapSurface.Callback callback);
+    }
+
     public static Builder with(Activity activity){
         return new Builder(activity);
     }
@@ -144,8 +161,9 @@ public class MDVRLibrary {
         private int displayMode = DISPLAY_MODE_NORMAL;
         private int interactiveMode = INTERACTIVE_MODE_MOTION;
         private int[] glSurfaceViewIds;
-        private IOnSurfaceReadyCallback callback;
         private Activity activity;
+        private int contentType = ContentType.DEFAULT;
+        private MD360Surface surface;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -161,15 +179,42 @@ public class MDVRLibrary {
             return this;
         }
 
+
+        /**
+         * Deprecated since 1.1!
+         * use {@link #video} instead.
+         *
+         * @param callback IOnSurfaceReadyCallback
+         * @return builder
+         */
+        @Deprecated
         public Builder callback(IOnSurfaceReadyCallback callback){
-            this.callback = callback;
+            return video(callback);
+        }
+
+        public Builder video(IOnSurfaceReadyCallback callback){
+            surface = new MD360VideoSurface(callback);
+            contentType = ContentType.VIDEO;
+            return this;
+        }
+
+        public Builder bitmap(IBitmapProvider bitmapProvider){
+            notNull(bitmapProvider, "bitmap Provider can't be null!");
+            surface = new MD360BitmapSurface(bitmapProvider);
+            contentType = ContentType.BITMAP;
             return this;
         }
 
         public MDVRLibrary build(int... glSurfaceViewIds){
+            notNull(surface,"You must call video/bitmap function in before build");
             this.glSurfaceViewIds = glSurfaceViewIds;
             return new MDVRLibrary(this);
         }
+    }
 
+    interface ContentType{
+        int VIDEO = 0;
+        int BITMAP = 1;
+        int DEFAULT = VIDEO;
     }
 }

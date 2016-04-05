@@ -32,5 +32,9 @@ public class VRUtil {
         Matrix.rotateM(output, 0, 90.0F, 1.0F, 0.0F, 0.0F);
     }
 
+    public static void notNull(Object object, String error){
+        if (object == null) throw new RuntimeException(error);
+    }
+
 
 }
