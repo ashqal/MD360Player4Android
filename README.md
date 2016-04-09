@@ -68,7 +68,7 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
         mVRLibrary = MDVRLibrary.with(this)
                     .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                     .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                    .callback(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                    .video(new MDVRLibrary.IOnSurfaceReadyCallback() {
                         @Override
                         public void onSurfaceReady(Surface surface) {
                             // IjkMediaPlayer or MediaPlayer
