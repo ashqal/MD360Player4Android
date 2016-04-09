@@ -7,7 +7,7 @@ import android.opengl.GLSurfaceView;
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDSphere3D;
-import com.asha.vrlib.surface.MD360Surface;
+import com.asha.vrlib.texture.MD360Texture;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,13 +21,13 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * @see Builder
  * @see #with(Context)
  */
-public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISyncDrawCallback {
+public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISyncDrawCallback {
 
 	private static final String TAG = "MD360Renderer";
 
 	private MDAbsObject3D mObject3D;
 	private MD360Program mProgram;
-	private MD360Surface mSurface;
+	private MD360Texture mTexture;
 	private Fps mFps = new Fps();
 
 	// final
@@ -37,7 +37,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
-		mSurface = params.surface;
+		mTexture = params.texture;
 		mDirector = params.director;
 		mObject3D = new MDSphere3D();
 		mProgram = new MD360Program(params.contentType);
@@ -66,7 +66,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		GLES20.glViewport(0, 0, width, height);
 
 		// Update surface
-		mSurface.resize(width,height);
+		mTexture.resize(width,height);
 
 		// Update Projection
 		mDirector.updateProjection(width,height);
@@ -77,7 +77,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		if (mStatus == null) return;
 		if (mStatus.isAllReady()){
-			mSurface.syncDrawInContext(this);
+			mTexture.syncDrawInContext(this);
 		} else {
 			mStatus.ready();
 		}
@@ -106,7 +106,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 	}
 
 	private void initTexture(){
-		mSurface.createSurface();
+		mTexture.create();
 	}
 
 	private void initObject3D(){
@@ -129,7 +129,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 
 	public static class Builder{
 		private Context context;
-		private MD360Surface surface;
+		private MD360Texture texture;
 		private MD360Director director;
 		private int contentType = MDVRLibrary.ContentType.DEFAULT;
 
@@ -147,12 +147,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Surface.ISync
 		}
 
 		/**
-		 * set surface{@link MD360Surface} to this render
-		 * @param surface {@link MD360Surface} surface may used by multiple render{@link MD360Renderer}
+		 * set surface{@link MD360Texture} to this render
+		 * @param texture {@link MD360Texture} surface may used by multiple render{@link MD360Renderer}
 		 * @return builder
 		 */
-		public Builder setSurface(MD360Surface surface){
-			this.surface = surface;
+		public Builder setTexture(MD360Texture texture){
+			this.texture = texture;
 			return this;
 		}
 

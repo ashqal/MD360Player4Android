@@ -11,9 +11,9 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
-import com.asha.vrlib.surface.MD360BitmapSurface;
-import com.asha.vrlib.surface.MD360Surface;
-import com.asha.vrlib.surface.MD360VideoSurface;
+import com.asha.vrlib.texture.MD360BitmapTexture;
+import com.asha.vrlib.texture.MD360Texture;
+import com.asha.vrlib.texture.MD360VideoTexture;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,13 +42,13 @@ public class MDVRLibrary {
 
     private List<MD360Director> mDirectorList;
     private List<GLSurfaceView> mGLSurfaceViewList;
-    private MD360Surface mSurface;
+    private MD360Texture mSurface;
     private MDStatusManager mMDStatusManager;
     private int mContentType;
 
     private MDVRLibrary(Builder builder) {
         mContentType = builder.contentType;
-        mSurface = builder.surface;
+        mSurface = builder.texture;
 
         mDirectorList = new LinkedList<>();
         mGLSurfaceViewList = new LinkedList<>();
@@ -74,14 +74,14 @@ public class MDVRLibrary {
         }
     }
 
-    private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Surface surface) {
+    private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
         if (GLUtil.supportsEs2(context)) {
             // Request an OpenGL ES 2.0 compatible context.
             int index = mDirectorList.size();
             glSurfaceView.setEGLContextClientVersion(2);
             MD360Director director = MD360DirectorFactory.createDirector(index);
             MD360Renderer renderer = MD360Renderer.with(context)
-                    .setSurface(surface)
+                    .setTexture(texture)
                     .setDirector(director)
                     .setContentType(mContentType)
                     .build();
@@ -150,7 +150,7 @@ public class MDVRLibrary {
     }
 
     public interface IBitmapProvider {
-        void onProvideBitmap(MD360BitmapSurface.Callback callback);
+        void onProvideBitmap(MD360BitmapTexture.Callback callback);
     }
 
     public static Builder with(Activity activity){
@@ -163,7 +163,7 @@ public class MDVRLibrary {
         private int[] glSurfaceViewIds;
         private Activity activity;
         private int contentType = ContentType.DEFAULT;
-        private MD360Surface surface;
+        private MD360Texture texture;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -193,20 +193,20 @@ public class MDVRLibrary {
         }
 
         public Builder video(IOnSurfaceReadyCallback callback){
-            surface = new MD360VideoSurface(callback);
+            texture = new MD360VideoTexture(callback);
             contentType = ContentType.VIDEO;
             return this;
         }
 
         public Builder bitmap(IBitmapProvider bitmapProvider){
             notNull(bitmapProvider, "bitmap Provider can't be null!");
-            surface = new MD360BitmapSurface(bitmapProvider);
+            texture = new MD360BitmapTexture(bitmapProvider);
             contentType = ContentType.BITMAP;
             return this;
         }
 
         public MDVRLibrary build(int... glSurfaceViewIds){
-            notNull(surface,"You must call video/bitmap function in before build");
+            notNull(texture,"You must call video/bitmap function in before build");
             this.glSurfaceViewIds = glSurfaceViewIds;
             return new MDVRLibrary(this);
         }

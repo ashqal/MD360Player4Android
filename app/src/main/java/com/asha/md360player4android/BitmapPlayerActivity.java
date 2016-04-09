@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.surface.MD360BitmapSurface;
+import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -24,7 +24,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
 
     private Target mTarget;// keep the reference for picasso.
 
-    private void loadImage(Uri uri, final MD360BitmapSurface.Callback callback){
+    private void loadImage(Uri uri, final MD360BitmapTexture.Callback callback){
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -52,7 +52,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
                 .bitmap(new MDVRLibrary.IBitmapProvider() {
                     @Override
-                    public void onProvideBitmap(final MD360BitmapSurface.Callback callback) {
+                    public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
                         loadImage(getUri(),callback);
                     }
                 })

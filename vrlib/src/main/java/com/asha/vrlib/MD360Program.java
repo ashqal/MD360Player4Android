@@ -18,10 +18,7 @@ public class MD360Program {
     private int mPositionHandle;
     private int mTextureCoordinateHandle;
     private int mProgramHandle;
-    private int mContentType = MDVRLibrary.ContentType.VIDEO;
-
-    public MD360Program() {
-    }
+    private int mContentType;
 
     public MD360Program(int type) {
         mContentType = type;

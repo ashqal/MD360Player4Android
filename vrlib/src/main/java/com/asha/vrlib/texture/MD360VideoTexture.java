@@ -1,4 +1,4 @@
-package com.asha.vrlib.surface;
+package com.asha.vrlib.texture;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
@@ -15,13 +15,13 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MD360VideoSurface extends MD360Surface {
+public class MD360VideoTexture extends MD360Texture {
 
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
     private MDVRLibrary.IOnSurfaceReadyCallback mOnSurfaceReadyListener;
 
-    public MD360VideoSurface(MDVRLibrary.IOnSurfaceReadyCallback onSurfaceReadyListener) {
+    public MD360VideoTexture(MDVRLibrary.IOnSurfaceReadyCallback onSurfaceReadyListener) {
         mOnSurfaceReadyListener = onSurfaceReadyListener;
     }
 
@@ -42,8 +42,8 @@ public class MD360VideoSurface extends MD360Surface {
     }
 
     @Override
-    public void createSurface() {
-        super.createSurface();
+    public void create() {
+        super.create();
         int glSurfaceTexture = getCurrentTextureId();
         if (isEmpty(glSurfaceTexture)) return;
 

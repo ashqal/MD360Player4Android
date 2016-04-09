@@ -1,4 +1,4 @@
-package com.asha.vrlib.surface;
+package com.asha.vrlib.texture;
 
 /**
  * Created by hzqiujiadi on 16/1/25.
@@ -8,14 +8,14 @@ package com.asha.vrlib.surface;
  * Created by nitro888 on 15. 4. 5..
  * https://github.com/Nitro888/NitroAction360
  */
-public abstract class MD360Surface {
-    private static final int SURFACE_TEXTURE_EMPTY = 0;
-    private static final String TAG = "MD360Surface";
+public abstract class MD360Texture {
+    private static final int TEXTURE_EMPTY = 0;
+    private static final String TAG = "MD360Texture";
     private int mWidth;
     private int mHeight;
-    private ThreadLocal<Integer> mLocalGLSurfaceTexture = new ThreadLocal<>();
+    private ThreadLocal<Integer> mLocalGLTexture = new ThreadLocal<>();
 
-    public MD360Surface() {
+    public MD360Texture() {
     }
 
     public void resize(int width,int height){
@@ -28,19 +28,21 @@ public abstract class MD360Surface {
         if (changed) onResize(mWidth,mHeight);
     }
 
-    public void createSurface() {
-        int glSurfaceTexture = createTextureId();
-        if (glSurfaceTexture != SURFACE_TEXTURE_EMPTY)
-            mLocalGLSurfaceTexture.set(glSurfaceTexture);
+    public void create() {
+        int glTexture = createTextureId();
+        if (glTexture != TEXTURE_EMPTY)
+            mLocalGLTexture.set(glTexture);
     }
 
+    public void release() {}
+
     protected int getCurrentTextureId(){
-        Integer value = mLocalGLSurfaceTexture.get();
-        return value != null ? value : SURFACE_TEXTURE_EMPTY;
+        Integer value = mLocalGLTexture.get();
+        return value != null ? value : TEXTURE_EMPTY;
     }
 
     final protected boolean isEmpty(int textureId){
-        return textureId == SURFACE_TEXTURE_EMPTY;
+        return textureId == TEXTURE_EMPTY;
     }
 
     public int getWidth() {
@@ -50,8 +52,6 @@ public abstract class MD360Surface {
     public int getHeight() {
         return mHeight;
     }
-
-    public void release() {}
 
     abstract protected void onResize(int width, int height);
 

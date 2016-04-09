@@ -1,4 +1,4 @@
-package com.asha.vrlib.surface;
+package com.asha.vrlib.texture;
 
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
@@ -18,14 +18,14 @@ import static com.asha.vrlib.common.VRUtil.notNull;
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MD360BitmapSurface extends MD360Surface {
+public class MD360BitmapTexture extends MD360Texture {
 
-    private static final String TAG = "MD360BitmapSurface";
+    private static final String TAG = "MD360BitmapTexture";
     private MDVRLibrary.IBitmapProvider mBitmapProvider;
     private Map<String,AsyncCallback> mCallbackList = new HashMap<>();
     private Handler mMainHandler;
 
-    public MD360BitmapSurface(MDVRLibrary.IBitmapProvider bitmapProvider) {
+    public MD360BitmapTexture(MDVRLibrary.IBitmapProvider bitmapProvider) {
         this.mBitmapProvider = bitmapProvider;
         this.mMainHandler = new Handler(Looper.myLooper());
     }
