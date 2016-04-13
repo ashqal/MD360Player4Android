@@ -115,6 +115,8 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 * [ANDROID高性能图形处理之二.OPENGL ES](http://tangzm.com/blog/?p=20)
 * [Moredoo.com](http://www.moredoo.com/)
 
+## iOS Version
+[MD360Player4iOS](https://github.com/ashqal/MD360Player4iOS)
 ##LICENSE
 ```
 Copyright 2016 Asha
