@@ -61,6 +61,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		// init
 		initProgram();
 		initTexture();
+		initObject3D();
 	}
 
 	@Override
@@ -116,6 +117,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 
 	private void initTexture(){
 		mTexture.create();
+	}
+
+	private void initObject3D() {
+		if (mObject3D != null)
+			mObject3D.markChanged();
 	}
 
 	public static Builder with(Context context) {
