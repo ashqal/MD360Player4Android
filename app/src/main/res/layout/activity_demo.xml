@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:text="http://doubo.ufile.ucloud.com.cn/qihuansenlin.mp4"
+            android:text="http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8"
             android:id="@+id/edit_text_url"
             android:layout_width="0dp"
             android:layout_weight="4"

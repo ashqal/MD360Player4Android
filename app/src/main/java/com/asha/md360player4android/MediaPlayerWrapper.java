@@ -2,6 +2,7 @@ package com.asha.md360player4android;
 
 import java.io.IOException;
 
+import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -10,11 +11,11 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
-    protected IjkMediaPlayer mPlayer;
+    protected IMediaPlayer mPlayer;
     private IjkMediaPlayer.OnPreparedListener mPreparedListener;
 
     public void init(){
-        mPlayer = new IjkMediaPlayer();
+        mPlayer = new AndroidMediaPlayer();
         mPlayer.setOnPreparedListener(this);
     }
 
@@ -41,7 +42,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     }
 
 
-    public IjkMediaPlayer getPlayer() {
+    public IMediaPlayer getPlayer() {
         return mPlayer;
     }
 
