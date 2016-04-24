@@ -26,7 +26,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     //required, enough for most devices.
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.5.0'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.5.0'
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.4.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.4.5'
     compile project(path: ':vrlib')
 }

@@ -2,7 +2,6 @@ package com.asha.md360player4android;
 
 import java.io.IOException;
 
-import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -15,7 +14,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     private IjkMediaPlayer.OnPreparedListener mPreparedListener;
 
     public void init(){
-        mPlayer = new AndroidMediaPlayer();
+        mPlayer = new IjkMediaPlayer();
         mPlayer.setOnPreparedListener(this);
     }
 
