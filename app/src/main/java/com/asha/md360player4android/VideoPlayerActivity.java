@@ -53,6 +53,14 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         mMediaPlayerWrapper.getPlayer().setSurface(surface);
                     }
                 })
+                .ifNotSupport(new MDVRLibrary.INotSupportCallback() {
+                    @Override
+                    public void onNotSupport(int mode) {
+                        String tip = mode == MDVRLibrary.INTERACTIVE_MODE_MOTION
+                                ? "onNotSupport:MOTION" : "onNotSupport:" + String.valueOf(mode);
+                        Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .build(R.id.surface_view1,R.id.surface_view2);
     }
 

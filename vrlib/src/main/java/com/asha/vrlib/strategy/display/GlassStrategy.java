@@ -26,6 +26,11 @@ public class GlassStrategy extends AbsDisplayStrategy {
     public void off(Activity activity) {}
 
     @Override
+    public boolean isSupport(Activity activity) {
+        return true;
+    }
+
+    @Override
     public int getVisibleSize() {
         return getGLSurfaceViewList().size();
     }

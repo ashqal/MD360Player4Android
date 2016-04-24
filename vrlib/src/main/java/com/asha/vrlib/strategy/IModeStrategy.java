@@ -9,4 +9,5 @@ import android.app.Activity;
 public interface IModeStrategy {
     void on(Activity activity);
     void off(Activity activity);
+    boolean isSupport(Activity activity);
 }

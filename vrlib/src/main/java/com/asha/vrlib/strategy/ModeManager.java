@@ -2,13 +2,16 @@ package com.asha.vrlib.strategy;
 
 import android.app.Activity;
 
+import com.asha.vrlib.MDVRLibrary;
+
 /**
  * Created by hzqiujiadi on 16/3/19.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public abstract class ModeManager<T extends IModeStrategy> implements IModeStrategy {
+public abstract class ModeManager<T extends IModeStrategy> {
     private int mMode;
     private T mStrategy;
+    private MDVRLibrary.INotSupportCallback mCallback;
 
     public ModeManager(int mode) {
         this.mMode = mode;
@@ -18,7 +21,8 @@ public abstract class ModeManager<T extends IModeStrategy> implements IModeStrat
      * must call after new instance
      * @param activity activity
      */
-    public void prepare(Activity activity){
+    public void prepare(Activity activity, MDVRLibrary.INotSupportCallback callback){
+        mCallback = callback;
         initMode(activity,mMode);
     }
 
@@ -29,7 +33,11 @@ public abstract class ModeManager<T extends IModeStrategy> implements IModeStrat
     private void initMode(Activity activity, int mode){
         if (mStrategy != null) mStrategy.off(activity);
         mStrategy = createStrategy(mode);
-        mStrategy.on(activity);
+        if (!mStrategy.isSupport(activity)){
+            if (mCallback != null) mCallback.onNotSupport(mode);
+        } else {
+            mStrategy.on(activity);
+        }
     }
 
     protected void switchMode(Activity activity, int mode){
@@ -38,14 +46,14 @@ public abstract class ModeManager<T extends IModeStrategy> implements IModeStrat
         initMode(activity,mMode);
     }
 
-    @Override
     public void on(Activity activity) {
-        mStrategy.on(activity);
+        if (mStrategy.isSupport(activity))
+            mStrategy.on(activity);
     }
 
-    @Override
     public void off(Activity activity) {
-        mStrategy.off(activity);
+        if (mStrategy.isSupport(activity))
+            mStrategy.off(activity);
     }
 
     protected T getStrategy() {

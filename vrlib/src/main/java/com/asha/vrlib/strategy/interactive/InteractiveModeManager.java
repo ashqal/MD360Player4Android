@@ -46,13 +46,17 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     @Override
     public void onResume(Context context) {
         mIsResumed = true;
-        getStrategy().onResume(context);
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onResume(context);
+        }
     }
 
     @Override
     public void onPause(Context context) {
         mIsResumed = false;
-        getStrategy().onPause(context);
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onPause(context);
+        }
     }
 
     /**

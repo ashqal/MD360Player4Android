@@ -24,6 +24,11 @@ public class NormalStrategy extends AbsDisplayStrategy {
     public void off(Activity activity) {}
 
     @Override
+    public boolean isSupport(Activity activity) {
+        return true;
+    }
+
+    @Override
     public int getVisibleSize() {
         return 1;
     }

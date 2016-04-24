@@ -23,6 +23,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     private int mDeviceRotation;
     private float[] mSensorMatrix = new float[16];
     private boolean mRegistered = false;
+    private Boolean mIsSupport = null;
 
     public MotionStrategy(List<MD360Director> directorList) {
         super(directorList);
@@ -54,6 +55,17 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     @Override
     public void off(Activity activity) {
         unregisterSensor(activity);
+    }
+
+    @Override
+    public boolean isSupport(Activity activity) {
+        if (mIsSupport == null){
+            SensorManager mSensorManager = (SensorManager) activity
+                    .getSystemService(Context.SENSOR_SERVICE);
+            Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+            mIsSupport = (sensor != null);
+        }
+        return mIsSupport;
     }
 
     protected void registerSensor(Context context){

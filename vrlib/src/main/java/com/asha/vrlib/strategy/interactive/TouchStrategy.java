@@ -23,8 +23,6 @@ public class TouchStrategy extends AbsInteractiveStrategy {
         super(directorList);
     }
 
-
-
     @Override
     public void onResume(Context context) {}
 
@@ -71,4 +69,9 @@ public class TouchStrategy extends AbsInteractiveStrategy {
 
     @Override
     public void off(Activity activity) {}
+
+    @Override
+    public boolean isSupport(Activity activity) {
+        return true;
+    }
 }

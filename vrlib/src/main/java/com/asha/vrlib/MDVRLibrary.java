@@ -33,8 +33,8 @@ public class MDVRLibrary {
     public static final int INTERACTIVE_MODE_TOUCH = 2;
 
     // display mode
-    public static final int DISPLAY_MODE_NORMAL = 1;
-    public static final int DISPLAY_MODE_GLASS = 2;
+    public static final int DISPLAY_MODE_NORMAL = 3;
+    public static final int DISPLAY_MODE_GLASS = 4;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private InteractiveModeManager mInteractiveModeManager;
@@ -61,8 +61,8 @@ public class MDVRLibrary {
         mDisplayModeManager = new DisplayModeManager(builder.displayMode,mGLSurfaceViewList);
         mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,mDirectorList);
 
-        mDisplayModeManager.prepare(builder.activity);
-        mInteractiveModeManager.prepare(builder.activity);
+        mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
+        mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         mMDStatusManager.reset(mDisplayModeManager.getVisibleSize());
     }
@@ -153,6 +153,10 @@ public class MDVRLibrary {
         void onProvideBitmap(MD360BitmapTexture.Callback callback);
     }
 
+    public interface INotSupportCallback{
+        void onNotSupport(int mode);
+    }
+
     public static Builder with(Activity activity){
         return new Builder(activity);
     }
@@ -164,6 +168,7 @@ public class MDVRLibrary {
         private Activity activity;
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;
+        private INotSupportCallback notSupportCallback;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -179,6 +184,10 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder ifNotSupport(INotSupportCallback callback){
+            this.notSupportCallback = callback;
+            return this;
+        }
 
         /**
          * Deprecated since 1.1!
