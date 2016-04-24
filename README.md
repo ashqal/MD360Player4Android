@@ -12,9 +12,14 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
-* Bitmap supported. For more info, See [BitmapPlayerActivity](https://github.com/ashqal/MD360Player4Android/tree/master/app/src/main/java/com/asha/md360player4android/BitmapPlayerActivity.java) in demo.
 
 ## Release Note
+**1.1.0**
+* Bitmap supported. For more info, See [BitmapPlayerActivity](https://github.com/ashqal/MD360Player4Android/tree/master/app/src/main/java/com/asha/md360player4android/BitmapPlayerActivity.java) in demo.
+* Add callback if the TYPE_ROTATION_VECTOR is NOT supported.
+* Use more divisions in sphere and load `.obj` file in working thread.
+* Bug fix: Can not drag after setOnClickListener.
+* Switch to [IjkMediaPlayer](https://github.com/Bilibili/ijkplayer) in demo.
 
 **1.0.0**
 * Motion Sensor
@@ -34,7 +39,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.0.0'
+    compile 'com.github.ashqal:MD360Player4Android:1.1.0'
 }
 ```
 
@@ -107,6 +112,23 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     }
 }
 ```
+
+### Feature not support callback
+add `ifNotSupport` to builder, e.g. [VideoPlayerActivity#createVRLibrary](https://github.com/ashqal/MD360Player4Android/blob/master/app/src/main/java/com/asha/md360player4android/VideoPlayerActivity.java)
+```java
+.ifNotSupport(new MDVRLibrary.INotSupportCallback() {
+    @Override
+    public void onNotSupport(int mode) {
+        String tip = mode == MDVRLibrary.INTERACTIVE_MODE_MOTION
+                ? "onNotSupport:MOTION" : "onNotSupport:" + String.valueOf(mode);
+        Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
+    }
+})
+```
+
+### Deal with setOnClickListener
+[Deal with setOnClickListener](https://github.com/ashqal/MD360Player4Android/wiki/Deal-with-setOnClickListener)
+
 
 ## Reference
 * [HTY360Player(360 VR Player for iOS)](https://github.com/hanton/HTY360Player)
