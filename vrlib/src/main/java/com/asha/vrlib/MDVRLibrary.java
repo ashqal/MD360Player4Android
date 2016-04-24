@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.objects.MDAbsObject3D;
+import com.asha.vrlib.objects.MDObject3DLoader;
+import com.asha.vrlib.objects.MDSphere3D48;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
@@ -42,6 +45,7 @@ public class MDVRLibrary {
 
     private List<MD360Director> mDirectorList;
     private List<GLSurfaceView> mGLSurfaceViewList;
+    private List<MD360Renderer> mRendererList;
     private MD360Texture mSurface;
     private MDStatusManager mMDStatusManager;
     private int mContentType;
@@ -52,6 +56,7 @@ public class MDVRLibrary {
 
         mDirectorList = new LinkedList<>();
         mGLSurfaceViewList = new LinkedList<>();
+        mRendererList = new LinkedList<>();
         mMDStatusManager = new MDStatusManager();
 
         // init glSurfaceViews
@@ -65,6 +70,16 @@ public class MDVRLibrary {
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         mMDStatusManager.reset(mDisplayModeManager.getVisibleSize());
+
+        MDObject3DLoader.loadObj(builder.activity, new MDSphere3D48(), new MDObject3DLoader.LoadComplete() {
+            @Override
+            public void onComplete(MDAbsObject3D object3D) {
+                if (mRendererList == null) return;
+                for (MD360Renderer renderer : mRendererList){
+                    renderer.updateObject3D(MDAbsObject3D.duplicate(object3D));
+                }
+            }
+        });
     }
 
     private void initWithGLSurfaceViewIds(Activity activity, int[] glSurfaceViewIds){
@@ -92,6 +107,7 @@ public class MDVRLibrary {
 
             mDirectorList.add(director);
             mGLSurfaceViewList.add(glSurfaceView);
+            mRendererList.add(renderer);
         } else {
             glSurfaceView.setVisibility(View.GONE);
             Toast.makeText(context, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();

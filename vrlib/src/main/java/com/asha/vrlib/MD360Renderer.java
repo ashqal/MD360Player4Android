@@ -6,7 +6,6 @@ import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
-import com.asha.vrlib.objects.MDSphere3D;
 import com.asha.vrlib.texture.MD360Texture;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -39,8 +38,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		mContext = params.context;
 		mTexture = params.texture;
 		mDirector = params.director;
-		mObject3D = new MDSphere3D();
+		mObject3D = params.object3D;
 		mProgram = new MD360Program(params.contentType);
+	}
+
+	public void updateObject3D(MDAbsObject3D object3D){
+		this.mObject3D = object3D;
+		mObject3D.markChanged();
 	}
 
 	@Override
@@ -57,7 +61,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		// init
 		initProgram();
 		initTexture();
-		initObject3D();
 	}
 
 	@Override
@@ -86,9 +89,15 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 
 	@Override
 	public void onDrawOpenGL() {
+
+		// check obj3d
+		if (mObject3D == null) return;
+
 		// Set our per-vertex lighting program.
 		mProgram.use();
 		glCheck("mProgram use");
+
+		mObject3D.uploadDataToProgramIfNeed(mProgram);
 
 		// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 		GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
@@ -109,14 +118,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		mTexture.create();
 	}
 
-	private void initObject3D(){
-		// load
-		mObject3D.loadObj(mContext);
-
-		// upload
-		mObject3D.uploadDataToProgram(mProgram);
-	}
-
 	public static Builder with(Context context) {
 		Builder builder = new Builder();
 		builder.context = context;
@@ -131,6 +132,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		private Context context;
 		private MD360Texture texture;
 		private MD360Director director;
+		private MDAbsObject3D object3D;
 		private int contentType = MDVRLibrary.ContentType.DEFAULT;
 
 		private Builder() {
@@ -158,6 +160,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 
 		public Builder setDirector(MD360Director director) {
 			this.director = director;
+			return this;
+		}
+
+		public Builder setObject3D(MDAbsObject3D object3D) {
+			this.object3D = object3D;
 			return this;
 		}
 	}

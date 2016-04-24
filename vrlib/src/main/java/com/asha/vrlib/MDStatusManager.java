@@ -32,7 +32,7 @@ class MDStatusManager {
         // already ready.
         if (mReadyList.get(index)) return;
 
-        // value changed.
+        // value markChanged.
         mReadyList.put(index,true);
         boolean ready = true;
         for (int i = 0; i < mReadyList.size(); i++){
