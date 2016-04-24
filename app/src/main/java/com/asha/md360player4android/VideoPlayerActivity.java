@@ -1,6 +1,5 @@
 package com.asha.md360player4android;
 
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Surface;
@@ -8,6 +7,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
+
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 /**
  * Created by hzqiujiadi on 16/4/5.
@@ -21,9 +22,9 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMediaPlayerWrapper.init();
-        mMediaPlayerWrapper.setPreparedListener(new MediaPlayer.OnPreparedListener() {
+        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
+            public void onPrepared(IMediaPlayer mp) {
                 cancelBusy();
             }
         });
