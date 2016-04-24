@@ -55,6 +55,12 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         getStrategy().onPause(context);
     }
 
+    /**
+     * handle touch touch to rotate the model
+     *
+     * @param event
+     * @return true if handled.
+     */
     @Override
     public boolean handleTouchEvent(MotionEvent event) {
         return getStrategy().handleTouchEvent(event);

@@ -1,9 +1,7 @@
 package com.asha.vrlib;
 
-import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.view.MotionEvent;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -14,8 +12,6 @@ import android.view.MotionEvent;
 public class MD360Director {
 
     private static final String TAG = "MD360Director";
-    private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
-    private static final float sDamping = 0.2f;
 
     private float[] mModelMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
@@ -53,30 +49,36 @@ public class MD360Director {
         initModel();
     }
 
-    /**
-     * handle touch touch to rotate the model
-     *
-     * @param event
-     * @return true if handled.
-     */
-    public boolean handleTouchEvent(MotionEvent event) {
-        if (event != null) {
-            float x = event.getX();
-            float y = event.getY();
+    public float getDeltaY() {
+        return mDeltaY;
+    }
 
-            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                float deltaX = (x - mPreviousX) / sDensity * sDamping ;
-                float deltaY = (y - mPreviousY) / sDensity * sDamping ;
-                mDeltaX += deltaX;
-                mDeltaY += deltaY;
-            }
-            mPreviousX = x;
-            mPreviousY = y;
-            return true;
+    public void setDeltaY(float mDeltaY) {
+        this.mDeltaY = mDeltaY;
+    }
 
-        } else {
-            return false;
-        }
+    public float getDeltaX() {
+        return mDeltaX;
+    }
+
+    public void setDeltaX(float mDeltaX) {
+        this.mDeltaX = mDeltaX;
+    }
+
+    public float getPreviousY() {
+        return mPreviousY;
+    }
+
+    public void setPreviousY(float mPreviousY) {
+        this.mPreviousY = mPreviousY;
+    }
+
+    public float getPreviousX() {
+        return mPreviousX;
+    }
+
+    public void setPreviousX(float mPreviousX) {
+        this.mPreviousX = mPreviousX;
     }
 
     private void initCamera() {

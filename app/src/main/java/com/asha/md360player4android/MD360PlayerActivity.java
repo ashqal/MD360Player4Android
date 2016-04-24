@@ -55,6 +55,14 @@ public abstract class MD360PlayerActivity extends Activity {
         // init VR Library
         mVRLibrary = createVRLibrary();
 
+        // touch event
+        findViewById(R.id.touchFix).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mVRLibrary.handleTouchEvent(event);
+            }
+        });
+
         // interactive mode switcher
         final Button interactiveModeSwitcher = (Button) findViewById(R.id.button_interactive_mode_switcher);
         interactiveModeSwitcher.setOnClickListener(new View.OnClickListener() {
@@ -106,11 +114,6 @@ public abstract class MD360PlayerActivity extends Activity {
     }
 
     abstract protected MDVRLibrary createVRLibrary();
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mVRLibrary.handleTouchEvent(event) || super.onTouchEvent(event);
-    }
 
     @Override
     protected void onResume() {

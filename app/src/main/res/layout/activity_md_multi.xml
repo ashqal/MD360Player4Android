@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".MD360PlayerActivity">
 
-   <LinearLayout
+   <com.asha.md360player4android.TouchFixLinearLayout
+       android:id="@+id/touchFix"
        android:orientation="horizontal"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
@@ -19,7 +20,7 @@
           android:layout_weight="1"
           android:layout_width="0dp"
           android:layout_height="match_parent" />
-   </LinearLayout>
+   </com.asha.md360player4android.TouchFixLinearLayout>
 
 
    <LinearLayout

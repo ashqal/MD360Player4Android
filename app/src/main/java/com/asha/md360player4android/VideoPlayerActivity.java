@@ -4,6 +4,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Surface;
+import android.view.View;
+import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
 
@@ -31,6 +33,13 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             mMediaPlayerWrapper.openRemoteFile(uri.toString());
             mMediaPlayerWrapper.play();
         }
+
+        findViewById(R.id.surface_view1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(VideoPlayerActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
