@@ -10,6 +10,9 @@ It is a lite library to render 360 degree panorama video for Android.
 * OpenGLES 2.0 required
 * Android 4.1 (JellyBean API-16) required
 
+* This library do nothing but render the image of video frame, so you may deal with the issues about `MediaPlayer` or `IjkMediaPlayer` (e.g. play local file, rtmp, hls) by yourself;
+* 这个库只负责视频帧画面的渲染，所有的视频文件播放的工作都交给`MediaPlayer`或者`IjkMediaPlayer`，你可能需要自己处理使用Player过程中出现的问题（比如播放本地文件、rtmp、hls）
+
 ## Last Commit
 **`-SNAPSHOT`**
 
