@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.texture.MD360BitmapTexture;
@@ -20,6 +22,16 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cancelBusy();
+
+        View.OnClickListener surfaceClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(BitmapPlayerActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        findViewById(R.id.surface_view1).setOnClickListener(surfaceClickListener);
+        findViewById(R.id.surface_view2).setOnClickListener(surfaceClickListener);
     }
 
     private Target mTarget;// keep the reference for picasso.

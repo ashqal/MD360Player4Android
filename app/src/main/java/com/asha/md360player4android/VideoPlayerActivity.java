@@ -35,12 +35,15 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             mMediaPlayerWrapper.play();
         }
 
-        findViewById(R.id.surface_view1).setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener surfaceClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(VideoPlayerActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        findViewById(R.id.surface_view1).setOnClickListener(surfaceClickListener);
+        findViewById(R.id.surface_view2).setOnClickListener(surfaceClickListener);
     }
 
     @Override
