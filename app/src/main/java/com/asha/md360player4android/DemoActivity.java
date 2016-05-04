@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.RawRes;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -27,7 +28,7 @@ public class DemoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String url = et.getText().toString();
                 if (!TextUtils.isEmpty(url)){
-                    MD360PlayerActivity.startVideo(DemoActivity.this, Uri.parse(url));
+                    MD360PlayerActivity.startVideo(DemoActivity.this,getAssetsUri());
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
                 }
@@ -46,5 +47,14 @@ public class DemoActivity extends AppCompatActivity {
     private Uri getDrawableUri(@DrawableRes int resId){
         Resources resources = getResources();
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+    }
+
+    private Uri getRawUri(@RawRes int resId){
+        Resources resources = getResources();
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+    }
+
+    private Uri getAssetsUri(){
+        return Uri.parse("file:///android_asset/" + "qihuansenlin.mp4" );
     }
 }
