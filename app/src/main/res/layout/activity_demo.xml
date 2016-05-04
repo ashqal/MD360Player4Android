@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:text="http://doubo.ufile.ucloud.com.cn/qihuansenlin.mp4"
+            android:text="http://recorded.live.doubo.tv/realrealcomp.mp4"
             android:id="@+id/edit_text_url"
             android:layout_width="0dp"
             android:layout_weight="4"

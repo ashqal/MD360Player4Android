@@ -9,13 +9,20 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
-    protected IMediaPlayer mPlayer;
+public class MediaPlayerWrapper implements IjkMediaPlayer.OnPreparedListener {
+    protected IjkMediaPlayer mPlayer;
     private IjkMediaPlayer.OnPreparedListener mPreparedListener;
 
     public void init(){
         mPlayer = new IjkMediaPlayer();
         mPlayer.setOnPreparedListener(this);
+
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1);
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "overlay-format", IjkMediaPlayer.SDL_FCC_RV32);
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 60);
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-fps", 0);
+        mPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48);
     }
 
     /*
