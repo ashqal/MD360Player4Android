@@ -17,7 +17,7 @@ It is a lite library to render 360 degree panorama video for Android.
 **`-SNAPSHOT`**
 * pinch gesture supported
 * changed the way to listen onClick event
-for example,
+* for example,
 ```java
 @Override
 protected MDVRLibrary createVRLibrary() {
