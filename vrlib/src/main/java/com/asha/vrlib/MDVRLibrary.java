@@ -173,6 +173,11 @@ public class MDVRLibrary {
         void onNotSupport(int mode);
     }
 
+    public interface IGestureCallback{
+        void onClick();
+        void onLongClick();
+    }
+
     public static Builder with(Activity activity){
         return new Builder(activity);
     }
@@ -185,6 +190,7 @@ public class MDVRLibrary {
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
+        private IGestureCallback gestureCallback;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -227,6 +233,11 @@ public class MDVRLibrary {
             notNull(bitmapProvider, "bitmap Provider can't be null!");
             texture = new MD360BitmapTexture(bitmapProvider);
             contentType = ContentType.BITMAP;
+            return this;
+        }
+
+        public Builder gesture(IGestureCallback callback) {
+            gestureCallback = callback;
             return this;
         }
 
