@@ -15,6 +15,25 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+* pinch gesture supported
+* changed the way to listen onClick event
+for example,
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            .....
+            .pinchEnabled(true)
+            .gesture(new MDVRLibrary.IGestureListener() {
+                @Override
+                public void onClick(MotionEvent e) {
+                    Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .build(R.id.surface_view1,R.id.surface_view2);
+}
+
+```
 
 ## Release Note
 **1.1.0**
@@ -119,19 +138,22 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 ### Feature not support callback
 add `ifNotSupport` to builder, e.g. [VideoPlayerActivity#createVRLibrary](https://github.com/ashqal/MD360Player4Android/blob/master/app/src/main/java/com/asha/md360player4android/VideoPlayerActivity.java)
 ```java
-.ifNotSupport(new MDVRLibrary.INotSupportCallback() {
-    @Override
-    public void onNotSupport(int mode) {
-        String tip = mode == MDVRLibrary.INTERACTIVE_MODE_MOTION
-                ? "onNotSupport:MOTION" : "onNotSupport:" + String.valueOf(mode);
-        Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
-    }
-})
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            .....
+            .ifNotSupport(new MDVRLibrary.INotSupportCallback() {
+                @Override
+                public void onNotSupport(int mode) {
+                    String tip = mode == MDVRLibrary.INTERACTIVE_MODE_MOTION
+                            ? "onNotSupport:MOTION" : "onNotSupport:" + String.valueOf(mode);
+                    Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
+                }
+            })
+            .build(R.id.surface_view1,R.id.surface_view2);
+}
+
 ```
-
-### Deal with setOnClickListener
-[Deal with setOnClickListener](https://github.com/ashqal/MD360Player4Android/wiki/Deal-with-setOnClickListener)
-
 
 ## Reference
 * [HTY360Player(360 VR Player for iOS)](https://github.com/hanton/HTY360Player)

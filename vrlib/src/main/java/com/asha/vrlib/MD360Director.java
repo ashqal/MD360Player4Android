@@ -20,11 +20,13 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
+    private static final float sNear = 0.7f;
+
     private float mEyeZ = 0f;
     private float mEyeX = 0f;
     private float mAngle = 0f;
     private float mRatio = 0f;
-    private float mNear = 0f;
+    private float mNearScale = 0f;
     private float mLookX = 0f;
 
     private float[] mCurrentRotation = new float[16];
@@ -41,7 +43,7 @@ public class MD360Director {
     private MD360Director(Builder builder) {
         this.mEyeZ = builder.mEyeZ;
         this.mRatio = builder.mRatio;
-        this.mNear = builder.mNear;
+        this.mNearScale = builder.mNearScale;
         this.mAngle = builder.mAngle;
         this.mEyeX = builder.mEyeX;
         this.mLookX = builder.mLookX;
@@ -127,7 +129,7 @@ public class MD360Director {
     public void updateProjection(int width, int height){
         // Projection Matrix
         mRatio = width * 1.0f / height;
-        updateProjectionNear(mNear);
+        updateProjectionNearScale(mNearScale);
     }
 
     private void updateViewMatrix() {
@@ -148,14 +150,14 @@ public class MD360Director {
         mAngle = a;
     }
 
-    private void updateProjectionNear(float near){
-        mNear = near;
+    protected void updateProjectionNearScale(float scale){
+        mNearScale = scale;
         final float left = -mRatio/2;
         final float right = mRatio/2;
         final float bottom = -0.5f;
         final float top = 0.5f;
         final float far = 500;
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNear, far);
+        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNearScale * sNear, far);
     }
 
     public void updateSensorMatrix(float[] sensorMatrix) {
@@ -175,7 +177,7 @@ public class MD360Director {
         private float mEyeZ = 0f;
         private float mAngle = 0;
         private float mRatio = 1.5f;
-        private float mNear = 0.7f;
+        private float mNearScale = 1;
         private float mEyeX = 0f;
         private float mLookX = 0f;
 
@@ -204,8 +206,8 @@ public class MD360Director {
             return this;
         }
 
-        public Builder setNear(float mNear) {
-            this.mNear = mNear;
+        public Builder setNearScale(float scale) {
+            this.mNearScale = scale;
             return this;
         }
 

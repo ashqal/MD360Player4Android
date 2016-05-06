@@ -84,10 +84,21 @@ public class MDVRLibrary {
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setGestureListener(builder.gestureListener);
-        mTouchHelper.setDragListener(new IDragListener() {
+
+        final boolean pinchEnabled = builder.pinchEnabled;
+        mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
                 mInteractiveModeManager.handleDrag((int) distanceX,(int) distanceY);
+            }
+
+            @Override
+            public void onPinch(float scale) {
+                if (!pinchEnabled) return;
+
+                for (MD360Director director : mDirectorList){
+                    director.updateProjectionNearScale(scale);
+                }
             }
 
         });
@@ -190,8 +201,9 @@ public class MDVRLibrary {
         void onClick(MotionEvent e);
     }
 
-    interface IDragListener {
+    interface IAdvanceGestureListener {
         void onDrag(float distanceX, float distanceY);
+        void onPinch(float scale);
     }
 
     public static Builder with(Activity activity){
@@ -207,6 +219,7 @@ public class MDVRLibrary {
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
+        private boolean pinchEnabled = false;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -252,8 +265,26 @@ public class MDVRLibrary {
             return this;
         }
 
+        /**
+         * gesture listener, e.g.
+         * onClick
+         *
+         * @param listener listener
+         * @return builder
+         */
         public Builder gesture(IGestureListener listener) {
             gestureListener = listener;
+            return this;
+        }
+
+        /**
+         * enable or disable the pinch gesture
+         *
+         * @param enabled default is false
+         * @return builder
+         */
+        public Builder pinchEnabled(boolean enabled) {
+            this.pinchEnabled = enabled;
             return this;
         }
 
@@ -262,6 +293,7 @@ public class MDVRLibrary {
             this.glSurfaceViewIds = glSurfaceViewIds;
             return new MDVRLibrary(this);
         }
+
     }
 
     interface ContentType{
