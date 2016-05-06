@@ -83,9 +83,9 @@ public class MDVRLibrary {
         });
 
         mTouchHelper = new MDTouchHelper(builder.activity);
+        mTouchHelper.setPinchEnabled(builder.pinchEnabled);
+        // listener
         mTouchHelper.setGestureListener(builder.gestureListener);
-
-        final boolean pinchEnabled = builder.pinchEnabled;
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
@@ -94,8 +94,6 @@ public class MDVRLibrary {
 
             @Override
             public void onPinch(float scale) {
-                if (!pinchEnabled) return;
-
                 for (MD360Director director : mDirectorList){
                     director.updateProjectionNearScale(scale);
                 }

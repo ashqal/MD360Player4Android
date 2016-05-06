@@ -15,15 +15,13 @@ public class MDTouchHelper {
 
     private static class PinchInfo{
         private static final float sSensitivity = 3;
-        private static final float sScaleMin = 1;
-        private static final float sScaleMax = 4;
         private float x1;
         private float y1;
         private float x2;
         private float y2;
         private float oDistance;
         private float prevScale = sScaleMin;
-        private float currentScale;
+        private float currentScale = sScaleMin;
 
         public void mark(float x1, float y1, float x2, float y2){
             this.x1 = x1;
@@ -45,16 +43,19 @@ public class MDTouchHelper {
             return currentScale;
         }
     }
+    private static final float sScaleMin = 1;
+    private static final float sScaleMax = 4;
 
     private MDVRLibrary.IGestureListener mGestureListener;
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
+    private boolean mPinchEnabled;
+    private float mGlobalScale = sScaleMin;
 
     private static final int MODE_INIT = 0;
     private static final int MODE_PINCH = 1;
-
 
     public MDTouchHelper(Context context) {
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -72,7 +73,7 @@ public class MDTouchHelper {
                 if (mCurrentMode == MODE_PINCH) return false;
 
                 if (mAdvanceGestureListener != null)
-                    mAdvanceGestureListener.onDrag(distanceX,distanceY);
+                    mAdvanceGestureListener.onDrag(distanceX / mGlobalScale, distanceY / mGlobalScale);
                 return true;
             }
         });
@@ -116,9 +117,13 @@ public class MDTouchHelper {
     }
 
     private void handlePinch(float distance) {
-        float scale = mPinchInfo.pinch(distance);
-        if (mAdvanceGestureListener != null)
-            mAdvanceGestureListener.onPinch(scale);
+        if (mPinchEnabled){
+            float scale = mPinchInfo.pinch(distance);
+            if (mAdvanceGestureListener != null)
+                mAdvanceGestureListener.onPinch(scale);
+
+            mGlobalScale = scale;
+        }
     }
 
     private void markPinchInfo(float x1, float y1, float x2, float y2) {
@@ -135,5 +140,9 @@ public class MDTouchHelper {
 
     public void setAdvanceGestureListener(MDVRLibrary.IAdvanceGestureListener listener) {
         this.mAdvanceGestureListener = listener;
+    }
+
+    public void setPinchEnabled(boolean mPinchEnabled) {
+        this.mPinchEnabled = mPinchEnabled;
     }
 }
