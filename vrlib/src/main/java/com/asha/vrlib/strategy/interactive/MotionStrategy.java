@@ -7,7 +7,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.common.VRUtil;
@@ -40,7 +39,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     }
 
     @Override
-    public boolean handleTouchEvent(MotionEvent event) {
+    public boolean handleDrag(int distanceX, int distanceY) {
         return false;
     }
 

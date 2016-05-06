@@ -3,7 +3,6 @@ package com.asha.vrlib.strategy.interactive;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.view.MotionEvent;
 
 import com.asha.vrlib.MD360Director;
 
@@ -30,34 +29,12 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     public void onPause(Context context) {}
 
     @Override
-    public boolean handleTouchEvent(MotionEvent event) {
-        boolean handled = false;
+    public boolean handleDrag(int distanceX, int distanceY) {
         for (MD360Director director : getDirectorList()){
-            handled |= handleTouchEventInner(director,event);
+            director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
+            director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
         }
-        return handled;
-    }
-
-    private boolean handleTouchEventInner(MD360Director director, MotionEvent event) {
-        if (event != null) {
-            float x = event.getX();
-            float y = event.getY();
-            float previousX = director.getPreviousX();
-            float previousY = director.getPreviousY();
-
-            if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                float deltaX = (x - previousX) / sDensity * sDamping ;
-                float deltaY = (y - previousY) / sDensity * sDamping ;
-                director.setDeltaX(director.getDeltaX() + deltaX);
-                director.setDeltaY(director.getDeltaY() + deltaY);
-            }
-            director.setPreviousX(x);
-            director.setPreviousY(y);
-            return true;
-
-        } else {
-            return false;
-        }
+        return false;
     }
 
     @Override

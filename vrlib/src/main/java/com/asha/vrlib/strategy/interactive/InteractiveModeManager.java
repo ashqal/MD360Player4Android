@@ -2,7 +2,6 @@ package com.asha.vrlib.strategy.interactive;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.MotionEvent;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
@@ -62,11 +61,12 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     /**
      * handle touch touch to rotate the model
      *
-     * @param event
+     * @param distanceX
+     * @param distanceY
      * @return true if handled.
      */
     @Override
-    public boolean handleTouchEvent(MotionEvent event) {
-        return getStrategy().handleTouchEvent(event);
+    public boolean handleDrag(int distanceX, int distanceY) {
+        return getStrategy().handleDrag(distanceX,distanceY);
     }
 }

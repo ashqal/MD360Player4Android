@@ -2,6 +2,7 @@ package com.asha.md360player4android;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.widget.Toast;
 
@@ -52,6 +53,12 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         String tip = mode == MDVRLibrary.INTERACTIVE_MODE_MOTION
                                 ? "onNotSupport:MOTION" : "onNotSupport:" + String.valueOf(mode);
                         Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .gesture(new MDVRLibrary.IGestureListener() {
+                    @Override
+                    public void onClick(MotionEvent e) {
+                        Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .build(R.id.surface_view1,R.id.surface_view2);

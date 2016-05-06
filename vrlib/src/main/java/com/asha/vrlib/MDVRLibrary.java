@@ -49,6 +49,7 @@ public class MDVRLibrary {
     private MD360Texture mSurface;
     private MDStatusManager mMDStatusManager;
     private int mContentType;
+    private MDTouchHelper mTouchHelper;
 
     private MDVRLibrary(Builder builder) {
         mContentType = builder.contentType;
@@ -80,6 +81,18 @@ public class MDVRLibrary {
                 }
             }
         });
+
+        mTouchHelper = new MDTouchHelper(builder.activity);
+        mTouchHelper.setGestureListener(builder.gestureListener);
+        mTouchHelper.setDragListener(new IDragListener() {
+            @Override
+            public void onDrag(float distanceX, float distanceY) {
+                mInteractiveModeManager.handleDrag((int) distanceX,(int) distanceY);
+            }
+
+        });
+
+
     }
 
     private void initWithGLSurfaceViewIds(Activity activity, int[] glSurfaceViewIds){
@@ -150,7 +163,7 @@ public class MDVRLibrary {
      * @return true if handled.
      */
     public boolean handleTouchEvent(MotionEvent event) {
-        return mInteractiveModeManager.handleTouchEvent(event);
+        return mTouchHelper.handleTouchEvent(event);
     }
 
     public int getInteractiveMode() {
@@ -173,9 +186,12 @@ public class MDVRLibrary {
         void onNotSupport(int mode);
     }
 
-    public interface IGestureCallback{
-        void onClick();
-        void onLongClick();
+    public interface IGestureListener {
+        void onClick(MotionEvent e);
+    }
+
+    interface IDragListener {
+        void onDrag(float distanceX, float distanceY);
     }
 
     public static Builder with(Activity activity){
@@ -190,7 +206,7 @@ public class MDVRLibrary {
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
-        private IGestureCallback gestureCallback;
+        private IGestureListener gestureListener;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -236,8 +252,8 @@ public class MDVRLibrary {
             return this;
         }
 
-        public Builder gesture(IGestureCallback callback) {
-            gestureCallback = callback;
+        public Builder gesture(IGestureListener listener) {
+            gestureListener = listener;
             return this;
         }
 
