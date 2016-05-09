@@ -15,27 +15,15 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
-* pinch gesture supported
-* changed the way to listen onClick event
-* for example,
-```java
-@Override
-protected MDVRLibrary createVRLibrary() {
-    return MDVRLibrary.with(this)
-            .....
-            .pinchEnabled(true)
-            .gesture(new MDVRLibrary.IGestureListener() {
-                @Override
-                public void onClick(MotionEvent e) {
-                    Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
-                }
-            })
-            .build(R.id.surface_view1,R.id.surface_view2);
-}
 
-```
 
 ## Release Note
+
+**1.2.0**
+* pinch gesture supported
+* changed the way to listen onClick event
+* fix the image distortion on the polar of sphere
+
 **1.1.0**
 * Bitmap supported. For more info, See [BitmapPlayerActivity](https://github.com/ashqal/MD360Player4Android/tree/master/app/src/main/java/com/asha/md360player4android/BitmapPlayerActivity.java) in demo.
 * Add callback if the TYPE_ROTATION_VECTOR is NOT supported.
@@ -61,7 +49,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.1.0'
+    compile 'com.github.ashqal:MD360Player4Android:1.2.0'
 }
 ```
 
@@ -134,6 +122,36 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     }
 }
 ```
+
+### Click Listener
+Builder#gesture
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            .....
+            .gesture(new MDVRLibrary.IGestureListener() {
+                @Override
+                public void onClick(MotionEvent e) {
+                    Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .build(R.id.surface_view1,R.id.surface_view2);
+}
+
+```
+
+### Enable the pinch
+Builder#pinchEnabled
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            .....
+            .pinchEnabled(true) //disable by default
+            .build(R.id.surface_view1,R.id.surface_view2);
+}
+
 
 ### Feature not support callback
 add `ifNotSupport` to builder, e.g. [VideoPlayerActivity#createVRLibrary](https://github.com/ashqal/MD360Player4Android/blob/master/app/src/main/java/com/asha/md360player4android/VideoPlayerActivity.java)
