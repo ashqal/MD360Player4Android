@@ -124,7 +124,7 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 ```
 
 ### Click Listener
-Builder#gesture
+`Builder#gesture`
 ```java
 @Override
 protected MDVRLibrary createVRLibrary() {
@@ -142,7 +142,7 @@ protected MDVRLibrary createVRLibrary() {
 ```
 
 ### Enable the pinch
-Builder#pinchEnabled
+`Builder#pinchEnabled`
 ```java
 @Override
 protected MDVRLibrary createVRLibrary() {
@@ -151,10 +151,11 @@ protected MDVRLibrary createVRLibrary() {
             .pinchEnabled(true) //disable by default
             .build(R.id.surface_view1,R.id.surface_view2);
 }
-
+```
 
 ### Feature not support callback
 add `ifNotSupport` to builder, e.g. [VideoPlayerActivity#createVRLibrary](https://github.com/ashqal/MD360Player4Android/blob/master/app/src/main/java/com/asha/md360player4android/VideoPlayerActivity.java)
+
 ```java
 @Override
 protected MDVRLibrary createVRLibrary() {
