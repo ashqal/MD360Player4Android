@@ -22,6 +22,9 @@ public class MDSphere3D extends MDAbsObject3D {
         generateSphere(18,75,150,object3D);
     }
 
+    /****
+     * copied from https://github.com/shulja/viredero/blob/a7d28b21d762e8479dc10cde1aa88054497ff649/viredroid/src/main/java/org/viredero/viredroid/Sphere.java
+     * */
     private static void generateSphere(float radius, int rings, int sectors, MDAbsObject3D object3D) {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
