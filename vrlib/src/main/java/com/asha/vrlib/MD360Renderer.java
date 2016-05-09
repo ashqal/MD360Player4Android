@@ -107,8 +107,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		// Pass in the combined matrix.
 		mDirector.shot(mProgram);
 
-		// Draw
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mObject3D.getNumIndices());
+		mObject3D.draw();
+
 	}
 
 	private void initProgram(){

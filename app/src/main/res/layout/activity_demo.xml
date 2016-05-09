@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:text="http://10.240.131.39/vr/570624aae1c52.mp4"
+            android:text="http://192.168.2.1/570624aae1c52.mp4"
             android:id="@+id/edit_text_url"
             android:layout_width="0dp"
             android:layout_weight="4"

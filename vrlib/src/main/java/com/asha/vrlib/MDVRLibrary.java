@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.objects.MDAbsObject3D;
-import com.asha.vrlib.objects.MDObject3DLoader;
-import com.asha.vrlib.objects.MDSphere3D48;
+import com.asha.vrlib.objects.MDObject3DHelper;
+import com.asha.vrlib.objects.MDSphere3D;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
@@ -72,7 +72,7 @@ public class MDVRLibrary {
 
         mMDStatusManager.reset(mDisplayModeManager.getVisibleSize());
 
-        MDObject3DLoader.loadObj(builder.activity, new MDSphere3D48(), new MDObject3DLoader.LoadComplete() {
+        MDObject3DHelper.loadObj(builder.activity, new MDSphere3D(), new MDObject3DHelper.LoadComplete() {
             @Override
             public void onComplete(MDAbsObject3D object3D) {
                 if (mRendererList == null) return;

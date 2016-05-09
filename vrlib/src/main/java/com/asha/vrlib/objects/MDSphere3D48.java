@@ -1,6 +1,6 @@
 package com.asha.vrlib.objects;
 
-import com.asha.vrlib.R;
+import android.content.Context;
 
 /**
  * Created by hzqiujiadi on 16/1/8.
@@ -9,7 +9,7 @@ import com.asha.vrlib.R;
 public class MDSphere3D48 extends MDAbsObject3D {
 
     @Override
-    protected int obtainObjResId() {
-        return R.raw.sphere48;
+    protected void executeLoad(Context context) {
+        // GLUtil.loadObject3D(context, R.raw.sphere48,this);
     }
 }
