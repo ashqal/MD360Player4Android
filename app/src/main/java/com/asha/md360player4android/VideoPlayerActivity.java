@@ -32,7 +32,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         Uri uri = getUri();
         if (uri != null){
             mMediaPlayerWrapper.openRemoteFile(uri.toString());
-            mMediaPlayerWrapper.play();
+            mMediaPlayerWrapper.prepare();
         }
     }
 
@@ -72,8 +72,14 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        mMediaPlayerWrapper.onStop();
+    protected void onPause() {
+        super.onPause();
+        mMediaPlayerWrapper.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMediaPlayerWrapper.onResume();
     }
 }
