@@ -15,6 +15,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+* add some reset function, such as `MDVRLibrary#resetPinch`,`MDVRLibrary#resetTouch`
 
 
 ## Release Note
