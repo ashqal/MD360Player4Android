@@ -77,6 +77,17 @@ public abstract class MD360PlayerActivity extends Activity {
         });
         updateDisplayModeText(displayModeSwitcher);
 
+        findViewById(R.id.button_reset).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVRLibrary.resetPinch();
+                // reset touch
+                if (mVRLibrary.getInteractiveMode() == MDVRLibrary.INTERACTIVE_MODE_TOUCH){
+                    mVRLibrary.resetTouch();
+                }
+            }
+        });
+
     }
 
     @Override

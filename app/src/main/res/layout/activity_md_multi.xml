@@ -41,6 +41,16 @@
           android:textColor="#FFFFFF"
           android:layout_width="wrap_content"
           android:layout_height="match_parent" />
+
+      <Button
+          android:text="RESET"
+          android:padding="5dp"
+          android:layout_marginLeft="10dp"
+          android:id="@+id/button_reset"
+          android:background="@drawable/selector_button"
+          android:textColor="#FFFFFF"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent" />
    </LinearLayout>
 
    <ProgressBar

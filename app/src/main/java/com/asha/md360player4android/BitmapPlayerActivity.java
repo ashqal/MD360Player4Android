@@ -64,6 +64,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(BitmapPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
+                .pinchEnabled(true)
                 .build(R.id.surface_view1,R.id.surface_view2);
     }
 }

@@ -42,6 +42,12 @@ public class MDTouchHelper {
             else if (currentScale > sScaleMax) currentScale = sScaleMax;
             return currentScale;
         }
+
+        public float reset(){
+            prevScale = sScaleMin;
+            currentScale = sScaleMin;
+            return currentScale;
+        }
     }
     private static final float sScaleMin = 1;
     private static final float sScaleMax = 4;
@@ -124,6 +130,13 @@ public class MDTouchHelper {
 
             mGlobalScale = scale;
         }
+    }
+
+    public void reset(){
+        float currentPinch = mPinchInfo.reset();
+        mGlobalScale = currentPinch;
+        if (mAdvanceGestureListener != null)
+            mAdvanceGestureListener.onPinch(currentPinch);
     }
 
     private void markPinchInfo(float x1, float y1, float x2, float y2) {

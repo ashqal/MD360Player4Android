@@ -48,12 +48,16 @@ public class MDVRLibrary {
     private List<MD360Renderer> mRendererList;
     private MD360Texture mSurface;
     private MDStatusManager mMDStatusManager;
-    private int mContentType;
     private MDTouchHelper mTouchHelper;
+    private MD360DirectorFactory mDirectorFactory;
+
+    // video or image
+    private int mContentType;
 
     private MDVRLibrary(Builder builder) {
         mContentType = builder.contentType;
         mSurface = builder.texture;
+        mDirectorFactory = builder.directorFactory;
 
         mDirectorList = new LinkedList<>();
         mGLSurfaceViewList = new LinkedList<>();
@@ -100,14 +104,12 @@ public class MDVRLibrary {
             }
 
         });
-
-
     }
 
     private void initWithGLSurfaceViewIds(Activity activity, int[] glSurfaceViewIds){
         for (int id:glSurfaceViewIds){
             GLSurfaceView glSurfaceView = (GLSurfaceView) activity.findViewById(id);
-            initOpenGL(activity,glSurfaceView,mSurface);
+            initOpenGL(activity,glSurfaceView, mSurface);
         }
     }
 
@@ -116,7 +118,7 @@ public class MDVRLibrary {
             // Request an OpenGL ES 2.0 compatible context.
             int index = mDirectorList.size();
             glSurfaceView.setEGLContextClientVersion(2);
-            MD360Director director = MD360DirectorFactory.createDirector(index);
+            MD360Director director = mDirectorFactory.createDirector(index);
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setTexture(texture)
                     .setDirector(director)
@@ -143,6 +145,16 @@ public class MDVRLibrary {
     public void switchDisplayMode(Activity activity){
         mDisplayModeManager.switchMode(activity);
         mMDStatusManager.reset(mDisplayModeManager.getVisibleSize());
+    }
+
+    public void resetTouch(){
+        for (MD360Director director : mDirectorList){
+            director.reset();
+        }
+    }
+
+    public void resetPinch(){
+        mTouchHelper.reset();
     }
 
     public void onResume(Context context){
@@ -218,6 +230,7 @@ public class MDVRLibrary {
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
         private boolean pinchEnabled = false;
+        public MD360DirectorFactory directorFactory;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -286,8 +299,14 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder directorFactory(MD360DirectorFactory directorFactory){
+            this.directorFactory = directorFactory;
+            return this;
+        }
+
         public MDVRLibrary build(int... glSurfaceViewIds){
             notNull(texture,"You must call video/bitmap function in before build");
+            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
             this.glSurfaceViewIds = glSurfaceViewIds;
             return new MDVRLibrary(this);
         }
