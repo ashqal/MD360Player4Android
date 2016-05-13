@@ -1,9 +1,13 @@
 package com.asha.md360player4android;
 
 import java.io.IOException;
+import java.io.InputStream;
+
+import android.content.res.AssetManager;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
 
 /**
  * Created by hzqiujiadi on 16/4/5.
@@ -71,6 +75,30 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
+    public void openAssetFile(String assetPath) {
+        try {
+            AssetManager am = App.getInstance().getResources().getAssets();
+            final InputStream is = am.open(assetPath);
+            mPlayer.setDataSource(new IMediaDataSource() {
+                @Override
+                public int readAt(long position, byte[] buffer, int offset, int size) throws IOException {
+                    return is.read(buffer, offset, size);
+                }
+
+                @Override
+                public long getSize() throws IOException {
+                    return is.available();
+                }
+
+                @Override
+                public void close() throws IOException {
+                    is.close();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public IMediaPlayer getPlayer() {
         return mPlayer;

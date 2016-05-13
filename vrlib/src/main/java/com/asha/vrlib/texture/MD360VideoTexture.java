@@ -26,7 +26,7 @@ public class MD360VideoTexture extends MD360Texture {
     }
 
     @Override
-    public void release() {
+    public synchronized void release() {
         super.release();
 
         if (mSurfaceTexture != null) {
@@ -50,7 +50,7 @@ public class MD360VideoTexture extends MD360Texture {
         onCreateSurface(glSurfaceTexture);
     }
 
-    private void onCreateSurface(int glSurfaceTextureId) {
+    private synchronized void onCreateSurface(int glSurfaceTextureId) {
         if ( mSurfaceTexture == null ) {
             //attach the texture to a surface.
             //It's a clue class for rendering an android view to gl level
@@ -64,7 +64,7 @@ public class MD360VideoTexture extends MD360Texture {
     }
 
     @Override
-    protected void onResize(int width, int height) {
+    protected synchronized void onResize(int width, int height) {
         if (mSurfaceTexture != null)
             mSurfaceTexture.setDefaultBufferSize(width,height);
     }
