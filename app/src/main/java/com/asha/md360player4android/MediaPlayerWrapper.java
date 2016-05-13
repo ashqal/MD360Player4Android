@@ -1,9 +1,10 @@
 package com.asha.md360player4android;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import android.content.res.AssetManager;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -41,19 +42,6 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         enableHardwareDecoding();
     }
 
-    /*
-    protected void openLocalFile(){
-        AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.demo);
-        if (afd == null) return;
-        try {
-            mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
     private void enableHardwareDecoding(){
         if (mPlayer instanceof IjkMediaPlayer){
             IjkMediaPlayer player = (IjkMediaPlayer) mPlayer;
@@ -75,9 +63,9 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
-    public void openAssetFile(String assetPath) {
+    public void openAssetFile(Context context, String assetPath) {
         try {
-            AssetManager am = App.getInstance().getResources().getAssets();
+            AssetManager am = context.getResources().getAssets();
             final InputStream is = am.open(assetPath);
             mPlayer.setDataSource(new IMediaDataSource() {
                 @Override

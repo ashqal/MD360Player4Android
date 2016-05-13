@@ -18,7 +18,8 @@ public abstract class MD360Texture {
     public MD360Texture() {
     }
 
-    public void resize(int width,int height){
+    // may called from multi thread
+    public synchronized void resize(int width,int height){
         boolean changed = false;
         if (mWidth == width && mHeight == height) changed = true;
         mWidth = width;
@@ -28,6 +29,7 @@ public abstract class MD360Texture {
         if (changed) onResize(mWidth,mHeight);
     }
 
+    // may called from multi thread
     public void create() {
         int glTexture = createTextureId();
         if (glTexture != TEXTURE_EMPTY)
@@ -57,6 +59,7 @@ public abstract class MD360Texture {
 
     abstract protected int createTextureId();
 
+    // may called from multi thread
     abstract public void syncDrawInContext(ISyncDrawCallback callback);
 
     public interface ISyncDrawCallback {

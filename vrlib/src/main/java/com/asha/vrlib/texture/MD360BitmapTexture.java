@@ -72,7 +72,7 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
-    public void syncDrawInContext(ISyncDrawCallback callback) {
+    synchronized public void syncDrawInContext(ISyncDrawCallback callback) {
         AsyncCallback asyncCallback = mCallbackList.get(Thread.currentThread().toString());
         if (asyncCallback != null && asyncCallback.hasBitmap()){
             Bitmap bitmap = asyncCallback.getBitmap();
