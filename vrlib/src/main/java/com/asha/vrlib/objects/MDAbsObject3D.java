@@ -107,9 +107,9 @@ public abstract class MDAbsObject3D {
         // Draw
         if (getIndicesBuffer() != null){
             getIndicesBuffer().position(0);
-            GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, getNumIndices(), GLES20.GL_UNSIGNED_SHORT, getIndicesBuffer());
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES, getNumIndices(), GLES20.GL_UNSIGNED_SHORT, getIndicesBuffer());
         } else {
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, getNumIndices());
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, getNumIndices());
         }
     }
 }

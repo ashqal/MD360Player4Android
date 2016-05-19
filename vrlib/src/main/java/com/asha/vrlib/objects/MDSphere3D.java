@@ -19,7 +19,7 @@ public class MDSphere3D extends MDAbsObject3D {
     }
 
     private static void generateSphere(MDAbsObject3D object3D) {
-        generateSphere(18,75,150,object3D);
+        generateSphere(18,101,201,object3D);
     }
 
     /****
@@ -55,13 +55,13 @@ public class MDSphere3D extends MDAbsObject3D {
         short[] indices = new short[rings * sectors * 6];
         for(r = 0; r < rings - 1; r++){
             for(s = 0; s < sectors-1; s++) {
+
                 indices[counter++] = (short) (r * sectors + s);       //(a)
                 indices[counter++] = (short) ((r+1) * sectors + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * sectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * sectors + (s));  // (a)
-                indices[counter++] = (short) ((r) * sectors + (s+1));     //(d)
-                indices[counter++] = (short) ((r+1) * sectors + (s+1));    //(c)
-
+                indices[counter++] = (short) ((r) * sectors + (s+1));  // (c)
+                indices[counter++] = (short) ((r) * sectors + (s+1));  // (c)
+                indices[counter++] = (short) ((r+1) * sectors + (s));    //(b)
+                indices[counter++] = (short) ((r+1) * sectors + (s+1));  // (d)
             }
         }
         // initialize vertex byte buffer for shape coordinates
