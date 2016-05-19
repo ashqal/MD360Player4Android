@@ -16,7 +16,32 @@ It is a lite library to render 360 degree panorama video for Android.
 ## Last Commit
 **`-SNAPSHOT`**
 * add some reset function, such as `MDVRLibrary#resetPinch`,`MDVRLibrary#resetTouch`
+* support sensor delay configuration in motion mode.
+```java
+MDVRLibrary.with(this)
+....
+.motionDelay(SensorManager.SENSOR_DELAY_GAME)
+...
+.build(R.id.surface_view1,R.id.surface_view2);
+```
+* support sensorCallback
+```java
+MDVRLibrary.with(this)
+....
+.sensorCallback(new SensorEventListener() {
+    @Override
+    public void onSensorChanged(SensorEvent event) {
 
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+})
+....
+.build(R.id.surface_view1,R.id.surface_view2);
+```
 
 ## Release Note
 
