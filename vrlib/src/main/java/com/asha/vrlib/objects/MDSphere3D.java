@@ -19,7 +19,7 @@ public class MDSphere3D extends MDAbsObject3D {
     }
 
     private static void generateSphere(MDAbsObject3D object3D) {
-        generateSphere(18,101,201,object3D);
+        generateSphere(18,75,150,object3D);
     }
 
     /****
