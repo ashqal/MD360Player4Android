@@ -15,35 +15,15 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
-* add some reset function, such as `MDVRLibrary#resetPinch`,`MDVRLibrary#resetTouch`
-* support sensor delay configuration in motion mode.
-```java
-MDVRLibrary.with(this)
-....
-.motionDelay(SensorManager.SENSOR_DELAY_GAME)
-...
-.build(R.id.surface_view1,R.id.surface_view2);
-```
-* support sensorCallback
-```java
-MDVRLibrary.with(this)
-....
-.sensorCallback(new SensorEventListener() {
-    @Override
-    public void onSensorChanged(SensorEvent event) {
 
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-})
-....
-.build(R.id.surface_view1,R.id.surface_view2);
-```
 
 ## Release Note
+
+**1.3.0**
+* add some reset function, such as `MDVRLibrary#resetPinch`,`MDVRLibrary#resetTouch`
+* support sensor delay configuration in motion mode
+* support sensorCallback
+* fix a crucial bug: has an line in the center of the sphere
 
 **1.2.0**
 * pinch gesture supported
@@ -75,7 +55,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.2.0'
+    compile 'com.github.ashqal:MD360Player4Android:1.3.0'
 }
 ```
 
@@ -198,6 +178,57 @@ protected MDVRLibrary createVRLibrary() {
             .build(R.id.surface_view1,R.id.surface_view2);
 }
 
+```
+
+### MD360Director Customize (since 1.2.0)
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            ...
+            .directorFactory(new DirectorFactory()) //替换默认MD360DirectorFactory
+            ...
+            .build(R.id.surface_view1,R.id.surface_view2);
+}
+
+private static class DirectorFactory extends MD360DirectorFactory{
+    @Override
+    public MD360Director createDirector(int index) {
+        switch (index){
+            // setAngle: angle to rotate in degrees
+            case 1:   return MD360Director.builder().setAngle(20).setEyeX(-2.0f).setLookX(-2.0f).build();
+            default:  return MD360Director.builder().setAngle(20).build();
+        }
+    }
+}
+```
+
+### Motion configuration (since 1.3.0)
+* support sensor delay configuration in motion mode.
+```java
+MDVRLibrary.with(this)
+....
+.motionDelay(SensorManager.SENSOR_DELAY_GAME)
+...
+.build(R.id.surface_view1,R.id.surface_view2);
+```
+* support sensorCallback
+```java
+MDVRLibrary.with(this)
+....
+.sensorCallback(new SensorEventListener() {
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+})
+....
+.build(R.id.surface_view1,R.id.surface_view2);
 ```
 
 ## Reference
