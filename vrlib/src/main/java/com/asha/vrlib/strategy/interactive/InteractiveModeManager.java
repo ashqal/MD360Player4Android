@@ -2,6 +2,7 @@ package com.asha.vrlib.strategy.interactive;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.SensorEventListener;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
@@ -15,11 +16,17 @@ import java.util.List;
  */
 public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> implements IInteractiveMode {
 
-    private List<MD360Director> mDirectorList;
+    public static class Params{
+        public List<MD360Director> mDirectorList;
+        public int mMotionDelay;
+        public SensorEventListener mSensorListener;
+    }
+
     private boolean mIsResumed;
-    public InteractiveModeManager(int mode, List<MD360Director> directorList) {
+    private Params mParams;
+    public InteractiveModeManager(int mode, Params params) {
         super(mode);
-        this.mDirectorList = directorList;
+        mParams = params;
     }
 
     @Override
@@ -35,10 +42,10 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     protected AbsInteractiveStrategy createStrategy(int mode) {
         switch (mode){
             case MDVRLibrary.INTERACTIVE_MODE_MOTION:
-                return new MotionStrategy(mDirectorList);
+                return new MotionStrategy(mParams);
             case MDVRLibrary.INTERACTIVE_MODE_TOUCH:
             default:
-                return new TouchStrategy(mDirectorList);
+                return new TouchStrategy(mParams);
         }
     }
 

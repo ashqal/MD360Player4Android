@@ -11,8 +11,6 @@ import android.util.Log;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.common.VRUtil;
 
-import java.util.List;
-
 /**
  * Created by hzqiujiadi on 16/3/19.
  * hzqiujiadi ashqalcn@gmail.com
@@ -24,8 +22,8 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     private boolean mRegistered = false;
     private Boolean mIsSupport = null;
 
-    public MotionStrategy(List<MD360Director> directorList) {
-        super(directorList);
+    public MotionStrategy(InteractiveModeManager.Params params) {
+        super(params);
     }
 
     @Override
@@ -79,7 +77,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
             return;
         }
 
-        mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, sensor, getParams().mMotionDelay);
 
         mRegistered = true;
     }
@@ -97,6 +95,10 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.accuracy != 0){
+            if (getParams().mSensorListener != null){
+                getParams().mSensorListener.onSensorChanged(event);
+            }
+
             int type = event.sensor.getType();
             switch (type){
                 case Sensor.TYPE_ROTATION_VECTOR:
@@ -111,5 +113,9 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        if (getParams().mSensorListener != null){
+            getParams().mSensorListener.onAccuracyChanged(sensor,accuracy);
+        }
+    }
 }

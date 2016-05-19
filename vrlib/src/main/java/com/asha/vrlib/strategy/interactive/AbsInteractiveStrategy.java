@@ -10,13 +10,17 @@ import java.util.List;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public abstract class AbsInteractiveStrategy implements IModeStrategy, IInteractiveMode {
-    private List<MD360Director> mDirectorList;
+    private InteractiveModeManager.Params params;
 
-    public AbsInteractiveStrategy(List<MD360Director> mDirectorList) {
-        this.mDirectorList = mDirectorList;
+    public AbsInteractiveStrategy(InteractiveModeManager.Params params) {
+        this.params = params;
+    }
+
+    public InteractiveModeManager.Params getParams() {
+        return params;
     }
 
     protected List<MD360Director> getDirectorList() {
-        return mDirectorList;
+        return params.mDirectorList;
     }
 }

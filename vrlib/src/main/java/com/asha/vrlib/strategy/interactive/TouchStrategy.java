@@ -6,8 +6,6 @@ import android.content.res.Resources;
 
 import com.asha.vrlib.MD360Director;
 
-import java.util.List;
-
 /**
  * Created by hzqiujiadi on 16/3/19.
  * hzqiujiadi ashqalcn@gmail.com
@@ -18,8 +16,8 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     private static final float sDamping = 0.2f;
     private static final String TAG = "TouchStrategy";
 
-    public TouchStrategy(List<MD360Director> directorList) {
-        super(directorList);
+    public TouchStrategy(InteractiveModeManager.Params params) {
+        super(params);
     }
 
     @Override

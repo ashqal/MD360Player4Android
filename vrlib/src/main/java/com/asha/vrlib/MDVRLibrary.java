@@ -2,6 +2,8 @@ package com.asha.vrlib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -67,10 +69,17 @@ public class MDVRLibrary {
         // init glSurfaceViews
         initWithGLSurfaceViewIds(builder.activity,builder.glSurfaceViewIds);
 
-        // init mode manager
+        // init DisplayModeManager
         mDisplayModeManager = new DisplayModeManager(builder.displayMode,mGLSurfaceViewList);
-        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,mDirectorList);
 
+        // init InteractiveModeManager
+        InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
+        interactiveManagerParams.mDirectorList = mDirectorList;
+        interactiveManagerParams.mMotionDelay = builder.motionDelay;
+        interactiveManagerParams.mSensorListener = builder.sensorListener;
+        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
+
+        // prepare
         mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
 
@@ -229,8 +238,10 @@ public class MDVRLibrary {
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
-        private boolean pinchEnabled = false;
+        private boolean pinchEnabled; // default false.
         public MD360DirectorFactory directorFactory;
+        public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
+        public SensorEventListener sensorListener;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -296,6 +307,28 @@ public class MDVRLibrary {
          */
         public Builder pinchEnabled(boolean enabled) {
             this.pinchEnabled = enabled;
+            return this;
+        }
+
+
+        /**
+         * sensor delay in motion mode.
+         *
+         * {@link android.hardware.SensorManager#SENSOR_DELAY_FASTEST}
+         * {@link android.hardware.SensorManager#SENSOR_DELAY_GAME}
+         * {@link android.hardware.SensorManager#SENSOR_DELAY_NORMAL}
+         * {@link android.hardware.SensorManager#SENSOR_DELAY_UI}
+         *
+         * @param motionDelay default is {@link android.hardware.SensorManager#SENSOR_DELAY_GAME}
+         * @return builder
+         */
+        public Builder motionDelay(int motionDelay){
+            this.motionDelay = motionDelay;
+            return this;
+        }
+
+        public Builder sensorCallback(SensorEventListener callback){
+            this.sensorListener = callback;
             return this;
         }
 
