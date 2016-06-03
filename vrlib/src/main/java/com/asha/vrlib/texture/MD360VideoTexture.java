@@ -15,7 +15,7 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MD360VideoTexture extends MD360Texture {
+public abstract class MD360VideoTexture extends MD360Texture {
 
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
@@ -38,7 +38,6 @@ public class MD360VideoTexture extends MD360Texture {
             mSurface.release();
         }
         mSurface = null;
-
     }
 
     @Override
@@ -52,14 +51,17 @@ public class MD360VideoTexture extends MD360Texture {
 
     private void onCreateSurface(int glSurfaceTextureId) {
         if ( mSurfaceTexture == null ) {
-            //attach the texture to a surface.
-            //It's a clue class for rendering an android view to gl level
+            // attach the texture to a surface.
+            // It's a clue class for rendering an android view to gl level
             mSurfaceTexture = new SurfaceTexture(glSurfaceTextureId);
-            mSurfaceTexture.detachFromGLContext();
+
+            onSurfaceTextureCreated(mSurfaceTexture);
+
             mSurfaceTexture.setDefaultBufferSize(getWidth(), getHeight());
             mSurface = new Surface(mSurfaceTexture);
-            if (mOnSurfaceReadyListener != null)
+            if (mOnSurfaceReadyListener != null){
                 mOnSurfaceReadyListener.onSurfaceReady(mSurface);
+            }
         }
     }
 
@@ -71,14 +73,9 @@ public class MD360VideoTexture extends MD360Texture {
 
     @Override
     synchronized public void syncDrawInContext(ISyncDrawCallback callback){
-        int glSurfaceTexture = getCurrentTextureId();
-        if (isEmpty(glSurfaceTexture)) return;
-
-        mSurfaceTexture.attachToGLContext(glSurfaceTexture);
-        mSurfaceTexture.updateTexImage();
-        callback.onDrawOpenGL();
-        mSurfaceTexture.detachFromGLContext();
+        drawActually(callback, mSurfaceTexture);
     }
+
 
     @Override
     protected int createTextureId() {
@@ -99,4 +96,8 @@ public class MD360VideoTexture extends MD360Texture {
 
         return textures[0];
     }
+
+    abstract protected void onSurfaceTextureCreated(SurfaceTexture mSurfaceTexture);
+
+    abstract protected void drawActually(ISyncDrawCallback callback, SurfaceTexture surfaceTexture);
 }

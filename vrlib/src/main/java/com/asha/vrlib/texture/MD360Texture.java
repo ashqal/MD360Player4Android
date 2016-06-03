@@ -32,8 +32,10 @@ public abstract class MD360Texture {
     // may called from multi thread
     public void create() {
         int glTexture = createTextureId();
-        if (glTexture != TEXTURE_EMPTY)
+
+        if (glTexture != TEXTURE_EMPTY){
             mLocalGLTexture.set(glTexture);
+        }
     }
 
     public void release() {}

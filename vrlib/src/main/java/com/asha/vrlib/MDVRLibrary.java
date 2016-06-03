@@ -5,6 +5,7 @@ import android.content.Context;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -18,7 +19,8 @@ import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
-import com.asha.vrlib.texture.MD360VideoTexture;
+import com.asha.vrlib.texture.MD360VideoTexturePreJB;
+import com.asha.vrlib.texture.MD360VideoTextureSinceJB;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -275,7 +277,13 @@ public class MDVRLibrary {
         }
 
         public Builder video(IOnSurfaceReadyCallback callback){
-            texture = new MD360VideoTexture(callback);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                texture = new MD360VideoTextureSinceJB(callback);
+            } else {
+                texture = new MD360VideoTexturePreJB(callback);
+            }
+
             contentType = ContentType.VIDEO;
             return this;
         }
