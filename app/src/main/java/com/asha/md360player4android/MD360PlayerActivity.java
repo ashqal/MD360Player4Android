@@ -117,6 +117,9 @@ public abstract class MD360PlayerActivity extends Activity {
             case MDVRLibrary.INTERACTIVE_MODE_TOUCH:
                 text = "TOUCH";
                 break;
+            case MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH:
+                text = "M & T";
+                break;
         }
         if (!TextUtils.isEmpty(text)) button.setText(text);
     }

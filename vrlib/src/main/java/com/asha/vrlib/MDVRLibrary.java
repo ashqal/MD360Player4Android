@@ -38,10 +38,11 @@ public class MDVRLibrary {
     // interactive mode
     public static final int INTERACTIVE_MODE_MOTION = 1;
     public static final int INTERACTIVE_MODE_TOUCH = 2;
+    public static final int INTERACTIVE_MODE_MOTION_WITH_TOUCH = 3;
 
     // display mode
-    public static final int DISPLAY_MODE_NORMAL = 3;
-    public static final int DISPLAY_MODE_GLASS = 4;
+    public static final int DISPLAY_MODE_NORMAL = 101;
+    public static final int DISPLAY_MODE_GLASS = 102;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private InteractiveModeManager mInteractiveModeManager;

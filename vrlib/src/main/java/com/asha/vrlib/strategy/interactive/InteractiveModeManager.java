@@ -8,6 +8,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.ModeManager;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,6 +16,11 @@ import java.util.List;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> implements IInteractiveMode {
+
+    private static int[] sModes = {MDVRLibrary.INTERACTIVE_MODE_MOTION,
+            MDVRLibrary.INTERACTIVE_MODE_TOUCH,
+            MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH,
+    };
 
     public static class Params{
         public List<MD360Director> mDirectorList;
@@ -31,9 +37,11 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
 
     @Override
     public void switchMode(Activity activity) {
-        int nextMode = getMode() == MDVRLibrary.INTERACTIVE_MODE_MOTION ?
-                MDVRLibrary.INTERACTIVE_MODE_TOUCH
-                : MDVRLibrary.INTERACTIVE_MODE_MOTION;
+        int mode = getMode();
+        int index = Arrays.binarySearch(sModes, mode);
+        int nextIndex = (index + 1) %  sModes.length;
+        int nextMode = sModes[nextIndex];
+
         switchMode(activity,nextMode);
         if (mIsResumed) onResume(activity);
     }
@@ -43,6 +51,8 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         switch (mode){
             case MDVRLibrary.INTERACTIVE_MODE_MOTION:
                 return new MotionStrategy(mParams);
+            case MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH:
+                return new MotionWithTouchStrategy(mParams);
             case MDVRLibrary.INTERACTIVE_MODE_TOUCH:
             default:
                 return new TouchStrategy(mParams);
