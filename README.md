@@ -15,6 +15,8 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+* better way to render multi screen. note:*Only* one GLSurfaceView required now!!
+* add motion with touch strategy.
 
 
 ## Release Note
@@ -142,7 +144,7 @@ protected MDVRLibrary createVRLibrary() {
                     Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                 }
             })
-            .build(R.id.surface_view1,R.id.surface_view2);
+            .build(R.id.surface_view);
 }
 
 ```
@@ -155,7 +157,7 @@ protected MDVRLibrary createVRLibrary() {
     return MDVRLibrary.with(this)
             .....
             .pinchEnabled(true) //disable by default
-            .build(R.id.surface_view1,R.id.surface_view2);
+            .build(R.id.surface_view);
 }
 ```
 
@@ -175,7 +177,7 @@ protected MDVRLibrary createVRLibrary() {
                     Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
                 }
             })
-            .build(R.id.surface_view1,R.id.surface_view2);
+            .build(R.id.surface_view);
 }
 
 ```
@@ -188,7 +190,7 @@ protected MDVRLibrary createVRLibrary() {
             ...
             .directorFactory(new DirectorFactory()) //替换默认MD360DirectorFactory
             ...
-            .build(R.id.surface_view1,R.id.surface_view2);
+            .build(R.id.surface_view);
 }
 
 private static class DirectorFactory extends MD360DirectorFactory{
@@ -210,7 +212,7 @@ MDVRLibrary.with(this)
 ....
 .motionDelay(SensorManager.SENSOR_DELAY_GAME)
 ...
-.build(R.id.surface_view1,R.id.surface_view2);
+.build(R.id.surface_view);
 ```
 * support sensorCallback
 ```java
@@ -228,7 +230,7 @@ MDVRLibrary.with(this)
     }
 })
 ....
-.build(R.id.surface_view1,R.id.surface_view2);
+.build(R.id.surface_view);
 ```
 
 ## Reference

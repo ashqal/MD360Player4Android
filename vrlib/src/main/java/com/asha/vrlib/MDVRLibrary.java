@@ -32,6 +32,7 @@ import static com.asha.vrlib.common.VRUtil.notNull;
 public class MDVRLibrary {
 
     private static final String TAG = "MDVRLibrary";
+    private static final int sMultiScreenSize = 2;
 
     // interactive mode
     public static final int INTERACTIVE_MODE_MOTION = 1;
@@ -61,13 +62,14 @@ public class MDVRLibrary {
         mSurface = builder.texture;
         mDirectorFactory = builder.directorFactory;
 
-        mDirectorList = new LinkedList<>();
-
-        // init glSurfaceViews
-        initWithGLSurfaceViewIds(builder.activity,builder.glSurfaceViewId);
-
         // init DisplayModeManager
         mDisplayModeManager = new DisplayModeManager(builder.displayMode);
+
+        mDirectorList = new LinkedList<>();
+        initDirectorList();
+
+        // init glSurfaceViews
+        initWithGLSurfaceViewId(builder.activity,builder.glSurfaceViewId);
 
         // init InteractiveModeManager
         InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
@@ -107,7 +109,14 @@ public class MDVRLibrary {
         });
     }
 
-    private void initWithGLSurfaceViewIds(Activity activity, int glSurfaceViewId){
+    private void initDirectorList() {
+        for (int i = 0; i < sMultiScreenSize; i++){
+            MD360Director director = mDirectorFactory.createDirector(i);
+            mDirectorList.add(director);
+        }
+    }
+
+    private void initWithGLSurfaceViewId(Activity activity, int glSurfaceViewId){
         GLSurfaceView glSurfaceView = (GLSurfaceView) activity.findViewById(glSurfaceViewId);
         initOpenGL(activity,glSurfaceView, mSurface);
     }
@@ -115,19 +124,17 @@ public class MDVRLibrary {
     private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
         if (GLUtil.supportsEs2(context)) {
             // Request an OpenGL ES 2.0 compatible context.
-            int index = mDirectorList.size();
             glSurfaceView.setEGLContextClientVersion(2);
-            MD360Director director = mDirectorFactory.createDirector(index);
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setTexture(texture)
-                    .setDirector(director)
+                    .setDirectors(mDirectorList)
+                    .setDisplayModeManager(mDisplayModeManager)
                     .setContentType(mContentType)
                     .build();
 
             // Set the renderer to our demo renderer, defined below.
             glSurfaceView.setRenderer(renderer);
 
-            mDirectorList.add(director);
             mRenderer = renderer;
             mGLSurfaceView = glSurfaceView;
         } else {

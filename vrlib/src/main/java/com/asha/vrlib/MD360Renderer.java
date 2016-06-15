@@ -6,7 +6,10 @@ import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
+import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.texture.MD360Texture;
+
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -27,19 +30,21 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private MDAbsObject3D mObject3D;
 	private MD360Program mProgram;
 	private MD360Texture mTexture;
+	private DisplayModeManager mDisplayModeManager;
 	private Fps mFps = new Fps();
 	private int mWidth;
 	private int mHeight;
 
 	// final
 	private final Context mContext;
-	private final MD360Director mDirector;
+	private final List<MD360Director> mDirectors;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
 		mTexture = params.texture;
-		mDirector = params.director;
+		mDirectors = params.directors;
 		mObject3D = params.object3D;
+		mDisplayModeManager = params.displayModeManager;
 		mProgram = new MD360Program(params.contentType);
 	}
 
@@ -86,15 +91,19 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		boolean updated = mTexture.updateTexture();
 		if(updated){
-			int size = 2;
+			int size = mDisplayModeManager.getVisibleSize();
 			int itemWidth = (int) (this.mWidth * 1.0f / size);
 			for (int i = 0; i < size; i++){
+
+				if (i >= mDirectors.size()) return;
+
+				MD360Director director = mDirectors.get(i);
 
 				// Set the OpenGL viewport to the same size as the surface.
 				GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
 
 				// Update Projection
-				mDirector.updateProjection(itemWidth, mHeight);
+				director.updateProjection(itemWidth, mHeight);
 
 				// Set our per-vertex lighting program.
 				mProgram.use();
@@ -107,7 +116,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 				glCheck("glUniform1i");
 
 				// Pass in the combined matrix.
-				mDirector.shot(mProgram);
+				director.shot(mProgram);
 
 				mObject3D.draw();
 			}
@@ -139,15 +148,15 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public static class Builder{
 		private Context context;
 		private MD360Texture texture;
-		private MD360Director director;
+		private List<MD360Director> directors;
 		private MDAbsObject3D object3D;
 		private int contentType = MDVRLibrary.ContentType.DEFAULT;
+		private DisplayModeManager displayModeManager;
 
 		private Builder() {
 		}
 
 		public MD360Renderer build(){
-			if (director == null) director = MD360Director.builder().build();
 			return new MD360Renderer(this);
 		}
 
@@ -166,13 +175,18 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			return this;
 		}
 
-		public Builder setDirector(MD360Director director) {
-			this.director = director;
+		public Builder setDirectors(List<MD360Director> directors) {
+			this.directors = directors;
 			return this;
 		}
 
 		public Builder setObject3D(MDAbsObject3D object3D) {
 			this.object3D = object3D;
+			return this;
+		}
+
+		public Builder setDisplayModeManager(DisplayModeManager displayModeManager) {
+			this.displayModeManager = displayModeManager;
 			return this;
 		}
 	}

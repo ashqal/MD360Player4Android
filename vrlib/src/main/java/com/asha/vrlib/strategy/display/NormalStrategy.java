@@ -21,6 +21,6 @@ public class NormalStrategy extends AbsDisplayStrategy {
 
     @Override
     public int getVisibleSize() {
-        return 0;
+        return 1;
     }
 }
