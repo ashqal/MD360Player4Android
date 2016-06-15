@@ -1,9 +1,6 @@
 package com.asha.vrlib.strategy.display;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
-
-import java.util.List;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -11,16 +8,12 @@ import java.util.List;
  */
 public class GlassStrategy extends AbsDisplayStrategy {
 
-    public GlassStrategy(List<GLSurfaceView> glSurfaceViewList) {
-        super(glSurfaceViewList);
+    public GlassStrategy() {
     }
 
 
     @Override
-    public void on(Activity activity) {
-        int max = getGLSurfaceViewList().size();
-       setVisibleSize(max);
-    }
+    public void on(Activity activity) {}
 
     @Override
     public void off(Activity activity) {}
@@ -32,6 +25,6 @@ public class GlassStrategy extends AbsDisplayStrategy {
 
     @Override
     public int getVisibleSize() {
-        return getGLSurfaceViewList().size();
+        return 2;
     }
 }

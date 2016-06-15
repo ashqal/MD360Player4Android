@@ -60,6 +60,18 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
+    public boolean updateTexture() {
+        AsyncCallback asyncCallback = mCallbackList.get(Thread.currentThread().toString());
+        if (asyncCallback != null && asyncCallback.hasBitmap()){
+            Bitmap bitmap = asyncCallback.getBitmap();
+            int textureId = getCurrentTextureId();
+            textureInThread(textureId,bitmap);
+            asyncCallback.releaseBitmap();
+        }
+        return true;
+    }
+
+    @Override
     public void release() {
         super.release();
         Collection<AsyncCallback> callbacks = mCallbackList.values();
@@ -69,18 +81,6 @@ public class MD360BitmapTexture extends MD360Texture {
         mCallbackList.clear();
 
         mMainHandler = null;
-    }
-
-    @Override
-    synchronized public void syncDrawInContext(ISyncDrawCallback callback) {
-        AsyncCallback asyncCallback = mCallbackList.get(Thread.currentThread().toString());
-        if (asyncCallback != null && asyncCallback.hasBitmap()){
-            Bitmap bitmap = asyncCallback.getBitmap();
-            int textureId = getCurrentTextureId();
-            textureInThread(textureId,bitmap);
-            asyncCallback.releaseBitmap();
-        }
-        callback.onDrawOpenGL();
     }
 
     private void textureInThread(int textureId, Bitmap bitmap) {

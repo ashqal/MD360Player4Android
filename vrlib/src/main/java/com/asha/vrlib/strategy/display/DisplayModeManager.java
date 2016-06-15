@@ -1,12 +1,9 @@
 package com.asha.vrlib.strategy.display;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.ModeManager;
-
-import java.util.List;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -14,10 +11,8 @@ import java.util.List;
  */
 public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implements IDisplayMode {
 
-    private List<GLSurfaceView> mGLSurfaceViews;
-    public DisplayModeManager(int mode, List<GLSurfaceView> glSurfaceViews) {
+    public DisplayModeManager(int mode) {
         super(mode);
-        this.mGLSurfaceViews = glSurfaceViews;
     }
 
     @Override
@@ -32,10 +27,10 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
     protected AbsDisplayStrategy createStrategy(int mode) {
         switch (mode){
             case MDVRLibrary.DISPLAY_MODE_GLASS:
-                return new GlassStrategy(mGLSurfaceViews);
+                return new GlassStrategy();
             case MDVRLibrary.DISPLAY_MODE_NORMAL:
             default:
-                return new NormalStrategy(mGLSurfaceViews);
+                return new NormalStrategy();
         }
     }
 

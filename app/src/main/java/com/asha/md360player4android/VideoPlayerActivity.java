@@ -62,7 +62,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .build(R.id.surface_view1,R.id.surface_view2);
+                .build(R.id.surface_view);
     }
 
     @Override

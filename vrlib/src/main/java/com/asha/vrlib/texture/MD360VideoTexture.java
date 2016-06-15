@@ -15,7 +15,7 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public abstract class MD360VideoTexture extends MD360Texture {
+public class MD360VideoTexture extends MD360Texture {
 
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
@@ -38,6 +38,7 @@ public abstract class MD360VideoTexture extends MD360Texture {
             mSurface.release();
         }
         mSurface = null;
+
     }
 
     @Override
@@ -51,17 +52,13 @@ public abstract class MD360VideoTexture extends MD360Texture {
 
     private void onCreateSurface(int glSurfaceTextureId) {
         if ( mSurfaceTexture == null ) {
-            // attach the texture to a surface.
-            // It's a clue class for rendering an android view to gl level
+            //attach the texture to a surface.
+            //It's a clue class for rendering an android view to gl level
             mSurfaceTexture = new SurfaceTexture(glSurfaceTextureId);
-
-            onSurfaceTextureCreated(mSurfaceTexture);
-
             mSurfaceTexture.setDefaultBufferSize(getWidth(), getHeight());
             mSurface = new Surface(mSurfaceTexture);
-            if (mOnSurfaceReadyListener != null){
+            if (mOnSurfaceReadyListener != null)
                 mOnSurfaceReadyListener.onSurfaceReady(mSurface);
-            }
         }
     }
 
@@ -70,12 +67,6 @@ public abstract class MD360VideoTexture extends MD360Texture {
         if (mSurfaceTexture != null)
             mSurfaceTexture.setDefaultBufferSize(width,height);
     }
-
-    @Override
-    synchronized public void syncDrawInContext(ISyncDrawCallback callback){
-        drawActually(callback, mSurfaceTexture);
-    }
-
 
     @Override
     protected int createTextureId() {
@@ -97,7 +88,12 @@ public abstract class MD360VideoTexture extends MD360Texture {
         return textures[0];
     }
 
-    abstract protected void onSurfaceTextureCreated(SurfaceTexture mSurfaceTexture);
+    @Override
+    public boolean updateTexture() {
+        int glSurfaceTexture = getCurrentTextureId();
+        if (isEmpty(glSurfaceTexture)) return false;
 
-    abstract protected void drawActually(ISyncDrawCallback callback, SurfaceTexture surfaceTexture);
+        mSurfaceTexture.updateTexImage();
+        return true;
+    }
 }

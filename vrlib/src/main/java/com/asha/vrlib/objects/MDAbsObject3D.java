@@ -26,22 +26,7 @@ public abstract class MDAbsObject3D {
     private boolean mChanged;
 
     public MDAbsObject3D() {
-    }
 
-    public static MDAbsObject3D duplicate(MDAbsObject3D object3D){
-        MDAbsObject3D obj = new MDAbsObject3D(){
-
-            @Override
-            protected void executeLoad(Context context) {
-                // nop
-            }
-        };
-        obj.mVerticesBuffer = object3D.getVerticesBuffer().duplicate();
-        obj.mTexCoordinateBuffer = object3D.getTexCoordinateBuffer().duplicate();
-        if (object3D.getIndicesBuffer() != null)
-            obj.mIndicesBuffer = object3D.getIndicesBuffer().duplicate();
-        obj.mNumIndices = object3D.getNumIndices();
-        return obj;
     }
 
     public void markChanged(){

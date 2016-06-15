@@ -38,6 +38,7 @@ public abstract class MD360Texture {
         }
     }
 
+
     public void release() {}
 
     protected int getCurrentTextureId(){
@@ -61,10 +62,5 @@ public abstract class MD360Texture {
 
     abstract protected int createTextureId();
 
-    // may called from multi thread
-    abstract public void syncDrawInContext(ISyncDrawCallback callback);
-
-    public interface ISyncDrawCallback {
-        void onDrawOpenGL();
-    }
+    abstract public boolean updateTexture();
 }

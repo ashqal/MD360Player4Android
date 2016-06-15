@@ -1,9 +1,6 @@
 package com.asha.vrlib.strategy.display;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
-
-import java.util.List;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -11,14 +8,8 @@ import java.util.List;
  */
 public class NormalStrategy extends AbsDisplayStrategy {
 
-    public NormalStrategy(List<GLSurfaceView> glSurfaceViewList) {
-        super(glSurfaceViewList);
-    }
-
     @Override
-    public void on(Activity activity) {
-        setVisibleSize(1);
-    }
+    public void on(Activity activity) {}
 
     @Override
     public void off(Activity activity) {}
@@ -30,6 +21,6 @@ public class NormalStrategy extends AbsDisplayStrategy {
 
     @Override
     public int getVisibleSize() {
-        return 1;
+        return 0;
     }
 }

@@ -20,7 +20,7 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * @see Builder
  * @see #with(Context)
  */
-public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISyncDrawCallback {
+public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private static final String TAG = "MD360Renderer";
 
@@ -28,11 +28,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 	private MD360Program mProgram;
 	private MD360Texture mTexture;
 	private Fps mFps = new Fps();
+	private int mWidth;
+	private int mHeight;
 
 	// final
 	private final Context mContext;
 	private final MD360Director mDirector;
-	private MDStatusManager.Status mStatus;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
@@ -66,48 +67,53 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height){
-		// Set the OpenGL viewport to the same size as the surface.
-		GLES20.glViewport(0, 0, width, height);
+
+		this.mWidth = width;
+		this.mHeight = height;
 
 		// Update surface
 		mTexture.resize(width,height);
 
-		// Update Projection
-		mDirector.updateProjection(width,height);
 	}
 
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-		if (mStatus == null) return;
-		if (mStatus.isAllReady()){
-			mTexture.syncDrawInContext(this);
-		} else {
-			mStatus.ready();
-		}
 		// mFps.step();
-	}
-
-	@Override
-	public void onDrawOpenGL() {
 
 		// check obj3d
 		if (mObject3D == null) return;
 
-		// Set our per-vertex lighting program.
-		mProgram.use();
-		glCheck("mProgram use");
+		boolean updated = mTexture.updateTexture();
+		if(updated){
+			int size = 2;
+			int itemWidth = (int) (this.mWidth * 1.0f / size);
+			for (int i = 0; i < size; i++){
 
-		mObject3D.uploadDataToProgramIfNeed(mProgram);
+				// Set the OpenGL viewport to the same size as the surface.
+				GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
 
-		// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-		GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
-		glCheck("glUniform1i");
+				// Update Projection
+				mDirector.updateProjection(itemWidth, mHeight);
 
-		// Pass in the combined matrix.
-		mDirector.shot(mProgram);
+				// Set our per-vertex lighting program.
+				mProgram.use();
+				glCheck("mProgram use");
 
-		mObject3D.draw();
+				mObject3D.uploadDataToProgramIfNeed(mProgram);
+
+				// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+				GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);
+				glCheck("glUniform1i");
+
+				// Pass in the combined matrix.
+				mDirector.shot(mProgram);
+
+				mObject3D.draw();
+			}
+
+		}
+
 
 	}
 
@@ -128,10 +134,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer, MD360Texture.ISync
 		Builder builder = new Builder();
 		builder.context = context;
 		return builder;
-	}
-
-	public void setStatus(MDStatusManager.Status mStatus) {
-		this.mStatus = mStatus;
 	}
 
 	public static class Builder{

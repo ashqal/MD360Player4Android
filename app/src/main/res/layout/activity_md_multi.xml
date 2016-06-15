@@ -5,21 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".MD360PlayerActivity">
 
-   <LinearLayout
+   <FrameLayout
        android:orientation="horizontal"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
       <android.opengl.GLSurfaceView
-          android:id="@+id/surface_view1"
-          android:layout_weight="1"
-          android:layout_width="0dp"
+          android:id="@+id/surface_view"
+          android:layout_width="match_parent"
           android:layout_height="match_parent" />
-      <android.opengl.GLSurfaceView
-          android:id="@+id/surface_view2"
-          android:layout_weight="1"
-          android:layout_width="0dp"
-          android:layout_height="match_parent" />
-   </LinearLayout>
+   </FrameLayout>
 
    <LinearLayout
        android:layout_width="match_parent"
