@@ -24,7 +24,8 @@ public class MD360Director {
 
     private float mEyeZ = 0f;
     private float mEyeX = 0f;
-    private float mAngle = 0f;
+    private float mAngleX = 0f;
+    private float mAngleY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
     private float mLookX = 0f;
@@ -44,7 +45,8 @@ public class MD360Director {
         this.mEyeZ = builder.mEyeZ;
         this.mRatio = builder.mRatio;
         this.mNearScale = builder.mNearScale;
-        this.mAngle = builder.mAngle;
+        this.mAngleX = builder.mAngleX;
+        this.mAngleY = builder.mAngleY;
         this.mEyeX = builder.mEyeX;
         this.mLookX = builder.mLookX;
         initCamera();
@@ -92,7 +94,8 @@ public class MD360Director {
         Matrix.setIdentityM(mAccumulatedRotation, 0);
         Matrix.setIdentityM(mSensorMatrix, 0);
         // Model Matrix
-        updateModelRotate(mAngle);
+        updateModelRotateX(mAngleX);
+        updateModelRotateY(mAngleY);
     }
 
     public void shot(MD360Program program) {
@@ -100,8 +103,8 @@ public class MD360Director {
         Matrix.setIdentityM(mModelMatrix, 0);
 
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngle, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleY, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleX, 0.0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
 
         // set the accumulated rotation to the result.
@@ -146,8 +149,12 @@ public class MD360Director {
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
     }
 
-    protected void updateModelRotate(float a) {
-        mAngle = a;
+    protected void updateModelRotateX(float a) {
+        mAngleX = a;
+    }
+
+    protected void updateModelRotateY(float a) {
+        mAngleY = a;
     }
 
     protected void updateProjectionNearScale(float scale){
@@ -175,11 +182,12 @@ public class MD360Director {
 
     public static class Builder {
         private float mEyeZ = 0f;
-        private float mAngle = 0;
+        private float mAngleX = 0;
         private float mRatio = 1.5f;
         private float mNearScale = 1;
         private float mEyeX = 0f;
         private float mLookX = 0f;
+        private float mAngleY = 0;
 
         public Builder setLookX(float mLookX) {
             this.mLookX = mLookX;
@@ -196,8 +204,24 @@ public class MD360Director {
             return this;
         }
 
-        public Builder setAngle(float mAngle) {
-            this.mAngle = mAngle;
+
+        /**
+         * Deprecated since 1.4.0, please use {@link #setAngleX(float)}
+         * @param a
+         * @return
+         */
+        @Deprecated
+        public Builder setAngle(float a) {
+            return setAngleX(a);
+        }
+
+        public Builder setAngleX(float mAngle) {
+            this.mAngleX = mAngle;
+            return this;
+        }
+
+        public Builder setAngleY(float mAngle) {
+            this.mAngleY = mAngle;
             return this;
         }
 
