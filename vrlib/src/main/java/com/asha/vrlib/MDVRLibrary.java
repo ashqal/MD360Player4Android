@@ -14,6 +14,7 @@ import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDDome3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
+import com.asha.vrlib.objects.MDSphere3D;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
@@ -82,7 +83,7 @@ public class MDVRLibrary {
         mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
 
-        MDObject3DHelper.loadObj(builder.activity, new MDDome3D(), new MDObject3DHelper.LoadComplete() {
+        MDObject3DHelper.loadObj(builder.activity, builder.object3D, new MDObject3DHelper.LoadComplete() {
             @Override
             public void onComplete(MDAbsObject3D object3D) {
                 mRenderer.updateObject3D(object3D);
@@ -260,6 +261,7 @@ public class MDVRLibrary {
         public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         public SensorEventListener sensorListener;
         public GLSurfaceView glSurfaceView;
+        public MDAbsObject3D object3D;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -280,6 +282,16 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder displayAsDome(){
+            object3D = new MDDome3D();
+            return this;
+        }
+
+        public Builder displayAsSphere(){
+            object3D = new MDSphere3D();
+            return this;
+        }
+
         /**
          * Deprecated since 1.1!
          * use {@link #video} instead.
@@ -289,16 +301,42 @@ public class MDVRLibrary {
          */
         @Deprecated
         public Builder callback(IOnSurfaceReadyCallback callback){
-            return video(callback);
+            return asVideo(callback);
         }
 
+        /**
+         * Deprecated since 1.5!
+         * Please use {@link #asVideo}
+         *
+         * @param callback callback if the surface is created.
+         * @return builder
+         */
+        @Deprecated
         public Builder video(IOnSurfaceReadyCallback callback){
+            asVideo(callback);
+            return this;
+        }
+
+        /**
+         * Deprecated since 1.5!
+         * Please use {@link #asBitmap}
+         *
+         * @param bitmapProvider provide the bitmap.
+         * @return builder
+         */
+        @Deprecated
+        public Builder bitmap(IBitmapProvider bitmapProvider){
+            asBitmap(bitmapProvider);
+            return this;
+        }
+
+        public Builder asVideo(IOnSurfaceReadyCallback callback){
             texture = new MD360VideoTexture(callback);
             contentType = ContentType.VIDEO;
             return this;
         }
 
-        public Builder bitmap(IBitmapProvider bitmapProvider){
+        public Builder asBitmap(IBitmapProvider bitmapProvider){
             notNull(bitmapProvider, "bitmap Provider can't be null!");
             texture = new MD360BitmapTexture(bitmapProvider);
             contentType = ContentType.BITMAP;
@@ -358,6 +396,7 @@ public class MDVRLibrary {
         public MDVRLibrary build(GLSurfaceView glSurfaceView){
             notNull(texture,"You must call video/bitmap function in before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
+            if (this.object3D == null) displayAsSphere();
             this.glSurfaceView = glSurfaceView;
             return new MDVRLibrary(this);
         }
@@ -369,10 +408,8 @@ public class MDVRLibrary {
          * @return vr lib
          */
         public MDVRLibrary build(int glSurfaceViewId){
-            notNull(texture,"You must call video/bitmap function in before build");
-            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
             this.glSurfaceView = (GLSurfaceView) activity.findViewById(glSurfaceViewId);
-            return new MDVRLibrary(this);
+            return build(this.glSurfaceView);
         }
 
     }

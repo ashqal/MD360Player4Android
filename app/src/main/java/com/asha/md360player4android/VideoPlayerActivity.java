@@ -41,7 +41,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                .video(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
                         mMediaPlayerWrapper.getPlayer().setSurface(surface);
@@ -55,6 +55,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
                     }
                 })
+                .displayAsDome()
                 .pinchEnabled(true)
                 .gesture(new MDVRLibrary.IGestureListener() {
                     @Override
