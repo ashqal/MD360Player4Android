@@ -16,6 +16,17 @@ It is a lite library to render 360 degree panorama video for Android.
 ## Last Commit
 **`-SNAPSHOT`**
 * make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` and `switchDisplayMode(Activity activity, int mode)`.
+* add dome support. Such as,
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+    		...
+            .displayAsDome() //default is displayAsShpere()
+            ...
+            .build(R.id.surface_view);
+}
+```
 
 ## Release Note
 
