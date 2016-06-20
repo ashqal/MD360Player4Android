@@ -293,8 +293,9 @@ public class MDVRLibrary {
         }
 
         /**
-         * Deprecated since 1.1!
-         * use {@link #video} instead.
+         * Deprecated since 1.1.0!
+         * Will remove in 2.0.0!
+         * Please use {@link #video} instead.
          *
          * @param callback IOnSurfaceReadyCallback
          * @return builder
@@ -305,8 +306,9 @@ public class MDVRLibrary {
         }
 
         /**
-         * Deprecated since 1.5!
-         * Please use {@link #asVideo}
+         * Deprecated since 1.5.0!
+         * Will remove in 2.0.0!
+         * Please use {@link #asVideo} instead.
          *
          * @param callback callback if the surface is created.
          * @return builder
@@ -318,8 +320,9 @@ public class MDVRLibrary {
         }
 
         /**
-         * Deprecated since 1.5!
-         * Please use {@link #asBitmap}
+         * Deprecated since 1.5.0!
+         * Will remove in 2.0.0!
+         * Please use {@link #asBitmap} instead.
          *
          * @param bitmapProvider provide the bitmap.
          * @return builder
