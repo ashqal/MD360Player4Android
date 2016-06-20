@@ -15,6 +15,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+* make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` and `switchDisplayMode(Activity activity, int mode)`.
 
 ## Release Note
 
