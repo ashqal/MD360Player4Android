@@ -69,7 +69,7 @@ public class MDVRLibrary {
         initDirectorList();
 
         // init glSurfaceViews
-        initWithGLSurfaceViewId(builder.activity,builder.glSurfaceViewId);
+        initOpenGL(builder.activity, builder.glSurfaceView, mSurface);
 
         // init InteractiveModeManager
         InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
@@ -114,11 +114,6 @@ public class MDVRLibrary {
             MD360Director director = mDirectorFactory.createDirector(i);
             mDirectorList.add(director);
         }
-    }
-
-    private void initWithGLSurfaceViewId(Activity activity, int glSurfaceViewId){
-        GLSurfaceView glSurfaceView = (GLSurfaceView) activity.findViewById(glSurfaceViewId);
-        initOpenGL(activity,glSurfaceView, mSurface);
     }
 
     private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
@@ -222,10 +217,12 @@ public class MDVRLibrary {
         return new Builder(activity);
     }
 
+    /**
+     *
+     */
     public static class Builder {
         private int displayMode = DISPLAY_MODE_NORMAL;
         private int interactiveMode = INTERACTIVE_MODE_MOTION;
-        private int glSurfaceViewId;
         private Activity activity;
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;
@@ -235,6 +232,7 @@ public class MDVRLibrary {
         public MD360DirectorFactory directorFactory;
         public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         public SensorEventListener sensorListener;
+        public GLSurfaceView glSurfaceView;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -330,10 +328,23 @@ public class MDVRLibrary {
             return this;
         }
 
+        public MDVRLibrary build(GLSurfaceView glSurfaceView){
+            notNull(texture,"You must call video/bitmap function in before build");
+            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
+            this.glSurfaceView = glSurfaceView;
+            return new MDVRLibrary(this);
+        }
+
+        /**
+         * build it!
+         *
+         * @param glSurfaceViewId will find the GLSurfaceView by glSurfaceViewId in the giving {@link #activity}
+         * @return vr lib
+         */
         public MDVRLibrary build(int glSurfaceViewId){
             notNull(texture,"You must call video/bitmap function in before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
-            this.glSurfaceViewId = glSurfaceViewId;
+            this.glSurfaceView = (GLSurfaceView) activity.findViewById(glSurfaceViewId);
             return new MDVRLibrary(this);
         }
 
