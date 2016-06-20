@@ -40,7 +40,7 @@ public abstract class ModeManager<T extends IModeStrategy> {
         }
     }
 
-    protected void switchMode(Activity activity, int mode){
+    public void switchMode(Activity activity, int mode){
         if (mode == getMode()) return;
         mMode = mode;
         initMode(activity,mMode);

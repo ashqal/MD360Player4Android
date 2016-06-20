@@ -142,8 +142,35 @@ public class MDVRLibrary {
         mInteractiveModeManager.switchMode(activity);
     }
 
+    /**
+     * Switch Interactive Mode
+     *
+     * @param activity activity
+     * @param mode mode
+     *
+     * {@link #INTERACTIVE_MODE_MOTION}
+     * {@link #INTERACTIVE_MODE_TOUCH}
+     * {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
+     */
+    public void switchInteractiveMode(Activity activity, int mode){
+        mInteractiveModeManager.switchMode(activity,mode);
+    }
+
     public void switchDisplayMode(Activity activity){
         mDisplayModeManager.switchMode(activity);
+    }
+
+    /**
+     * Switch Display Mode
+     *
+     * @param activity activity
+     * @param mode mode
+     *
+     * {@link #DISPLAY_MODE_GLASS}
+     * {@link #DISPLAY_MODE_NORMAL}
+     */
+    public void switchDisplayMode(Activity activity, int mode){
+        mDisplayModeManager.switchMode(activity,mode);
     }
 
     public void resetTouch(){
