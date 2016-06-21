@@ -261,7 +261,7 @@ MDVRLibrary.with(this)
 * Open a new issue.
 * or ashqalcn@gmail.com
 * or QQ Group.<br/>
-![QQ Group](https://cloud.githubusercontent.com/assets/5126517/15381968/5a0e56a2-1db7-11e6-986e-462d96dd5e02.jpeg)
+![QQ Group](https://cloud.githubusercontent.com/assets/5126517/16213934/e398b010-3785-11e6-8877-5d88d9dc3f33.jpeg)
 
 ##LICENSE
 ```
