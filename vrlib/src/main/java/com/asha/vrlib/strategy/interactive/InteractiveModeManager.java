@@ -43,6 +43,11 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         int nextMode = sModes[nextIndex];
 
         switchMode(activity,nextMode);
+    }
+
+    @Override
+    public void switchMode(Activity activity, int mode) {
+        super.switchMode(activity, mode);
         if (mIsResumed) onResume(activity);
     }
 
