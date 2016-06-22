@@ -147,6 +147,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     public void onDestroy() {
         stop();
         if (mPlayer != null) {
+            mPlayer.setSurface(null);
             mPlayer.release();
         }
         mPlayer = null;
