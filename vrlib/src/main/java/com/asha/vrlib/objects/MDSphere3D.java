@@ -13,6 +13,8 @@ import java.nio.ShortBuffer;
  */
 public class MDSphere3D extends MDAbsObject3D {
 
+    private static final String TAG = "MDSphere3D";
+
     @Override
     protected void executeLoad(Context context) {
         generateSphere(this);
@@ -28,17 +30,20 @@ public class MDSphere3D extends MDAbsObject3D {
     private static void generateSphere(float radius, int rings, int sectors, MDAbsObject3D object3D) {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
-        float R = 1f/(float)(rings-1);
-        float S = 1f/(float)(sectors-1);
+
+        float R = 1f/(float)rings;
+        float S = 1f/(float)sectors;
         short r, s;
         float x, y, z;
 
-        float[] points = new float[rings * sectors * 3];
-        float[] texcoords = new float[rings * sectors * 2];
+        int numPoint = (rings + 1) * (sectors + 1);
+        float[] vertexs = new float[numPoint * 3];
+        float[] texcoords = new float[numPoint * 2];
+        short[] indices = new short[numPoint * 6];
 
-        int t = 0, v = 0, n = 0;
-        for(r = 0; r < rings; r++) {
-            for(s = 0; s < sectors; s++) {
+        int t = 0, v = 0;
+        for(r = 0; r < rings + 1; r++) {
+            for(s = 0; s < sectors + 1; s++) {
                 x = (float) (Math.cos(2*PI * s * S) * Math.sin( PI * r * R ));
                 y = - (float) Math.sin( -PI_2 + PI * r * R );
                 z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
@@ -46,31 +51,32 @@ public class MDSphere3D extends MDAbsObject3D {
                 texcoords[t++] = s*S;
                 texcoords[t++] = r*R;
 
-                points[v++] = x * radius;
-                points[v++] = y * radius;
-                points[v++] = z * radius;
+                vertexs[v++] = x * radius;
+                vertexs[v++] = y * radius;
+                vertexs[v++] = z * radius;
             }
         }
-        int counter = 0;
-        short[] indices = new short[rings * sectors * 6];
-        for(r = 0; r < rings - 1; r++){
-            for(s = 0; s < sectors-1; s++) {
 
-                indices[counter++] = (short) (r * sectors + s);       //(a)
-                indices[counter++] = (short) ((r+1) * sectors + (s));    //(b)
-                indices[counter++] = (short) ((r) * sectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * sectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * sectors + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * sectors + (s+1));  // (d)
+        int counter = 0;
+        int sectorsPlusOne = sectors + 1;
+        for(r = 0; r < rings; r++){
+            for(s = 0; s < sectors; s++) {
+                indices[counter++] = (short) (r * sectorsPlusOne + s);       //(a)
+                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
+                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
             }
         }
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 4 bytes per float)
-                points.length * 4);
+                vertexs.length * 4);
         bb.order(ByteOrder.nativeOrder());
         FloatBuffer vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(points);
+        vertexBuffer.put(vertexs);
         vertexBuffer.position(0);
 
         // initialize vertex byte buffer for shape coordinates
