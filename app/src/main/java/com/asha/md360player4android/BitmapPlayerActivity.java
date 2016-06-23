@@ -12,6 +12,9 @@ import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
+import static com.squareup.picasso.MemoryPolicy.NO_STORE;
+
 /**
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
@@ -44,7 +47,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
 
             }
         };
-        Picasso.with(getApplicationContext()).load(uri).into(mTarget);
+        Picasso.with(getApplicationContext()).load(uri).resize(3072,2048).centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(mTarget);
     }
 
     @Override
@@ -52,12 +55,13 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                .bitmap(new MDVRLibrary.IBitmapProvider() {
+                .asBitmap(new MDVRLibrary.IBitmapProvider() {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
                         loadImage(getUri(),callback);
                     }
                 })
+                //.displayAsDome()
                 .gesture(new MDVRLibrary.IGestureListener() {
                     @Override
                     public void onClick(MotionEvent e) {

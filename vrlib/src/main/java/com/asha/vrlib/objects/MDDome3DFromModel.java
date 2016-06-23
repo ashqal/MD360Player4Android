@@ -1,15 +1,16 @@
 package com.asha.vrlib.objects;
 
+
 import android.content.Context;
 
 /**
- * Created by hzqiujiadi on 16/1/8.
+ * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MDSphere3D48 extends MDAbsObject3D {
+public class MDDome3DFromModel extends MDAbsObject3D {
 
     @Override
     protected void executeLoad(Context context) {
-        // GLUtil.loadObject3D(context, R.raw.sphere48,this);
+        // GLUtil.loadObject3D(context, R.raw.dome,this);
     }
 }

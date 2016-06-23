@@ -3,7 +3,6 @@ package com.asha.vrlib.objects;
 
 import android.content.Context;
 
-import com.asha.vrlib.R;
 import com.asha.vrlib.common.GLUtil;
 
 /**
@@ -14,6 +13,10 @@ public class MDDome3D extends MDAbsObject3D {
 
     @Override
     protected void executeLoad(Context context) {
-        GLUtil.loadObject3D(context, R.raw.dome,this);
+        generateSphere(this);
+    }
+
+    private static void generateSphere(MDAbsObject3D object3D) {
+        GLUtil.generateSphere(18,150,180f,object3D);
     }
 }
