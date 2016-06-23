@@ -37,7 +37,7 @@ public class DemoActivity extends AppCompatActivity {
         findViewById(R.id.bitmap_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = getDrawableUri(R.drawable.texture);
+                Uri uri = getDrawableUri(R.drawable.dome_pic);
                 MD360PlayerActivity.startBitmap(DemoActivity.this, uri);
             }
         });

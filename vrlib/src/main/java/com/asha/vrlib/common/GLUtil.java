@@ -218,4 +218,5 @@ public class GLUtil {
 
         //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);
     }
+
 }
