@@ -22,13 +22,15 @@ public class MD360Director {
 
     private static final float sNear = 0.7f;
 
-    private float mEyeZ = 0f;
     private float mEyeX = 0f;
+    private float mEyeY = 0f;
+    private float mEyeZ = 0f;
+    private float mLookX = 0f;
+    private float mLookY = 0f;
     private float mAngleX = 0f;
     private float mAngleY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
-    private float mLookX = 0f;
 
     private float[] mCurrentRotation = new float[16];
     private float[] mAccumulatedRotation = new float[16];
@@ -42,13 +44,15 @@ public class MD360Director {
     private float mDeltaY;
 
     private MD360Director(Builder builder) {
-        this.mEyeZ = builder.mEyeZ;
         this.mRatio = builder.mRatio;
         this.mNearScale = builder.mNearScale;
         this.mAngleX = builder.mAngleX;
         this.mAngleY = builder.mAngleY;
         this.mEyeX = builder.mEyeX;
+        this.mEyeY = builder.mEyeY;
+        this.mEyeZ = builder.mEyeZ;
         this.mLookX = builder.mLookX;
+        this.mLookY = builder.mLookY;
         initCamera();
         initModel();
     }
@@ -137,10 +141,10 @@ public class MD360Director {
 
     private void updateViewMatrix() {
         final float eyeX = mEyeX;
-        final float eyeY = 0.0f;
+        final float eyeY = mEyeY;
         final float eyeZ = mEyeZ;
         final float lookX = mLookX;
-        final float lookY = 0.0f;
+        final float lookY = mLookY;
         final float lookZ = -1.0f;
         final float upX = 0.0f;
         final float upY = 1.0f;
@@ -181,16 +185,23 @@ public class MD360Director {
     }
 
     public static class Builder {
-        private float mEyeZ = 0f;
-        private float mAngleX = 0;
-        private float mRatio = 1.5f;
-        private float mNearScale = 1;
         private float mEyeX = 0f;
+        private float mEyeY = 0f;
+        private float mEyeZ = 0f;
+        private float mAngleX = 0f;
+        private float mRatio = 1.5f;
+        private float mNearScale = 1f;
         private float mLookX = 0f;
-        private float mAngleY = 0;
+        private float mLookY = 0f;
+        private float mAngleY = 0f;
 
         public Builder setLookX(float mLookX) {
             this.mLookX = mLookX;
+            return this;
+        }
+
+        public Builder setLookY(float mLookY) {
+            this.mLookY = mLookY;
             return this;
         }
 
@@ -199,11 +210,15 @@ public class MD360Director {
             return this;
         }
 
+        public Builder setEyeY(float mEyeY) {
+            this.mEyeY = mEyeY;
+            return this;
+        }
+
         public Builder setEyeZ(float mEyeZ) {
             this.mEyeZ = mEyeZ;
             return this;
         }
-
 
         /**
          * Deprecated since 1.4.0, please use {@link #setAngleX(float)}

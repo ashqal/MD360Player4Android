@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 /**
@@ -220,93 +219,4 @@ public class GLUtil {
         //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);
     }
 
-    /****
-     * copied from https://github.com/shulja/viredero/blob/a7d28b21d762e8479dc10cde1aa88054497ff649/viredroid/src/main/java/org/viredero/viredroid/Sphere.java
-     * */
-    public static void generateSphere(float radius, int sectors, float degreeY, MDAbsObject3D object3D) {
-        final float PI = (float) Math.PI;
-        final float PI_2 = (float) (Math.PI / 2);
-
-        float percent = degreeY / 360;
-        int rings = sectors >> 1;
-
-        float R = 1f/rings;
-        float S = 1f/sectors;
-        short r, s;
-        float x, y, z;
-
-        int lenRings = (int) (rings * percent) + 1;
-        int lenSectors = sectors + 1;
-        int numPoint = lenRings * lenSectors;
-
-        float[] vertexs = new float[numPoint * 3];
-        float[] texcoords = new float[numPoint * 2];
-        short[] indices = new short[numPoint * 6];
-
-        int t = 0, v = 0;
-        for(r = 0; r < lenRings; r++) {
-            for(s = 0; s < lenSectors; s++) {
-                x = (float) (Math.cos( 2 * PI * s * S ) * Math.sin( PI * r * R ));
-                y = - (float) Math.sin( -PI_2 + PI * r * R );
-                z = (float) (Math.sin( 2 * PI * s * S ) * Math.sin( PI * r * R ));
-
-                float a = (float) (Math.cos( 2 * PI * r * R / percent) * s * S)/2.0f + 1/2.0f;
-                float b = (float) (Math.sin( 2 * PI * r * R / percent) * s * S)/2.0f + 1/2.0f;
-                texcoords[t++] = b;
-                texcoords[t++] = a;
-
-                Log.d(TAG,"a=" + a + ",b=" + b);
-
-
-
-                vertexs[v++] = x * radius;
-                vertexs[v++] = y * radius;
-                vertexs[v++] = z * radius;
-            }
-            Log.e(TAG,"r++ r=:" + r);
-        }
-
-        int counter = 0;
-        for(r = 0; r < lenRings - 1; r++){
-            for(s = 0; s < lenSectors - 1; s++) {
-                indices[counter++] = (short) (r * lenSectors + s);       //(a)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s));    //(b)
-                indices[counter++] = (short) ((r) * lenSectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * lenSectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s+1));  // (d)
-            }
-        }
-
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 4 bytes per float)
-                vertexs.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        FloatBuffer vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(vertexs);
-        vertexBuffer.position(0);
-
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer cc = ByteBuffer.allocateDirect(
-                texcoords.length * 4);
-        cc.order(ByteOrder.nativeOrder());
-        FloatBuffer texBuffer = cc.asFloatBuffer();
-        texBuffer.put(texcoords);
-        texBuffer.position(0);
-
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                indices.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        ShortBuffer indexBuffer = dlb.asShortBuffer();
-        indexBuffer.put(indices);
-        indexBuffer.position(0);
-
-        object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(texBuffer);
-        object3D.setVerticesBuffer(vertexBuffer);
-        object3D.setNumIndices(indices.length);
-    }
 }

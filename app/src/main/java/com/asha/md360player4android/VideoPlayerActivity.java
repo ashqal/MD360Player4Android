@@ -55,7 +55,6 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
                     }
                 })
-                .displayAsDome()
                 .pinchEnabled(true)
                 .gesture(new MDVRLibrary.IGestureListener() {
                     @Override
