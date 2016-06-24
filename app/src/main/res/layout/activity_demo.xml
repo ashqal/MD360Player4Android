@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:text="http://192.168.5.108/vr/halfdome.mp4"
+            android:text="file:///mnt/sdcard/28.mp4"
             android:id="@+id/edit_text_url"
             android:layout_width="0dp"
             android:layout_weight="4"

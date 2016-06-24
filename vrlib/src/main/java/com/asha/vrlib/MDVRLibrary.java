@@ -44,6 +44,9 @@ public class MDVRLibrary {
     public static final int DISPLAY_MODE_NORMAL = 101;
     public static final int DISPLAY_MODE_GLASS = 102;
 
+    // projection mode
+    public static final int PROJECTION_MODE_SPHERE = 201;
+
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private InteractiveModeManager mInteractiveModeManager;
     private DisplayModeManager mDisplayModeManager;
