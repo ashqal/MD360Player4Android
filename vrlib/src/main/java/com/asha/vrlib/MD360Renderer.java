@@ -38,12 +38,10 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	// final
 	private final Context mContext;
-	private final List<MD360Director> mDirectors;
 
 	private MD360Renderer(Builder params){
 		mContext = params.context;
 		mTexture = params.texture;
-		mDirectors = params.directors;
 		mDisplayModeManager = params.displayModeManager;
 		mProjectionModeManager = params.projectionModeManager;
 		mProgram = new MD360Program(params.contentType);
@@ -86,11 +84,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		if(updated){
 			int size = mDisplayModeManager.getVisibleSize();
 			int itemWidth = (int) (this.mWidth * 1.0f / size);
+			List<MD360Director> directors = mProjectionModeManager.getDirectors();
 			for (int i = 0; i < size; i++){
 
-				if (i >= mDirectors.size()) return;
+				if (i >= directors.size()) return;
 
-				MD360Director director = mDirectors.get(i);
+				MD360Director director = directors.get(i);
 
 				// Set the OpenGL viewport to the same size as the surface.
 				GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
@@ -143,7 +142,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public static class Builder{
 		private Context context;
 		private MD360Texture texture;
-		private List<MD360Director> directors;
 		private int contentType = MDVRLibrary.ContentType.DEFAULT;
 		private DisplayModeManager displayModeManager;
 		private ProjectionModeManager projectionModeManager;
@@ -167,11 +165,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		 */
 		public Builder setTexture(MD360Texture texture){
 			this.texture = texture;
-			return this;
-		}
-
-		public Builder setDirectors(List<MD360Director> directors) {
-			this.directors = directors;
 			return this;
 		}
 

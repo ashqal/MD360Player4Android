@@ -35,12 +35,14 @@ public abstract class ModeManager<T extends IModeStrategy> {
     abstract protected int[] getModes();
 
     private void initMode(Activity activity, int mode){
-        if (mStrategy != null) mStrategy.off(activity);
+        if (mStrategy != null){
+            off(activity);
+        }
         mStrategy = createStrategy(mode);
         if (!mStrategy.isSupport(activity)){
             if (mCallback != null) mCallback.onNotSupport(mode);
         } else {
-            mStrategy.on(activity);
+            on(activity);
         }
     }
 

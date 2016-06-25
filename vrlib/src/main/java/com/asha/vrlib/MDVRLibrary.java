@@ -19,7 +19,6 @@ import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 import com.asha.vrlib.texture.MD360VideoTexture;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.asha.vrlib.common.VRUtil.notNull;
@@ -31,7 +30,7 @@ import static com.asha.vrlib.common.VRUtil.notNull;
 public class MDVRLibrary {
 
     private static final String TAG = "MDVRLibrary";
-    private static final int sMultiScreenSize = 2;
+    public static final int sMultiScreenSize = 2;
 
     // interactive mode
     public static final int INTERACTIVE_MODE_MOTION = 1;
@@ -48,6 +47,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_DOME230 = 203;
     public static final int PROJECTION_MODE_DOME180_UPPER = 204;
     public static final int PROJECTION_MODE_DOME230_UPPER = 205;
+    public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private RectF mTextureSize = new RectF(0,0,1024,1024);
@@ -55,11 +55,9 @@ public class MDVRLibrary {
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
 
-    private List<MD360Director> mDirectorList;
     private GLSurfaceView mGLSurfaceView;
     private MD360Texture mSurface;
     private MDTouchHelper mTouchHelper;
-    private MD360DirectorFactory mDirectorFactory;
 
     // video or image
     private int mContentType;
@@ -67,10 +65,6 @@ public class MDVRLibrary {
     private MDVRLibrary(Builder builder) {
         mContentType = builder.contentType;
         mSurface = builder.texture;
-        mDirectorFactory = builder.directorFactory;
-
-        // init director
-        initDirectorList();
 
         // init mode manager
         initModeManager(builder);
@@ -90,7 +84,8 @@ public class MDVRLibrary {
 
             @Override
             public void onPinch(float scale) {
-                for (MD360Director director : mDirectorList){
+                List<MD360Director> directors = mProjectionModeManager.getDirectors();
+                for (MD360Director director : directors){
                     director.updateProjectionNearScale(scale);
                 }
             }
@@ -98,30 +93,26 @@ public class MDVRLibrary {
         });
     }
 
-    private void initDirectorList() {
-        mDirectorList = new LinkedList<>();
-        for (int i = 0; i < sMultiScreenSize; i++){
-            MD360Director director = mDirectorFactory.createDirector(i);
-            mDirectorList.add(director);
-        }
-    }
-
     private void initModeManager(Builder builder) {
+
+        // init ProjectionModeManager
+        ProjectionModeManager.Params projectionManagerParams = new ProjectionModeManager.Params();
+        projectionManagerParams.textureSize = mTextureSize;
+        projectionManagerParams.directorFactory = builder.directorFactory;
+        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, projectionManagerParams);
+        mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
+
         // init DisplayModeManager
         mDisplayModeManager = new DisplayModeManager(builder.displayMode);
         mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         // init InteractiveModeManager
         InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
-        interactiveManagerParams.mDirectorList = mDirectorList;
+        interactiveManagerParams.projectionModeManager = mProjectionModeManager;
         interactiveManagerParams.mMotionDelay = builder.motionDelay;
         interactiveManagerParams.mSensorListener = builder.sensorListener;
         mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
-
-        // init ProjectionModeManager
-        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, mTextureSize);
-        mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
     private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
@@ -130,7 +121,6 @@ public class MDVRLibrary {
             glSurfaceView.setEGLContextClientVersion(2);
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setTexture(texture)
-                    .setDirectors(mDirectorList)
                     .setDisplayModeManager(mDisplayModeManager)
                     .setProjectionModeManager(mProjectionModeManager)
                     .setContentType(mContentType)
@@ -186,7 +176,8 @@ public class MDVRLibrary {
     }
 
     public void resetTouch(){
-        for (MD360Director director : mDirectorList){
+        List<MD360Director> directors = mProjectionModeManager.getDirectors();
+        for (MD360Director director : directors){
             director.reset();
         }
     }

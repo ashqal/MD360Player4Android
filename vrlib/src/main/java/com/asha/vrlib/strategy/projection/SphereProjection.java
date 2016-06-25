@@ -1,7 +1,6 @@
 package com.asha.vrlib.strategy.projection;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
@@ -13,7 +12,7 @@ import com.asha.vrlib.objects.MDSphere3D;
  */
 public class SphereProjection extends AbsProjectionStrategy {
 
-    MDAbsObject3D object3D;
+    private MDAbsObject3D object3D;
 
     public SphereProjection() {
 

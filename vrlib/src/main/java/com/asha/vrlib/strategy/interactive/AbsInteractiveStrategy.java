@@ -22,6 +22,6 @@ public abstract class AbsInteractiveStrategy implements IModeStrategy, IInteract
     }
 
     protected List<MD360Director> getDirectorList() {
-        return params.mDirectorList;
+        return params.projectionModeManager.getDirectors();
     }
 }

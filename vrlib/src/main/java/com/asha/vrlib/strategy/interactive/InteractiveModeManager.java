@@ -3,11 +3,9 @@ package com.asha.vrlib.strategy.interactive;
 import android.app.Activity;
 import android.hardware.SensorEventListener;
 
-import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.ModeManager;
-
-import java.util.List;
+import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -21,9 +19,9 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     };
 
     public static class Params{
-        public List<MD360Director> mDirectorList;
         public int mMotionDelay;
         public SensorEventListener mSensorListener;
+        public ProjectionModeManager projectionModeManager;
     }
 
     private Params mParams;

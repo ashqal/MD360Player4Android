@@ -40,6 +40,7 @@ public abstract class MD360PlayerActivity extends Activity {
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230,"DOME 230");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180_UPPER,"DOME 180 UPPER");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230_UPPER,"DOME 230 UPPER");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE,"STEREO SPHERE");
     }
 
 

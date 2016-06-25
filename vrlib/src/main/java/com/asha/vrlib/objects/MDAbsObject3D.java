@@ -44,7 +44,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void uploadVerticesBufferIfNeed(MD360Program program, int index){
-        FloatBuffer vertexBuffer = getVerticesBuffer();
+        FloatBuffer vertexBuffer = getVerticesBuffer(index);
         if (vertexBuffer == null) return;
 
         if (mVerticesChanged){
@@ -60,7 +60,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index){
-        FloatBuffer textureBuffer = getTexCoordinateBuffer();
+        FloatBuffer textureBuffer = getTexCoordinateBuffer(index);
         if (textureBuffer == null) return;
 
         if (mTexCoordinateChanged){
@@ -85,7 +85,7 @@ public abstract class MDAbsObject3D {
         this.mNumIndices = mNumIndices;
     }
 
-    public FloatBuffer getVerticesBuffer() {
+    public FloatBuffer getVerticesBuffer(int index) {
         return mVerticesBuffer;
     }
 
@@ -93,7 +93,7 @@ public abstract class MDAbsObject3D {
         this.mVerticesBuffer = verticesBuffer;
     }
 
-    public FloatBuffer getTexCoordinateBuffer() {
+    public FloatBuffer getTexCoordinateBuffer(int index) {
         return mTexCoordinateBuffer;
     }
 

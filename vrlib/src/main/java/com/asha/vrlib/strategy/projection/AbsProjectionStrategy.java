@@ -2,6 +2,7 @@ package com.asha.vrlib.strategy.projection;
 
 import android.content.Context;
 
+import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.strategy.IModeStrategy;
 
 /**
@@ -19,4 +20,6 @@ public abstract class AbsProjectionStrategy implements IModeStrategy, IProjectio
     public void onPause(Context context) {
 
     }
+
+    protected MD360DirectorFactory hijackDirectorFactory(){ return null; }
 }
