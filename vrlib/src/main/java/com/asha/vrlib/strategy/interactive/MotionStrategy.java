@@ -16,10 +16,15 @@ import com.asha.vrlib.common.VRUtil;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class MotionStrategy extends AbsInteractiveStrategy implements SensorEventListener {
+
     private static final String TAG = "MotionStrategy";
+
     private int mDeviceRotation;
+
     private float[] mSensorMatrix = new float[16];
+
     private boolean mRegistered = false;
+
     private Boolean mIsSupport = null;
 
     public MotionStrategy(InteractiveModeManager.Params params) {

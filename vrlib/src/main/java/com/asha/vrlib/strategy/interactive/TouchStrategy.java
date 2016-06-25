@@ -13,7 +13,9 @@ import com.asha.vrlib.MD360Director;
 public class TouchStrategy extends AbsInteractiveStrategy {
 
     private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
+
     private static final float sDamping = 0.2f;
+
     private static final String TAG = "TouchStrategy";
 
     public TouchStrategy(InteractiveModeManager.Params params) {

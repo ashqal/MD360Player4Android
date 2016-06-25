@@ -96,11 +96,11 @@ public abstract class MD360PlayerActivity extends Activity {
 
         SpinnerHelper.with(this)
                 .setData(sProjectionMode)
-                // .setDefault(mVRLibrary.getInteractiveMode())
+                .setDefault(mVRLibrary.getProjectionMode())
                 .setClickHandler(new SpinnerHelper.ClickHandler() {
                     @Override
                     public void onSpinnerClicked(int index, int key, String value) {
-                        mVRLibrary.switchInteractiveMode(MD360PlayerActivity.this, key);
+                        mVRLibrary.switchProjectionMode(MD360PlayerActivity.this, key);
                     }
                 })
                 .init(R.id.spinner_projection);

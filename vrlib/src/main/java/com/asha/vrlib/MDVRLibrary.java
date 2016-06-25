@@ -13,10 +13,10 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDDome3D;
-import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDSphere3D;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
+import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 import com.asha.vrlib.texture.MD360VideoTexture;
@@ -50,10 +50,10 @@ public class MDVRLibrary {
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private InteractiveModeManager mInteractiveModeManager;
     private DisplayModeManager mDisplayModeManager;
+    private ProjectionModeManager mProjectionModeManager;
 
     private List<MD360Director> mDirectorList;
     private GLSurfaceView mGLSurfaceView;
-    private MD360Renderer mRenderer;
     private MD360Texture mSurface;
     private MDTouchHelper mTouchHelper;
     private MD360DirectorFactory mDirectorFactory;
@@ -66,32 +66,14 @@ public class MDVRLibrary {
         mSurface = builder.texture;
         mDirectorFactory = builder.directorFactory;
 
-        // init DisplayModeManager
-        mDisplayModeManager = new DisplayModeManager(builder.displayMode);
-
-        mDirectorList = new LinkedList<>();
+        // init director
         initDirectorList();
+
+        // init mode manager
+        initModeManager(builder);
 
         // init glSurfaceViews
         initOpenGL(builder.activity, builder.glSurfaceView, mSurface);
-
-        // init InteractiveModeManager
-        InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
-        interactiveManagerParams.mDirectorList = mDirectorList;
-        interactiveManagerParams.mMotionDelay = builder.motionDelay;
-        interactiveManagerParams.mSensorListener = builder.sensorListener;
-        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
-
-        // prepare
-        mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
-        mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
-
-        MDObject3DHelper.loadObj(builder.activity, builder.object3D, new MDObject3DHelper.LoadComplete() {
-            @Override
-            public void onComplete(MDAbsObject3D object3D) {
-                mRenderer.updateObject3D(object3D);
-            }
-        });
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
@@ -114,10 +96,29 @@ public class MDVRLibrary {
     }
 
     private void initDirectorList() {
+        mDirectorList = new LinkedList<>();
         for (int i = 0; i < sMultiScreenSize; i++){
             MD360Director director = mDirectorFactory.createDirector(i);
             mDirectorList.add(director);
         }
+    }
+
+    private void initModeManager(Builder builder) {
+        // init DisplayModeManager
+        mDisplayModeManager = new DisplayModeManager(builder.displayMode);
+        mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
+
+        // init InteractiveModeManager
+        InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
+        interactiveManagerParams.mDirectorList = mDirectorList;
+        interactiveManagerParams.mMotionDelay = builder.motionDelay;
+        interactiveManagerParams.mSensorListener = builder.sensorListener;
+        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
+        mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
+
+        // init ProjectionModeManager
+        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode);
+        mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
     private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
@@ -128,13 +129,12 @@ public class MDVRLibrary {
                     .setTexture(texture)
                     .setDirectors(mDirectorList)
                     .setDisplayModeManager(mDisplayModeManager)
+                    .setProjectionModeManager(mProjectionModeManager)
                     .setContentType(mContentType)
                     .build();
 
             // Set the renderer to our demo renderer, defined below.
             glSurfaceView.setRenderer(renderer);
-
-            mRenderer = renderer;
             mGLSurfaceView = glSurfaceView;
         } else {
             glSurfaceView.setVisibility(View.GONE);
@@ -175,6 +175,11 @@ public class MDVRLibrary {
      */
     public void switchDisplayMode(Activity activity, int mode){
         mDisplayModeManager.switchMode(activity,mode);
+    }
+
+
+    public void switchProjectionMode(Activity activity, int mode) {
+        mProjectionModeManager.switchMode(activity, mode);
     }
 
     public void resetTouch(){
@@ -223,6 +228,10 @@ public class MDVRLibrary {
         return mDisplayModeManager.getMode();
     }
 
+    public int getProjectionMode(){
+        return mProjectionModeManager.getMode();
+    }
+
     public interface IOnSurfaceReadyCallback {
         void onSurfaceReady(Surface surface);
     }
@@ -254,6 +263,7 @@ public class MDVRLibrary {
     public static class Builder {
         private int displayMode = DISPLAY_MODE_NORMAL;
         private int interactiveMode = INTERACTIVE_MODE_MOTION;
+        private int projectionMode = PROJECTION_MODE_SPHERE;
         private Activity activity;
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;

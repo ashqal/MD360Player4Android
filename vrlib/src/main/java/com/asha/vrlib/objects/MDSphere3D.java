@@ -1,6 +1,7 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,6 +22,7 @@ public class MDSphere3D extends MDAbsObject3D {
     }
 
     private static void generateSphere(MDAbsObject3D object3D) {
+        Log.e(TAG,"MDSphere3D generateSphere");
         generateSphere(18,75,150,object3D);
     }
 

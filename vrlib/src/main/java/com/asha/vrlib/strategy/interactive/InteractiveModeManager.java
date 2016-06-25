@@ -1,14 +1,12 @@
 package com.asha.vrlib.strategy.interactive;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.SensorEventListener;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.ModeManager;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,27 +26,22 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         public SensorEventListener mSensorListener;
     }
 
-    private boolean mIsResumed;
     private Params mParams;
+
     public InteractiveModeManager(int mode, Params params) {
         super(mode);
         mParams = params;
     }
 
     @Override
-    public void switchMode(Activity activity) {
-        int mode = getMode();
-        int index = Arrays.binarySearch(sModes, mode);
-        int nextIndex = (index + 1) %  sModes.length;
-        int nextMode = sModes[nextIndex];
-
-        switchMode(activity,nextMode);
+    protected int[] getModes() {
+        return sModes;
     }
 
     @Override
     public void switchMode(Activity activity, int mode) {
         super.switchMode(activity, mode);
-        if (mIsResumed) onResume(activity);
+        if (isResumed()) onResume(activity);
     }
 
     @Override
@@ -64,27 +57,11 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         }
     }
 
-    @Override
-    public void onResume(Context context) {
-        mIsResumed = true;
-        if (getStrategy().isSupport((Activity)context)){
-            getStrategy().onResume(context);
-        }
-    }
-
-    @Override
-    public void onPause(Context context) {
-        mIsResumed = false;
-        if (getStrategy().isSupport((Activity)context)){
-            getStrategy().onPause(context);
-        }
-    }
-
     /**
      * handle touch touch to rotate the model
      *
-     * @param distanceX
-     * @param distanceY
+     * @param distanceX x
+     * @param distanceY y
      * @return true if handled.
      */
     @Override

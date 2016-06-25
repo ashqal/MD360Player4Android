@@ -10,6 +10,7 @@ import java.util.List;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public abstract class AbsInteractiveStrategy implements IModeStrategy, IInteractiveMode {
+
     private InteractiveModeManager.Params params;
 
     public AbsInteractiveStrategy(InteractiveModeManager.Params params) {

@@ -1,8 +1,11 @@
 package com.asha.vrlib.strategy;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.asha.vrlib.MDVRLibrary;
+
+import java.util.Arrays;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -11,6 +14,7 @@ import com.asha.vrlib.MDVRLibrary;
 public abstract class ModeManager<T extends IModeStrategy> {
     private int mMode;
     private T mStrategy;
+    private boolean mIsResumed;
     private MDVRLibrary.INotSupportCallback mCallback;
 
     public ModeManager(int mode) {
@@ -26,9 +30,9 @@ public abstract class ModeManager<T extends IModeStrategy> {
         initMode(activity,mMode);
     }
 
-    abstract public void switchMode(Activity activity);
-
     abstract protected T createStrategy(int mode);
+
+    abstract protected int[] getModes();
 
     private void initMode(Activity activity, int mode){
         if (mStrategy != null) mStrategy.off(activity);
@@ -38,6 +42,16 @@ public abstract class ModeManager<T extends IModeStrategy> {
         } else {
             mStrategy.on(activity);
         }
+    }
+
+    public void switchMode(Activity activity){
+        int[] modes = getModes();
+        int mode = getMode();
+        int index = Arrays.binarySearch(modes, mode);
+        int nextIndex = (index + 1) %  modes.length;
+        int nextMode = modes[nextIndex];
+
+        switchMode(activity,nextMode);
     }
 
     public void switchMode(Activity activity, int mode){
@@ -62,5 +76,23 @@ public abstract class ModeManager<T extends IModeStrategy> {
 
     public int getMode() {
         return mMode;
+    }
+
+    public void onResume(Context context) {
+        mIsResumed = true;
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onResume(context);
+        }
+    }
+
+    public void onPause(Context context) {
+        mIsResumed = false;
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onPause(context);
+        }
+    }
+
+    public boolean isResumed() {
+        return mIsResumed;
     }
 }

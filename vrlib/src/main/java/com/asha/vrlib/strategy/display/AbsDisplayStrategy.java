@@ -1,5 +1,7 @@
 package com.asha.vrlib.strategy.display;
 
+import android.content.Context;
+
 import com.asha.vrlib.strategy.IModeStrategy;
 
 /**
@@ -8,4 +10,13 @@ import com.asha.vrlib.strategy.IModeStrategy;
  */
 public abstract class AbsDisplayStrategy implements IModeStrategy,IDisplayMode {
 
+    @Override
+    public void onResume(Context context) {
+
+    }
+
+    @Override
+    public void onPause(Context context) {
+
+    }
 }

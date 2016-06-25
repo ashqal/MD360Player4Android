@@ -9,7 +9,9 @@ import com.asha.vrlib.MD360Director;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class MotionWithTouchStrategy extends MotionStrategy {
+
     private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
+
     private static final float sDamping = 0.2f;
 
     public MotionWithTouchStrategy(InteractiveModeManager.Params params) {

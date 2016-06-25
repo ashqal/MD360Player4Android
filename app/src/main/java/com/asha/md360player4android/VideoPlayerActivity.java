@@ -40,7 +40,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
     protected MDVRLibrary createVRLibrary() {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
-                .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH)
+                .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {

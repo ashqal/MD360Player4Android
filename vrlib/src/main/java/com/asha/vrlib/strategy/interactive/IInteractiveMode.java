@@ -7,7 +7,10 @@ import android.content.Context;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public interface IInteractiveMode {
+
     void onResume(Context context);
+
     void onPause(Context context);
+
     boolean handleDrag(int distanceX, int distanceY);
 }

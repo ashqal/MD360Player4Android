@@ -12,6 +12,10 @@ public class MDObject3DHelper {
         void onComplete(MDAbsObject3D object3D);
     }
 
+    public static void loadObj(final Context context, final MDAbsObject3D object3D){
+        loadObj(context, object3D, null);
+    }
+
     public static void loadObj(final Context context, final MDAbsObject3D object3D, final LoadComplete loadComplete){
         new Thread(new Runnable() {
             @Override
@@ -19,6 +23,7 @@ public class MDObject3DHelper {
                 object3D.executeLoad(context);
                 if (loadComplete != null)
                     loadComplete.onComplete(object3D);
+                object3D.markChanged();
             }
         }).start();
     }

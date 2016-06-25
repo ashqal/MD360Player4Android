@@ -1,7 +1,5 @@
 package com.asha.vrlib.strategy.display;
 
-import android.app.Activity;
-
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.ModeManager;
 
@@ -11,16 +9,15 @@ import com.asha.vrlib.strategy.ModeManager;
  */
 public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implements IDisplayMode {
 
+    public static int[] sModes = {MDVRLibrary.DISPLAY_MODE_NORMAL, MDVRLibrary.DISPLAY_MODE_GLASS};
+
     public DisplayModeManager(int mode) {
         super(mode);
     }
 
     @Override
-    public void switchMode(Activity activity) {
-        int nextMode = getMode() == MDVRLibrary.DISPLAY_MODE_NORMAL ?
-                MDVRLibrary.DISPLAY_MODE_GLASS
-                : MDVRLibrary.DISPLAY_MODE_NORMAL;
-        switchMode(activity,nextMode);
+    protected int[] getModes() {
+        return sModes;
     }
 
     @Override
