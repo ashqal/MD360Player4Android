@@ -12,9 +12,7 @@ public abstract class AbsProjectionStrategy implements IModeStrategy, IProjectio
 
     @Override
     public void onResume(Context context) {
-        if (getObject3D() != null){
-            getObject3D().markChanged();
-        }
+
     }
 
     @Override

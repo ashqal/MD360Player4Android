@@ -194,7 +194,6 @@ public class MDVRLibrary {
 
     public void onResume(Context context){
         mInteractiveModeManager.onResume(context);
-        mProjectionModeManager.onResume(context);
         if (mGLSurfaceView != null){
             mGLSurfaceView.onResume();
         }
@@ -202,7 +201,6 @@ public class MDVRLibrary {
 
     public void onPause(Context context){
         mInteractiveModeManager.onPause(context);
-        mProjectionModeManager.onPause(context);
         if (mGLSurfaceView != null){
             mGLSurfaceView.onPause();
         }

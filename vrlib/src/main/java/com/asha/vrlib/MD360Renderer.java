@@ -63,6 +63,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		// init
 		initProgram();
 		initTexture();
+		initObject3D();
 	}
 
 	@Override
@@ -129,6 +130,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private void initTexture(){
 		mTexture.create();
+	}
+
+	private void initObject3D() {
+		if (mProjectionModeManager != null && mProjectionModeManager.getObject3D() != null){
+			mProjectionModeManager.getObject3D().markChanged();
+		}
 	}
 
 	public static Builder with(Context context) {
