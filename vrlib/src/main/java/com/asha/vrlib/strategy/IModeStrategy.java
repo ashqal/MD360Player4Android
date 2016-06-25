@@ -8,6 +8,7 @@ import android.content.Context;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public interface IModeStrategy {
+
     void on(Activity activity);
 
     void off(Activity activity);
@@ -17,4 +18,5 @@ public interface IModeStrategy {
     void onResume(Context context);
 
     void onPause(Context context);
+
 }

@@ -34,6 +34,8 @@ public abstract class MDAbsObject3D {
     }
 
     public void uploadDataToProgramIfNeed(MD360Program program){
+        if (mVerticesBuffer == null || mTexCoordinateBuffer == null) return;
+
         if (mChanged){
             // set data to OpenGL
             FloatBuffer vertexBuffer = getVerticesBuffer();
