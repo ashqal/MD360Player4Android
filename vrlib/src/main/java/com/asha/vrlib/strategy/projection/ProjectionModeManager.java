@@ -27,9 +27,13 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     protected AbsProjectionStrategy createStrategy(int mode) {
         switch (mode){
             case MDVRLibrary.PROJECTION_MODE_DOME180:
-                return new Dome180Projection();
+                return new DomeProjection(180f,false);
             case MDVRLibrary.PROJECTION_MODE_DOME230:
-                return new Dome230Projection();
+                return new DomeProjection(230f,false);
+            case MDVRLibrary.PROJECTION_MODE_DOME180_UPPER:
+                return new DomeProjection(180f,true);
+            case MDVRLibrary.PROJECTION_MODE_DOME230_UPPER:
+                return new DomeProjection(230f,true);
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

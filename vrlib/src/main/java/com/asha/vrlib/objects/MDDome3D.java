@@ -16,20 +16,23 @@ public class MDDome3D extends MDAbsObject3D {
 
     float mDegree;
 
-    public MDDome3D(float degree) {
+    boolean mIsUpper;
+
+    public MDDome3D(float degree, boolean isUpper) {
         this.mDegree = degree;
+        this.mIsUpper = isUpper;
     }
 
     @Override
     protected void executeLoad(Context context) {
-        generateDome(mDegree, this);
+        generateDome(mDegree, mIsUpper, this);
     }
 
-    private static void generateDome(float degree, MDAbsObject3D object3D) {
-        generateDome(18,150,degree,object3D);
+    private static void generateDome(float degree, boolean isUpper, MDAbsObject3D object3D) {
+        generateDome(18, 150, degree, isUpper, object3D);
     }
 
-    public static void generateDome(float radius, int sectors, float degreeY, MDAbsObject3D object3D) {
+    public static void generateDome(float radius, int sectors, float degreeY, boolean isUpper, MDAbsObject3D object3D) {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
@@ -49,11 +52,13 @@ public class MDDome3D extends MDAbsObject3D {
         float[] texcoords = new float[numPoint * 2];
         short[] indices = new short[numPoint * 6];
 
+        int upper = isUpper ? 1 : -1;
+
         int t = 0, v = 0;
         for(r = 0; r < lenRings; r++) {
             for(s = 0; s < lenSectors; s++) {
-                x = - (float) (Math.cos( 2 * PI * s * S ) * Math.sin( PI * r * R ));
-                y = (float) Math.sin( -PI_2 + PI * r * R );
+                x = (float) (Math.cos( 2 * PI * s * S ) * Math.sin( PI * r * R )) * upper;
+                y = (float) Math.sin( -PI_2 + PI * r * R ) * -upper;
                 z = (float) (Math.sin( 2 * PI * s * S ) * Math.sin( PI * r * R ));
 
                 float a = (float) (Math.cos( 2 * PI * s * S) * r * R / percent)/2.0f + 1/2.0f;

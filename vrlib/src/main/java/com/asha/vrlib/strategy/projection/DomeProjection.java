@@ -10,13 +10,22 @@ import com.asha.vrlib.objects.MDObject3DHelper;
  * Created by hzqiujiadi on 16/6/25.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class Dome180Projection extends AbsProjectionStrategy {
+public class DomeProjection extends AbsProjectionStrategy {
 
     MDAbsObject3D object3D;
 
+    private float mDegree;
+
+    private boolean mIsUpper;
+
+    public DomeProjection(float degree, boolean isUpper) {
+        this.mDegree = degree;
+        this.mIsUpper = isUpper;
+    }
+
     @Override
     public void on(Activity activity) {
-        object3D = new MDDome3D(180f);
+        object3D = new MDDome3D(mDegree, mIsUpper);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 
