@@ -102,7 +102,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 				mProgram.use();
 				glCheck("mProgram use");
 
-				object3D.uploadDataToProgramIfNeed(mProgram);
+				object3D.uploadVerticesBufferIfNeed(mProgram, i);
+				object3D.uploadTexCoordinateBufferIfNeed(mProgram, i);
 
 				// Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
 				GLES20.glUniform1i(mProgram.getTextureUniformHandle(), 0);

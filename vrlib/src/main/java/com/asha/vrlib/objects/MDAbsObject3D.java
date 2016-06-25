@@ -23,36 +23,55 @@ public abstract class MDAbsObject3D {
     private ShortBuffer mIndicesBuffer;
     private int mNumIndices;
 
-    private boolean mChanged;
+    private boolean mVerticesChanged;
+    private boolean mTexCoordinateChanged;
 
     public MDAbsObject3D() {
 
     }
 
     public void markChanged(){
-        mChanged = true;
+        mVerticesChanged = true;
+        mTexCoordinateChanged = true;
     }
 
-    public void uploadDataToProgramIfNeed(MD360Program program){
-        if (mVerticesBuffer == null || mTexCoordinateBuffer == null) return;
+    public void markVerticesChanged(){
+        mVerticesChanged = true;
+    }
 
-        if (mChanged){
-            // set data to OpenGL
-            FloatBuffer vertexBuffer = getVerticesBuffer();
-            FloatBuffer textureBuffer = getTexCoordinateBuffer();
+    public void markTexCoordinateChanged(){
+        mTexCoordinateChanged = true;
+    }
 
+    public void uploadVerticesBufferIfNeed(MD360Program program, int index){
+        FloatBuffer vertexBuffer = getVerticesBuffer();
+        if (vertexBuffer == null) return;
+
+        if (mVerticesChanged){
             vertexBuffer.position(0);
-            textureBuffer.position(0);
 
+            // set data to OpenGL
             int positionHandle = program.getPositionHandle();
             GLES20.glVertexAttribPointer(positionHandle, sPositionDataSize, GLES20.GL_FLOAT, false, 0, vertexBuffer);
             GLES20.glEnableVertexAttribArray(positionHandle);
 
+            mVerticesChanged = false;
+        }
+    }
+
+    public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index){
+        FloatBuffer textureBuffer = getTexCoordinateBuffer();
+        if (textureBuffer == null) return;
+
+        if (mTexCoordinateChanged){
+            textureBuffer.position(0);
+
+            // set data to OpenGL
             int textureCoordinateHandle = program.getTextureCoordinateHandle();
             GLES20.glVertexAttribPointer(textureCoordinateHandle, sTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, textureBuffer);
             GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
-            mChanged = false;
+            mTexCoordinateChanged = false;
         }
     }
 

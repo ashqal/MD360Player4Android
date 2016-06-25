@@ -36,8 +36,8 @@ public class MDDome3D extends MDAbsObject3D {
     }
 
     @Override
-    public void uploadDataToProgramIfNeed(MD360Program program) {
-        if (super.getTexCoordinateBuffer() == null || super.getVerticesBuffer() == null){
+    public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index) {
+        if (super.getTexCoordinateBuffer() == null){
             return;
         }
 
@@ -61,10 +61,10 @@ public class MDDome3D extends MDAbsObject3D {
             mScaledTexCoordinateBuffer.put(tmp);
             mScaledTexCoordinateBuffer.position(0);
             mPrevRatio = ratio;
-            markChanged();
+            markTexCoordinateChanged();
         }
 
-        super.uploadDataToProgramIfNeed(program);
+        super.uploadTexCoordinateBufferIfNeed(program, index);
     }
 
     @Override
