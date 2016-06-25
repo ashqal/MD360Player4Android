@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy.projection;
 
 import android.app.Activity;
+import android.graphics.RectF;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDDome3D;
@@ -18,14 +19,17 @@ public class DomeProjection extends AbsProjectionStrategy {
 
     private boolean mIsUpper;
 
-    public DomeProjection(float degree, boolean isUpper) {
+    private RectF mTextureSize;
+
+    public DomeProjection(RectF textureSize, float degree, boolean isUpper) {
+        this.mTextureSize = textureSize;
         this.mDegree = degree;
         this.mIsUpper = isUpper;
     }
 
     @Override
     public void on(Activity activity) {
-        object3D = new MDDome3D(mDegree, mIsUpper);
+        object3D = new MDDome3D(mTextureSize, mDegree, mIsUpper);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 

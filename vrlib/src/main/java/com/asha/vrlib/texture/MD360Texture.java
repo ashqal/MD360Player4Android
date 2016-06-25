@@ -11,22 +11,9 @@ package com.asha.vrlib.texture;
 public abstract class MD360Texture {
     private static final int TEXTURE_EMPTY = 0;
     private static final String TAG = "MD360Texture";
-    private int mWidth;
-    private int mHeight;
     private ThreadLocal<Integer> mLocalGLTexture = new ThreadLocal<>();
 
     public MD360Texture() {
-    }
-
-    // may called from multi thread
-    public synchronized void resize(int width,int height){
-        boolean changed = false;
-        if (mWidth == width && mHeight == height) changed = true;
-        mWidth = width;
-        mHeight = height;
-
-        // resize the texture
-        if (changed) onResize(mWidth,mHeight);
     }
 
     // may called from multi thread
@@ -49,16 +36,6 @@ public abstract class MD360Texture {
     final protected boolean isEmpty(int textureId){
         return textureId == TEXTURE_EMPTY;
     }
-
-    public int getWidth() {
-        return mWidth;
-    }
-
-    public int getHeight() {
-        return mHeight;
-    }
-
-    abstract protected void onResize(int width, int height);
 
     abstract protected int createTextureId();
 

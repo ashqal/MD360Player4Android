@@ -118,6 +118,10 @@ public abstract class MD360PlayerActivity extends Activity {
 
     abstract protected MDVRLibrary createVRLibrary();
 
+    public MDVRLibrary getVRLibrary() {
+        return mVRLibrary;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

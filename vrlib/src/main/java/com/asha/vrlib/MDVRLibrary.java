@@ -2,6 +2,7 @@ package com.asha.vrlib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.RectF;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
@@ -49,6 +50,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_DOME230_UPPER = 205;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
+    private RectF mTextureSize = new RectF(0,0,1024,1024);
     private InteractiveModeManager mInteractiveModeManager;
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
@@ -118,7 +120,7 @@ public class MDVRLibrary {
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         // init ProjectionModeManager
-        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode);
+        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, mTextureSize);
         mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
@@ -191,6 +193,10 @@ public class MDVRLibrary {
 
     public void resetPinch(){
         mTouchHelper.reset();
+    }
+
+    public void onTextureSizeChanged(float width, float height){
+        mTextureSize.set(0,0,width,height);
     }
 
     public void onResume(Context context){

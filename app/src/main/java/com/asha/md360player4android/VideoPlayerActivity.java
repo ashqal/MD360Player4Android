@@ -18,6 +18,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
 
     private MediaPlayerWrapper mMediaPlayerWrapper = new MediaPlayerWrapper();
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,12 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             @Override
             public void onPrepared(IMediaPlayer mp) {
                 cancelBusy();
+            }
+        });
+        mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
+            @Override
+            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
+                getVRLibrary().onTextureSizeChanged(width, height);
             }
         });
 

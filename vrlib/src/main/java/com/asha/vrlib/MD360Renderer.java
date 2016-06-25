@@ -68,13 +68,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height){
-
 		this.mWidth = width;
 		this.mHeight = height;
-
-		// Update surface
-		mTexture.resize(width,height);
-
 	}
 
 	@Override

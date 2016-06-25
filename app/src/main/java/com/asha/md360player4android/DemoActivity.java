@@ -25,16 +25,18 @@ public class DemoActivity extends AppCompatActivity {
         final EditText et = (EditText) findViewById(R.id.edit_text_url);
 
         SparseArray<String> data = new SparseArray<>();
-        data.put(-1, "file:///mnt/sdcard/vr/28.mp4");
-        data.put(0, "file:///mnt/sdcard/vr/haha.mp4");
-        data.put(1, "file:///mnt/sdcard/vr/AGSK6416.jpg");
-        data.put(2, "file:///mnt/sdcard/vr/IJUN2902.jpg");
-        data.put(3, "file:///mnt/sdcard/vr/SUYZ2954.jpg");
-        data.put(4, "file:///mnt/sdcard/vr/TEJD0097.jpg");
-        data.put(5, "file:///mnt/sdcard/vr/WSGV6301.jpg");
-        data.put(6, getDrawableUri(R.drawable.dome_pic).toString());
-        data.put(7, getDrawableUri(R.drawable.bitmap360).toString());
-        data.put(8, getDrawableUri(R.drawable.texture).toString());
+        data.put(data.size(), getDrawableUri(R.drawable.dome_pic).toString());
+        data.put(data.size(), getDrawableUri(R.drawable.bitmap360).toString());
+        data.put(data.size(), getDrawableUri(R.drawable.texture).toString());
+        data.put(data.size(), "file:///mnt/sdcard/vr/28.mp4");
+        data.put(data.size(), "file:///mnt/sdcard/vr/haha.mp4");
+        data.put(data.size(), "file:///mnt/sdcard/vr/halfdome.mp4");
+        data.put(data.size(), "file:///mnt/sdcard/vr/dome.mp4");
+        data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
+        data.put(data.size(), "file:///mnt/sdcard/vr/IJUN2902.jpg");
+        data.put(data.size(), "file:///mnt/sdcard/vr/SUYZ2954.jpg");
+        data.put(data.size(), "file:///mnt/sdcard/vr/TEJD0097.jpg");
+        data.put(data.size(), "file:///mnt/sdcard/vr/WSGV6301.jpg");
 
         SpinnerHelper.with(this)
                 .setData(data)

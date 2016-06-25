@@ -31,11 +31,6 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
-    protected void onResize(int width, int height) {
-
-    }
-
-    @Override
     protected int createTextureId() {
         final int[] textureHandle = new int[1];
         GLES20.glGenTextures(1, textureHandle, 0);

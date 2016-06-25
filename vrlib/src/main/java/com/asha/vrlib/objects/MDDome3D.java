@@ -2,6 +2,9 @@ package com.asha.vrlib.objects;
 
 
 import android.content.Context;
+import android.graphics.RectF;
+
+import com.asha.vrlib.MD360Program;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,9 +21,56 @@ public class MDDome3D extends MDAbsObject3D {
 
     boolean mIsUpper;
 
-    public MDDome3D(float degree, boolean isUpper) {
+    RectF mTextureSize;
+
+    float mPrevRatio = 1;
+
+    float[] texcoords;
+
+    private FloatBuffer mScaledTexCoordinateBuffer;
+
+    public MDDome3D(RectF textureSize, float degree, boolean isUpper) {
+        this.mTextureSize = textureSize;
         this.mDegree = degree;
         this.mIsUpper = isUpper;
+    }
+
+    @Override
+    public void uploadDataToProgramIfNeed(MD360Program program) {
+        if (super.getTexCoordinateBuffer() == null || super.getVerticesBuffer() == null){
+            return;
+        }
+
+        float ratio = mTextureSize.width() / mTextureSize.height();
+        if (ratio == 1){
+            mScaledTexCoordinateBuffer = super.getTexCoordinateBuffer();
+        } else if(ratio == mPrevRatio && mScaledTexCoordinateBuffer != null){
+            // nop
+        } else {
+            int size = texcoords.length;
+            float[] tmp = new float[size];
+            for (int i = 0; i < size; i += 2){
+                tmp[i] = (texcoords[i]- 0.5f)/ratio + 0.5f;
+                tmp[i+1] = texcoords[i+1];
+            }
+
+            ByteBuffer cc = ByteBuffer.allocateDirect(
+                    tmp.length * 4);
+            cc.order(ByteOrder.nativeOrder());
+            mScaledTexCoordinateBuffer = cc.asFloatBuffer();
+            mScaledTexCoordinateBuffer.put(tmp);
+            mScaledTexCoordinateBuffer.position(0);
+            mPrevRatio = ratio;
+            markChanged();
+        }
+
+        super.uploadDataToProgramIfNeed(program);
+    }
+
+    @Override
+    public FloatBuffer getTexCoordinateBuffer() {
+        // fix the coordinate if the texture is not square.
+        return mScaledTexCoordinateBuffer;
     }
 
     @Override
@@ -28,11 +78,11 @@ public class MDDome3D extends MDAbsObject3D {
         generateDome(mDegree, mIsUpper, this);
     }
 
-    private static void generateDome(float degree, boolean isUpper, MDAbsObject3D object3D) {
+    private static void generateDome(float degree, boolean isUpper, MDDome3D object3D) {
         generateDome(18, 150, degree, isUpper, object3D);
     }
 
-    public static void generateDome(float radius, int sectors, float degreeY, boolean isUpper, MDAbsObject3D object3D) {
+    public static void generateDome(float radius, int sectors, float degreeY, boolean isUpper, MDDome3D object3D) {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
@@ -61,8 +111,8 @@ public class MDDome3D extends MDAbsObject3D {
                 y = (float) Math.sin( -PI_2 + PI * r * R ) * -upper;
                 z = (float) (Math.sin( 2 * PI * s * S ) * Math.sin( PI * r * R ));
 
-                float a = (float) (Math.cos( 2 * PI * s * S) * r * R / percent)/2.0f + 1/2.0f;
-                float b = (float) (Math.sin( 2 * PI * s * S) * r * R / percent)/2.0f + 1/2.0f;
+                float a = (float) (Math.cos( 2 * PI * s * S) * r * R / percent)/2.0f + 0.5f;
+                float b = (float) (Math.sin( 2 * PI * s * S) * r * R / percent)/2.0f + 0.5f;
 
                 texcoords[t++] = b;
                 texcoords[t++] = a;
@@ -115,5 +165,7 @@ public class MDDome3D extends MDAbsObject3D {
         object3D.setTexCoordinateBuffer(texBuffer);
         object3D.setVerticesBuffer(vertexBuffer);
         object3D.setNumIndices(indices.length);
+
+        object3D.texcoords = texcoords;
     }
 }
