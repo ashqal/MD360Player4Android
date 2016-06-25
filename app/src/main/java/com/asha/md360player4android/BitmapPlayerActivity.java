@@ -61,7 +61,6 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                         loadImage(getUri(),callback);
                     }
                 })
-                .displayAsDome()
                 .gesture(new MDVRLibrary.IGestureListener() {
                     @Override
                     public void onClick(MotionEvent e) {

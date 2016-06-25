@@ -12,7 +12,7 @@ import com.asha.vrlib.strategy.ModeManager;
  */
 public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> implements IProjectionMode {
 
-    public static int[] sModes = {MDVRLibrary.PROJECTION_MODE_SPHERE};
+    public static int[] sModes = {MDVRLibrary.PROJECTION_MODE_SPHERE, MDVRLibrary.PROJECTION_MODE_DOME180, MDVRLibrary.PROJECTION_MODE_DOME230};
 
     public ProjectionModeManager(int mode) {
         super(mode);
@@ -26,6 +26,10 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     @Override
     protected AbsProjectionStrategy createStrategy(int mode) {
         switch (mode){
+            case MDVRLibrary.PROJECTION_MODE_DOME180:
+                return new Dome180Projection();
+            case MDVRLibrary.PROJECTION_MODE_DOME230:
+                return new Dome230Projection();
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

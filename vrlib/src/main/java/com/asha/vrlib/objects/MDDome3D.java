@@ -14,13 +14,19 @@ import java.nio.ShortBuffer;
  */
 public class MDDome3D extends MDAbsObject3D {
 
-    @Override
-    protected void executeLoad(Context context) {
-        generateDome(this);
+    float mDegree;
+
+    public MDDome3D(float degree) {
+        this.mDegree = degree;
     }
 
-    private static void generateDome(MDAbsObject3D object3D) {
-        generateDome(18,150,230f,object3D);
+    @Override
+    protected void executeLoad(Context context) {
+        generateDome(mDegree, this);
+    }
+
+    private static void generateDome(float degree, MDAbsObject3D object3D) {
+        generateDome(18,150,degree,object3D);
     }
 
     public static void generateDome(float radius, int sectors, float degreeY, MDAbsObject3D object3D) {

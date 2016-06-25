@@ -11,9 +11,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
-import com.asha.vrlib.objects.MDAbsObject3D;
-import com.asha.vrlib.objects.MDDome3D;
-import com.asha.vrlib.objects.MDSphere3D;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
@@ -46,6 +43,8 @@ public class MDVRLibrary {
 
     // projection mode
     public static final int PROJECTION_MODE_SPHERE = 201;
+    public static final int PROJECTION_MODE_DOME180 = 202;
+    public static final int PROJECTION_MODE_DOME230 = 203;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private InteractiveModeManager mInteractiveModeManager;
@@ -274,7 +273,6 @@ public class MDVRLibrary {
         public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         public SensorEventListener sensorListener;
         public GLSurfaceView glSurfaceView;
-        public MDAbsObject3D object3D;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -290,18 +288,13 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder projectionMode(int projectionMode){
+            this.projectionMode = projectionMode;
+            return this;
+        }
+
         public Builder ifNotSupport(INotSupportCallback callback){
             this.notSupportCallback = callback;
-            return this;
-        }
-
-        public Builder displayAsDome(){
-            object3D = new MDDome3D();
-            return this;
-        }
-
-        public Builder displayAsSphere(){
-            object3D = new MDSphere3D();
             return this;
         }
 
@@ -412,7 +405,6 @@ public class MDVRLibrary {
         public MDVRLibrary build(GLSurfaceView glSurfaceView){
             notNull(texture,"You must call video/bitmap function in before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
-            if (this.object3D == null) displayAsSphere();
             this.glSurfaceView = glSurfaceView;
             return new MDVRLibrary(this);
         }
