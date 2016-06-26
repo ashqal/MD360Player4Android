@@ -187,7 +187,7 @@ public class MDVRLibrary {
         mTouchHelper.reset();
     }
 
-    public void onTextureSizeChanged(float width, float height){
+    public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }
 

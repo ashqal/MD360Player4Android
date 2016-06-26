@@ -37,7 +37,7 @@ public static final int PROJECTION_MODE_DOME180_UPPER = 204;
 public static final int PROJECTION_MODE_DOME230_UPPER = 205;
 public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
 
-// You should call MDVRLibrary#onTextureSizeChanged(float width, float height)
+// You should call MDVRLibrary#onTextureResize(float width, float height)
 // If you are using DOME projection.
 ```
 

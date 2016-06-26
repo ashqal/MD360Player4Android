@@ -34,7 +34,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 // notify if size changed
-                getVRLibrary().onTextureSizeChanged(bitmap.getWidth(),bitmap.getHeight());
+                getVRLibrary().onTextureResize(bitmap.getWidth(),bitmap.getHeight());
 
                 // texture
                 callback.texture(bitmap);

@@ -32,7 +32,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
             @Override
             public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
-                getVRLibrary().onTextureSizeChanged(width, height);
+                getVRLibrary().onTextureResize(width, height);
             }
         });
 
