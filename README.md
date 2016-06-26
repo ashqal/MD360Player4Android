@@ -18,6 +18,7 @@ It is a lite library to render 360 degree panorama video for Android.
 * make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` , `switchDisplayMode(Activity activity, int mode)` and `switchProjectionMode(Activity activity, int mode)`.
 * add dome support. 
 * add stereo support.
+* add plane support.
 * switch projection in runtime support.
 ```java
 @Override
@@ -36,6 +37,9 @@ public static final int PROJECTION_MODE_DOME230 = 203;
 public static final int PROJECTION_MODE_DOME180_UPPER = 204;
 public static final int PROJECTION_MODE_DOME230_UPPER = 205;
 public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+public static final int PROJECTION_MODE_PLANE_FIT = 207;
+public static final int PROJECTION_MODE_PLANE_CROP = 208;
+public static final int PROJECTION_MODE_PLANE_FULL = 209;
 
 // You should call MDVRLibrary#onTextureResize(float width, float height)
 // If you are using DOME projection.
