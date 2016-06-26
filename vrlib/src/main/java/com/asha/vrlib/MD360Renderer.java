@@ -95,7 +95,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 				GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
 
 				// Update Projection
-				director.updateProjection(itemWidth, mHeight);
+				director.updateViewport(itemWidth, mHeight);
 
 				// Set our per-vertex lighting program.
 				mProgram.use();

@@ -43,7 +43,7 @@ public class MD360Director {
     private float mDeltaX;
     private float mDeltaY;
 
-    private MD360Director(Builder builder) {
+    protected MD360Director(Builder builder) {
         this.mRatio = builder.mRatio;
         this.mNearScale = builder.mNearScale;
         this.mAngleX = builder.mAngleX;
@@ -133,10 +133,36 @@ public class MD360Director {
         GLES20.glUniformMatrix4fv(program.getMVPMatrixHandle(), 1, false, mMVPMatrix, 0);
     }
 
-    public void updateProjection(int width, int height){
+    public void updateViewport(int width, int height){
         // Projection Matrix
         mRatio = width * 1.0f / height;
-        updateProjectionNearScale(mNearScale);
+        updateProjection();
+    }
+
+    protected void updateProjectionNearScale(float scale){
+        mNearScale = scale;
+        updateProjection();
+    }
+
+    protected void updateProjection(){
+        final float left = -mRatio/2;
+        final float right = mRatio/2;
+        final float bottom = -0.5f;
+        final float top = 0.5f;
+        final float far = 500;
+        Matrix.frustumM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
+    }
+
+    protected float getNear(){
+        return mNearScale * sNear;
+    }
+
+    protected float getRatio(){
+        return mRatio;
+    }
+
+    protected float[] getProjectionMatrix(){
+        return mProjectionMatrix;
     }
 
     private void updateViewMatrix() {
@@ -159,16 +185,6 @@ public class MD360Director {
 
     protected void updateModelRotateY(float a) {
         mAngleY = a;
-    }
-
-    protected void updateProjectionNearScale(float scale){
-        mNearScale = scale;
-        final float left = -mRatio/2;
-        final float right = mRatio/2;
-        final float bottom = -0.5f;
-        final float top = 0.5f;
-        final float far = 500;
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, mNearScale * sNear, far);
     }
 
     public void updateSensorMatrix(float[] sensorMatrix) {

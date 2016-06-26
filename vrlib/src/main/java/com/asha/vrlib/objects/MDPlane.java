@@ -32,6 +32,22 @@ public class MDPlane extends MDAbsObject3D {
         generatePlane(this);
     }
 
+    public static float getLeft(float ratio){
+        return -0.5f;
+    }
+
+    public static float getRight(float ratio){
+        return 0.5f;
+    }
+
+    public static float getTop(float ratio){
+        return 0.5f / ratio;
+    }
+
+    public static float getBottom(float ratio){
+        return - 0.5f / ratio;
+    }
+
     @Override
     public void uploadVerticesBufferIfNeed(MD360Program program, int index) {
         if (super.getVerticesBuffer(index) == null){
@@ -69,8 +85,8 @@ public class MDPlane extends MDAbsObject3D {
     private static float[] generateVertex(float ratio){
         int numPoint = 6;
         int z = -8;
-        float width = 10;
-        float height = 10 / ratio;
+        float width = getRight(ratio);
+        float height = getTop(ratio);
         float[] vertexs = new float[numPoint * 3];
         int i = 0;
         vertexs[i*3] = width;
