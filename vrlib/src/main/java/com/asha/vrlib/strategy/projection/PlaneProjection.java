@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy.projection;
 
 import android.app.Activity;
+import android.graphics.RectF;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
@@ -11,11 +12,18 @@ import com.asha.vrlib.objects.MDPlane;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class PlaneProjection extends AbsProjectionStrategy {
+
     MDAbsObject3D object3D;
+
+    private RectF mTextureSize;
+
+    public PlaneProjection(RectF mTextureSize) {
+        this.mTextureSize = mTextureSize;
+    }
 
     @Override
     public void on(Activity activity) {
-        object3D = new MDPlane();
+        object3D = new MDPlane(mTextureSize);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 
