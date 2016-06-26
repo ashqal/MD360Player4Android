@@ -69,8 +69,10 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
                 return new DomeProjection(this.mTextureSize,230f,true);
             case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE:
                 return new StereoSphereProjection();
-            case MDVRLibrary.PROJECTION_MODE_PLANE:
-                return new PlaneProjection(this.mTextureSize);
+            case MDVRLibrary.PROJECTION_MODE_PLANE_FIT:
+            case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
+            case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
+                return PlaneProjection.create(mode,this.mTextureSize);
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

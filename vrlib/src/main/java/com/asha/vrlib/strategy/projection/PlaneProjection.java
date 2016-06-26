@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
+import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
@@ -15,6 +16,178 @@ import com.asha.vrlib.objects.MDPlane;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class PlaneProjection extends AbsProjectionStrategy {
+
+    private MDPlane object3D;
+
+    private PlaneScaleCalculator planeScaleCalculator;
+
+    private PlaneProjection(PlaneScaleCalculator calculator) {
+        planeScaleCalculator = calculator;
+    }
+
+    @Override
+    public void on(Activity activity) {
+        object3D = new MDPlane(planeScaleCalculator);
+        MDObject3DHelper.loadObj(activity, object3D);
+    }
+
+    @Override
+    public void off(Activity activity) {
+
+    }
+
+    @Override
+    public boolean isSupport(Activity activity) {
+        return true;
+    }
+
+    @Override
+    public MDAbsObject3D getObject3D() {
+        return object3D;
+    }
+
+    @Override
+    protected MD360DirectorFactory hijackDirectorFactory() {
+        return new OrthogonalDirectorFactory();
+    }
+
+    public static PlaneProjection create(int scaleType, RectF textureSize){
+        return new PlaneProjection(new PlaneScaleCalculator(scaleType,textureSize));
+    }
+
+    public static class PlaneScaleCalculator{
+
+        private static final float sBaseValue = 1.0f;
+
+        private RectF mTextureSize;
+
+        private float mViewportRatio;
+
+        private int mScaleType;
+
+        private float mViewportWidth = sBaseValue;
+
+        private float mViewportHeight = sBaseValue;
+
+        private float mTextureWidth = sBaseValue;
+
+        private float mTextureHeight = sBaseValue;
+
+        public PlaneScaleCalculator(int scaleType, RectF textureSize) {
+            this.mScaleType = scaleType;
+            this.mTextureSize = textureSize;
+        }
+
+        public float getTextureRatio(){
+            return mTextureSize.width() / mTextureSize.height();
+        }
+
+        public void setViewportRatio(float viewportRatio){
+            this.mViewportRatio = viewportRatio;
+        }
+
+        public void calculate(){
+            float viewportRatio = mViewportRatio;
+            float textureRatio = getTextureRatio();
+
+            switch (this.mScaleType){
+                case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
+                    // fullscreen
+                    mViewportWidth = mViewportHeight = mTextureWidth = mTextureHeight = sBaseValue;
+                    break;
+                case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
+                    if (textureRatio  > viewportRatio){
+                        /**
+                         * crop width of texture
+                         *
+                         * texture
+                         * ----------------------
+                         * |    |          |    |
+                         * |    | viewport |    |
+                         * |    |          |    |
+                         * ----------------------
+                         * */
+                        mViewportWidth = sBaseValue * viewportRatio;
+                        mViewportHeight = sBaseValue;
+
+                        mTextureWidth = sBaseValue * textureRatio;
+                        mTextureHeight = sBaseValue;
+                    } else {
+                        /**
+                         * crop height of texture
+                         *
+                         * texture
+                         * -----------------------
+                         * |---------------------|
+                         * |                     |
+                         * |      viewport       |
+                         * |                     |
+                         * |---------------------|
+                         * -----------------------
+                         * */
+                        mViewportWidth = sBaseValue;
+                        mViewportHeight = sBaseValue / viewportRatio;
+
+                        mTextureWidth = sBaseValue;
+                        mTextureHeight = sBaseValue / textureRatio;
+                    }
+                    break;
+                case MDVRLibrary.PROJECTION_MODE_PLANE_FIT:
+                default:
+                    if (viewportRatio > textureRatio){
+                        /**
+                         * fit height of viewport
+                         *
+                         * viewport
+                         * ---------------------
+                         * |    |         |    |
+                         * |    | texture |    |
+                         * |    |         |    |
+                         * ---------------------
+                         * */
+                        mViewportWidth = sBaseValue * viewportRatio ;
+                        mViewportHeight = sBaseValue;
+
+                        mTextureWidth = sBaseValue * textureRatio;
+                        mTextureHeight = sBaseValue;
+                    } else {
+                        /**
+                         * fit width of viewport
+                         *
+                         * viewport
+                         * -----------------------
+                         * |---------------------|
+                         * |                     |
+                         * |       texture       |
+                         * |                     |
+                         * |---------------------|
+                         * -----------------------
+                         * */
+                        mViewportWidth = sBaseValue;
+                        mViewportHeight = sBaseValue / viewportRatio;
+
+                        mTextureWidth = sBaseValue;
+                        mTextureHeight = sBaseValue / textureRatio;
+                    }
+                    break;
+            }
+        }
+
+        public float getViewportWidth(){
+            return mViewportWidth;
+        }
+        public float getViewportHeight(){
+            return mViewportHeight;
+        }
+
+        public float getTextureWidth(){
+            return mTextureWidth;
+        }
+
+        public float getTextureHeight(){
+            return mTextureHeight;
+        }
+    }
 
     private class OrthogonalDirectorFactory extends MD360DirectorFactory{
         @Override
@@ -46,48 +219,15 @@ public class PlaneProjection extends AbsProjectionStrategy {
 
         @Override
         protected void updateProjection(){
-            float textureRatio = mTextureSize.width() / mTextureSize.height();
-            float viewportRatio = getRatio();
-            final float left = -0.5f;
-            final float right = 0.5f;
-            final float bottom = -0.5f / viewportRatio;
-            final float top = 0.5f / viewportRatio;
+            planeScaleCalculator.setViewportRatio(getRatio());
+            planeScaleCalculator.calculate();
+            final float left = - planeScaleCalculator.getViewportWidth();
+            final float right = planeScaleCalculator.getViewportWidth();
+            final float bottom = - planeScaleCalculator.getViewportHeight();
+            final float top = planeScaleCalculator.getViewportHeight();
             final float far = 500;
             Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
         }
     }
 
-    MDPlane object3D;
-
-    private RectF mTextureSize;
-
-    public PlaneProjection(RectF mTextureSize) {
-        this.mTextureSize = mTextureSize;
-    }
-
-    @Override
-    public void on(Activity activity) {
-        object3D = new MDPlane(mTextureSize);
-        MDObject3DHelper.loadObj(activity, object3D);
-    }
-
-    @Override
-    public void off(Activity activity) {
-
-    }
-
-    @Override
-    public boolean isSupport(Activity activity) {
-        return true;
-    }
-
-    @Override
-    public MDAbsObject3D getObject3D() {
-        return object3D;
-    }
-
-    @Override
-    protected MD360DirectorFactory hijackDirectorFactory() {
-        return new OrthogonalDirectorFactory();
-    }
 }

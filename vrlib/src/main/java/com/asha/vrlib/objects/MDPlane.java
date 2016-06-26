@@ -1,9 +1,9 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
-import android.graphics.RectF;
 
 import com.asha.vrlib.MD360Program;
+import com.asha.vrlib.strategy.projection.PlaneProjection;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,16 +15,16 @@ import java.nio.FloatBuffer;
  */
 public class MDPlane extends MDAbsObject3D {
 
-    private static final float sDefaultRatio = 1.5f;
-
-    private float mPrevRatio = sDefaultRatio;
-
-    private RectF mTextureSize;
+    private static final String TAG = "MDPlane";
+    private float mPrevRatio;
 
     private FloatBuffer mScaledVerticesBuffer;
 
-    public MDPlane(RectF textureSize) {
-        this.mTextureSize = textureSize;
+    private PlaneProjection.PlaneScaleCalculator mCalculator;
+    private static final int sNumPoint = 6;
+
+    public MDPlane(PlaneProjection.PlaneScaleCalculator calculator) {
+        this.mCalculator = calculator;
     }
 
     @Override
@@ -32,35 +32,16 @@ public class MDPlane extends MDAbsObject3D {
         generatePlane(this);
     }
 
-    public static float getLeft(float ratio){
-        return -0.5f;
-    }
-
-    public static float getRight(float ratio){
-        return 0.5f;
-    }
-
-    public static float getTop(float ratio){
-        return 0.5f / ratio;
-    }
-
-    public static float getBottom(float ratio){
-        return - 0.5f / ratio;
-    }
-
     @Override
     public void uploadVerticesBufferIfNeed(MD360Program program, int index) {
         if (super.getVerticesBuffer(index) == null){
             return;
         }
-
-        float ratio = mTextureSize.width() / mTextureSize.height();
-        if (ratio == sDefaultRatio){
+        float ratio = mCalculator.getTextureRatio();
+        if (ratio == mPrevRatio) {
             mScaledVerticesBuffer = super.getVerticesBuffer(index);
-        } else if(ratio == mPrevRatio){
-            // nop
         } else {
-            float[] vertexs = generateVertex(ratio);
+            float[] vertexs = generateVertex();
 
             // initialize vertex byte buffer for shape coordinates
             ByteBuffer bb = ByteBuffer.allocateDirect(
@@ -70,7 +51,6 @@ public class MDPlane extends MDAbsObject3D {
             mScaledVerticesBuffer = bb.asFloatBuffer();
             mScaledVerticesBuffer.put(vertexs);
             mScaledVerticesBuffer.position(0);
-            mPrevRatio = ratio;
             markVerticesChanged();
         }
 
@@ -82,11 +62,15 @@ public class MDPlane extends MDAbsObject3D {
         return mScaledVerticesBuffer;
     }
 
-    private static float[] generateVertex(float ratio){
-        int numPoint = 6;
+    private float[] generateVertex(){
+        int numPoint = sNumPoint;
         int z = -8;
-        float width = getRight(ratio);
-        float height = getTop(ratio);
+
+        mCalculator.calculate();
+        mPrevRatio = mCalculator.getTextureRatio();
+        float width = mCalculator.getTextureWidth();
+        float height = mCalculator.getTextureHeight();
+
         float[] vertexs = new float[numPoint * 3];
         int i = 0;
         vertexs[i*3] = width;
@@ -155,12 +139,11 @@ public class MDPlane extends MDAbsObject3D {
         return texcoords;
     }
 
-    private static void generatePlane(MDAbsObject3D object3D) {
-        int numPoint = 6;
+    private void generatePlane(MDAbsObject3D object3D) {
+        int numPoint = sNumPoint;
 
         float[] texcoords = generateTexcoords();
-        float[] vertexs = generateVertex(sDefaultRatio);
-
+        float[] vertexs = generateVertex();
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
