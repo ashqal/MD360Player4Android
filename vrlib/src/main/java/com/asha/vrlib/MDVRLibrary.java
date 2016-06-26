@@ -48,6 +48,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_DOME180_UPPER = 204;
     public static final int PROJECTION_MODE_DOME230_UPPER = 205;
     public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+    public static final int PROJECTION_MODE_PLANE = 207;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private RectF mTextureSize = new RectF(0,0,1024,1024);
