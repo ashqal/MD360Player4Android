@@ -11,8 +11,7 @@ package com.asha.vrlib.texture;
 public abstract class MD360Texture {
     private static final int TEXTURE_EMPTY = 0;
     private static final String TAG = "MD360Texture";
-    private ThreadLocal<Integer> mLocalGLTexture = new ThreadLocal<>();
-
+    private int mTextureId = TEXTURE_EMPTY;
     public MD360Texture() {
     }
 
@@ -21,16 +20,16 @@ public abstract class MD360Texture {
         int glTexture = createTextureId();
 
         if (glTexture != TEXTURE_EMPTY){
-            mLocalGLTexture.set(glTexture);
+            mTextureId = glTexture;
         }
     }
 
+    abstract public void destroy();
 
-    public void release() {}
+    abstract public void release();
 
     protected int getCurrentTextureId(){
-        Integer value = mLocalGLTexture.get();
-        return value != null ? value : TEXTURE_EMPTY;
+        return mTextureId;
     }
 
     final protected boolean isEmpty(int textureId){

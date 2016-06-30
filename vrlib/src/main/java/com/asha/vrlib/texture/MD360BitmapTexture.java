@@ -32,6 +32,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
     @Override
     protected int createTextureId() {
+
         final int[] textureHandle = new int[1];
         GLES20.glGenTextures(1, textureHandle, 0);
 
@@ -67,15 +68,17 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
-    public void release() {
-        super.release();
+    public void destroy() {
         Collection<AsyncCallback> callbacks = mCallbackList.values();
         for (AsyncCallback callback:callbacks){
             callback.releaseBitmap();
         }
         mCallbackList.clear();
+    }
 
-        mMainHandler = null;
+    @Override
+    public void release() {
+        this.mMainHandler = null;
     }
 
     private void textureInThread(int textureId, Bitmap bitmap) {

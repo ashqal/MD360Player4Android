@@ -59,7 +59,7 @@ public class MDVRLibrary {
     private ProjectionModeManager mProjectionModeManager;
 
     private GLSurfaceView mGLSurfaceView;
-    private MD360Texture mSurface;
+    private MD360Texture mTexture;
     private MDTouchHelper mTouchHelper;
 
     // video or image
@@ -67,13 +67,13 @@ public class MDVRLibrary {
 
     private MDVRLibrary(Builder builder) {
         mContentType = builder.contentType;
-        mSurface = builder.texture;
+        mTexture = builder.texture;
 
         // init mode manager
         initModeManager(builder);
 
         // init glSurfaceViews
-        initOpenGL(builder.activity, builder.glSurfaceView, mSurface);
+        initOpenGL(builder.activity, builder.glSurfaceView, mTexture);
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
@@ -202,13 +202,23 @@ public class MDVRLibrary {
 
     public void onPause(Context context){
         mInteractiveModeManager.onPause(context);
+
         if (mGLSurfaceView != null){
             mGLSurfaceView.onPause();
         }
+
+        if (mTexture != null){
+            mTexture.destroy();
+        }
+
     }
 
     public void onDestroy(){
-        if (mSurface != null) mSurface.release();
+        if (mTexture != null){
+            mTexture.destroy();
+            mTexture.release();
+            mTexture = null;
+        }
     }
 
     /**
@@ -235,6 +245,7 @@ public class MDVRLibrary {
 
     public interface IOnSurfaceReadyCallback {
         void onSurfaceReady(Surface surface);
+        void onSurfaceAbandon();
     }
 
     public interface IBitmapProvider {

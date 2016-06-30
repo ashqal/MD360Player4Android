@@ -27,18 +27,7 @@ public class MD360VideoTexture extends MD360Texture {
 
     @Override
     public void release() {
-        super.release();
-
-        if (mSurfaceTexture != null) {
-            mSurfaceTexture.release();
-        }
-        mSurfaceTexture = null;
-
-        if (mSurface != null) {
-            mSurface.release();
-        }
-        mSurface = null;
-
+        mOnSurfaceReadyListener = null;
     }
 
     @Override
@@ -48,6 +37,19 @@ public class MD360VideoTexture extends MD360Texture {
         if (isEmpty(glSurfaceTexture)) return;
 
         onCreateSurface(glSurfaceTexture);
+    }
+
+    @Override
+    public void destroy() {
+        if (mSurfaceTexture != null) {
+            mSurfaceTexture.release();
+        }
+        mSurfaceTexture = null;
+
+        if (mSurface != null) {
+            mSurface.release();
+        }
+        mSurface = null;
     }
 
     private void onCreateSurface(int glSurfaceTextureId) {

@@ -3,6 +3,7 @@ package com.asha.vrlib;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -56,18 +57,21 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 		
 		// enable depth testing
-		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		// GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
 		// init
 		initProgram();
 		initTexture();
 		initObject3D();
+
+		Log.d(TAG,"onSurfaceCreated");
 	}
 
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height){
 		this.mWidth = width;
 		this.mHeight = height;
+		Log.d(TAG,"onSurfaceChanged");
 	}
 
 	@Override

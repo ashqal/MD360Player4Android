@@ -14,7 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:label="MDMultiDemoActivity" android:name=".VideoPlayerActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape" android:process=":vrPlayer"/>
+        <activity android:label="MDMultiDemoActivity" android:name=".VideoPlayerActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
         <activity android:label="MDMultiDemoActivity" android:name=".BitmapPlayerActivity" android:configChanges="screenSize|orientation" android:screenOrientation="landscape"/>
     </application>
 

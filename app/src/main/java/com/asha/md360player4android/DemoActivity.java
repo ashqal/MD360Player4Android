@@ -35,6 +35,9 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), "file:///mnt/sdcard/vr/halfdome.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/dome.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/stereo.mp4");
+        data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
+        data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
+
 
         data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
         data.put(data.size(), "file:///mnt/sdcard/vr/IJUN2902.jpg");
