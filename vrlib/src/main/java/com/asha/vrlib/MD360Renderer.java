@@ -76,16 +76,15 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 glUnused){
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-		// mFps.step();
-
 		MDAbsObject3D object3D = mProjectionModeManager.getObject3D();
-
 		// check obj3d
 		if (object3D == null) return;
 
 		boolean updated = mTexture.updateTexture();
 		if(updated){
+			GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+			// mFps.step();
+
 			int size = mDisplayModeManager.getVisibleSize();
 			int itemWidth = (int) (this.mWidth * 1.0f / size);
 			List<MD360Director> directors = mProjectionModeManager.getDirectors();
