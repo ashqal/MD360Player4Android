@@ -53,11 +53,6 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                     public void onSurfaceReady(Surface surface) {
                         mMediaPlayerWrapper.getPlayer().setSurface(surface);
                     }
-
-                    @Override
-                    public void onSurfaceAbandon() {
-                        mMediaPlayerWrapper.getPlayer().setSurface(null);
-                    }
                 })
                 .ifNotSupport(new MDVRLibrary.INotSupportCallback() {
                     @Override

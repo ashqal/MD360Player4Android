@@ -245,7 +245,6 @@ public class MDVRLibrary {
 
     public interface IOnSurfaceReadyCallback {
         void onSurfaceReady(Surface surface);
-        void onSurfaceAbandon();
     }
 
     public interface IBitmapProvider {
