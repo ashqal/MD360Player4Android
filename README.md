@@ -242,7 +242,7 @@ MDVRLibrary.with(this)
 .build(R.id.surface_view);
 ```
 
-### switch projection (since 1.5.0)
+### Switch projection (since 1.5.0)
 ```java
 // projection mode in MDVRLibrary.java
 public static final int PROJECTION_MODE_SPHERE = 201;
