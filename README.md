@@ -15,37 +15,15 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+
+## Release Note
+
+**1.5.0**
 * make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` , `switchDisplayMode(Activity activity, int mode)` and `switchProjectionMode(Activity activity, int mode)`.
 * add dome support. 
 * add stereo support.
 * add plane support.
 * switch projection in runtime support.
-```java
-@Override
-protected MDVRLibrary createVRLibrary() {
-    return MDVRLibrary.with(this)
-    		...
-            .projectionMode(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE)
-            ...
-            .build(R.id.surface_view);
-}
-
-// projection mode in MDVRLibrary.java
-public static final int PROJECTION_MODE_SPHERE = 201;
-public static final int PROJECTION_MODE_DOME180 = 202;
-public static final int PROJECTION_MODE_DOME230 = 203;
-public static final int PROJECTION_MODE_DOME180_UPPER = 204;
-public static final int PROJECTION_MODE_DOME230_UPPER = 205;
-public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
-public static final int PROJECTION_MODE_PLANE_FIT = 207;
-public static final int PROJECTION_MODE_PLANE_CROP = 208;
-public static final int PROJECTION_MODE_PLANE_FULL = 209;
-
-// You should call MDVRLibrary#onTextureResize(float width, float height)
-// If you are using DOME projection.
-```
-
-## Release Note
 
 **1.4.0**
 * better way to render multi screen. note:*Only one GLSurfaceView required now* !!
@@ -262,6 +240,35 @@ MDVRLibrary.with(this)
 })
 ....
 .build(R.id.surface_view);
+```
+
+### switch projection (since 1.5.0)
+```java
+// projection mode in MDVRLibrary.java
+public static final int PROJECTION_MODE_SPHERE = 201;
+public static final int PROJECTION_MODE_DOME180 = 202;
+public static final int PROJECTION_MODE_DOME230 = 203;
+public static final int PROJECTION_MODE_DOME180_UPPER = 204;
+public static final int PROJECTION_MODE_DOME230_UPPER = 205;
+public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+public static final int PROJECTION_MODE_PLANE_FIT = 207;
+public static final int PROJECTION_MODE_PLANE_CROP = 208;
+public static final int PROJECTION_MODE_PLANE_FULL = 209;
+
+// You should call MDVRLibrary#onTextureResize(float width, float height)
+// If you are using DOME projection and PLANE projection.
+
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+    		...
+            .projectionMode(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE)
+            ...
+            .build(R.id.surface_view);
+}
+
+// switch in runtime
+// MDVRLibrary#switchProjectionMode(Activity activity, int mode)
 ```
 
 ## Reference
