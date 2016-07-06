@@ -96,6 +96,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 				// Set the OpenGL viewport to the same size as the surface.
 				GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
+				GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+				GLES20.glScissor(itemWidth * i, 0, itemWidth, mHeight);
 
 				// Update Projection
 				director.updateViewport(itemWidth, mHeight);
@@ -115,6 +117,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 				director.shot(mProgram);
 
 				object3D.draw();
+				GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 			}
 
 		}

@@ -37,6 +37,7 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), "file:///mnt/sdcard/vr/stereo.mp4");
         data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
+        data.put(data.size(), "http://cache.utovr.com/201508270528174780.m3u8");
 
 
         data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
@@ -73,6 +74,18 @@ public class DemoActivity extends AppCompatActivity {
                 String url = et.getText().toString();
                 if (!TextUtils.isEmpty(url)){
                     MD360PlayerActivity.startBitmap(DemoActivity.this, Uri.parse(url));
+                } else {
+                    Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        findViewById(R.id.ijk_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = et.getText().toString();
+                if (!TextUtils.isEmpty(url)){
+                    IjkPlayerDemoActivity.start(DemoActivity.this, Uri.parse(url));
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
                 }
