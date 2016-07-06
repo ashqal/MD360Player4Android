@@ -29,6 +29,16 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 cancelBusy();
             }
         });
+
+        mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer mp, int what, int extra) {
+                String error = String.format("Play Error what=%d extra=%d",what,extra);
+                Toast.makeText(VideoPlayerActivity.this, error, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
         mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
             @Override
             public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {

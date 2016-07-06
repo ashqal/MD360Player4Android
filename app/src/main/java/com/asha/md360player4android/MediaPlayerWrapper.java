@@ -137,7 +137,6 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     }
 
     public void onPause() {
-        mPlayer.setSurface(null);
         pause();
     }
 

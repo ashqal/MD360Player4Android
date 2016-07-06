@@ -122,6 +122,7 @@ public class MDVRLibrary {
         if (GLUtil.supportsEs2(context)) {
             // Request an OpenGL ES 2.0 compatible context.
             glSurfaceView.setEGLContextClientVersion(2);
+`            glSurfaceView.setPreserveEGLContextOnPause(true);
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setTexture(texture)
                     .setDisplayModeManager(mDisplayModeManager)
@@ -205,10 +206,6 @@ public class MDVRLibrary {
 
         if (mGLSurfaceView != null){
             mGLSurfaceView.onPause();
-        }
-
-        if (mTexture != null){
-            mTexture.destroy();
         }
 
     }
