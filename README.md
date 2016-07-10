@@ -69,7 +69,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.3.0'
+    compile 'com.github.ashqal:MD360Player4Android:1.5.1'
 }
 ```
 
