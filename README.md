@@ -18,6 +18,9 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
+**1.5.1 (recommend)**
+* Keep the GLContext instance onPause.
+
 **1.5.0**
 * make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` , `switchDisplayMode(Activity activity, int mode)` and `switchProjectionMode(Activity activity, int mode)`.
 * add dome support. 
