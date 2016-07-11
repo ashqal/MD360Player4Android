@@ -75,7 +75,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // set content view
-        setContentView(R.layout.activity_md_multi);
+        setContentView(R.layout.activity_md_using_surface_view);
 
         // init VR Library
         mVRLibrary = createVRLibrary();

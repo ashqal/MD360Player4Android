@@ -72,6 +72,6 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
-                .build(R.id.surface_view);
+                .build(R.id.gl_view);
     }
 }
