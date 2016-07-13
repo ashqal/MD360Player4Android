@@ -9,8 +9,8 @@
        android:orientation="horizontal"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
-      <android.opengl.GLSurfaceView
-          android:id="@+id/surface_view"
+      <com.google.android.apps.muzei.render.GLTextureView
+          android:id="@+id/gl_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent" />
    </FrameLayout>

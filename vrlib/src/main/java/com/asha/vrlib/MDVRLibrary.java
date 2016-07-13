@@ -18,6 +18,7 @@ import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 import com.asha.vrlib.texture.MD360VideoTexture;
+import com.google.android.apps.muzei.render.GLTextureView;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class MDVRLibrary {
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
 
-    private GLSurfaceView mGLSurfaceView;
+    private MDGLScreenWrapper mScreenWrapper;
     private MD360Texture mTexture;
     private MDTouchHelper mTouchHelper;
 
@@ -73,7 +74,7 @@ public class MDVRLibrary {
         initModeManager(builder);
 
         // init glSurfaceViews
-        initOpenGL(builder.activity, builder.glSurfaceView, mTexture);
+        initOpenGL(builder.activity, builder.screenWrapper, mTexture);
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
@@ -118,11 +119,11 @@ public class MDVRLibrary {
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
-    private void initOpenGL(Context context, GLSurfaceView glSurfaceView, MD360Texture texture) {
+    private void initOpenGL(Context context, MDGLScreenWrapper screenWrapper, MD360Texture texture) {
         if (GLUtil.supportsEs2(context)) {
+            screenWrapper.init(context);
             // Request an OpenGL ES 2.0 compatible context.
-            glSurfaceView.setEGLContextClientVersion(2);
-`            glSurfaceView.setPreserveEGLContextOnPause(true);
+
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setTexture(texture)
                     .setDisplayModeManager(mDisplayModeManager)
@@ -131,10 +132,10 @@ public class MDVRLibrary {
                     .build();
 
             // Set the renderer to our demo renderer, defined below.
-            glSurfaceView.setRenderer(renderer);
-            mGLSurfaceView = glSurfaceView;
+            screenWrapper.setRenderer(renderer);
+            this.mScreenWrapper = screenWrapper;
         } else {
-            glSurfaceView.setVisibility(View.GONE);
+            this.mScreenWrapper.getView().setVisibility(View.GONE);
             Toast.makeText(context, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -196,16 +197,20 @@ public class MDVRLibrary {
 
     public void onResume(Context context){
         mInteractiveModeManager.onResume(context);
-        if (mGLSurfaceView != null){
-            mGLSurfaceView.onResume();
+        if (mScreenWrapper != null){
+            mScreenWrapper.onResume();
         }
     }
 
     public void onPause(Context context){
         mInteractiveModeManager.onPause(context);
 
-        if (mGLSurfaceView != null){
-            mGLSurfaceView.onPause();
+        if (mScreenWrapper != null){
+            mScreenWrapper.onPause();
+        }
+
+        if (mTexture != null){
+            mTexture.destroy();
         }
 
     }
@@ -281,7 +286,7 @@ public class MDVRLibrary {
         public MD360DirectorFactory directorFactory;
         public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         public SensorEventListener sensorListener;
-        public GLSurfaceView glSurfaceView;
+        public MDGLScreenWrapper screenWrapper;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -411,24 +416,38 @@ public class MDVRLibrary {
             return this;
         }
 
-        public MDVRLibrary build(GLSurfaceView glSurfaceView){
-            notNull(texture,"You must call video/bitmap function in before build");
-            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
-            this.glSurfaceView = glSurfaceView;
-            return new MDVRLibrary(this);
-        }
-
         /**
          * build it!
          *
-         * @param glSurfaceViewId will find the GLSurfaceView by glSurfaceViewId in the giving {@link #activity}
+         * @param glViewId will find the GLSurfaceView by glViewId in the giving {@link #activity}
+         *                 or find the GLTextureView by glViewId
          * @return vr lib
          */
-        public MDVRLibrary build(int glSurfaceViewId){
-            this.glSurfaceView = (GLSurfaceView) activity.findViewById(glSurfaceViewId);
-            return build(this.glSurfaceView);
+        public MDVRLibrary build(int glViewId){
+            View view = activity.findViewById(glViewId);
+            if (view instanceof GLSurfaceView){
+                return build((GLSurfaceView) view);
+            } else if(view instanceof GLTextureView){
+                return build((GLTextureView) view);
+            } else {
+                throw new RuntimeException("Please ensure the glViewId is instance of GLSurfaceView or GLTextureView");
+            }
         }
 
+        public MDVRLibrary build(GLSurfaceView glSurfaceView){
+            return build(MDGLScreenWrapper.wrap(glSurfaceView));
+        }
+
+        public MDVRLibrary build(GLTextureView glTextureView){
+            return build(MDGLScreenWrapper.wrap(glTextureView));
+        }
+
+        private MDVRLibrary build(MDGLScreenWrapper screenWrapper){
+            notNull(texture,"You must call video/bitmap function in before build");
+            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
+            this.screenWrapper = screenWrapper;
+            return new MDVRLibrary(this);
+        }
     }
 
     interface ContentType{
