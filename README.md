@@ -18,7 +18,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
-**1.5.1 (recommend)**
+**1.5.2 (recommend)**
 * Keep the GLContext instance onPause.
 
 **1.5.0**
@@ -69,7 +69,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.5.1'
+    compile 'com.github.ashqal:MD360Player4Android:1.5.2'
 }
 ```
 
