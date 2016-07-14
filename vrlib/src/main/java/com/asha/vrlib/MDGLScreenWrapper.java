@@ -46,8 +46,7 @@ public abstract class MDGLScreenWrapper {
         @Override
         public void init(Context context) {
             glTextureView.setEGLContextClientVersion(2);
-            // not supported
-            // glTextureView.setPreserveEGLContextOnPause(true);
+            glTextureView.setPreserveEGLContextOnPause(true);
         }
 
         @Override

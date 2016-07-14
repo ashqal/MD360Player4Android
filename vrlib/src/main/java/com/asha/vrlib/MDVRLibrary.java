@@ -204,15 +204,9 @@ public class MDVRLibrary {
 
     public void onPause(Context context){
         mInteractiveModeManager.onPause(context);
-
         if (mScreenWrapper != null){
             mScreenWrapper.onPause();
         }
-
-        if (mTexture != null){
-            mTexture.destroy();
-        }
-
     }
 
     public void onDestroy(){
