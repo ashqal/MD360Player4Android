@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPanoramaPlugin;
+import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
@@ -59,22 +62,20 @@ public class MDVRLibrary {
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
 
+    private MDPluginManager mPluginManager;
     private MDGLScreenWrapper mScreenWrapper;
-    private MD360Texture mTexture;
     private MDTouchHelper mTouchHelper;
 
-    // video or image
-    private int mContentType;
-
     private MDVRLibrary(Builder builder) {
-        mContentType = builder.contentType;
-        mTexture = builder.texture;
 
         // init mode manager
         initModeManager(builder);
 
+        // init plugin manager
+        initPluginManager(builder);
+
         // init glSurfaceViews
-        initOpenGL(builder.activity, builder.screenWrapper, mTexture);
+        initOpenGL(builder.activity, builder.screenWrapper);
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
@@ -119,16 +120,24 @@ public class MDVRLibrary {
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
-    private void initOpenGL(Context context, MDGLScreenWrapper screenWrapper, MD360Texture texture) {
+    private void initPluginManager(Builder builder) {
+        mPluginManager = new MDPluginManager();
+        MDAbsPlugin mainPlugin = new MDPanoramaPlugin.Builder()
+                .setContentType(builder.contentType)
+                .setTexture(builder.texture)
+                .setProjectionModeManager(mProjectionModeManager)
+                .build();
+        mPluginManager.add(mainPlugin);
+    }
+
+    private void initOpenGL(Context context, MDGLScreenWrapper screenWrapper) {
         if (GLUtil.supportsEs2(context)) {
             screenWrapper.init(context);
             // Request an OpenGL ES 2.0 compatible context.
 
             MD360Renderer renderer = MD360Renderer.with(context)
-                    .setTexture(texture)
+                    .setPluginManager(mPluginManager)
                     .setDisplayModeManager(mDisplayModeManager)
-                    .setProjectionModeManager(mProjectionModeManager)
-                    .setContentType(mContentType)
                     .build();
 
             // Set the renderer to our demo renderer, defined below.
@@ -210,10 +219,8 @@ public class MDVRLibrary {
     }
 
     public void onDestroy(){
-        if (mTexture != null){
-            mTexture.destroy();
-            mTexture.release();
-            mTexture = null;
+        for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
+            plugin.destroy();
         }
     }
 
@@ -444,7 +451,7 @@ public class MDVRLibrary {
         }
     }
 
-    interface ContentType{
+    public interface ContentType{
         int VIDEO = 0;
         int BITMAP = 1;
         int DEFAULT = VIDEO;
