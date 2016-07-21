@@ -5,6 +5,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.view.Surface;
 
+import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -85,7 +86,7 @@ public class MD360VideoTexture extends MD360Texture {
     }
 
     @Override
-    public boolean updateTexture() {
+    public boolean texture(MD360Program program) {
         int glSurfaceTexture = getCurrentTextureId();
         if (isEmpty(glSurfaceTexture)) return false;
         if (mSurfaceTexture == null) return false;

@@ -1,5 +1,7 @@
 package com.asha.vrlib.texture;
 
+import com.asha.vrlib.MD360Program;
+
 /**
  * Created by hzqiujiadi on 16/1/25.
  * hzqiujiadi ashqalcn@gmail.com
@@ -38,5 +40,5 @@ public abstract class MD360Texture {
 
     abstract protected int createTextureId();
 
-    abstract public boolean updateTexture();
+    abstract public boolean texture(MD360Program program);
 }

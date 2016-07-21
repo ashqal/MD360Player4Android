@@ -6,12 +6,14 @@ import android.opengl.GLUtils;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.asha.vrlib.common.GLUtil.glCheck;
 import static com.asha.vrlib.common.VRUtil.notNull;
 
 /**
@@ -56,13 +58,19 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
-    public boolean updateTexture() {
+    public boolean texture(MD360Program program) {
         AsyncCallback asyncCallback = mCallbackList.get(Thread.currentThread().toString());
+        int textureId = getCurrentTextureId();
         if (asyncCallback != null && asyncCallback.hasBitmap()){
             Bitmap bitmap = asyncCallback.getBitmap();
-            int textureId = getCurrentTextureId();
-            textureInThread(textureId,bitmap);
+            textureInThread(textureId,program,bitmap);
             asyncCallback.releaseBitmap();
+        } else {
+            if (textureId != 0){
+                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+                GLES20.glUniform1i(program.getTextureUniformHandle(),0);
+            }
         }
         return true;
     }
@@ -81,13 +89,17 @@ public class MD360BitmapTexture extends MD360Texture {
         this.mMainHandler = null;
     }
 
-    private void textureInThread(int textureId, Bitmap bitmap) {
+    private void textureInThread(int textureId, MD360Program program, Bitmap bitmap) {
         notNull(bitmap,"bitmap can't be null!");
 
         if (isEmpty(textureId)) return;
 
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        glCheck("MD360BitmapTexture glActiveTexture");
+
         // Bind to the texture in OpenGL
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        glCheck("MD360BitmapTexture glBindTexture");
 
         // Set filtering
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
@@ -95,6 +107,10 @@ public class MD360BitmapTexture extends MD360Texture {
 
         // Load the bitmap into the bound texture.
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+        glCheck("MD360BitmapTexture texImage2D");
+
+        GLES20.glUniform1i(program.getTextureUniformHandle(),0);
+        glCheck("MD360BitmapTexture textureInThread");
     }
 
     private static class AsyncCallback implements Callback{

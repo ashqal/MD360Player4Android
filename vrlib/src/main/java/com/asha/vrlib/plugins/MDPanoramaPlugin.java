@@ -34,15 +34,12 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
     @Override
     public void init(Context context) {
-
-
         mProgram.build(context);
         mTexture.create();
     }
 
     @Override
     public void renderer(int width, int height, int index) {
-        int i = index;
 
         MDAbsObject3D object3D = mProjectionModeManager.getObject3D();
         // check obj3d
@@ -50,9 +47,9 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
         List<MD360Director> directors = mProjectionModeManager.getDirectors();
         // check director size
-        if (i >= directors.size()) return;
+        if (index >= directors.size()) return;
 
-        MD360Director director = directors.get(i);
+        MD360Director director = directors.get(index);
 
         // Update Projection
         director.updateViewport(width, height);
@@ -61,13 +58,13 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         mProgram.use();
         glCheck("mProgram use");
 
-        mTexture.updateTexture();
+        mTexture.texture(mProgram);
 
         object3D.markVerticesChanged();
-        object3D.uploadVerticesBufferIfNeed(mProgram, i);
+        object3D.uploadVerticesBufferIfNeed(mProgram, index);
 
         object3D.markTexCoordinateChanged();
-        object3D.uploadTexCoordinateBufferIfNeed(mProgram, i);
+        object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
         // Pass in the combined matrix.
         director.shot(mProgram);
