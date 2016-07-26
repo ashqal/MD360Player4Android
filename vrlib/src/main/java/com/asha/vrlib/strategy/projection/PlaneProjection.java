@@ -176,6 +176,7 @@ public class PlaneProjection extends AbsProjectionStrategy {
         public float getViewportWidth(){
             return mViewportWidth;
         }
+
         public float getViewportHeight(){
             return mViewportHeight;
         }
