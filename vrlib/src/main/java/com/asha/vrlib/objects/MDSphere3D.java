@@ -97,8 +97,10 @@ public class MDSphere3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(texBuffer);
-        object3D.setVerticesBuffer(vertexBuffer);
+        object3D.setTexCoordinateBuffer(0,texBuffer);
+        object3D.setTexCoordinateBuffer(1,texBuffer);
+        object3D.setVerticesBuffer(0,vertexBuffer);
+        object3D.setVerticesBuffer(1,vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 }

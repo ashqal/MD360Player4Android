@@ -213,8 +213,10 @@ public class GLUtil {
                 order(ByteOrder.nativeOrder()).asFloatBuffer().put(textureBuffer);
         texture.position(0);
 
-        output.setVerticesBuffer(vertex);
-        output.setTexCoordinateBuffer(texture);
+        output.setVerticesBuffer(0,vertex);
+        output.setVerticesBuffer(1,vertex);
+        output.setTexCoordinateBuffer(0,texture);
+        output.setTexCoordinateBuffer(1,texture);
         output.setNumIndices(indexBuffer.length);
 
         //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);
@@ -223,16 +225,20 @@ public class GLUtil {
 
     public static void barrelDistortion(PointF src){
 
-        double paramA = -0.107715; // affects only the outermost pixels of the image
+        double paramA = 0.107715; // affects only the outermost pixels of the image
         double paramB = 0.026731; // most cases only require b optimization
         double paramC = 0.0; // most uniform correction
         double paramD = 1.0 - paramA - paramB - paramC; // describes the linear scaling of the image
 
-        float d = 0.5f;
+        float d = 1.0f;
 
         // center of dst image
-        double centerX = 0.5f;
-        double centerY = 0.5f;
+        double centerX = 0f;
+        double centerY = 0f;
+
+        if (src.x == centerX && src.y == centerY){
+            return;
+        }
 
         // cartesian coordinates of the destination point (relative to the centre of the image)
         double deltaX = (src.x - centerX) / d;

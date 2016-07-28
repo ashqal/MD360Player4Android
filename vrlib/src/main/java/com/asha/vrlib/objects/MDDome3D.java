@@ -27,8 +27,6 @@ public class MDDome3D extends MDAbsObject3D {
 
     float[] texCoordinates;
 
-    private FloatBuffer mScaledTexCoordinateBuffer;
-
     public MDDome3D(RectF textureSize, float degree, boolean isUpper) {
         this.mTextureSize = textureSize;
         this.mDegree = degree;
@@ -41,36 +39,29 @@ public class MDDome3D extends MDAbsObject3D {
             return;
         }
 
-        float ratio = mTextureSize.width() / mTextureSize.height();
-        if (ratio == 1){
-            mScaledTexCoordinateBuffer = super.getTexCoordinateBuffer(index);
-        } else if(ratio == mPrevRatio && mScaledTexCoordinateBuffer != null){
-            // nop
-        } else {
-            int size = texCoordinates.length;
-            float[] tmp = new float[size];
-            for (int i = 0; i < size; i += 2){
-                tmp[i] = (texCoordinates[i]- 0.5f)/ratio + 0.5f;
-                tmp[i+1] = texCoordinates[i+1];
-            }
+        if (index == 0){
+            float ratio = mTextureSize.width() / mTextureSize.height();
+            if (ratio != mPrevRatio){
+                int size = texCoordinates.length;
+                float[] tmp = new float[size];
+                for (int i = 0; i < size; i += 2){
+                    tmp[i] = (texCoordinates[i]- 0.5f)/ratio + 0.5f;
+                    tmp[i+1] = texCoordinates[i+1];
+                }
 
-            ByteBuffer cc = ByteBuffer.allocateDirect(
-                    tmp.length * 4);
-            cc.order(ByteOrder.nativeOrder());
-            mScaledTexCoordinateBuffer = cc.asFloatBuffer();
-            mScaledTexCoordinateBuffer.put(tmp);
-            mScaledTexCoordinateBuffer.position(0);
-            mPrevRatio = ratio;
-            markTexCoordinateChanged();
+                ByteBuffer cc = ByteBuffer.allocateDirect(
+                        tmp.length * 4);
+                cc.order(ByteOrder.nativeOrder());
+                FloatBuffer buffer = cc.asFloatBuffer();
+                buffer.put(tmp);
+                buffer.position(0);
+                setTexCoordinateBuffer(0,buffer);
+                setTexCoordinateBuffer(1,buffer);
+                mPrevRatio = ratio;
+            }
         }
 
         super.uploadTexCoordinateBufferIfNeed(program, index);
-    }
-
-    @Override
-    public FloatBuffer getTexCoordinateBuffer(int index) {
-        // fix the coordinate if the texture is not square.
-        return mScaledTexCoordinateBuffer;
     }
 
     @Override
@@ -162,8 +153,10 @@ public class MDDome3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(texBuffer);
-        object3D.setVerticesBuffer(vertexBuffer);
+        object3D.setTexCoordinateBuffer(0,texBuffer);
+        object3D.setTexCoordinateBuffer(1,texBuffer);
+        object3D.setVerticesBuffer(0,vertexBuffer);
+        object3D.setVerticesBuffer(1,vertexBuffer);
         object3D.setNumIndices(indices.length);
 
         object3D.texCoordinates = texcoords;

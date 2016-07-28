@@ -2,8 +2,6 @@ package com.asha.vrlib.objects;
 
 import android.content.Context;
 
-import com.asha.vrlib.MD360Program;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -14,31 +12,6 @@ import java.nio.ShortBuffer;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class MDStereoSphere3D extends MDAbsObject3D {
-
-    private FloatBuffer mTexCoordinateBuffer2;
-
-    public FloatBuffer getTexCoordinateBuffer2() {
-        return mTexCoordinateBuffer2;
-    }
-
-    public void setTexCoordinateBuffer2(FloatBuffer texCoordinateBuffer) {
-        this.mTexCoordinateBuffer2 = texCoordinateBuffer;
-    }
-
-    @Override
-    public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index) {
-        markTexCoordinateChanged();
-        super.uploadTexCoordinateBufferIfNeed(program, index);
-    }
-
-    @Override
-    public FloatBuffer getTexCoordinateBuffer(int index) {
-        if (index == 1){
-            return getTexCoordinateBuffer2();
-        } else {
-            return super.getTexCoordinateBuffer(index);
-        }
-    }
 
     @Override
     protected void executeLoad(Context context) {
@@ -133,9 +106,10 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(texBuffer);
-        object3D.setTexCoordinateBuffer2(texBuffer2);
-        object3D.setVerticesBuffer(vertexBuffer);
+        object3D.setTexCoordinateBuffer(0,texBuffer);
+        object3D.setTexCoordinateBuffer(1,texBuffer2);
+        object3D.setVerticesBuffer(0,vertexBuffer);
+        object3D.setVerticesBuffer(1,vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 }

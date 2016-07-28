@@ -6,11 +6,14 @@ import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDBarrelDistortionPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.asha.vrlib.common.GLUtil.glCheck;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -28,6 +31,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private int mWidth;
 	private int mHeight;
 
+	private MDBarrelDistortionPlugin mBarrelDistortionPlugin;
+
 	// final
 	private final Context mContext;
 
@@ -35,6 +40,9 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mContext = params.context;
 		mDisplayModeManager = params.displayModeManager;
 		mPluginManager = params.pluginManager;
+
+		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mContext);
+		mPluginManager.add(mBarrelDistortionPlugin);
 	}
 
 	@Override
@@ -62,21 +70,32 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 
+		glCheck("MD360Renderer onDrawFrame 0");
+
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+		glCheck("MD360Renderer onDrawFrame 1");
 		int size = mDisplayModeManager.getVisibleSize();
 		int itemWidth = (int) (this.mWidth * 1.0f / size);
 
 		for (int i = 0; i < size; i++){
 			// Set the OpenGL viewport to the same size as the surface.
 			GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
+			glCheck("MD360Renderer onDrawFrame 2");
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+			glCheck("MD360Renderer onDrawFrame 3");
 			GLES20.glScissor(itemWidth * i, 0, itemWidth, mHeight);
+			glCheck("MD360Renderer onDrawFrame 4");
+
+			// mBarrelDistortionPlugin.before(itemWidth,mHeight,i);
 
 			for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
 				plugin.renderer(itemWidth,mHeight,i);
 			}
 
+			// mBarrelDistortionPlugin.after(itemWidth,mHeight,i);
+
+			glCheck("MD360Renderer 5");
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 		}
 

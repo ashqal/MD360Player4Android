@@ -2,6 +2,7 @@ package com.asha.vrlib.objects;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.util.SparseArray;
 
 import com.asha.vrlib.MD360Program;
 
@@ -18,61 +19,41 @@ public abstract class MDAbsObject3D {
     private static final int sPositionDataSize = 3;
     private static final int sTextureCoordinateDataSize = 2;
 
-    private FloatBuffer mVerticesBuffer;
-    private FloatBuffer mTexCoordinateBuffer;
     private ShortBuffer mIndicesBuffer;
     private int mNumIndices;
 
-    private boolean mVerticesChanged;
-    private boolean mTexCoordinateChanged;
+    private SparseArray<FloatBuffer> mTexCoordinateBuffers = new SparseArray<>(2);
+    private SparseArray<FloatBuffer> mVerticesBuffers = new SparseArray<>(2);
+
 
     public MDAbsObject3D() {
 
-    }
-
-    public void markChanged(){
-        mVerticesChanged = true;
-        mTexCoordinateChanged = true;
-    }
-
-    public void markVerticesChanged(){
-        mVerticesChanged = true;
-    }
-
-    public void markTexCoordinateChanged(){
-        mTexCoordinateChanged = true;
     }
 
     public void uploadVerticesBufferIfNeed(MD360Program program, int index){
         FloatBuffer vertexBuffer = getVerticesBuffer(index);
         if (vertexBuffer == null) return;
 
-        if (mVerticesChanged){
-            vertexBuffer.position(0);
+        vertexBuffer.position(0);
 
-            // set data to OpenGL
-            int positionHandle = program.getPositionHandle();
-            GLES20.glVertexAttribPointer(positionHandle, sPositionDataSize, GLES20.GL_FLOAT, false, 0, vertexBuffer);
-            GLES20.glEnableVertexAttribArray(positionHandle);
+        // set data to OpenGL
+        int positionHandle = program.getPositionHandle();
+        GLES20.glVertexAttribPointer(positionHandle, sPositionDataSize, GLES20.GL_FLOAT, false, 0, vertexBuffer);
+        GLES20.glEnableVertexAttribArray(positionHandle);
 
-            mVerticesChanged = false;
-        }
     }
 
     public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index){
         FloatBuffer textureBuffer = getTexCoordinateBuffer(index);
         if (textureBuffer == null) return;
 
-        if (mTexCoordinateChanged){
-            textureBuffer.position(0);
+        textureBuffer.position(0);
 
-            // set data to OpenGL
-            int textureCoordinateHandle = program.getTextureCoordinateHandle();
-            GLES20.glVertexAttribPointer(textureCoordinateHandle, sTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, textureBuffer);
-            GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+        // set data to OpenGL
+        int textureCoordinateHandle = program.getTextureCoordinateHandle();
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, sTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, textureBuffer);
+        GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
-            mTexCoordinateChanged = false;
-        }
     }
 
     abstract protected void executeLoad(Context context);
@@ -86,19 +67,19 @@ public abstract class MDAbsObject3D {
     }
 
     public FloatBuffer getVerticesBuffer(int index) {
-        return mVerticesBuffer;
+        return mVerticesBuffers.get(index);
     }
 
-    public void setVerticesBuffer(FloatBuffer verticesBuffer) {
-        this.mVerticesBuffer = verticesBuffer;
+    public void setVerticesBuffer(int index, FloatBuffer verticesBuffer) {
+        mVerticesBuffers.put(index,verticesBuffer);
     }
 
     public FloatBuffer getTexCoordinateBuffer(int index) {
-        return mTexCoordinateBuffer;
+        return mTexCoordinateBuffers.get(index);
     }
 
-    public void setTexCoordinateBuffer(FloatBuffer texCoordinateBuffer) {
-        this.mTexCoordinateBuffer = texCoordinateBuffer;
+    public void setTexCoordinateBuffer(int index, FloatBuffer texCoordinateBuffer) {
+        mTexCoordinateBuffers.put(index,texCoordinateBuffer);
     }
 
     public ShortBuffer getIndicesBuffer() {

@@ -23,7 +23,6 @@ public class MDObject3DHelper {
                 object3D.executeLoad(context);
                 if (loadComplete != null)
                     loadComplete.onComplete(object3D);
-                object3D.markChanged();
             }
         }).start();
     }

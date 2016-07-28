@@ -30,7 +30,7 @@ public abstract class MD360Texture {
 
     abstract public void release();
 
-    protected int getCurrentTextureId(){
+    public int getCurrentTextureId(){
         return mTextureId;
     }
 
