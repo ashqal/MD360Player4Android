@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy.display;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.configs.BarrelDistortionConfig;
 import com.asha.vrlib.strategy.ModeManager;
 
 /**
@@ -12,6 +13,7 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
     public static int[] sModes = {MDVRLibrary.DISPLAY_MODE_NORMAL, MDVRLibrary.DISPLAY_MODE_GLASS};
 
     private boolean antiDistortionEnabled;
+    private BarrelDistortionConfig barrelDistortionConfig;
 
     public DisplayModeManager(int mode) {
         super(mode);
@@ -44,5 +46,13 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
 
     public boolean isAntiDistortionEnabled() {
         return antiDistortionEnabled;
+    }
+
+    public void setBarrelDistortionConfig(BarrelDistortionConfig barrelDistortionConfig) {
+        this.barrelDistortionConfig = barrelDistortionConfig;
+    }
+
+    public BarrelDistortionConfig getBarrelDistortionConfig() {
+        return barrelDistortionConfig;
     }
 }

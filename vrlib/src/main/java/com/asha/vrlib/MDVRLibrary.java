@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.configs.BarrelDistortionConfig;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
@@ -109,6 +110,8 @@ public class MDVRLibrary {
 
         // init DisplayModeManager
         mDisplayModeManager = new DisplayModeManager(builder.displayMode);
+        mDisplayModeManager.setBarrelDistortionConfig(builder.barrelDistortionConfig);
+        mDisplayModeManager.setAntiDistortionEnabled(builder.barrelDistortionConfig.isDefaultEnabled());
         mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         // init InteractiveModeManager
@@ -292,6 +295,7 @@ public class MDVRLibrary {
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
         private boolean pinchEnabled; // default false.
+        private BarrelDistortionConfig barrelDistortionConfig;
         public MD360DirectorFactory directorFactory;
         public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         public SensorEventListener sensorListener;
@@ -424,6 +428,11 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder barrelDistortionConfig(BarrelDistortionConfig config){
+            this.barrelDistortionConfig = config;
+            return this;
+        }
+
         /**
          * build it!
          *
@@ -453,6 +462,7 @@ public class MDVRLibrary {
         private MDVRLibrary build(MDGLScreenWrapper screenWrapper){
             notNull(texture,"You must call video/bitmap function in before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
+            if (this.barrelDistortionConfig == null) barrelDistortionConfig = new BarrelDistortionConfig();
             this.screenWrapper = screenWrapper;
             return new MDVRLibrary(this);
         }

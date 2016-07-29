@@ -7,6 +7,7 @@ import android.view.Surface;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.configs.BarrelDistortionConfig;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
@@ -79,6 +80,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
+                .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
                 .build(R.id.gl_view);
     }
 

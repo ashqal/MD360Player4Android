@@ -223,11 +223,8 @@ public class GLUtil {
     }
 
 
-    public static void barrelDistortion(PointF src){
+    public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src){
 
-        double paramA = 0.107715; // affects only the outermost pixels of the image
-        double paramB = 0.026731; // most cases only require b optimization
-        double paramC = 0.0; // most uniform correction
         double paramD = 1.0 - paramA - paramB - paramC; // describes the linear scaling of the image
 
         float d = 1.0f;

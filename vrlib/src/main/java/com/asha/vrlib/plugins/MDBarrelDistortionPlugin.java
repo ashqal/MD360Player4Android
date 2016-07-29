@@ -10,6 +10,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.configs.BarrelDistortionConfig;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 
@@ -46,7 +47,10 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
 
     private Rect mViewport = new Rect();
 
-    public MDBarrelDistortionPlugin() {
+    private BarrelDistortionConfig mConfiguration;
+
+    public MDBarrelDistortionPlugin(BarrelDistortionConfig configuration) {
+        mConfiguration = configuration;
         mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
         director = new OrthogonalDirector(new MD360Director.Builder());
         object3D = new MDBarrelDistortionMesh();
@@ -182,7 +186,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         }
     }
 
-    private static class MDBarrelDistortionMesh extends MDAbsObject3D {
+    private class MDBarrelDistortionMesh extends MDAbsObject3D {
 
         private static final String TAG = "MDBarrelDistortionMesh";
         private int mode;
@@ -319,7 +323,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
             singleTexCoordinateBuffer = texBuffer;
         }
 
-        private static void applyBarrelDistortion(int numPoint, float[] vertexs) {
+        private void applyBarrelDistortion(int numPoint, float[] vertexs) {
             PointF pointF = new PointF();
 
             for (int i = 0; i < numPoint; i++){
@@ -329,10 +333,13 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
                 float yValue = vertexs[yIndex];
 
                 pointF.set(xValue,yValue);
-                GLUtil.barrelDistortion(pointF);
+                GLUtil.barrelDistortion(mConfiguration.getParamA(),
+                        mConfiguration.getParamB(),
+                        mConfiguration.getParamC(),
+                        pointF);
 
-                vertexs[xIndex] = pointF.x * 0.95f;
-                vertexs[yIndex] = pointF.y * 0.95f;
+                vertexs[xIndex] = pointF.x * mConfiguration.getScale();
+                vertexs[yIndex] = pointF.y * mConfiguration.getScale();
 
                 // Log.e(TAG,String.format("%f %f => %f %f",xValue,yValue,pointF.x,pointF.y));
             }

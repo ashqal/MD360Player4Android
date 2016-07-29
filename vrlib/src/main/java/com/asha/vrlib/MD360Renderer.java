@@ -41,7 +41,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mDisplayModeManager = params.displayModeManager;
 		mPluginManager = params.pluginManager;
 
-		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin();
+		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mDisplayModeManager.getBarrelDistortionConfig());
 		mPluginManager.add(mBarrelDistortionPlugin);
 	}
 
