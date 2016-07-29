@@ -46,17 +46,16 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
 
     private Rect mViewport = new Rect();
 
-    public MDBarrelDistortionPlugin(final Context context) {
+    public MDBarrelDistortionPlugin() {
         mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
         director = new OrthogonalDirector(new MD360Director.Builder());
-
         object3D = new MDBarrelDistortionMesh();
-        MDObject3DHelper.loadObj(context,object3D);
     }
 
     @Override
     public void init(final Context context) {
         mProgram.build(context);
+        MDObject3DHelper.loadObj(context,object3D);
     }
 
     public void createFrameBuffer(int width, int height){

@@ -200,6 +200,14 @@ public class MDVRLibrary {
         mTouchHelper.reset();
     }
 
+    public void setAntiDistortionEnabled(boolean enabled){
+        mDisplayModeManager.setAntiDistortionEnabled(enabled);
+    }
+
+    public boolean isAntiDistortionEnabled(){
+        return mDisplayModeManager.isAntiDistortionEnabled();
+    }
+
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }
@@ -389,7 +397,6 @@ public class MDVRLibrary {
             this.pinchEnabled = enabled;
             return this;
         }
-
 
         /**
          * sensor delay in motion mode.

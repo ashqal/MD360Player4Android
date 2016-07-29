@@ -11,6 +11,8 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
 
     public static int[] sModes = {MDVRLibrary.DISPLAY_MODE_NORMAL, MDVRLibrary.DISPLAY_MODE_GLASS};
 
+    private boolean antiDistortionEnabled;
+
     public DisplayModeManager(int mode) {
         super(mode);
     }
@@ -36,4 +38,11 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
         return getStrategy().getVisibleSize();
     }
 
+    public void setAntiDistortionEnabled(boolean antiDistortionEnabled) {
+        this.antiDistortionEnabled = antiDistortionEnabled;
+    }
+
+    public boolean isAntiDistortionEnabled() {
+        return antiDistortionEnabled;
+    }
 }

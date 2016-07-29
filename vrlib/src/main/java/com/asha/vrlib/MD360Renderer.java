@@ -41,7 +41,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mDisplayModeManager = params.displayModeManager;
 		mPluginManager = params.pluginManager;
 
-		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mContext);
+		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin();
 		mPluginManager.add(mBarrelDistortionPlugin);
 	}
 
@@ -70,7 +70,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 
-		boolean barrelEnabled = true;
+		boolean barrelDistortionEnabled = mDisplayModeManager.isAntiDistortionEnabled();
 
 		glCheck("MD360Renderer onDrawFrame 0");
 
@@ -82,11 +82,10 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		int width = (int) (this.mWidth * 1.0f / size);
 		int height = mHeight;
 
-		if (barrelEnabled){
+		if (barrelDistortionEnabled){
 			// Barrel Distortion take over
 			mBarrelDistortionPlugin.takeOver(mWidth,mHeight,size);
 		}
-
 
 		for (int i = 0; i < size; i++){
 			GLES20.glViewport(width * i, 0, width, height);
@@ -102,7 +101,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 		}
 
-		if (barrelEnabled){
+		if (barrelDistortionEnabled){
 			// Barrel Distortion render
 			for (int i = 0; i < size; i++){
 

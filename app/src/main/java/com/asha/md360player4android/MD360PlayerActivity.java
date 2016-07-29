@@ -26,6 +26,7 @@ public abstract class MD360PlayerActivity extends Activity {
     private static final SparseArray<String> sDisplayMode = new SparseArray<>();
     private static final SparseArray<String> sInteractiveMode = new SparseArray<>();
     private static final SparseArray<String> sProjectionMode = new SparseArray<>();
+    private static final SparseArray<String> sAntiDistortion = new SparseArray<>();
 
     static {
         sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL,"NORMAL");
@@ -44,6 +45,9 @@ public abstract class MD360PlayerActivity extends Activity {
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FIT,"PLANE FIT");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_CROP,"PLANE CROP");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,"PLANE FULL");
+
+        sAntiDistortion.put(1,"ANTI-ENABLE");
+        sAntiDistortion.put(0,"ANTI-DISABLE");
     }
 
 
@@ -112,6 +116,17 @@ public abstract class MD360PlayerActivity extends Activity {
                     }
                 })
                 .init(R.id.spinner_projection);
+
+        SpinnerHelper.with(this)
+                .setData(sAntiDistortion)
+                .setDefault(mVRLibrary.isAntiDistortionEnabled() ? 1 : 0)
+                .setClickHandler(new SpinnerHelper.ClickHandler() {
+                    @Override
+                    public void onSpinnerClicked(int index, int key, String value) {
+                        mVRLibrary.setAntiDistortionEnabled(key != 0);
+                    }
+                })
+                .init(R.id.spinner_distortion);
 
     }
 
