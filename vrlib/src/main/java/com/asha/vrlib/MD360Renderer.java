@@ -70,33 +70,48 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 
+		boolean barrelEnabled = true;
+
 		glCheck("MD360Renderer onDrawFrame 0");
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		glCheck("MD360Renderer onDrawFrame 1");
 		int size = mDisplayModeManager.getVisibleSize();
-		int itemWidth = (int) (this.mWidth * 1.0f / size);
+
+		int width = (int) (this.mWidth * 1.0f / size);
+		int height = mHeight;
+
+		if (barrelEnabled){
+			// Barrel Distortion take over
+			mBarrelDistortionPlugin.takeOver(mWidth,mHeight,size);
+		}
+
 
 		for (int i = 0; i < size; i++){
-			// Set the OpenGL viewport to the same size as the surface.
-			GLES20.glViewport(itemWidth * i, 0, itemWidth, mHeight);
-			glCheck("MD360Renderer onDrawFrame 2");
+			GLES20.glViewport(width * i, 0, width, height);
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
-			glCheck("MD360Renderer onDrawFrame 3");
-			GLES20.glScissor(itemWidth * i, 0, itemWidth, mHeight);
-			glCheck("MD360Renderer onDrawFrame 4");
-
-			// mBarrelDistortionPlugin.before(itemWidth,mHeight,i);
+			GLES20.glScissor(width * i, 0, width, height);
 
 			for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
-				plugin.renderer(itemWidth,mHeight,i);
+				if (!(plugin instanceof MDBarrelDistortionPlugin)){
+					plugin.renderer(width, height, i);
+				}
 			}
 
-			// mBarrelDistortionPlugin.after(itemWidth,mHeight,i);
-
-			glCheck("MD360Renderer 5");
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+		}
+
+		if (barrelEnabled){
+			// Barrel Distortion render
+			for (int i = 0; i < size; i++){
+
+				GLES20.glViewport(width * i, 0, width, mHeight);
+				GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+				GLES20.glScissor(width * i, 0, width, mHeight);
+				mBarrelDistortionPlugin.renderer(width,height,0);
+				GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+			}
 		}
 
 		// mFps.step();

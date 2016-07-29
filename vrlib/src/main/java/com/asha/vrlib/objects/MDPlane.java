@@ -60,11 +60,10 @@ public class MDPlane extends MDAbsObject3D {
             }
         }
 
-
         super.uploadVerticesBufferIfNeed(program, index);
     }
 
-    protected float[] generateVertex(){
+    private float[] generateVertex(){
         int z = -8;
         mCalculator.calculate();
         mPrevRatio = mCalculator.getTextureRatio();
@@ -84,16 +83,13 @@ public class MDPlane extends MDAbsObject3D {
                 vertexs[v++] = (s * S * 2 - 1) * width;
                 vertexs[v++] = (r * R * 2 - 1) * height;
                 vertexs[v++] = z;
-
-                // Log.e(TAG,String.format("vertexs:%f %f %f",s*S,r*R,-8f));
             }
         }
 
         return vertexs;
-
     }
 
-    protected float[] generateTexcoords(){
+    private float[] generateTexcoords(){
         float[] texcoords = new float[getNumPoint() * 2];
 
         int rows = getNumRow();
@@ -107,8 +103,6 @@ public class MDPlane extends MDAbsObject3D {
             for(s = 0; s < columns + 1; s++) {
                 texcoords[t++] = s*S;
                 texcoords[t++] = 1 - r*R;
-
-                // Log.e(TAG,String.format("texcoords:%f %f",s*S,r*R));
             }
         }
 
@@ -142,8 +136,6 @@ public class MDPlane extends MDAbsObject3D {
                 indices[counter++] = k3;
                 indices[counter++] = k4;
                 indices[counter++] = k5;
-
-                // Log.e(TAG,String.format("indices:%d %d %d %d %d %d ",k0,k1,k2,k3,k4,k5));
             }
         }
 
@@ -181,15 +173,15 @@ public class MDPlane extends MDAbsObject3D {
         object3D.setNumIndices(indices.length);
     }
 
-    protected int getNumPoint(){
+    private int getNumPoint(){
         return (getNumRow() + 1) * (getNumColumn() + 1);
     }
 
-    protected int getNumRow(){
+    private int getNumRow(){
         return 1;
     }
 
-    protected int getNumColumn(){
+    private int getNumColumn(){
         return 1;
     }
 }
