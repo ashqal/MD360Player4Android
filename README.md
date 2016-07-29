@@ -15,6 +15,19 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+* add anti-distortion support.
+```java
+// init configuation
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            ...
+            .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
+            .build(R.id.gl_view);
+}
+
+// setter
+mVRLibrary.setAntiDistortionEnabled(true);
+```
 
 ## Release Note
 
