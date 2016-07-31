@@ -56,6 +56,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_PLANE_FIT = 207;
     public static final int PROJECTION_MODE_PLANE_CROP = 208;
     public static final int PROJECTION_MODE_PLANE_FULL = 209;
+    public static final int PROJECTION_MODE_MULTI_FISHEYE = 210;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private RectF mTextureSize = new RectF(0,0,1024,1024);

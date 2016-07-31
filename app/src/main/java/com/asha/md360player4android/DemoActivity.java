@@ -25,6 +25,8 @@ public class DemoActivity extends AppCompatActivity {
         final EditText et = (EditText) findViewById(R.id.edit_text_url);
 
         SparseArray<String> data = new SparseArray<>();
+        data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
+        data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
         data.put(data.size(), getDrawableUri(R.drawable.bitmap360).toString());
         data.put(data.size(), getDrawableUri(R.drawable.texture).toString());
         data.put(data.size(), getDrawableUri(R.drawable.dome_pic).toString());
@@ -38,8 +40,6 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://cache.utovr.com/201508270528174780.m3u8");
-
-
         data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
         data.put(data.size(), "file:///mnt/sdcard/vr/IJUN2902.jpg");
         data.put(data.size(), "file:///mnt/sdcard/vr/SUYZ2954.jpg");

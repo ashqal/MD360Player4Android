@@ -107,8 +107,8 @@ public class MD360Director {
         Matrix.setIdentityM(mModelMatrix, 0);
 
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleY, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleX, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleX, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleY, 0.0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
 
         // set the accumulated rotation to the result.

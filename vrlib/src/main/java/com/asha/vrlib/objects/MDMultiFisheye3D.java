@@ -1,6 +1,7 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,18 +9,16 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 /**
- * Created by hzqiujiadi on 16/6/26.
+ * Created by hzqiujiadi on 16/7/29.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MDStereoSphere3D extends MDAbsObject3D {
+public class MDMultiFisheye3D extends MDAbsObject3D {
+
+    private static final String TAG = "MDMultiFisheye3D";
 
     @Override
     protected void executeLoad(Context context) {
-        generateSphere(this);
-    }
-
-    private static void generateSphere(MDAbsObject3D object3D) {
-        generateSphere(18,75,150,object3D);
+        generateSphere(18, 29, 30, this);
     }
 
     private static void generateSphere(float radius, int rings, int sectors, MDAbsObject3D object3D) {
@@ -34,7 +33,6 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         int numPoint = (rings + 1) * (sectors + 1);
         float[] vertexs = new float[numPoint * 3];
         float[] texcoords = new float[numPoint * 2];
-        float[] texcoords2 = new float[numPoint * 2];
         short[] indices = new short[numPoint * 6];
 
         int t = 0, v = 0;
@@ -44,19 +42,49 @@ public class MDStereoSphere3D extends MDAbsObject3D {
                 y = - (float) Math.sin( -PI_2 + PI * r * R );
                 z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
 
-                texcoords[t] = s*S;
-                texcoords2[t] = s*S;
-                t++;
-
-                texcoords[t] = r*R/2;
-                texcoords2[t] = r*R/2 + 0.5f;
-                t++;
-
                 vertexs[v++] = x * radius;
                 vertexs[v++] = y * radius;
                 vertexs[v++] = z * radius;
+
+
+                if (t * 2 < numPoint){
+
+                    float a = (float) (Math.sin( 2 * PI * s * S) * r * R * 2 * 0.95f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos( 2 * PI * s * S) * r * R * 2 * 0.95f) * 0.5f + 0.5f;
+
+                    texcoords[t*2] = a;
+                    texcoords[t*2 + 1] = b * 0.5f;
+
+                } else {
+                    float a = (float) (Math.sin( 2 * PI * s * S) * (1 - r * R) * 2 * 0.95f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos( 2 * PI * s * S) * (1 - r * R) * 2 * 0.95f) * 0.5f + 0.5f;
+
+                    texcoords[t*2] = 1 - a;
+                    texcoords[t*2 + 1] = b * 0.5f + 0.5f;
+                }
+                t++;
+                /*
+                if (t % 2 == 0){
+
+                    texcoords[t + 1] = b * 0.5f;
+
+                    texcoords[t + numPoint] = a;
+                    texcoords[t + 1 + numPoint] = b * 0.5f + 0.5f;
+                }
+                */
+
+
             }
         }
+
+        for (int k = 0; k < numPoint; k++){
+            Log.e(TAG,String.format("p %d,",k));
+            Log.e(TAG,String.format("v %d, x=%f y=%f z=%f",k,vertexs[k*3],vertexs[k*3+1],vertexs[k*3+2]));
+            Log.e(TAG,String.format("t %d, x=%f y=%f",k,texcoords[k*2],texcoords[k*2+1]));
+        }
+
+
+
 
         int counter = 0;
         int sectorsPlusOne = sectors + 1;
@@ -88,14 +116,6 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         texBuffer.put(texcoords);
         texBuffer.position(0);
 
-        // initialize vertex2 byte buffer for shape coordinates
-        ByteBuffer cc2 = ByteBuffer.allocateDirect(
-                texcoords.length * 4);
-        cc2.order(ByteOrder.nativeOrder());
-        FloatBuffer texBuffer2 = cc2.asFloatBuffer();
-        texBuffer2.put(texcoords2);
-        texBuffer2.position(0);
-
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 2 bytes per short)
@@ -107,9 +127,10 @@ public class MDStereoSphere3D extends MDAbsObject3D {
 
         object3D.setIndicesBuffer(indexBuffer);
         object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer2);
+        object3D.setTexCoordinateBuffer(1,texBuffer);
         object3D.setVerticesBuffer(0,vertexBuffer);
         object3D.setVerticesBuffer(1,vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
+
 }
