@@ -1,8 +1,10 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
+import android.graphics.RectF;
 
 import com.asha.vrlib.MD360Program;
+import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.projection.PlaneProjection;
 
 import java.nio.ByteBuffer;
@@ -24,6 +26,10 @@ public class MDPlane extends MDAbsObject3D {
 
     public MDPlane(PlaneProjection.PlaneScaleCalculator calculator) {
         this.mCalculator = calculator;
+    }
+
+    public MDPlane() {
+        this(new PlaneProjection.PlaneScaleCalculator(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,new RectF(0,0,100,100)));
     }
 
     @Override

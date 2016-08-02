@@ -460,7 +460,7 @@ public class MDVRLibrary {
         }
 
         private MDVRLibrary build(MDGLScreenWrapper screenWrapper){
-            notNull(texture,"You must call video/bitmap function in before build");
+            notNull(texture,"You must call video/bitmap function before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
             if (this.barrelDistortionConfig == null) barrelDistortionConfig = new BarrelDistortionConfig();
             this.screenWrapper = screenWrapper;
