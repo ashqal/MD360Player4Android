@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.util.SparseArray;
 
 import com.asha.vrlib.MD360Program;
+import com.asha.vrlib.common.GLUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
@@ -28,6 +29,10 @@ public abstract class MDAbsObject3D {
 
     public MDAbsObject3D() {
 
+    }
+
+    public float[] getModelMatrix(){
+        return GLUtil.sIdentityMatrix;
     }
 
     public void uploadVerticesBufferIfNeed(MD360Program program, int index){

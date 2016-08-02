@@ -1,6 +1,7 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -15,6 +16,18 @@ import java.nio.ShortBuffer;
 public class MDMultiFisheye3D extends MDAbsObject3D {
 
     private static final String TAG = "MDMultiFisheye3D";
+
+    private float[] modelMatrix;
+
+    @Override
+    public float[] getModelMatrix() {
+        if (modelMatrix == null){
+            modelMatrix = new float[16];
+            Matrix.setIdentityM(modelMatrix,0);
+            Matrix.rotateM(modelMatrix,0,-90,0,0,1);
+        }
+        return modelMatrix;
+    }
 
     @Override
     protected void executeLoad(Context context) {
@@ -49,15 +62,15 @@ public class MDMultiFisheye3D extends MDAbsObject3D {
 
                 if (t * 2 < numPoint){
 
-                    float a = (float) (Math.sin( 2 * PI * s * S) * r * R * 2 * 0.95f) * 0.5f + 0.5f;
-                    float b = (float) (Math.cos( 2 * PI * s * S) * r * R * 2 * 0.95f) * 0.5f + 0.5f;
+                    float a = (float) (Math.sin( 2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos( 2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
 
                     texcoords[t*2] = a;
                     texcoords[t*2 + 1] = b * 0.5f;
 
                 } else {
-                    float a = (float) (Math.sin( 2 * PI * s * S) * (1 - r * R) * 2 * 0.95f) * 0.5f + 0.5f;
-                    float b = (float) (Math.cos( 2 * PI * s * S) * (1 - r * R) * 2 * 0.95f) * 0.5f + 0.5f;
+                    float a = (float) (Math.sin( 2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos( 2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
 
                     texcoords[t*2] = 1 - a;
                     texcoords[t*2 + 1] = b * 0.5f + 0.5f;

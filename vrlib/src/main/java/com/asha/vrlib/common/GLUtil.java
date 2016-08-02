@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.PointF;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -27,6 +28,12 @@ import java.util.ArrayList;
 public class GLUtil {
 
     private static final String TAG = "GLUtil";
+
+    public static final float[] sIdentityMatrix = new float[16];
+
+    static {
+        Matrix.setIdentityM(sIdentityMatrix,0);
+    }
 
 
     /**

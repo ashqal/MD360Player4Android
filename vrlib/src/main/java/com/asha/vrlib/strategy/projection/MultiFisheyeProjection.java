@@ -32,7 +32,7 @@ public class MultiFisheyeProjection extends AbsProjectionStrategy {
         return new MD360DirectorFactory() {
             @Override
             public MD360Director createDirector(int index) {
-                return MD360Director.builder().setAngleY(90).build();
+                return MD360Director.builder().build();
             }
         };
     }

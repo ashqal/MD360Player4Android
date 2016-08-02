@@ -3,6 +3,8 @@ package com.asha.vrlib;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.asha.vrlib.common.GLUtil;
+
 /**
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
@@ -12,15 +14,15 @@ import android.opengl.Matrix;
 public class MD360Director {
 
     private static final String TAG = "MD360Director";
+    private static final float sNear = 0.7f;
 
-    private float[] mModelMatrix = new float[16];
+    // private float[] mModelMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
 
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private static final float sNear = 0.7f;
 
     private float mEyeX = 0f;
     private float mEyeY = 0f;
@@ -103,24 +105,22 @@ public class MD360Director {
     }
 
     public void shot(MD360Program program) {
+        shot(program, GLUtil.sIdentityMatrix);
+    }
 
-        Matrix.setIdentityM(mModelMatrix, 0);
+    public void shot(MD360Program program, float[] modelMatrix) {
 
+        // model
         Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleX, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleY, 0.0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
-
-        // set the accumulated rotation to the result.
-        System.arraycopy(mCurrentRotation, 0, mAccumulatedRotation, 0, 16);
-
-        // Rotate the cube taking the overall rotation into account.
-        Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
-        System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleY, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleX, 0.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(mTemporaryMatrix, 0);
+        Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, modelMatrix, 0);
+        Matrix.multiplyMM(mTemporaryMatrix, 0, mSensorMatrix, 0, mTemporaryMatrix, 0);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, mTemporaryMatrix, 0);
 
         // This multiplies the model view matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
