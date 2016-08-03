@@ -14,9 +14,9 @@ public class BarrelDistortionConfig {
     private boolean defaultEnabled;
 
     public BarrelDistortionConfig() {
-        paramA = 0.100715; // affects only the outermost pixels of the image
-        paramB = 0.026731; // most cases only require b optimization
-        paramC = 0.0; // most uniform correction
+        paramA = -0.068; // affects only the outermost pixels of the image
+        paramB = 0.320000; // most cases only require b optimization
+        paramC = -0.2; // most uniform correction
         scale = 0.95f;
         defaultEnabled = false;
     }
