@@ -112,6 +112,7 @@ public class MD360Director {
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + mAngleY + modelPosition.getAngleY(), 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + mAngleX + modelPosition.getAngleX(), 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, modelPosition.getAngleZ(), 0.0f, 0.0f, 1.0f);
+        Matrix.translateM(mCurrentRotation, 0, modelPosition.getX(),modelPosition.getY(),modelPosition.getZ());
         Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
