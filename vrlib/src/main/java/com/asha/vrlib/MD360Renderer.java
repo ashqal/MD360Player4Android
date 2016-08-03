@@ -8,7 +8,9 @@ import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDBarrelDistortionPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
+import com.asha.vrlib.plugins.MDSimplePlugin;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
+import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -26,6 +28,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 	private static final String TAG = "MD360Renderer";
 	private DisplayModeManager mDisplayModeManager;
+	private ProjectionModeManager mProjectionModeManager;
 	private MDPluginManager mPluginManager;
 	private Fps mFps = new Fps();
 	private int mWidth;
@@ -39,10 +42,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private MD360Renderer(Builder params){
 		mContext = params.context;
 		mDisplayModeManager = params.displayModeManager;
+		mProjectionModeManager = params.projectionModeManager;
 		mPluginManager = params.pluginManager;
 
 		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mDisplayModeManager.getBarrelDistortionConfig());
 		mPluginManager.add(mBarrelDistortionPlugin);
+
+		mPluginManager.add(new MDSimplePlugin(mContext));
 	}
 
 	@Override
@@ -88,14 +94,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		}
 
 		for (int i = 0; i < size; i++){
+			MD360Director director = mProjectionModeManager.getDirectors().get(i);
 			GLES20.glViewport(width * i, 0, width, height);
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 			GLES20.glScissor(width * i, 0, width, height);
 
 			for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
-				if (!(plugin instanceof MDBarrelDistortionPlugin)){
-					plugin.renderer(width, height, i);
-				}
+				plugin.renderer(i, width, height, director);
 			}
 
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
@@ -108,7 +113,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 				GLES20.glViewport(width * i, 0, width, mHeight);
 				GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 				GLES20.glScissor(width * i, 0, width, mHeight);
-				mBarrelDistortionPlugin.renderer(width,height,0);
+				mBarrelDistortionPlugin.commit(i);
 				GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 			}
 		}
@@ -125,6 +130,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public static class Builder{
 		private Context context;
 		private DisplayModeManager displayModeManager;
+		private ProjectionModeManager projectionModeManager;
 		public MDPluginManager pluginManager;
 
 		private Builder() {
@@ -141,6 +147,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		public Builder setDisplayModeManager(DisplayModeManager displayModeManager) {
 			this.displayModeManager = displayModeManager;
+			return this;
+		}
+
+		public Builder setProjectionModeManager(ProjectionModeManager projectionModeManager) {
+			this.projectionModeManager = projectionModeManager;
 			return this;
 		}
 	}

@@ -2,6 +2,7 @@ package com.asha.vrlib.plugins;
 
 import android.content.Context;
 
+import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.model.MDPosition;
 
 /**
@@ -12,7 +13,7 @@ public abstract class MDAbsPlugin {
 
     abstract public void init(Context context);
 
-    abstract public void renderer(int width, int height, int index);
+    abstract public void renderer(int index, int width, int height, MD360Director director);
 
     abstract public void destroy();
 

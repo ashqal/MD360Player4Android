@@ -38,7 +38,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
 
     private MDBarrelDistortionMesh object3D;
 
-    private MD360Director director;
+    private MD360Director mDirector;
 
     private int mFrameBufferId;
 
@@ -53,7 +53,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
     public MDBarrelDistortionPlugin(BarrelDistortionConfig configuration) {
         mConfiguration = configuration;
         mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
-        director = new OrthogonalDirector(new MD360Director.Builder());
+        mDirector = new OrthogonalDirector(new MD360Director.Builder());
         object3D = new MDBarrelDistortionMesh();
     }
 
@@ -120,22 +120,8 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
     }
 
     @Override
-    public void renderer(int width, int height, int index) {
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-        // Set our per-vertex lighting program.
-        mProgram.use();
-        glCheck("mProgram use");
+    public void renderer(int index, int width, int height, MD360Director director) {
 
-        object3D.uploadVerticesBufferIfNeed(mProgram, index);
-        object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
-
-        // Pass in the combined matrix.
-        director.shot(mProgram);
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
-
-        object3D.draw();
     }
 
     @Override
@@ -149,7 +135,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
     }
 
     public void takeOver(int width, int height, int size) {
-        director.updateViewport(width, height);
+        mDirector.updateViewport(width, height);
         object3D.setMode(size);
 
         if (mViewport.width() != width || mViewport.height() != height){
@@ -158,6 +144,24 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
+    }
+
+    public void commit(int index){
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        // Set our per-vertex lighting program.
+        mProgram.use();
+        glCheck("mProgram use");
+
+        object3D.uploadVerticesBufferIfNeed(mProgram, index);
+        object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
+
+        // Pass in the combined matrix.
+        mDirector.shot(mProgram);
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
+
+        object3D.draw();
     }
 
     private class OrthogonalDirector extends MD360Director{

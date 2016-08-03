@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.asha.vrlib.MD360Director;
-import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
@@ -28,11 +28,9 @@ public class MDSimplePlugin extends MDAbsPlugin{
 
     MD360Texture texture;
 
-    MD360Director director;
+    MDPosition position = MDPosition.newInstance().setZ(-9).setAngleX(45);
 
     public MDSimplePlugin(final Context context) {
-        director = new MD360DirectorFactory.DefaultImpl().createDirector(0);
-
         //
         texture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
             @Override
@@ -57,7 +55,7 @@ public class MDSimplePlugin extends MDAbsPlugin{
     }
 
     @Override
-    public void renderer(int width, int height, int index) {
+    public void renderer(int index, int width, int height, MD360Director director) {
 
         // Update Projection
         director.updateViewport(width, height);
@@ -71,7 +69,7 @@ public class MDSimplePlugin extends MDAbsPlugin{
         object3D.uploadTexCoordinateBufferIfNeed(program, index);
 
         // Pass in the combined matrix.
-        director.shot(program);
+        director.shot(program, getModelPosition());
 
         texture.texture(program);
 
@@ -81,5 +79,10 @@ public class MDSimplePlugin extends MDAbsPlugin{
     @Override
     public void destroy() {
 
+    }
+
+    @Override
+    protected MDPosition getModelPosition() {
+        return position;
     }
 }

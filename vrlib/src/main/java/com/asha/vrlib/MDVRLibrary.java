@@ -141,6 +141,7 @@ public class MDVRLibrary {
 
             MD360Renderer renderer = MD360Renderer.with(context)
                     .setPluginManager(mPluginManager)
+                    .setProjectionModeManager(mProjectionModeManager)
                     .setDisplayModeManager(mDisplayModeManager)
                     .build();
 

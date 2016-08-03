@@ -11,8 +11,6 @@ import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360Texture;
 
-import java.util.List;
-
 import static com.asha.vrlib.common.GLUtil.glCheck;
 
 /**
@@ -40,17 +38,11 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
     }
 
     @Override
-    public void renderer(int width, int height, int index) {
+    public void renderer(int index, int width, int height, MD360Director director) {
 
         MDAbsObject3D object3D = mProjectionModeManager.getObject3D();
         // check obj3d
         if (object3D == null) return;
-
-        List<MD360Director> directors = mProjectionModeManager.getDirectors();
-        // check director size
-        if (index >= directors.size()) return;
-
-        MD360Director director = directors.get(index);
 
         // Update Projection
         director.updateViewport(width, height);
@@ -66,7 +58,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
         // Pass in the combined matrix.
-        director.shot(mProgram, object3D.getModelPosition());
+        director.shot(mProgram, getModelPosition());
         object3D.draw();
 
     }
