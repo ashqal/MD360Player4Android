@@ -24,6 +24,7 @@ import com.asha.vrlib.texture.MD360Texture;
 import com.asha.vrlib.texture.MD360VideoTexture;
 import com.google.android.apps.muzei.render.GLTextureView;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static com.asha.vrlib.common.VRUtil.notNull;
@@ -189,7 +190,16 @@ public class MDVRLibrary {
         mDisplayModeManager.switchMode(activity,mode);
     }
 
-
+    /**
+     * Switch Projection Mode
+     *
+     * @param activity activity
+     * @param mode mode
+     *
+     * {@link #PROJECTION_MODE_SPHERE}
+     * {@link #PROJECTION_MODE_DOME180}
+     * and so on.
+     */
     public void switchProjectionMode(Activity activity, int mode) {
         mProjectionModeManager.switchMode(activity, mode);
     }
@@ -213,6 +223,18 @@ public class MDVRLibrary {
         return mDisplayModeManager.isAntiDistortionEnabled();
     }
 
+    public void addPlugin(MDAbsPlugin plugin){
+        mPluginManager.add(plugin);
+    }
+
+    public void removePlugin(MDAbsPlugin plugin){
+        mPluginManager.remove(plugin);
+    }
+
+    public void removePlugins(){
+        mPluginManager.removeAll();
+    }
+
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }
@@ -232,7 +254,9 @@ public class MDVRLibrary {
     }
 
     public void onDestroy(){
-        for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
+        Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
+        while (iterator.hasNext()){
+            MDAbsPlugin plugin = iterator.next();
             plugin.destroy();
         }
     }

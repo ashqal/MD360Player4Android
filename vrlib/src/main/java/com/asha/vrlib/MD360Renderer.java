@@ -8,9 +8,10 @@ import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDBarrelDistortionPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
-import com.asha.vrlib.plugins.MDSimplePlugin;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
+
+import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -47,8 +48,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mDisplayModeManager.getBarrelDistortionConfig());
 		mPluginManager.add(mBarrelDistortionPlugin);
-
-		mPluginManager.add(new MDSimplePlugin(mContext));
 	}
 
 	@Override
@@ -61,10 +60,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		
 		// enable depth testing
 		// GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-
-		for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
-			plugin.init(mContext);
-		}
 	}
 
 	@Override
@@ -99,7 +94,10 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 			GLES20.glScissor(width * i, 0, width, height);
 
-			for (MDAbsPlugin plugin : mPluginManager.getPlugins()){
+			Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
+			while (iterator.hasNext()){
+				MDAbsPlugin plugin = iterator.next();
+				plugin.setup(mContext);
 				plugin.renderer(i, width, height, director);
 			}
 

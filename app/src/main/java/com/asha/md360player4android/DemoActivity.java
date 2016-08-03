@@ -25,13 +25,14 @@ public class DemoActivity extends AppCompatActivity {
         final EditText et = (EditText) findViewById(R.id.edit_text_url);
 
         SparseArray<String> data = new SparseArray<>();
-        data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
-        data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
+
         data.put(data.size(), getDrawableUri(R.drawable.bitmap360).toString());
         data.put(data.size(), getDrawableUri(R.drawable.texture).toString());
         data.put(data.size(), getDrawableUri(R.drawable.dome_pic).toString());
         data.put(data.size(), getDrawableUri(R.drawable.stereo).toString());
+        data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
 
+        data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
         data.put(data.size(), "file:///mnt/sdcard/vr/28.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/haha.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/halfdome.mp4");

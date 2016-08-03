@@ -22,14 +22,21 @@ public class MDPlane extends MDAbsObject3D {
 
     private float mPrevRatio;
 
+    private RectF mSize;
+
     private PlaneProjection.PlaneScaleCalculator mCalculator;
 
-    public MDPlane(PlaneProjection.PlaneScaleCalculator calculator) {
+    private MDPlane(PlaneProjection.PlaneScaleCalculator calculator, RectF size) {
         this.mCalculator = calculator;
+        this.mSize = size;
     }
 
-    public MDPlane() {
-        this(new PlaneProjection.PlaneScaleCalculator(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,new RectF(0,0,100,100)));
+    public MDPlane(PlaneProjection.PlaneScaleCalculator calculator) {
+        this(calculator,new RectF(0,0,1.0f,1.0f));
+    }
+
+    public MDPlane(RectF size) {
+        this(new PlaneProjection.PlaneScaleCalculator(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,new RectF(0,0,100,100)),size);
     }
 
     @Override
@@ -70,11 +77,11 @@ public class MDPlane extends MDAbsObject3D {
     }
 
     private float[] generateVertex(){
-        int z = -8;
+        int z = 0;
         mCalculator.calculate();
         mPrevRatio = mCalculator.getTextureRatio();
-        float width = mCalculator.getTextureWidth();
-        float height = mCalculator.getTextureHeight();
+        float width = mCalculator.getTextureWidth() * mSize.width();
+        float height = mCalculator.getTextureHeight() * mSize.height();
 
         float[] vertexs = new float[getNumPoint() * 3];
         int rows = getNumRow();
@@ -86,8 +93,8 @@ public class MDPlane extends MDAbsObject3D {
         int v = 0;
         for(r = 0; r < rows + 1; r++) {
             for(s = 0; s < columns + 1; s++) {
-                vertexs[v++] = (s * S * 2 - 1) * width;
-                vertexs[v++] = (r * R * 2 - 1) * height;
+                vertexs[v++] = (s * S - 0.5f) * width;
+                vertexs[v++] = (r * R - 0.5f) * height;
                 vertexs[v++] = z;
             }
         }

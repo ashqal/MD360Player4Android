@@ -22,6 +22,8 @@ public class PlaneProjection extends AbsProjectionStrategy {
 
     private PlaneScaleCalculator planeScaleCalculator;
 
+    private static final MDPosition position = MDPosition.newInstance().setZ(-2f);
+
     private PlaneProjection(PlaneScaleCalculator calculator) {
         planeScaleCalculator = calculator;
     }
@@ -49,7 +51,7 @@ public class PlaneProjection extends AbsProjectionStrategy {
 
     @Override
     public MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
+        return position;
     }
 
     @Override
@@ -228,10 +230,10 @@ public class PlaneProjection extends AbsProjectionStrategy {
         protected void updateProjection(){
             planeScaleCalculator.setViewportRatio(getRatio());
             planeScaleCalculator.calculate();
-            final float left = - planeScaleCalculator.getViewportWidth();
-            final float right = planeScaleCalculator.getViewportWidth();
-            final float bottom = - planeScaleCalculator.getViewportHeight();
-            final float top = planeScaleCalculator.getViewportHeight();
+            final float left = - planeScaleCalculator.getViewportWidth()/2;
+            final float right = planeScaleCalculator.getViewportWidth()/2;
+            final float bottom = - planeScaleCalculator.getViewportHeight()/2;
+            final float top = planeScaleCalculator.getViewportHeight()/2;
             final float far = 500;
             Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
         }

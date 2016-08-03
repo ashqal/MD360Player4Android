@@ -11,11 +11,28 @@ import com.asha.vrlib.model.MDPosition;
  */
 public abstract class MDAbsPlugin {
 
-    abstract public void init(Context context);
+    private boolean mIsInit;
+
+    MDPosition position = MDPosition.sOriginalPosition;
+
+    public final void setup(Context context){
+        if (!mIsInit){
+            init(context);
+            mIsInit = true;
+        }
+    }
+
+    abstract protected void init(Context context);
 
     abstract public void renderer(int index, int width, int height, MD360Director director);
 
     abstract public void destroy();
 
-    abstract protected MDPosition getModelPosition();
+    protected MDPosition getModelPosition(){
+        return position;
+    }
+
+    public void setModelPosition(MDPosition position) {
+        this.position = position;
+    }
 }

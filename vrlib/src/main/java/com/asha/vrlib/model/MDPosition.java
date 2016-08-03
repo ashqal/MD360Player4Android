@@ -14,14 +14,41 @@ public class MDPosition {
     private float mAngleX;
     private float mAngleY;
     private float mAngleZ;
+    private float mPitch; // x-axis
+    private float mYaw; // y-axis
+    private float mRoll; // z-axis
 
     private MDPosition() {
-        mX = 0;
-        mY = 0;
-        mZ = 0;
-        mAngleX = 0;
-        mAngleY = 0;
-        mAngleZ = 0;
+        mX = mY = mZ = 0;
+        mAngleX = mAngleY = mAngleZ = 0;
+        mPitch = mYaw = mRoll = 0;
+    }
+
+    public float getPitch() {
+        return mPitch;
+    }
+
+    public MDPosition setPitch(float pitch) {
+        this.mPitch = pitch;
+        return this;
+    }
+
+    public float getYaw() {
+        return mYaw;
+    }
+
+    public MDPosition setYaw(float yaw) {
+        this.mYaw = yaw;
+        return this;
+    }
+
+    public float getRoll() {
+        return mRoll;
+    }
+
+    public MDPosition setRoll(float roll) {
+        this.mRoll = roll;
+        return this;
     }
 
     public float getX() {
@@ -95,5 +122,20 @@ public class MDPosition {
 
     public static MDPosition newInstance(){
         return new MDPosition();
+    }
+
+    @Override
+    public String toString() {
+        return "MDPosition{" +
+                "mX=" + mX +
+                ", mY=" + mY +
+                ", mZ=" + mZ +
+                ", mAngleX=" + mAngleX +
+                ", mAngleY=" + mAngleY +
+                ", mAngleZ=" + mAngleZ +
+                ", mPitch=" + mPitch +
+                ", mYaw=" + mYaw +
+                ", mRoll=" + mRoll +
+                '}';
     }
 }

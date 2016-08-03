@@ -59,7 +59,6 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_TOUCH)
-                .projectionMode(MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE)
                 .asBitmap(new MDVRLibrary.IBitmapProvider() {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {

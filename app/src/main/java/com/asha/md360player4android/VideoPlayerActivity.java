@@ -52,6 +52,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             mMediaPlayerWrapper.openRemoteFile(uri.toString());
             mMediaPlayerWrapper.prepare();
         }
+
     }
 
     @Override
@@ -59,7 +60,6 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                .projectionMode(MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE)
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {

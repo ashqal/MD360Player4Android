@@ -16,6 +16,7 @@
    </FrameLayout>
 
    <LinearLayout
+       android:id="@+id/spinner_layout"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal">
@@ -55,6 +56,63 @@
           android:minWidth="100dp"
           android:layout_height="wrap_content"/>
 
+   </LinearLayout>
+
+   <LinearLayout
+       android:layout_below="@id/spinner_layout"
+       android:layout_marginTop="8dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal">
+      <Button
+          android:id="@+id/button_add_plugin"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:text="addPlugin"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+      <Button
+          android:id="@+id/button_remove_plugin"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="removePlugin"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+      <Button
+          android:id="@+id/button_add_plugin_logo"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="addPluginLogo"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+      <Button
+          android:id="@+id/button_remove_plugins"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="removePlugins"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
    </LinearLayout>
 
    <ProgressBar

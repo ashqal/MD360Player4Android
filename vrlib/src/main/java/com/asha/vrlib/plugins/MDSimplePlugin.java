@@ -1,13 +1,12 @@
 package com.asha.vrlib.plugins;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.RectF;
+import android.opengl.GLES20;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
@@ -28,17 +27,15 @@ public class MDSimplePlugin extends MDAbsPlugin{
 
     MD360Texture texture;
 
-    MDPosition position = MDPosition.newInstance().setZ(-9).setAngleX(45);
+    RectF size;
 
-    public MDSimplePlugin(final Context context) {
-        //
-        texture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
-            @Override
-            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), android.R.drawable.star_on);
-                callback.texture(bitmap);
-            }
-        });
+    public MDSimplePlugin(MDVRLibrary.IBitmapProvider provider) {
+        this(2.0f, 2.0f, provider);
+    }
+
+    public MDSimplePlugin(float width, float height, MDVRLibrary.IBitmapProvider provider) {
+        texture = new MD360BitmapTexture(provider);
+        size = new RectF(0,0,width,height);
     }
 
     @Override
@@ -49,7 +46,7 @@ public class MDSimplePlugin extends MDAbsPlugin{
 
         texture.create();
 
-        object3D = new MDPlane();
+        object3D = new MDPlane(size);
         MDObject3DHelper.loadObj(context,object3D);
 
     }
@@ -71,18 +68,16 @@ public class MDSimplePlugin extends MDAbsPlugin{
         // Pass in the combined matrix.
         director.shot(program, getModelPosition());
 
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         texture.texture(program);
 
         object3D.draw();
+        GLES20.glDisable(GLES20.GL_BLEND);
     }
 
     @Override
     public void destroy() {
 
-    }
-
-    @Override
-    protected MDPosition getModelPosition() {
-        return position;
     }
 }
