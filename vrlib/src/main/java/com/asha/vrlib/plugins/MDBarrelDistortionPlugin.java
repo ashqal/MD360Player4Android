@@ -10,7 +10,8 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.GLUtil;
-import com.asha.vrlib.configs.BarrelDistortionConfig;
+import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 
@@ -140,6 +141,11 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
     @Override
     public void destroy() {
 
+    }
+
+    @Override
+    protected MDPosition getModelPosition() {
+        return MDPosition.sOriginalPosition;
     }
 
     public void takeOver(int width, int height, int size) {

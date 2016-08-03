@@ -3,6 +3,7 @@ package com.asha.vrlib.strategy.projection;
 import android.app.Activity;
 import android.graphics.RectF;
 
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDDome3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
@@ -46,5 +47,10 @@ public class DomeProjection extends AbsProjectionStrategy {
     @Override
     public MDAbsObject3D getObject3D() {
         return object3D;
+    }
+
+    @Override
+    public MDPosition getModelPosition() {
+        return MDPosition.sOriginalPosition;
     }
 }

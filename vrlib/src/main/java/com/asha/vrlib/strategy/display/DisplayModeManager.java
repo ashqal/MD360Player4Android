@@ -1,7 +1,7 @@
 package com.asha.vrlib.strategy.display;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.configs.BarrelDistortionConfig;
+import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.strategy.ModeManager;
 
 /**

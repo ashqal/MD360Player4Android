@@ -1,4 +1,4 @@
-package com.asha.vrlib.configs;
+package com.asha.vrlib.model;
 
 /**
  * Created by hzqiujiadi on 16/7/29.

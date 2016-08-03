@@ -7,7 +7,7 @@ import android.view.Surface;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.configs.BarrelDistortionConfig;
+import com.asha.vrlib.model.BarrelDistortionConfig;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
@@ -59,6 +59,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                 .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
+                .projectionMode(MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE)
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
@@ -80,7 +81,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
+                .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
                 .build(R.id.gl_view);
     }
 

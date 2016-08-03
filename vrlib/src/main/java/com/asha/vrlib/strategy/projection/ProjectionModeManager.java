@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.ModeManager;
 
@@ -73,6 +74,8 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
             case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
             case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
                 return PlaneProjection.create(mode,this.mTextureSize);
+            case MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE:
+                return new MultiFisheyeProjection();
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();
@@ -82,6 +85,11 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     @Override
     protected int[] getModes() {
         return sModes;
+    }
+
+    @Override
+    public MDPosition getModelPosition() {
+        return getStrategy().getModelPosition();
     }
 
     @Override

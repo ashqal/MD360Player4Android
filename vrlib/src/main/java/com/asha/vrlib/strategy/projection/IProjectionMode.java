@@ -1,5 +1,6 @@
 package com.asha.vrlib.strategy.projection;
 
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 
 /**
@@ -8,4 +9,5 @@ import com.asha.vrlib.objects.MDAbsObject3D;
  */
 public interface IProjectionMode {
     MDAbsObject3D getObject3D();
+    MDPosition getModelPosition();
 }
