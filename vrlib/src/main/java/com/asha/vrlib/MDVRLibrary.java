@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
-import com.asha.vrlib.configs.BarrelDistortionConfig;
+import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;

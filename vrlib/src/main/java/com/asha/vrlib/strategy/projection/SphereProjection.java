@@ -2,6 +2,7 @@ package com.asha.vrlib.strategy.projection;
 
 import android.app.Activity;
 
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDSphere3D;
@@ -21,6 +22,11 @@ public class SphereProjection extends AbsProjectionStrategy {
     @Override
     public MDAbsObject3D getObject3D() {
         return object3D;
+    }
+
+    @Override
+    public MDPosition getModelPosition() {
+        return MDPosition.sOriginalPosition;
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.ModeManager;
 
@@ -84,6 +85,11 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     @Override
     protected int[] getModes() {
         return sModes;
+    }
+
+    @Override
+    public MDPosition getModelPosition() {
+        return getStrategy().getModelPosition();
     }
 
     @Override

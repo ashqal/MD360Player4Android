@@ -1,7 +1,6 @@
 package com.asha.vrlib.objects;
 
 import android.content.Context;
-import android.opengl.Matrix;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -16,18 +15,6 @@ import java.nio.ShortBuffer;
 public class MDMultiFisheye3D extends MDAbsObject3D {
 
     private static final String TAG = "MDMultiFisheye3D";
-
-    private float[] modelMatrix;
-
-    @Override
-    public float[] getModelMatrix() {
-        if (modelMatrix == null){
-            modelMatrix = new float[16];
-            Matrix.setIdentityM(modelMatrix,0);
-            Matrix.rotateM(modelMatrix,0,-90,0,0,1);
-        }
-        return modelMatrix;
-    }
 
     @Override
     protected void executeLoad(Context context) {

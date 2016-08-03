@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDMultiFisheye3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
@@ -15,6 +16,8 @@ import com.asha.vrlib.objects.MDObject3DHelper;
 public class MultiFisheyeProjection extends AbsProjectionStrategy {
 
     private MDAbsObject3D object3D;
+
+    private MDPosition position;
 
     @Override
     public void on(Activity activity) {
@@ -45,5 +48,13 @@ public class MultiFisheyeProjection extends AbsProjectionStrategy {
     @Override
     public MDAbsObject3D getObject3D() {
         return object3D;
+    }
+
+    @Override
+    public MDPosition getModelPosition() {
+        if (position == null){
+            position = MDPosition.newInstance().setAngleZ(-90);
+        }
+        return position;
     }
 }

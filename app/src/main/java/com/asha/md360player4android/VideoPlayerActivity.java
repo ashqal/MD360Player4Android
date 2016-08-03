@@ -7,7 +7,7 @@ import android.view.Surface;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.configs.BarrelDistortionConfig;
+import com.asha.vrlib.model.BarrelDistortionConfig;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 

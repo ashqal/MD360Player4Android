@@ -6,6 +6,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MD360Renderer;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360Texture;
@@ -65,7 +66,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
         // Pass in the combined matrix.
-        director.shot(mProgram, object3D.getModelMatrix());
+        director.shot(mProgram, object3D.getModelPosition());
         object3D.draw();
 
     }
@@ -77,6 +78,11 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
             mTexture.release();
             mTexture = null;
         }
+    }
+
+    @Override
+    protected MDPosition getModelPosition() {
+        return mProjectionModeManager.getModelPosition();
     }
 
     public static class Builder{
