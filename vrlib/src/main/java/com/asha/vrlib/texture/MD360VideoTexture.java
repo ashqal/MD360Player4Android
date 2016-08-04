@@ -41,6 +41,11 @@ public class MD360VideoTexture extends MD360Texture {
     }
 
     @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    @Override
     public void destroy() {
         if (mSurfaceTexture != null) {
             mSurfaceTexture.release();

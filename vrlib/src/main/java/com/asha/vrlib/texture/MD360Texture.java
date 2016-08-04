@@ -26,6 +26,8 @@ public abstract class MD360Texture {
         }
     }
 
+    abstract public boolean isReady();
+
     abstract public void destroy();
 
     abstract public void release();

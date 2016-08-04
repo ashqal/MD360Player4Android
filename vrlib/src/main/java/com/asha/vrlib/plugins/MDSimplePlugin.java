@@ -54,26 +54,31 @@ public class MDSimplePlugin extends MDAbsPlugin{
     @Override
     public void renderer(int index, int width, int height, MD360Director director) {
 
-        // Update Projection
-        director.updateViewport(width, height);
-
-        // Set our per-vertex lighting program.
-        program.use();
-        glCheck("MDSimplePlugin mProgram use");
-
-        object3D.uploadVerticesBufferIfNeed(program, index);
-
-        object3D.uploadTexCoordinateBufferIfNeed(program, index);
-
-        // Pass in the combined matrix.
-        director.shot(program, getModelPosition());
-
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         texture.texture(program);
 
-        object3D.draw();
-        GLES20.glDisable(GLES20.GL_BLEND);
+        if (texture.isReady()){
+            // Update Projection
+            director.updateViewport(width, height);
+
+            // Set our per-vertex lighting program.
+            program.use();
+            glCheck("MDSimplePlugin mProgram use");
+
+            object3D.uploadVerticesBufferIfNeed(program, index);
+
+            object3D.uploadTexCoordinateBufferIfNeed(program, index);
+
+            // Pass in the combined matrix.
+            director.shot(program, getModelPosition());
+
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+
+            object3D.draw();
+            GLES20.glDisable(GLES20.GL_BLEND);
+        }
+
     }
 
     @Override

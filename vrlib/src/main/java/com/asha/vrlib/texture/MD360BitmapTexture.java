@@ -3,11 +3,10 @@ package com.asha.vrlib.texture;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDHandler;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,16 +24,14 @@ public class MD360BitmapTexture extends MD360Texture {
     private static final String TAG = "MD360BitmapTexture";
     private MDVRLibrary.IBitmapProvider mBitmapProvider;
     private Map<String,AsyncCallback> mCallbackList = new HashMap<>();
-    private Handler mMainHandler;
+    private boolean mIsReady;
 
     public MD360BitmapTexture(MDVRLibrary.IBitmapProvider bitmapProvider) {
         this.mBitmapProvider = bitmapProvider;
-        this.mMainHandler = new Handler(Looper.myLooper());
     }
 
     @Override
     protected int createTextureId() {
-
         final int[] textureHandle = new int[1];
         GLES20.glGenTextures(1, textureHandle, 0);
 
@@ -47,7 +44,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
         // call the provider
         // to load the bitmap.
-        mMainHandler.post(new Runnable() {
+        MDHandler.sharedHandler().post(new Runnable() {
             @Override
             public void run() {
                 mBitmapProvider.onProvideBitmap(callback);
@@ -65,14 +62,20 @@ public class MD360BitmapTexture extends MD360Texture {
             Bitmap bitmap = asyncCallback.getBitmap();
             textureInThread(textureId,program,bitmap);
             asyncCallback.releaseBitmap();
-        } else {
-            if (textureId != 0){
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-                GLES20.glUniform1i(program.getTextureUniformHandle(),0);
-            }
+            mIsReady = true;
+        }
+
+        if (isReady() && textureId != 0){
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+            GLES20.glUniform1i(program.getTextureUniformHandle(),0);
         }
         return true;
+    }
+
+    @Override
+    public boolean isReady() {
+        return mIsReady;
     }
 
     @Override
@@ -86,7 +89,6 @@ public class MD360BitmapTexture extends MD360Texture {
 
     @Override
     public void release() {
-        this.mMainHandler = null;
     }
 
     private void textureInThread(int textureId, MD360Program program, Bitmap bitmap) {

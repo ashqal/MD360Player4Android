@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.common.MDHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
@@ -70,6 +71,9 @@ public class MDVRLibrary {
     private MDTouchHelper mTouchHelper;
 
     private MDVRLibrary(Builder builder) {
+
+        // init main handler
+        MDHandler.init();
 
         // init mode manager
         initModeManager(builder);
