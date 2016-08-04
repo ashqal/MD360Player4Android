@@ -1,5 +1,7 @@
 package com.asha.vrlib.model;
 
+import android.opengl.Matrix;
+
 /**
  * Created by hzqiujiadi on 16/8/3.
  * hzqiujiadi ashqalcn@gmail.com
@@ -8,6 +10,7 @@ public class MDPosition {
 
     public static final MDPosition sOriginalPosition = MDPosition.newInstance();
 
+    private float[] mCurrentRotation = new float[16];
     private float mX;
     private float mY;
     private float mZ;
@@ -137,5 +140,25 @@ public class MDPosition {
                 ", mYaw=" + mYaw +
                 ", mRoll=" + mRoll +
                 '}';
+    }
+
+    private void update(){
+        // model
+        Matrix.setIdentityM(mCurrentRotation, 0);
+
+        Matrix.rotateM(mCurrentRotation, 0, getAngleY(), 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, getAngleX(), 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, getAngleZ(), 0.0f, 0.0f, 1.0f);
+
+        Matrix.translateM(mCurrentRotation, 0, getX(),getY(),getZ());
+
+        Matrix.rotateM(mCurrentRotation, 0, getYaw(), 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, getPitch(), 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, getRoll(), 0.0f, 0.0f, 1.0f);
+    }
+
+    public float[] getMatrix() {
+        update();
+        return mCurrentRotation;
     }
 }
