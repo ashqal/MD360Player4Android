@@ -116,7 +116,7 @@ public class MDTouchHelper {
     }
 
     public void addGestureListener(MDVRLibrary.IGestureListener gestureListener) {
-        mGestureListeners.add(gestureListener);
+        if (gestureListener != null) mGestureListeners.add(gestureListener);
     }
 
     public void setAdvanceGestureListener(MDVRLibrary.IAdvanceGestureListener listener) {

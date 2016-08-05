@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.texture.MD360BitmapTexture;
@@ -63,12 +61,6 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
                         loadImage(getUri(),callback);
-                    }
-                })
-                .gesture(new MDVRLibrary.IGestureListener() {
-                    @Override
-                    public void onClick(MotionEvent e) {
-                        Toast.makeText(BitmapPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .pinchEnabled(true)

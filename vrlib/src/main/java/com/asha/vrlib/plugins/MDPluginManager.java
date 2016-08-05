@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MDPluginManager {
 
+    private static final String TAG = "MDPluginManager";
     private List<MDAbsPlugin> mList;
 
     public MDPluginManager() {
@@ -47,7 +48,12 @@ public class MDPluginManager {
     public void hitTest(MDRay ray) {
         for(MDAbsPlugin plugin : mList){
             if (plugin instanceof IMDHotspot){
-                ((IMDHotspot)plugin).hit(ray);
+                IMDHotspot hotspot = (IMDHotspot) plugin;
+                boolean hit = hotspot.hit(ray);
+                if (hit){
+                    hotspot.onHit();
+                    break;
+                }
             }
         }
     }

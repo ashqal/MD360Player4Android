@@ -164,7 +164,12 @@ public abstract class MD360PlayerActivity extends Activity {
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.star_on);
                         callback.texture(bitmap);
                     }
-                });
+                }){
+                    @Override
+                    public void onHit() {
+                        Toast.makeText(MD360PlayerActivity.this, "on hit star!", Toast.LENGTH_SHORT).show();
+                    }
+                };
                 MDPosition position = positions[(int) (Math.random() * 100) % positions.length];
                 plugin.setModelPosition(position);
                 plugins.add(plugin);
@@ -182,7 +187,12 @@ public abstract class MD360PlayerActivity extends Activity {
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
                         callback.texture(bitmap);
                     }
-                });
+                }){
+                    @Override
+                    public void onHit() {
+                        Toast.makeText(MD360PlayerActivity.this, "on hit logo!", Toast.LENGTH_SHORT).show();
+                    }
+                };
                 plugin.setModelPosition(logoPosition);
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);

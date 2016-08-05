@@ -93,8 +93,8 @@ public class VRUtil {
     public static MDRay point2Ray(float x, float y, MD360Director director){
         MDVector3D v = new MDVector3D();
         float[] projection = director.getProjectionMatrix();
-        v.x = ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0];
-        v.y = -( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5];
+        v.x = - ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0];
+        v.y = ( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5];
         v.z = 1.0f;
 
         float[] view = director.getViewMatrix();

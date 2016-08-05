@@ -8,5 +8,5 @@ import com.asha.vrlib.model.MDRay;
  */
 public interface IMDHotspot {
     boolean hit(MDRay ray);
-    boolean onHit();
+    void onHit();
 }

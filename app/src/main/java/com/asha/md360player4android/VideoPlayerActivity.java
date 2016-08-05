@@ -2,7 +2,6 @@ package com.asha.md360player4android;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.Surface;
 import android.widget.Toast;
 
@@ -75,12 +74,6 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
-                .gesture(new MDVRLibrary.IGestureListener() {
-                    @Override
-                    public void onClick(MotionEvent e) {
-                        Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
-                    }
-                })
                 .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
                 .build(R.id.gl_view);
     }

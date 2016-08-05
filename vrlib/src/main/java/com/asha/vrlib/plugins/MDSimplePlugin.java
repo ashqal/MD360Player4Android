@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
@@ -116,7 +115,7 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
         for (int i = 0; i < numPoints; i++){
             MDVector3D v = new MDVector3D();
             v.setX(buffer.get(i * 3)).setY(buffer.get(i * 3 + 1)).setZ(buffer.get(i * 3 + 2));
-            Log.d(TAG,"before:" + v);
+            // Log.d(TAG,"before:" + v);
             tmp[0] = v.x;
             tmp[1] = v.y;
             tmp[2] = v.z;
@@ -125,7 +124,7 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
             v.setX(tmp[0]);
             v.setY(tmp[1]);
             v.setZ(tmp[2]);
-            Log.d(TAG,"after:" + v);
+            // Log.d(TAG,"after:" + v);
             points.add(v);
         }
 
@@ -135,14 +134,13 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
             hit |= VRUtil.intersectTriangle(ray,points.get(1),points.get(2),points.get(3));
         }
 
-        Log.d(TAG,"Ray:" + ray);
-        Log.e(TAG,"MDSimplePlugin hit:" + hit);
+        // Log.d(TAG,"Ray:" + ray);
+        // Log.e(TAG,"MDSimplePlugin hit:" + hit);
 
         return hit;
     }
 
     @Override
-    public boolean onHit() {
-        return false;
+    public void onHit() {
     }
 }
