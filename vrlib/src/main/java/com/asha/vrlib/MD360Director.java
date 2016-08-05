@@ -23,7 +23,6 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-
     private float mEyeX = 0f;
     private float mEyeY = 0f;
     private float mEyeZ = 0f;
@@ -43,6 +42,8 @@ public class MD360Director {
     private float mDeltaX;
     private float mDeltaY;
 
+    private boolean mViewMatrixInvalidate;
+
     protected MD360Director(Builder builder) {
         this.mRatio = builder.mRatio;
         this.mNearScale = builder.mNearScale;
@@ -61,6 +62,7 @@ public class MD360Director {
 
     public void setDeltaY(float mDeltaY) {
         this.mDeltaY = mDeltaY;
+        mViewMatrixInvalidate = true;
     }
 
     public float getDeltaX() {
@@ -69,6 +71,7 @@ public class MD360Director {
 
     public void setDeltaX(float mDeltaX) {
         this.mDeltaX = mDeltaX;
+        mViewMatrixInvalidate = true;
     }
 
     public float getPreviousY() {
@@ -102,24 +105,15 @@ public class MD360Director {
 
     public void shot(MD360Program program, MDPosition modelPosition) {
 
-        // model
-        Matrix.setIdentityM(mCurrentRotation, 0);
 
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY + modelPosition.getAngleY(), 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX + modelPosition.getAngleX(), 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, modelPosition.getAngleZ(), 0.0f, 0.0f, 1.0f);
-
-        Matrix.translateM(mCurrentRotation, 0, modelPosition.getX(),modelPosition.getY(),modelPosition.getZ());
-
-        Matrix.rotateM(mCurrentRotation, 0, modelPosition.getYaw(), 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, modelPosition.getPitch(), 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, modelPosition.getRoll(), 0.0f, 0.0f, 1.0f);
-
-        Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
+        if (mViewMatrixInvalidate){
+            updateViewMatrix();
+            mViewMatrixInvalidate = false;
+        }
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, mCurrentRotation, 0);
+        Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, modelPosition.getMatrix(), 0);
 
         // This multiplies the model view matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
@@ -190,15 +184,24 @@ public class MD360Director {
         final float upZ = 0.0f;
         Matrix.setIdentityM(mViewMatrix, 0);
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+
+        Matrix.setIdentityM(mCurrentRotation, 0);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mCurrentRotation, 0, mSensorMatrix, 0, mCurrentRotation, 0);
+
+        Matrix.multiplyMM(mViewMatrix, 0, mViewMatrix, 0, mCurrentRotation, 0);
     }
 
     public void updateSensorMatrix(float[] sensorMatrix) {
         System.arraycopy(sensorMatrix,0,mSensorMatrix,0,16);
+        mViewMatrixInvalidate = true;
     }
 
     public void reset(){
         mDeltaX = mDeltaY = mPreviousX = mPreviousY = 0;
         Matrix.setIdentityM(mSensorMatrix,0);
+        mViewMatrixInvalidate = true;
     }
 
     public static Builder builder(){
