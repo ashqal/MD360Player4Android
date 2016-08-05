@@ -1,9 +1,14 @@
 package com.asha.vrlib.common;
 
+import android.graphics.PointF;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
 import android.view.Surface;
+
+import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.model.MDVector3D;
 
 /**
  * Created by hzqiujiadi on 16/3/13.
@@ -11,6 +16,7 @@ import android.view.Surface;
  */
 public class VRUtil {
 
+    private static final String TAG = "VRUtil";
     private static float[] mTmp = new float[16];
 
     public static void sensorRotationVector2Matrix(SensorEvent event, int rotation, float[] output) {
@@ -36,5 +42,127 @@ public class VRUtil {
         if (object == null) throw new RuntimeException(error);
     }
 
+    public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src){
+
+        double paramD = 1.0 - paramA - paramB - paramC; // describes the linear scaling of the image
+
+        float d = 1.0f;
+
+        // center of dst image
+        double centerX = 0f;
+        double centerY = 0f;
+
+        if (src.x == centerX && src.y == centerY){
+            return;
+        }
+
+        // cartesian coordinates of the destination point (relative to the centre of the image)
+        double deltaX = (src.x - centerX) / d;
+        double deltaY = (src.y - centerY) / d;
+
+        // distance or radius of dst image
+        double dstR = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // distance or radius of src image (with formula)
+        double srcR = (paramA * dstR * dstR * dstR + paramB * dstR * dstR + paramC * dstR + paramD) * dstR;
+
+        // comparing old and new distance to get factor
+        double factor = Math.abs(dstR / srcR);
+
+        // coordinates in source image
+        float xResult = (float) (centerX + (deltaX * factor * d));
+        float yResult = (float) (centerY + (deltaY * factor * d));
+
+        src.set(xResult,yResult);
+    }
+
+    public static MDVector3D vec3Sub(MDVector3D v1, MDVector3D v2){
+        return new MDVector3D().setX(v1.x - v2.x).setY(v1.y - v2.y).setZ(v1.z - v2.z);
+    }
+
+    public static MDVector3D vec3Cross(MDVector3D v1, MDVector3D v2){
+        return new MDVector3D().setX(v1.y * v2.z - v2.y * v1.z)
+                .setY(v1.z * v2.x - v2.z * v1.x)
+                .setZ(v1.x * v2.y - v2.x * v1.y);
+    }
+
+    public static float vec3Dot(MDVector3D v1, MDVector3D v2){
+        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    }
+
+    public static MDRay point2Ray(float x, float y, MD360Director director){
+        MDVector3D v = new MDVector3D();
+        float[] projection = director.getProjectionMatrix();
+        v.x = ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0];
+        v.y = -( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5];
+        v.z = 1.0f;
+
+        float[] view = director.getViewMatrix();
+        float[] temp = new float[16];
+        boolean success = Matrix.invertM(temp,0,view,0);
+        if (success){
+            MDVector3D vPickRayDir = new MDVector3D();
+            MDVector3D vPickRayOrig = new MDVector3D();
+
+            vPickRayDir.x = v.x * temp[0] + v.y * temp[4] + v.z * temp[8];
+            vPickRayDir.y = v.x * temp[1] + v.y * temp[5] + v.z * temp[9];
+            vPickRayDir.z = v.x * temp[2] + v.y * temp[6] + v.z * temp[10];
+            vPickRayOrig.x = temp[12];
+            vPickRayOrig.y = temp[13];
+            vPickRayOrig.z = temp[14];
+            return new MDRay(vPickRayOrig,vPickRayDir);
+        } else {
+            return null;
+        }
+    }
+
+    public static boolean intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2){
+        // Find vectors for two edges sharing vert0
+        MDVector3D edge1 = vec3Sub(v1 , v0);
+        MDVector3D edge2 = vec3Sub(v2 , v0);
+
+        // Begin calculating determinant - also used to calculate U parameter
+        MDVector3D pvec;
+        pvec = vec3Cross( ray.getDir(), edge2 );
+
+        // If determinant is near zero, ray lies in plane of triangle
+        float det = vec3Dot( edge1, pvec );
+
+        MDVector3D tvec;
+        if( det > 0 ) {
+            tvec = vec3Sub(ray.getOrig() , v0);
+        } else {
+            tvec = vec3Sub(v0 , ray.getOrig());
+            det = -det;
+        }
+
+        if( det < 0.0001f )
+            return false;
+
+        // Calculate U parameter and test bounds
+        float u = vec3Dot( tvec, pvec );
+        if( u < 0.0f || u > det ){
+            return false;
+        }
+
+        // Prepare to test V parameter
+        MDVector3D qvec;
+        qvec = vec3Cross(tvec, edge1);
+
+        // Calculate V parameter and test bounds
+        float v = vec3Dot(ray.getDir(), qvec);
+        if( v < 0.0f || u + v > det ){
+            return false;
+        }
+
+        // Calculate t, scale parameters, ray intersects triangle
+        float t = vec3Dot(edge2, qvec);
+        float fInvDet = 1.0f / det;
+        t *= fInvDet;
+        u *= fInvDet;
+        v *= fInvDet;
+
+        return true;
+    }
 
 }

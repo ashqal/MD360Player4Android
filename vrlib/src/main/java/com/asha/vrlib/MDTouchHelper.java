@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by hzqiujiadi on 16/5/6.
  * hzqiujiadi ashqalcn@gmail.com
@@ -13,47 +16,11 @@ import android.view.MotionEvent;
  */
 public class MDTouchHelper {
 
-    private static class PinchInfo{
-        private static final float sSensitivity = 3;
-        private float x1;
-        private float y1;
-        private float x2;
-        private float y2;
-        private float oDistance;
-        private float prevScale = sScaleMin;
-        private float currentScale = sScaleMin;
-
-        public void mark(float x1, float y1, float x2, float y2){
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
-            oDistance = calDistance(x1, y1, x2, y2);
-            prevScale = currentScale;
-        }
-
-        public float pinch(float distance) {
-            if (oDistance == 0) oDistance = distance;
-            float scale = distance / oDistance - 1;
-            scale *= sSensitivity;
-            currentScale = prevScale + scale;
-            // range
-            if (currentScale < sScaleMin) currentScale = sScaleMin;
-            else if (currentScale > sScaleMax) currentScale = sScaleMax;
-            return currentScale;
-        }
-
-        public float reset(){
-            prevScale = sScaleMin;
-            currentScale = sScaleMin;
-            return currentScale;
-        }
-    }
     private static final float sScaleMin = 1;
     private static final float sScaleMax = 4;
 
-    private MDVRLibrary.IGestureListener mGestureListener;
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
+    private List<MDVRLibrary.IGestureListener> mGestureListeners = new LinkedList<>();
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
@@ -69,8 +36,9 @@ public class MDTouchHelper {
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
-                if (mGestureListener != null)
-                    mGestureListener.onClick(e);
+                for (MDVRLibrary.IGestureListener listener : mGestureListeners){
+                    listener.onClick(e);
+                }
                 return true;
             }
 
@@ -147,8 +115,8 @@ public class MDTouchHelper {
         return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
-    public void setGestureListener(MDVRLibrary.IGestureListener mGestureListener) {
-        this.mGestureListener = mGestureListener;
+    public void addGestureListener(MDVRLibrary.IGestureListener gestureListener) {
+        mGestureListeners.add(gestureListener);
     }
 
     public void setAdvanceGestureListener(MDVRLibrary.IAdvanceGestureListener listener) {
@@ -157,5 +125,42 @@ public class MDTouchHelper {
 
     public void setPinchEnabled(boolean mPinchEnabled) {
         this.mPinchEnabled = mPinchEnabled;
+    }
+
+    private static class PinchInfo{
+        private static final float sSensitivity = 3;
+        private float x1;
+        private float y1;
+        private float x2;
+        private float y2;
+        private float oDistance;
+        private float prevScale = sScaleMin;
+        private float currentScale = sScaleMin;
+
+        public void mark(float x1, float y1, float x2, float y2){
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+            oDistance = calDistance(x1, y1, x2, y2);
+            prevScale = currentScale;
+        }
+
+        public float pinch(float distance) {
+            if (oDistance == 0) oDistance = distance;
+            float scale = distance / oDistance - 1;
+            scale *= sSensitivity;
+            currentScale = prevScale + scale;
+            // range
+            if (currentScale < sScaleMin) currentScale = sScaleMin;
+            else if (currentScale > sScaleMax) currentScale = sScaleMax;
+            return currentScale;
+        }
+
+        public float reset(){
+            prevScale = sScaleMin;
+            currentScale = sScaleMin;
+            return currentScale;
+        }
     }
 }

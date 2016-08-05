@@ -31,6 +31,8 @@ public class MD360Director {
     private float mLookY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
+    private int mViewportWidth = 2;
+    private int mViewportHeight = 1;
 
     private float[] mCurrentRotation = new float[16];
     private float[] mSensorMatrix = new float[16];
@@ -132,6 +134,8 @@ public class MD360Director {
 
     public void updateViewport(int width, int height){
         // Projection Matrix
+        mViewportWidth = width;
+        mViewportHeight = height;
         mRatio = width * 1.0f / height;
         updateProjection();
     }
@@ -158,8 +162,20 @@ public class MD360Director {
         return mRatio;
     }
 
-    protected float[] getProjectionMatrix(){
+    public float[] getProjectionMatrix(){
         return mProjectionMatrix;
+    }
+
+    public int getViewportWidth() {
+        return mViewportWidth;
+    }
+
+    public int getViewportHeight() {
+        return mViewportHeight;
+    }
+
+    public float[] getViewMatrix() {
+        return mViewMatrix;
     }
 
     private void updateViewMatrix() {

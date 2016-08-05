@@ -9,7 +9,7 @@ import android.opengl.Matrix;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.common.GLUtil;
+import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -343,7 +343,7 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
                 float yValue = vertexs[yIndex];
 
                 pointF.set(xValue,yValue);
-                GLUtil.barrelDistortion(mConfiguration.getParamA(),
+                VRUtil.barrelDistortion(mConfiguration.getParamA(),
                         mConfiguration.getParamB(),
                         mConfiguration.getParamC(),
                         pointF);

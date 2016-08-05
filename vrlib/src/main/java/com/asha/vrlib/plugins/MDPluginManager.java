@@ -1,5 +1,7 @@
 package com.asha.vrlib.plugins;
 
+import com.asha.vrlib.model.MDRay;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,6 +40,14 @@ public class MDPluginManager {
                 // nop
             } else {
                 mList.remove(plugin);
+            }
+        }
+    }
+
+    public void hitTest(MDRay ray) {
+        for(MDAbsPlugin plugin : mList){
+            if (plugin instanceof IMDHotspot){
+                ((IMDHotspot)plugin).hit(ray);
             }
         }
     }

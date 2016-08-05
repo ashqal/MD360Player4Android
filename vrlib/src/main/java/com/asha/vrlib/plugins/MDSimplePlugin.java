@@ -3,15 +3,25 @@ package com.asha.vrlib.plugins;
 import android.content.Context;
 import android.graphics.RectF;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
+import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.model.MDVector3D;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
+
+import java.nio.FloatBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.asha.vrlib.common.GLUtil.glCheck;
 
@@ -19,7 +29,9 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * Created by hzqiujiadi on 16/8/2.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MDSimplePlugin extends MDAbsPlugin{
+public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
+
+    private static final String TAG = "MDSimplePlugin";
 
     MDAbsObject3D object3D;
 
@@ -84,5 +96,53 @@ public class MDSimplePlugin extends MDAbsPlugin{
     @Override
     public void destroy() {
 
+    }
+
+    @Override
+    public boolean hit(MDRay ray) {
+        if (object3D == null || object3D.getVerticesBuffer(0) == null){
+            return false;
+        }
+
+        MDPosition position = getModelPosition();
+        float[] model = position.getMatrix();
+
+        List<MDVector3D> points = new LinkedList<>();
+
+        FloatBuffer buffer = object3D.getVerticesBuffer(0);
+        int numPoints = buffer.capacity() / 3;
+
+        float[] tmp = new float[4];
+        for (int i = 0; i < numPoints; i++){
+            MDVector3D v = new MDVector3D();
+            v.setX(buffer.get(i * 3)).setY(buffer.get(i * 3 + 1)).setZ(buffer.get(i * 3 + 2));
+            Log.d(TAG,"before:" + v);
+            tmp[0] = v.x;
+            tmp[1] = v.y;
+            tmp[2] = v.z;
+            tmp[3] = 1;
+            Matrix.multiplyMV(tmp,0,model,0,tmp,0);
+            v.setX(tmp[0]);
+            v.setY(tmp[1]);
+            v.setZ(tmp[2]);
+            Log.d(TAG,"after:" + v);
+            points.add(v);
+        }
+
+        boolean hit = false;
+        if (points.size() == 4){
+            hit = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
+            hit |= VRUtil.intersectTriangle(ray,points.get(1),points.get(2),points.get(3));
+        }
+
+        Log.d(TAG,"Ray:" + ray);
+        Log.e(TAG,"MDSimplePlugin hit:" + hit);
+
+        return hit;
+    }
+
+    @Override
+    public boolean onHit() {
+        return false;
     }
 }

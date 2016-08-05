@@ -3,7 +3,6 @@ package com.asha.vrlib.common;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
@@ -227,41 +226,6 @@ public class GLUtil {
         output.setNumIndices(indexBuffer.length);
 
         //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);
-    }
-
-
-    public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src){
-
-        double paramD = 1.0 - paramA - paramB - paramC; // describes the linear scaling of the image
-
-        float d = 1.0f;
-
-        // center of dst image
-        double centerX = 0f;
-        double centerY = 0f;
-
-        if (src.x == centerX && src.y == centerY){
-            return;
-        }
-
-        // cartesian coordinates of the destination point (relative to the centre of the image)
-        double deltaX = (src.x - centerX) / d;
-        double deltaY = (src.y - centerY) / d;
-
-        // distance or radius of dst image
-        double dstR = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-        // distance or radius of src image (with formula)
-        double srcR = (paramA * dstR * dstR * dstR + paramB * dstR * dstR + paramC * dstR + paramD) * dstR;
-
-        // comparing old and new distance to get factor
-        double factor = Math.abs(dstR / srcR);
-
-        // coordinates in source image
-        float xResult = (float) (centerX + (deltaX * factor * d));
-        float yResult = (float) (centerY + (deltaY * factor * d));
-
-        src.set(xResult,yResult);
     }
 
 }

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
@@ -13,7 +14,9 @@ import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDHandler;
+import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
@@ -87,7 +90,13 @@ public class MDVRLibrary {
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
         // listener
-        mTouchHelper.setGestureListener(builder.gestureListener);
+        mTouchHelper.addGestureListener(new IGestureListener() {
+            @Override
+            public void onClick(MotionEvent e) {
+                rayPick(e);
+            }
+        });
+        mTouchHelper.addGestureListener(builder.gestureListener);
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
@@ -103,6 +112,18 @@ public class MDVRLibrary {
             }
 
         });
+    }
+
+    private void rayPick(MotionEvent e) {
+        float x = e.getX();
+        float y = e.getY();
+        Log.d(TAG,String.format("click: %f %f",x,y));
+
+        MDRay ray = VRUtil.point2Ray(x, y, mProjectionModeManager.getDirectors().get(0));
+        if (ray == null) return;
+
+        mPluginManager.hitTest(ray);
+
     }
 
     private void initModeManager(Builder builder) {
