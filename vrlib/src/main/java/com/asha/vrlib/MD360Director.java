@@ -42,7 +42,7 @@ public class MD360Director {
     private float mDeltaX;
     private float mDeltaY;
 
-    private boolean mViewMatrixInvalidate;
+    private boolean mViewMatrixInvalidate = true;
 
     protected MD360Director(Builder builder) {
         this.mRatio = builder.mRatio;

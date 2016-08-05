@@ -32,8 +32,8 @@ public class MDRay {
     @Override
     public String toString() {
         return "MDRay{" +
-                "mOrig=" + mOrig +
                 ", mDir=" + mDir +
+                ", mOrig=" + mOrig +
                 '}';
     }
 }
