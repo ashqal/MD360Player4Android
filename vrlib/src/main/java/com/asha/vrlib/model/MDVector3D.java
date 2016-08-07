@@ -26,7 +26,7 @@ public class MDVector3D {
     }
 
     public MDVector3D setZ(float z) {
-        values[1] = z;
+        values[2] = z;
         return this;
     }
 

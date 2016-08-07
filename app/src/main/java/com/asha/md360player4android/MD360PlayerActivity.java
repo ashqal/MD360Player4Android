@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -218,11 +217,6 @@ public abstract class MD360PlayerActivity extends Activity {
             }
         });
 
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mVRLibrary.handleTouchEvent(event) || super.onTouchEvent(event);
     }
 
     abstract protected MDVRLibrary createVRLibrary();

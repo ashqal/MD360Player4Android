@@ -87,7 +87,9 @@ public class MDTouchHelper {
                     handlePinch(distance);
                 }
         }
-        return mGestureDetector.onTouchEvent(event);
+
+        mGestureDetector.onTouchEvent(event);
+        return true;
     }
 
     private void handlePinch(float distance) {

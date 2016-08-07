@@ -112,18 +112,30 @@ public class MDVRLibrary {
             }
 
         });
+
+        mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mTouchHelper.handleTouchEvent(event);
+            }
+        });
     }
 
     private void rayPick(MotionEvent e) {
         float x = e.getX();
         float y = e.getY();
-        Log.d(TAG,String.format("click: %f %f",x,y));
+        int width = mScreenWrapper.getView().getWidth();
+        int size = mDisplayModeManager.getVisibleSize();
+        int itemWidth = width / size;
 
-        MDRay ray = VRUtil.point2Ray(x, y, mProjectionModeManager.getDirectors().get(0));
+        int index = (int) (x / itemWidth);
+        if (index >= size){
+            return;
+        }
+
+        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, mProjectionModeManager.getDirectors().get(index));
         if (ray == null) return;
-
         mPluginManager.hitTest(ray);
-
     }
 
     private void initModeManager(Builder builder) {
@@ -288,12 +300,14 @@ public class MDVRLibrary {
 
     /**
      * handle touch touch to rotate the model
+     * @deprecated deprecated since 2.0
      *
      * @param event
      * @return true if handled.
      */
     public boolean handleTouchEvent(MotionEvent event) {
-        return mTouchHelper.handleTouchEvent(event);
+        Log.e(TAG,"please remove the handleTouchEvent in activity!");
+        return false;
     }
 
     public int getInteractiveMode() {

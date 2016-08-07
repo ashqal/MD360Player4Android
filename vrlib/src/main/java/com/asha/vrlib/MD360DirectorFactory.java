@@ -11,7 +11,7 @@ public abstract class MD360DirectorFactory {
         @Override
         public MD360Director createDirector(int index) {
             switch (index){
-                case 1:   return MD360Director.builder().setEyeX(-2.0f).setLookX(-2.0f).build();
+                // case 1:   return MD360Director.builder().setEyeX(-2.0f).setLookX(-2.0f).build();
                 default:  return MD360Director.builder().build();
             }
         }
