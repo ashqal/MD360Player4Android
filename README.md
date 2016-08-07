@@ -15,6 +15,10 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Last Commit
 **`-SNAPSHOT`**
+
+## Release Note
+
+**`2.0.0.beta`**
 * add anti-distortion support.
 ```java
 // init configuation
@@ -24,12 +28,60 @@ protected MDVRLibrary createVRLibrary() {
             .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
             .build(R.id.gl_view);
 }
-
+```
+```java
 // setter
 mVRLibrary.setAntiDistortionEnabled(true);
 ```
 
-## Release Note
+* hotspot support.
+```java
+// add hotspot dynamicly.
+findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        MDSimplePlugin plugin = MDSimplePlugin.builder()
+                .size(4f,4f)
+                .provider(new MDVRLibrary.IBitmapProvider() {
+                    @Override
+                    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
+                        callback.texture(bitmap);
+                    }
+                })
+                .title("logo")
+                .position(logoPosition)
+                .listenClick(new MDVRLibrary.IPickListener() {
+                    @Override
+                    public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+                        Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build();
+
+        plugins.add(plugin);
+        getVRLibrary().addPlugin(plugin);
+        Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
+    }
+});
+```
+
+* Eye Picker
+```java
+// setEyePickChangedListener dynamicly.
+final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
+getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
+    @Override
+    public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+        String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
+        hotspotText.setText(text);
+    }
+});
+```
+```java
+// disable the eye picker
+getVRLibrary().eyePickEanbled(false);
+```
 
 **1.5.3 (recommend)**
 * Keep the GLContext instance onPause.
