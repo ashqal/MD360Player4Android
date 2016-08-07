@@ -14,9 +14,8 @@ import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDHandler;
-import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.BarrelDistortionConfig;
-import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
@@ -68,8 +67,8 @@ public class MDVRLibrary {
     private InteractiveModeManager mInteractiveModeManager;
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
-
     private MDPluginManager mPluginManager;
+    private MDPickerManager mPickerManager;
     private MDGLScreenWrapper mScreenWrapper;
     private MDTouchHelper mTouchHelper;
 
@@ -89,13 +88,6 @@ public class MDVRLibrary {
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
-        // listener
-        mTouchHelper.addGestureListener(new IGestureListener() {
-            @Override
-            public void onClick(MotionEvent e) {
-                rayPick(e);
-            }
-        });
         mTouchHelper.addGestureListener(builder.gestureListener);
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
@@ -119,23 +111,9 @@ public class MDVRLibrary {
                 return mTouchHelper.handleTouchEvent(event);
             }
         });
-    }
 
-    private void rayPick(MotionEvent e) {
-        float x = e.getX();
-        float y = e.getY();
-        int width = mScreenWrapper.getView().getWidth();
-        int size = mDisplayModeManager.getVisibleSize();
-        int itemWidth = width / size;
-
-        int index = (int) (x / itemWidth);
-        if (index >= size){
-            return;
-        }
-
-        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, mProjectionModeManager.getDirectors().get(index));
-        if (ray == null) return;
-        mPluginManager.hitTest(ray);
+        // init picker manager
+        initPickerManager(builder);
     }
 
     private void initModeManager(Builder builder) {
@@ -170,6 +148,20 @@ public class MDVRLibrary {
                 .setProjectionModeManager(mProjectionModeManager)
                 .build();
         mPluginManager.add(mainPlugin);
+    }
+
+    private void initPickerManager(Builder builder) {
+        mPickerManager = MDPickerManager.with()
+                .setPluginManager(mPluginManager)
+                .setDisplayModeManager(mDisplayModeManager)
+                .setProjectionModeManager(mProjectionModeManager)
+                .build();
+        setEyePickEnable(builder.eyePickEnabled);
+        mPickerManager.setEyePickChangedListener(builder.eyePickChangedListener);
+
+        // listener
+        mTouchHelper.addGestureListener(mPickerManager.getTouchPicker());
+        mPluginManager.add(mPickerManager.getEyePicker());
     }
 
     private void initOpenGL(Context context, MDGLScreenWrapper screenWrapper) {
@@ -260,6 +252,22 @@ public class MDVRLibrary {
         return mDisplayModeManager.isAntiDistortionEnabled();
     }
 
+    public boolean isEyePickEnable() {
+        return mPickerManager.isEyePickEnable();
+    }
+
+    public void setEyePickEnable(boolean eyePickEnable) {
+        mPickerManager.setEyePickEnable(eyePickEnable);
+    }
+
+    public void setEyePickChangedListener(IEyePickChangedListener listener){
+        mPickerManager.setEyePickChangedListener(listener);
+    }
+
+    public int getScreenSize(){
+        return mDisplayModeManager.getVisibleSize();
+    }
+
     public void addPlugin(MDAbsPlugin plugin){
         mPluginManager.add(plugin);
     }
@@ -343,6 +351,10 @@ public class MDVRLibrary {
         void onPinch(float scale);
     }
 
+    public interface IEyePickChangedListener {
+        void onHotspotHit(IMDHotspot hotspot, long hitTimestamp);
+    }
+
     public static Builder with(Activity activity){
         return new Builder(activity);
     }
@@ -360,11 +372,13 @@ public class MDVRLibrary {
         private INotSupportCallback notSupportCallback;
         private IGestureListener gestureListener;
         private boolean pinchEnabled; // default false.
+        private boolean eyePickEnabled = true; // default true.
         private BarrelDistortionConfig barrelDistortionConfig;
-        public MD360DirectorFactory directorFactory;
-        public int motionDelay = SensorManager.SENSOR_DELAY_GAME;
-        public SensorEventListener sensorListener;
-        public MDGLScreenWrapper screenWrapper;
+        private IEyePickChangedListener eyePickChangedListener;
+        private MD360DirectorFactory directorFactory;
+        private int motionDelay = SensorManager.SENSOR_DELAY_GAME;
+        private SensorEventListener sensorListener;
+        private MDGLScreenWrapper screenWrapper;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -390,47 +404,6 @@ public class MDVRLibrary {
             return this;
         }
 
-        /**
-         * Deprecated since 1.1.0!
-         * Will remove in 2.0.0!
-         * Please use {@link #video} instead.
-         *
-         * @param callback IOnSurfaceReadyCallback
-         * @return builder
-         */
-        @Deprecated
-        public Builder callback(IOnSurfaceReadyCallback callback){
-            return asVideo(callback);
-        }
-
-        /**
-         * Deprecated since 1.5.0!
-         * Will remove in 2.0.0!
-         * Please use {@link #asVideo} instead.
-         *
-         * @param callback callback if the surface is created.
-         * @return builder
-         */
-        @Deprecated
-        public Builder video(IOnSurfaceReadyCallback callback){
-            asVideo(callback);
-            return this;
-        }
-
-        /**
-         * Deprecated since 1.5.0!
-         * Will remove in 2.0.0!
-         * Please use {@link #asBitmap} instead.
-         *
-         * @param bitmapProvider provide the bitmap.
-         * @return builder
-         */
-        @Deprecated
-        public Builder bitmap(IBitmapProvider bitmapProvider){
-            asBitmap(bitmapProvider);
-            return this;
-        }
-
         public Builder asVideo(IOnSurfaceReadyCallback callback){
             texture = new MD360VideoTexture(callback);
             contentType = ContentType.VIDEO;
@@ -447,6 +420,7 @@ public class MDVRLibrary {
         /**
          * gesture listener, e.g.
          * onClick
+         * @deprecated please use {@link #listen(IGestureListener)}
          *
          * @param listener listener
          * @return builder
@@ -464,6 +438,40 @@ public class MDVRLibrary {
          */
         public Builder pinchEnabled(boolean enabled) {
             this.pinchEnabled = enabled;
+            return this;
+        }
+
+        /**
+         * enable or disable the eye picking.
+         *
+         * @param enabled default is false
+         * @return builder
+         */
+        public Builder eyePickEanbled(boolean enabled) {
+            this.eyePickEnabled = enabled;
+            return this;
+        }
+
+        /**
+         * gesture listener, e.g.
+         * onClick
+         *
+         * @param listener listener
+         * @return builder
+         */
+        public Builder listen(IGestureListener listener) {
+            gestureListener = listener;
+            return this;
+        }
+
+        /**
+         * IEyePickChangedListener listener
+         *
+         * @param listener listener
+         * @return builder
+         */
+        public Builder listen(IEyePickChangedListener listener){
+            this.eyePickChangedListener = listener;
             return this;
         }
 

@@ -11,16 +11,19 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDSimplePlugin;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * using MD360Renderer
@@ -110,6 +113,10 @@ public abstract class MD360PlayerActivity extends Activity {
         // init VR Library
         mVRLibrary = createVRLibrary();
 
+        final List<View> hotspotPoints = new LinkedList<>();
+        hotspotPoints.add(findViewById(R.id.hotspot_point1));
+        hotspotPoints.add(findViewById(R.id.hotspot_point2));
+
         SpinnerHelper.with(this)
                 .setData(sDisplayMode)
                 .setDefault(mVRLibrary.getDisplayMode())
@@ -117,6 +124,11 @@ public abstract class MD360PlayerActivity extends Activity {
                     @Override
                     public void onSpinnerClicked(int index, int key, String value) {
                         mVRLibrary.switchDisplayMode(MD360PlayerActivity.this, key);
+                        int i = 0;
+                        for (View point : hotspotPoints){
+                            point.setVisibility(i < mVRLibrary.getScreenSize() ? View.VISIBLE : View.GONE);
+                            i++;
+                        }
                     }
                 })
                 .init(R.id.spinner_display);
@@ -163,14 +175,11 @@ public abstract class MD360PlayerActivity extends Activity {
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.star_on);
                         callback.texture(bitmap);
                     }
-                }){
-                    @Override
-                    public void onHit() {
-                        Toast.makeText(MD360PlayerActivity.this, "on hit star!", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                MDPosition position = positions[(int) (Math.random() * 100) % positions.length];
+                });
+                int index = (int) (Math.random() * 100) % positions.length;
+                MDPosition position = positions[index];
                 plugin.setModelPosition(position);
+                plugin.setTitle("star" + index );
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
@@ -186,13 +195,9 @@ public abstract class MD360PlayerActivity extends Activity {
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
                         callback.texture(bitmap);
                     }
-                }){
-                    @Override
-                    public void onHit() {
-                        Toast.makeText(MD360PlayerActivity.this, "on hit logo!", Toast.LENGTH_SHORT).show();
-                    }
-                };
+                });
                 plugin.setModelPosition(logoPosition);
+                plugin.setTitle("logo");
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
@@ -217,6 +222,14 @@ public abstract class MD360PlayerActivity extends Activity {
             }
         });
 
+        final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
+        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickChangedListener() {
+            @Override
+            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+                String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
+                hotspotText.setText(text);
+            }
+        });
     }
 
     abstract protected MDVRLibrary createVRLibrary();

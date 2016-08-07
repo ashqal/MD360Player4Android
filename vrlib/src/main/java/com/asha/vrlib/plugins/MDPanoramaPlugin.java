@@ -77,6 +77,11 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         return mProjectionModeManager.getModelPosition();
     }
 
+    @Override
+    protected boolean removable() {
+        return false;
+    }
+
     public static class Builder{
         private MD360Texture texture;
         private int contentType = MDVRLibrary.ContentType.DEFAULT;

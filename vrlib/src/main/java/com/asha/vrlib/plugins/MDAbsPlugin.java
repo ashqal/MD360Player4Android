@@ -35,4 +35,6 @@ public abstract class MDAbsPlugin {
     public void setModelPosition(MDPosition position) {
         this.position = position;
     }
+
+    abstract protected boolean removable();
 }

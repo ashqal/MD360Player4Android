@@ -39,6 +39,8 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
 
     RectF size;
 
+    private String title;
+
     public MDSimplePlugin(MDVRLibrary.IBitmapProvider provider) {
         this(2.0f, 2.0f, provider);
     }
@@ -97,6 +99,11 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
+    protected boolean removable() {
+        return true;
+    }
+
+    @Override
     public boolean hit(MDRay ray) {
         if (object3D == null || object3D.getVerticesBuffer(0) == null){
             return false;
@@ -130,6 +137,21 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public void onHit() {
+    public void onEyeHit(long timestamp) {
+
+    }
+
+    @Override
+    public void onTouchHit() {
+
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

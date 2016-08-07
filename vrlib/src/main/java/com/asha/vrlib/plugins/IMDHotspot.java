@@ -8,5 +8,7 @@ import com.asha.vrlib.model.MDRay;
  */
 public interface IMDHotspot {
     boolean hit(MDRay ray);
-    void onHit();
+    void onEyeHit(long timestamp);
+    void onTouchHit();
+    String getTitle();
 }

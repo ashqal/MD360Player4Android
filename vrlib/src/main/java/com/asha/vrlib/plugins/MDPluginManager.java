@@ -1,7 +1,5 @@
 package com.asha.vrlib.plugins;
 
-import com.asha.vrlib.model.MDRay;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -13,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MDPluginManager {
 
     private static final String TAG = "MDPluginManager";
+
     private List<MDAbsPlugin> mList;
 
     public MDPluginManager() {
@@ -37,23 +36,8 @@ public class MDPluginManager {
         Iterator<MDAbsPlugin> iterator = mList.iterator();
         while (iterator.hasNext()){
             MDAbsPlugin plugin = iterator.next();
-            if (plugin instanceof MDPanoramaPlugin || plugin instanceof MDBarrelDistortionPlugin){
-                // nop
-            } else {
+            if (plugin.removable()){
                 mList.remove(plugin);
-            }
-        }
-    }
-
-    public void hitTest(MDRay ray) {
-        for(MDAbsPlugin plugin : mList){
-            if (plugin instanceof IMDHotspot){
-                IMDHotspot hotspot = (IMDHotspot) plugin;
-                boolean hit = hotspot.hit(ray);
-                if (hit){
-                    hotspot.onHit();
-                    break;
-                }
             }
         }
     }

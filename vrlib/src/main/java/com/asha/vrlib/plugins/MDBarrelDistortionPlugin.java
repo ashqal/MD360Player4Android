@@ -134,6 +134,11 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         return MDPosition.sOriginalPosition;
     }
 
+    @Override
+    protected boolean removable() {
+        return false;
+    }
+
     public void takeOver(int width, int height, int size) {
         mDirector.updateViewport(width, height);
         object3D.setMode(size);

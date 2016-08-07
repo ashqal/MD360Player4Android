@@ -13,6 +13,27 @@
           android:id="@+id/gl_view"
           android:layout_width="match_parent"
           android:layout_height="match_parent" />
+      <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+         <TextView
+             android:id="@+id/hotspot_point1"
+             android:text="+"
+             android:textColor="@android:color/white"
+             android:gravity="center"
+             android:layout_weight="1"
+             android:layout_width="0dp"
+             android:layout_height="match_parent" />
+         <TextView
+             android:id="@+id/hotspot_point2"
+             android:text="+"
+             android:textColor="@android:color/white"
+             android:gravity="center"
+             android:layout_weight="1"
+             android:layout_width="0dp"
+             android:layout_height="match_parent" />
+      </LinearLayout>
    </FrameLayout>
 
    <LinearLayout
@@ -114,6 +135,14 @@
           android:layout_width="wrap_content"
           android:layout_height="42dp" />
    </LinearLayout>
+
+   <TextView
+       android:layout_alignParentBottom="true"
+       android:id="@+id/hotspot_text"
+       android:textColor="@android:color/white"
+       android:background="@drawable/selector_button_background"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" />
 
    <ProgressBar
        android:layout_centerInParent="true"
