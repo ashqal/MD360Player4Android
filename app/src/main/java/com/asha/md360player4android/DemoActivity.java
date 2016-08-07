@@ -33,6 +33,7 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
 
         data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
+        data.put(data.size(), "file:///mnt/sdcard/vr/videos_s_4.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/28.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/haha.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/halfdome.mp4");

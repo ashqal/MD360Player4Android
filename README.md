@@ -4,7 +4,8 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Preview
 ![ScreenShot](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/preview.jpg)
-* [Demo Preview on YouTube](https://youtu.be/_m1f2I3i-pg)
+![ScreenShot](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/preview1.jpg)
+![ScreenShot](https://github.com/ashqal/MD360Player4Android/raw/master/app/demo/preview2.jpg)
 
 ## NOTICE
 * OpenGLES 2.0 required
