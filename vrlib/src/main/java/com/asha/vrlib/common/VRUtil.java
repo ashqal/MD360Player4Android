@@ -77,25 +77,25 @@ public class VRUtil {
     }
 
     public static MDVector3D vec3Sub(MDVector3D v1, MDVector3D v2){
-        return new MDVector3D().setX(v1.x - v2.x).setY(v1.y - v2.y).setZ(v1.z - v2.z);
+        return new MDVector3D().setX(v1.getX() - v2.getX()).setY(v1.getY() - v2.getY()).setZ(v1.getZ() - v2.getZ());
     }
 
     public static MDVector3D vec3Cross(MDVector3D v1, MDVector3D v2){
-        return new MDVector3D().setX(v1.y * v2.z - v2.y * v1.z)
-                .setY(v1.z * v2.x - v2.z * v1.x)
-                .setZ(v1.x * v2.y - v2.x * v1.y);
+        return new MDVector3D().setX(v1.getY() * v2.getZ() - v2.getY() * v1.getZ())
+                .setY(v1.getZ() * v2.getX() - v2.getZ() * v1.getX())
+                .setZ(v1.getX() * v2.getY() - v2.getX() * v1.getY());
     }
 
     public static float vec3Dot(MDVector3D v1, MDVector3D v2){
-        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+        return v1.getX() * v2.getX() + v1.getY() * v2.getY() + v1.getZ() * v2.getZ();
     }
 
     public static MDRay point2Ray(float x, float y, MD360Director director){
         MDVector3D v = new MDVector3D();
         float[] projection = director.getProjectionMatrix();
-        v.x = - ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0];
-        v.y = ( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5];
-        v.z = 1.0f;
+        v.setX(- ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0]);
+        v.setY(( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5]);
+        v.setZ(1.0f);
 
         float[] view = director.getViewMatrix();
         float[] temp = new float[16];
@@ -104,12 +104,12 @@ public class VRUtil {
             MDVector3D vPickRayDir = new MDVector3D();
             MDVector3D vPickRayOrig = new MDVector3D();
 
-            vPickRayDir.x = v.x * temp[0] + v.y * temp[4] + v.z * temp[8];
-            vPickRayDir.y = v.x * temp[1] + v.y * temp[5] + v.z * temp[9];
-            vPickRayDir.z = v.x * temp[2] + v.y * temp[6] + v.z * temp[10];
-            vPickRayOrig.x = temp[12];
-            vPickRayOrig.y = temp[13];
-            vPickRayOrig.z = temp[14];
+            vPickRayDir.setX(v.getX() * temp[0] + v.getY() * temp[4] + v.getZ() * temp[8]);
+            vPickRayDir.setY(v.getX() * temp[1] + v.getY() * temp[5] + v.getZ() * temp[9]);
+            vPickRayDir.setZ(v.getX() * temp[2] + v.getY() * temp[6] + v.getZ() * temp[10]);
+            vPickRayOrig.setX(temp[12]);
+            vPickRayOrig.setY(temp[13]);
+            vPickRayOrig.setZ(temp[14]);
             return new MDRay(vPickRayOrig,vPickRayDir);
         } else {
             return null;
