@@ -41,6 +41,7 @@ mVRLibrary.setAntiDistortionEnabled(true);
 findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
+        private MDPosition logoPosition = MDPosition.newInstance().setY(-8.0f).setYaw(-90.0f);
         MDSimplePlugin plugin = MDSimplePlugin.builder()
                 .size(4f,4f)
                 .provider(new MDVRLibrary.IBitmapProvider() {
