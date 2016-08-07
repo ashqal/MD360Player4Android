@@ -260,7 +260,7 @@ public class MDVRLibrary {
         mPickerManager.setEyePickEnable(eyePickEnable);
     }
 
-    public void setEyePickChangedListener(IEyePickChangedListener listener){
+    public void setEyePickChangedListener(IPickListener listener){
         mPickerManager.setEyePickChangedListener(listener);
     }
 
@@ -351,7 +351,7 @@ public class MDVRLibrary {
         void onPinch(float scale);
     }
 
-    public interface IEyePickChangedListener {
+    public interface IPickListener {
         void onHotspotHit(IMDHotspot hotspot, long hitTimestamp);
     }
 
@@ -374,7 +374,7 @@ public class MDVRLibrary {
         private boolean pinchEnabled; // default false.
         private boolean eyePickEnabled = true; // default true.
         private BarrelDistortionConfig barrelDistortionConfig;
-        private IEyePickChangedListener eyePickChangedListener;
+        private IPickListener eyePickChangedListener;
         private MD360DirectorFactory directorFactory;
         private int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         private SensorEventListener sensorListener;
@@ -420,7 +420,7 @@ public class MDVRLibrary {
         /**
          * gesture listener, e.g.
          * onClick
-         * @deprecated please use {@link #listen(IGestureListener)}
+         * @deprecated please use {@link #listenGesture(IGestureListener)}
          *
          * @param listener listener
          * @return builder
@@ -459,18 +459,18 @@ public class MDVRLibrary {
          * @param listener listener
          * @return builder
          */
-        public Builder listen(IGestureListener listener) {
+        public Builder listenGesture(IGestureListener listener) {
             gestureListener = listener;
             return this;
         }
 
         /**
-         * IEyePickChangedListener listener
+         * IPickListener listener
          *
          * @param listener listener
          * @return builder
          */
-        public Builder listen(IEyePickChangedListener listener){
+        public Builder listenEyePick(IPickListener listener){
             this.eyePickChangedListener = listener;
             return this;
         }

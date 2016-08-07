@@ -169,17 +169,27 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDSimplePlugin plugin = new MDSimplePlugin(4f,4f,new MDVRLibrary.IBitmapProvider() {
-                    @Override
-                    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.star_on);
-                        callback.texture(bitmap);
-                    }
-                });
-                int index = (int) (Math.random() * 100) % positions.length;
+                final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                plugin.setModelPosition(position);
-                plugin.setTitle("star" + index );
+                MDSimplePlugin plugin = MDSimplePlugin.builder()
+                        .size(4f,4f)
+                        .provider(new MDVRLibrary.IBitmapProvider() {
+                            @Override
+                            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.star_on);
+                                callback.texture(bitmap);
+                            }
+                        })
+                        .listenClick(new MDVRLibrary.IPickListener() {
+                            @Override
+                            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+                                Toast.makeText(MD360PlayerActivity.this, "click star" + index, Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .title("star" + index)
+                        .position(position)
+                        .build();
+
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
@@ -189,15 +199,25 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDSimplePlugin plugin = new MDSimplePlugin(4f,4f,new MDVRLibrary.IBitmapProvider() {
-                    @Override
-                    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
-                        callback.texture(bitmap);
-                    }
-                });
-                plugin.setModelPosition(logoPosition);
-                plugin.setTitle("logo");
+                MDSimplePlugin plugin = MDSimplePlugin.builder()
+                        .size(4f,4f)
+                        .provider(new MDVRLibrary.IBitmapProvider() {
+                            @Override
+                            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
+                                callback.texture(bitmap);
+                            }
+                        })
+                        .title("logo")
+                        .position(logoPosition)
+                        .listenClick(new MDVRLibrary.IPickListener() {
+                            @Override
+                            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+                                Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build();
+
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
@@ -223,7 +243,7 @@ public abstract class MD360PlayerActivity extends Activity {
         });
 
         final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
-        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickChangedListener() {
+        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
             @Override
             public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
                 String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );

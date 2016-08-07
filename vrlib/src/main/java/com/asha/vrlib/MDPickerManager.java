@@ -35,7 +35,7 @@ public class MDPickerManager {
 
     private MDPluginManager mPluginManager;
 
-    private MDVRLibrary.IEyePickChangedListener mEyePickChangedListener;
+    private MDVRLibrary.IPickListener mEyePickChangedListener;
 
     private EyePickPoster mEyePickPoster = new EyePickPoster();
 
@@ -157,7 +157,7 @@ public class MDPickerManager {
         return new Builder();
     }
 
-    public void setEyePickChangedListener(MDVRLibrary.IEyePickChangedListener eyePickChangedListener) {
+    public void setEyePickChangedListener(MDVRLibrary.IPickListener eyePickChangedListener) {
         this.mEyePickChangedListener = eyePickChangedListener;
     }
 

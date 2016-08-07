@@ -31,6 +31,8 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
 
     private static final String TAG = "MDSimplePlugin";
 
+    MDVRLibrary.IPickListener clickListener;
+
     MDAbsObject3D object3D;
 
     MD360Program program;
@@ -41,13 +43,12 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
 
     private String title;
 
-    public MDSimplePlugin(MDVRLibrary.IBitmapProvider provider) {
-        this(2.0f, 2.0f, provider);
-    }
-
-    public MDSimplePlugin(float width, float height, MDVRLibrary.IBitmapProvider provider) {
-        texture = new MD360BitmapTexture(provider);
-        size = new RectF(0,0,width,height);
+    private MDSimplePlugin(Builder builder) {
+        texture = new MD360BitmapTexture(builder.provider);
+        size = new RectF(0, 0, builder.width, builder.height);
+        clickListener = builder.clickListener;
+        setTitle(builder.title);
+        setModelPosition(builder.position);
     }
 
     @Override
@@ -143,7 +144,9 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
 
     @Override
     public void onTouchHit() {
-
+        if (clickListener != null){
+            clickListener.onHotspotHit(this, System.currentTimeMillis());
+        }
     }
 
     @Override
@@ -153,5 +156,56 @@ public class MDSimplePlugin extends MDAbsPlugin implements IMDHotspot{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder{
+
+        private float width = 2;
+
+        private float height = 2;
+
+        private String title;
+
+        private MDVRLibrary.IBitmapProvider provider;
+
+        private MDVRLibrary.IPickListener clickListener;
+
+        private MDPosition position;
+
+        public Builder title(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder size(float width, float height){
+            this.width = width;
+            this.height = height;
+            return this;
+        }
+
+        public Builder provider(MDVRLibrary.IBitmapProvider provider){
+            this.provider = provider;
+            return this;
+        }
+
+
+        public Builder position(MDPosition position) {
+            this.position = position;
+            return this;
+        }
+
+        public Builder listenClick(MDVRLibrary.IPickListener listener){
+            this.clickListener = listener;
+            return this;
+        }
+
+        public MDSimplePlugin build(){
+            return new MDSimplePlugin(this);
+        }
+
     }
 }
