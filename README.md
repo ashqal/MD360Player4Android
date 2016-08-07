@@ -19,7 +19,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
-**`2.0.0.beta`**
+**2.0.0.beta**
 * add anti-distortion support.
 ```java
 // init configuation
@@ -85,7 +85,7 @@ getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
 getVRLibrary().eyePickEanbled(false);
 ```
 
-**1.5.3 (recommend)**
+**1.5.3**
 * Keep the GLContext instance onPause.
 * GLTextureView supported!
 
