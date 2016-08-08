@@ -199,7 +199,8 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
             } else if (mode == 2){
                 return super.getTexCoordinateBuffer(index);
             } else {
-                throw new RuntimeException("size of " + mode + " is not support in MDBarrelDistortionPlugin");
+                // throw new RuntimeException("size of " + mode + " is not support in MDBarrelDistortionPlugin");
+                return null;
             }
         }
 
