@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
@@ -14,6 +14,7 @@ import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
+import com.asha.vrlib.strategy.display.DisplayModeManager;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -32,7 +33,7 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  * For more info,
  * http://stackoverflow.com/questions/12620025/barrel-distortion-correction-algorithm-to-correct-fisheye-lens-failing-to-impl
  */
-public class MDBarrelDistortionPlugin extends MDAbsPlugin {
+public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
     private MD360Program mProgram;
 
@@ -50,10 +51,13 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
 
     private BarrelDistortionConfig mConfiguration;
 
-    public MDBarrelDistortionPlugin(BarrelDistortionConfig configuration) {
-        mConfiguration = configuration;
+    private DisplayModeManager mDisplayModeManager;
+
+    public MDBarrelDistortionLinePipe(DisplayModeManager displayModeManager) {
+        mDisplayModeManager = displayModeManager;
+        mConfiguration = displayModeManager.getBarrelDistortionConfig();
         mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
-        mDirector = new OrthogonalDirector(new MD360Director.Builder());
+        mDirector = new MD360DirectorFactory.OrthogonalImpl().createDirector(0);
         object3D = new MDBarrelDistortionMesh();
     }
 
@@ -139,7 +143,12 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         return false;
     }
 
+    @Override
     public void takeOver(int width, int height, int size) {
+        if (!mDisplayModeManager.isAntiDistortionEnabled()){
+            return;
+        }
+
         mDirector.updateViewport(width, height);
         object3D.setMode(size);
 
@@ -151,7 +160,12 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
     }
 
-    public void commit(int index){
+    @Override
+    public void commit(int mWidth, int mHeight, int index){
+        if (!mDisplayModeManager.isAntiDistortionEnabled()){
+            return;
+        }
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         // Set our per-vertex lighting program.
         mProgram.use();
@@ -167,38 +181,6 @@ public class MDBarrelDistortionPlugin extends MDAbsPlugin {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
 
         object3D.draw();
-    }
-
-    private class OrthogonalDirector extends MD360Director{
-
-        private OrthogonalDirector(Builder builder) {
-            super(builder);
-        }
-
-        @Override
-        public void setDeltaX(float mDeltaX) {
-            // nop
-        }
-
-        @Override
-        public void setDeltaY(float mDeltaY) {
-            // nop
-        }
-
-        @Override
-        public void updateSensorMatrix(float[] sensorMatrix) {
-            // nop
-        }
-
-        @Override
-        protected void updateProjection(){
-            final float left = - 1f;
-            final float right = 1f;
-            final float bottom = - 1f;
-            final float top = 1f;
-            final float far = 500;
-            Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
-        }
     }
 
     private class MDBarrelDistortionMesh extends MDAbsObject3D {

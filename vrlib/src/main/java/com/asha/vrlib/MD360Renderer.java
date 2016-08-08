@@ -6,12 +6,11 @@ import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDBarrelDistortionPlugin;
+import com.asha.vrlib.plugins.MDBarrelDistortionLinePipe;
+import com.asha.vrlib.plugins.MDMainLinePipe;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
-
-import java.util.Iterator;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -31,11 +30,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private DisplayModeManager mDisplayModeManager;
 	private ProjectionModeManager mProjectionModeManager;
 	private MDPluginManager mPluginManager;
+	private MDMainLinePipe mMainLinePipe;
 	private Fps mFps = new Fps();
 	private int mWidth;
 	private int mHeight;
 
-	private MDBarrelDistortionPlugin mBarrelDistortionPlugin;
+	// private MDBarrelDistortionPlugin mBarrelDistortionPlugin;
 
 	// final
 	private final Context mContext;
@@ -46,8 +46,9 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mProjectionModeManager = params.projectionModeManager;
 		mPluginManager = params.pluginManager;
 
-		mBarrelDistortionPlugin = new MDBarrelDistortionPlugin(mDisplayModeManager.getBarrelDistortionConfig());
-		mPluginManager.add(mBarrelDistortionPlugin);
+		mMainLinePipe = new MDMainLinePipe();
+		// mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
+		mMainLinePipe.add(new MDBarrelDistortionLinePipe(mDisplayModeManager));
 	}
 
 	@Override
@@ -71,22 +72,17 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 
-		boolean barrelDistortionEnabled = mDisplayModeManager.isAntiDistortionEnabled();
-
-		glCheck("MD360Renderer onDrawFrame 0");
-
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
 		glCheck("MD360Renderer onDrawFrame 1");
+
 		int size = mDisplayModeManager.getVisibleSize();
 
 		int width = (int) (this.mWidth * 1.0f / size);
 		int height = mHeight;
 
-		if (barrelDistortionEnabled){
-			// Barrel Distortion take over
-			mBarrelDistortionPlugin.takeOver(mWidth,mHeight,size);
-		}
+		// take over
+		mMainLinePipe.setup(mContext);
+		mMainLinePipe.takeOver(mWidth,mHeight,size);
 
 		for (int i = 0; i < size; i++){
 			MD360Director director = mProjectionModeManager.getDirectors().get(i);
@@ -94,9 +90,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 			GLES20.glScissor(width * i, 0, width, height);
 
-			Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
-			while (iterator.hasNext()){
-				MDAbsPlugin plugin = iterator.next();
+			for (MDAbsPlugin plugin : mPluginManager.getPlugins()) {
 				plugin.setup(mContext);
 				plugin.renderer(i, width, height, director);
 			}
@@ -104,18 +98,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 		}
 
-		if (barrelDistortionEnabled){
-			// Barrel Distortion render
-			for (int i = 0; i < size; i++){
-
-				GLES20.glViewport(width * i, 0, width, mHeight);
-				GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
-				GLES20.glScissor(width * i, 0, width, mHeight);
-				mBarrelDistortionPlugin.commit(i);
-				GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
-			}
-		}
-
+		mMainLinePipe.commit(mWidth,mHeight,size);
 		// mFps.step();
 	}
 
