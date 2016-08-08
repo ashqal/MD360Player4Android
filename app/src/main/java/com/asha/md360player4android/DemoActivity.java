@@ -26,13 +26,13 @@ public class DemoActivity extends AppCompatActivity {
 
         SparseArray<String> data = new SparseArray<>();
 
-        data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
         data.put(data.size(), getDrawableUri(R.drawable.bitmap360).toString());
         data.put(data.size(), getDrawableUri(R.drawable.texture).toString());
         data.put(data.size(), getDrawableUri(R.drawable.dome_pic).toString());
         data.put(data.size(), getDrawableUri(R.drawable.stereo).toString());
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye2).toString());
+        data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
 
         data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
         data.put(data.size(), "file:///mnt/sdcard/vr/videos_s_4.mp4");
