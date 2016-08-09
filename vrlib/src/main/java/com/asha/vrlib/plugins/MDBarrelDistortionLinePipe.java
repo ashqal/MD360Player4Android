@@ -158,6 +158,9 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
+
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        glCheck("MDBarrelDistortionLinePipe glClear");
     }
 
     @Override
@@ -167,9 +170,6 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        glCheck("MDBarrelDistortionLinePipe glClear");
 
         // Set our per-vertex lighting program.
         mProgram.use();

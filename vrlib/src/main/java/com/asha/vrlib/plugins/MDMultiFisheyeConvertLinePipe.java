@@ -141,14 +141,17 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        glCheck("MDMultiFisheyeConvertLinePipe glClear");
     }
 
     @Override
     public void commit(int mWidth, int mHeight, int index){
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
         // Set our per-vertex lighting program.
+
         mProgram.use();
-        glCheck("mProgram use");
+        glCheck("MDMultiFisheyeConvertLinePipe mProgram use");
 
         object3D.uploadVerticesBufferIfNeed(mProgram, index);
         object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
@@ -212,24 +215,12 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
                     vertexs[v++] = z;
 
 
-                    if (r * 2 < rows + 1){
-                        //
+                    float a = (float) (Math.sin( 2 * PI * s * S) * (r * R) * 1 * 1) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos( 2 * PI * s * S ) * (r * R) * 1 * 1) * 0.5f + 0.5f;
 
-                        float a = (float) (Math.sin( 2 * PI * s * S) * (r * R) * 1 * 1) * 0.5f + 0.5f;
-                        float b = (float) (Math.cos( 2 * PI * s * S ) * (r * R) * 1 * 1) * 0.5f + 0.5f;
+                    texcoords[t*2] = a;
+                    texcoords[t*2 + 1] = b;
 
-                        texcoords[t*2] = a * 0.5f;
-                        texcoords[t*2 + 1] = b;
-
-                    } else {
-                        //
-
-                        float a = (float) (Math.sin( 2 * PI * s * S) * (r * R) * 1 * 1) * 0.5f + 0.5f;
-                        float b = (float) (Math.cos( 2 * PI * s * S) * (r * R) * 1 * 1) * 0.5f + 0.5f;
-
-                        texcoords[t*2] = a * 0.5f + 0.5f;
-                        texcoords[t*2 + 1] = b;
-                    }
                     t++;
                 }
             }

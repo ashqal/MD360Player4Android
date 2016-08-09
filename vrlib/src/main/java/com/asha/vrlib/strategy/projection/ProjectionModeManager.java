@@ -10,8 +10,8 @@ import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.ModeManager;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by hzqiujiadi on 16/6/25.
@@ -26,7 +26,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
         public MD360DirectorFactory directorFactory;
     }
 
-    private List<MD360Director> mDirectors = new LinkedList<>();
+    private List<MD360Director> mDirectors = new CopyOnWriteArrayList<>();
 
     private RectF mTextureSize;
 

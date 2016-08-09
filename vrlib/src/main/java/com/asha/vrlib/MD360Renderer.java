@@ -47,7 +47,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mPluginManager = params.pluginManager;
 
 		mMainLinePipe = new MDMainLinePipe();
-		//mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
+		// mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
 		mMainLinePipe.add(new MDBarrelDistortionLinePipe(mDisplayModeManager));
 	}
 
