@@ -157,7 +157,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     @Override
     public void onTouchHit(MDRay ray) {
         if (clickListener != null){
-            clickListener.onHotspotHit(ray, this);
+            clickListener.onHotspotHit(this, ray);
         }
     }
 

@@ -182,7 +182,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         .provider(11, new AndroidDrawableProvider(android.R.drawable.checkbox_on_background))
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
-                            public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
+                            public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
                                 if (hitHotspot instanceof MDWidgetPlugin){
                                     MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
                                     widgetPlugin.setChecked(!widgetPlugin.getChecked());
@@ -218,7 +218,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         .position(logoPosition)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
-                            public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
+                            public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
                                 Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
                             }
                         });

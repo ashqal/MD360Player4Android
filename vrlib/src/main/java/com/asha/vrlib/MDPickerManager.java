@@ -107,7 +107,7 @@ public class MDPickerManager {
         IMDHotspot hotspot = pick(ray, HIT_FROM_TOUCH);
 
         if (ray != null && mTouchPickListener != null){
-            mTouchPickListener.onHotspotHit(ray, hotspot);
+            mTouchPickListener.onHotspotHit(hotspot, ray);
         }
     }
 

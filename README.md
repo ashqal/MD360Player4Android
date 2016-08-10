@@ -19,7 +19,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
-**2.0.1.beta**
+**2.0.2.beta**
 * bug fix.
 * add anti-distortion support.
 ```java
@@ -36,37 +36,62 @@ protected MDVRLibrary createVRLibrary() {
 mVRLibrary.setAntiDistortionEnabled(true);
 ```
 
-* hotspot support.
+* hotspot and widget(which has normal/focused/checked status) supported.
 ```java
 // add hotspot dynamicly.
-findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
+private MDPosition[] positions = new MDPosition[]{
+        MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
+        MDPosition.newInstance().setZ(-18.0f).setYaw(15.0f).setAngleX(15),
+};
+
+findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        private MDPosition logoPosition = MDPosition.newInstance().setY(-8.0f).setYaw(-90.0f);
-        MDSimplePlugin plugin = MDSimplePlugin.builder()
-                .size(4f,4f)
-                .provider(new MDVRLibrary.IBitmapProvider() {
-                    @Override
-                    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
-                        callback.texture(bitmap);
-                    }
-                })
-                .title("logo")
-                .position(logoPosition)
-                .listenClick(new MDVRLibrary.IPickListener() {
-                    @Override
-                    public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
-                        Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .build();
+        final int index = (int) (Math.random() * 100) % positions.length;
+        MDPosition position = positions[index];
 
-        plugins.add(plugin);
+        // create a hotspot builder
+        MDHotspotBuilder builder = MDHotspotBuilder.create()
+                .size(4f,4f)
+                .provider(0, new AndroidDrawableProvider(android.R.drawable.star_off))
+                .provider(1, new AndroidDrawableProvider(android.R.drawable.star_on))
+                .provider(10, new AndroidDrawableProvider(android.R.drawable.checkbox_off_background))
+                .provider(11, new AndroidDrawableProvider(android.R.drawable.checkbox_on_background))
+                .listenClick(new MDVRLibrary.ITouchPickListener() {
+                    @Override
+                    public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
+                        if (hitHotspot instanceof MDWidgetPlugin){
+                            MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
+                            widgetPlugin.setChecked(!widgetPlugin.getChecked());
+                        }
+                    }
+                })
+                .title("star" + index)
+                .position(position)
+                .status(0,1)
+                .checkedStatus(10,11);
+
+        // create a widget plugin
+        MDWidgetPlugin plugin = new MDWidgetPlugin(builder);
         getVRLibrary().addPlugin(plugin);
-        Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
+        Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
     }
 });
+
+private class AndroidDrawableProvider implements MDVRLibrary.IBitmapProvider{
+
+    private int res;
+
+    public AndroidDrawableProvider(int res) {
+        this.res = res;
+    }
+
+    @Override
+    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), this.res);
+        callback.texture(bitmap);
+    }
+}
 ```
 
 * eye picker

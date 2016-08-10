@@ -70,7 +70,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 })
                 .listenTouchPick(new MDVRLibrary.ITouchPickListener() {
                     @Override
-                    public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
+                    public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
                         Log.d(TAG,"Ray:" + ray + ", hitHotspot:" + hitHotspot);
                     }
                 })

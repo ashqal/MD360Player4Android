@@ -362,7 +362,7 @@ public class MDVRLibrary {
     }
 
     public interface ITouchPickListener {
-        void onHotspotHit(MDRay ray, IMDHotspot hitHotspot);
+        void onHotspotHit(IMDHotspot hitHotspot, MDRay ray);
     }
 
     public static Builder with(Activity activity){
