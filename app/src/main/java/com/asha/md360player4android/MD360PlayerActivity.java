@@ -15,10 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDHotspotPlugin;
+import com.asha.vrlib.plugins.MDWidgetPlugin;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 
 import java.util.LinkedList;
@@ -171,21 +174,27 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDHotspotPlugin plugin = MDHotspotPlugin.builder()
+                MDHotspotBuilder builder = MDHotspotBuilder.create()
                         .size(4f,4f)
-                        .provider(new AndroidDrawableProvider(android.R.drawable.star_off))
+                        .provider(0, new AndroidDrawableProvider(android.R.drawable.star_off))
                         .provider(1, new AndroidDrawableProvider(android.R.drawable.star_on))
-                        .provider(2, new AndroidDrawableProvider(R.drawable.texture))
-                        .listenClick(new MDVRLibrary.IPickListener() {
+                        .provider(10, new AndroidDrawableProvider(android.R.drawable.checkbox_off_background))
+                        .provider(11, new AndroidDrawableProvider(android.R.drawable.checkbox_on_background))
+                        .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
-                            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
-                                Toast.makeText(MD360PlayerActivity.this, "click star" + index, Toast.LENGTH_SHORT).show();
-                                hotspot.useTexture(2);
+                            public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
+                                if (hitHotspot instanceof MDWidgetPlugin){
+                                    MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
+                                    widgetPlugin.setChecked(!widgetPlugin.getChecked());
+                                }
                             }
                         })
                         .title("star" + index)
                         .position(position)
-                        .build();
+                        .status(0,1)
+                        .checkedStatus(10,11);
+
+                MDWidgetPlugin plugin = new MDWidgetPlugin(builder);
 
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
@@ -196,7 +205,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotPlugin plugin = MDHotspotPlugin.builder()
+                MDHotspotBuilder builder = MDHotspotBuilder.create()
                         .size(4f,4f)
                         .provider(new MDVRLibrary.IBitmapProvider() {
                             @Override
@@ -207,14 +216,13 @@ public abstract class MD360PlayerActivity extends Activity {
                         })
                         .title("logo")
                         .position(logoPosition)
-                        .listenClick(new MDVRLibrary.IPickListener() {
+                        .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
-                            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+                            public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
                                 Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
                             }
-                        })
-                        .build();
-
+                        });
+                MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
@@ -240,7 +248,7 @@ public abstract class MD360PlayerActivity extends Activity {
         });
 
         final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
-        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
+        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickListener() {
             @Override
             public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
                 String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );

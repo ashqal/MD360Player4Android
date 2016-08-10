@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDRay;
@@ -69,9 +68,9 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                         loadImage(getUri(),callback);
                     }
                 })
-                .listenGesture(new MDVRLibrary.IGestureListener() {
+                .listenTouchPick(new MDVRLibrary.ITouchPickListener() {
                     @Override
-                    public void onClick(MotionEvent e, MDRay ray, IMDHotspot hitHotspot) {
+                    public void onHotspotHit(MDRay ray, IMDHotspot hitHotspot) {
                         Log.d(TAG,"Ray:" + ray + ", hitHotspot:" + hitHotspot);
                     }
                 })

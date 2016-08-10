@@ -9,13 +9,13 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.model.MDVector3D;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
-import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 
 import java.nio.FloatBuffer;
@@ -32,21 +32,21 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
 
     private static final String TAG = "MDSimplePlugin";
 
-    MDVRLibrary.IPickListener clickListener;
+    private MDVRLibrary.ITouchPickListener clickListener;
 
-    MDAbsObject3D object3D;
+    private MDAbsObject3D object3D;
 
-    MD360Program program;
+    private MD360Program program;
 
     private SparseArray<MD360Texture> textures;
 
-    RectF size;
+    private RectF size;
 
     private String title;
 
     private int mCurrentTextureKey = 0;
 
-    private MDHotspotPlugin(Builder builder) {
+    public MDHotspotPlugin(MDHotspotBuilder builder) {
         textures = builder.textures;
         size = new RectF(0, 0, builder.width, builder.height);
         clickListener = builder.clickListener;
@@ -135,7 +135,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         boolean hit = false;
         if (points.size() == 4){
             hit = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
-            hit |= VRUtil.intersectTriangle(ray,points.get(1),points.get(2),points.get(3));
+            hit |= VRUtil.intersectTriangle(ray,points.get(1), points.get(2), points.get(3));
         }
 
         // Log.d(TAG,"Ray:" + ray);
@@ -145,14 +145,19 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public void onEyeHit(long timestamp) {
+    public void onEyeHitIn(long timestamp) {
 
     }
 
     @Override
-    public void onTouchHit() {
+    public void onEyeHitOut() {
+
+    }
+
+    @Override
+    public void onTouchHit(MDRay ray) {
         if (clickListener != null){
-            clickListener.onHotspotHit(this, System.currentTimeMillis());
+            clickListener.onHotspotHit(ray, this);
         }
     }
 
@@ -170,58 +175,4 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         this.title = title;
     }
 
-    public static Builder builder(){
-        return new Builder();
-    }
-
-    public static class Builder{
-
-        private float width = 2;
-
-        private float height = 2;
-
-        private String title;
-
-        private MDVRLibrary.IPickListener clickListener;
-
-        private MDPosition position;
-
-        private SparseArray<MD360Texture> textures = new SparseArray<>(4);
-
-        public Builder title(String title){
-            this.title = title;
-            return this;
-        }
-
-        public Builder size(float width, float height){
-            this.width = width;
-            this.height = height;
-            return this;
-        }
-
-        public Builder provider(MDVRLibrary.IBitmapProvider provider){
-            provider(0,provider);
-            return this;
-        }
-
-        public Builder provider(int key, MDVRLibrary.IBitmapProvider provider){
-            textures.append(key,new MD360BitmapTexture(provider));
-            return this;
-        }
-
-        public Builder position(MDPosition position) {
-            this.position = position;
-            return this;
-        }
-
-        public Builder listenClick(MDVRLibrary.IPickListener listener){
-            this.clickListener = listener;
-            return this;
-        }
-
-        public MDHotspotPlugin build(){
-            return new MDHotspotPlugin(this);
-        }
-
-    }
 }
