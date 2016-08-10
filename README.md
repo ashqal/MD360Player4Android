@@ -19,7 +19,8 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
-**2.0.0.beta**
+**2.0.1.beta**
+* bug fix.
 * add anti-distortion support.
 ```java
 // init configuation
@@ -68,7 +69,7 @@ findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickLis
 });
 ```
 
-* Eye Picker
+* eye picker
 ```java
 // setEyePickChangedListener dynamicly.
 final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);

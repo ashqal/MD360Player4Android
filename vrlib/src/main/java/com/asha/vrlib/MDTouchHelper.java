@@ -20,7 +20,7 @@ public class MDTouchHelper {
     private static final float sScaleMax = 4;
 
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
-    private List<MDVRLibrary.IGestureListener> mGestureListeners = new LinkedList<>();
+    private List<MDVRLibrary.IPrivateClickListener> mClickListeners = new LinkedList<>();
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
@@ -36,7 +36,7 @@ public class MDTouchHelper {
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
-                for (MDVRLibrary.IGestureListener listener : mGestureListeners){
+                for (MDVRLibrary.IPrivateClickListener listener : mClickListeners){
                     listener.onClick(e);
                 }
                 return true;
@@ -117,8 +117,8 @@ public class MDTouchHelper {
         return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
-    public void addGestureListener(MDVRLibrary.IGestureListener gestureListener) {
-        if (gestureListener != null) mGestureListeners.add(gestureListener);
+    public void addClickListener(MDVRLibrary.IPrivateClickListener gestureListener) {
+        if (gestureListener != null) mClickListeners.add(gestureListener);
     }
 
     public void setAdvanceGestureListener(MDVRLibrary.IAdvanceGestureListener listener) {

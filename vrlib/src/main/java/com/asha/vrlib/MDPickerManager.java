@@ -41,7 +41,9 @@ public class MDPickerManager {
 
     private TouchPickPoster mTouchPickPoster = new TouchPickPoster();
 
-    private MDVRLibrary.IGestureListener mTouchPicker = new MDVRLibrary.IGestureListener() {
+    private MDVRLibrary.IGestureListener mGestureListener;
+
+    private MDVRLibrary.IPrivateClickListener mTouchPicker = new MDVRLibrary.IPrivateClickListener() {
         @Override
         public void onClick(MotionEvent e) {
             rayPickAsTouch(e);
@@ -100,21 +102,26 @@ public class MDPickerManager {
         if (index >= size){
             return;
         }
+        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, mProjectionModeManager.getDirectors().get(index));
 
-        rayPick(x - itemWidth * index, y, mProjectionModeManager.getDirectors().get(index), HIT_FROM_TOUCH);
+        IMDHotspot hotspot = pick(ray, HIT_FROM_TOUCH);
+
+        if (ray != null && mGestureListener != null){
+            mGestureListener.onClick(e, ray, hotspot);
+        }
     }
 
     private void rayPickAsEye(float x, float y, MD360Director director) {
-        rayPick(x, y, director, HIT_FROM_EYE);
-    }
-
-    private void rayPick(float x, float y, MD360Director director, int hitType){
         MDRay ray = VRUtil.point2Ray(x, y, director);
-        if (ray == null) return;
-        hitTest(ray, hitType);
+        pick(ray, HIT_FROM_EYE);
     }
 
-    private void hitTest(MDRay ray, int hitType) {
+    private IMDHotspot pick(MDRay ray, int hitType){
+        if (ray == null) return null;
+        return hitTest(ray, hitType);
+    }
+
+    private IMDHotspot hitTest(MDRay ray, int hitType) {
         List<MDAbsPlugin> plugins = mPluginManager.getPlugins();
         IMDHotspot hitHotspot = null;
         boolean hasHit = false;
@@ -143,9 +150,10 @@ public class MDPickerManager {
                 break;
         }
 
+        return hitHotspot;
     }
 
-    public MDVRLibrary.IGestureListener getTouchPicker() {
+    public MDVRLibrary.IPrivateClickListener getTouchPicker() {
         return mTouchPicker;
     }
 
@@ -159,6 +167,10 @@ public class MDPickerManager {
 
     public void setEyePickChangedListener(MDVRLibrary.IPickListener eyePickChangedListener) {
         this.mEyePickChangedListener = eyePickChangedListener;
+    }
+
+    public void setGestureListener(MDVRLibrary.IGestureListener mGestureListener) {
+        this.mGestureListener = mGestureListener;
     }
 
     private class EyePickPoster implements Runnable{
