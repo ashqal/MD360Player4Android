@@ -18,7 +18,7 @@ import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDSimplePlugin;
+import com.asha.vrlib.plugins.MDHotspotPlugin;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 
 import java.util.LinkedList;
@@ -171,19 +171,16 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDSimplePlugin plugin = MDSimplePlugin.builder()
+                MDHotspotPlugin plugin = MDHotspotPlugin.builder()
                         .size(4f,4f)
-                        .provider(new MDVRLibrary.IBitmapProvider() {
-                            @Override
-                            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), android.R.drawable.star_on);
-                                callback.texture(bitmap);
-                            }
-                        })
+                        .provider(new AndroidDrawableProvider(android.R.drawable.star_off))
+                        .provider(1, new AndroidDrawableProvider(android.R.drawable.star_on))
+                        .provider(2, new AndroidDrawableProvider(R.drawable.texture))
                         .listenClick(new MDVRLibrary.IPickListener() {
                             @Override
                             public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
                                 Toast.makeText(MD360PlayerActivity.this, "click star" + index, Toast.LENGTH_SHORT).show();
+                                hotspot.useTexture(2);
                             }
                         })
                         .title("star" + index)
@@ -199,7 +196,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDSimplePlugin plugin = MDSimplePlugin.builder()
+                MDHotspotPlugin plugin = MDHotspotPlugin.builder()
                         .size(4f,4f)
                         .provider(new MDVRLibrary.IBitmapProvider() {
                             @Override
@@ -286,5 +283,20 @@ public abstract class MD360PlayerActivity extends Activity {
 
     public void cancelBusy(){
         findViewById(R.id.progress).setVisibility(View.GONE);
+    }
+
+    private class AndroidDrawableProvider implements MDVRLibrary.IBitmapProvider{
+
+        private int res;
+
+        public AndroidDrawableProvider(int res) {
+            this.res = res;
+        }
+
+        @Override
+        public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), this.res);
+            callback.texture(bitmap);
+        }
     }
 }

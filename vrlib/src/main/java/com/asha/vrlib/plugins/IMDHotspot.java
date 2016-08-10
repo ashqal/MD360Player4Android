@@ -11,4 +11,5 @@ public interface IMDHotspot {
     void onEyeHit(long timestamp);
     void onTouchHit();
     String getTitle();
+    void useTexture(int key);
 }

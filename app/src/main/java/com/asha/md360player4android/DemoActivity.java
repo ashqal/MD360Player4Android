@@ -34,6 +34,8 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye2).toString());
         data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
 
+
+        data.put(data.size(), "rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");
         data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
         data.put(data.size(), "file:///mnt/sdcard/vr/videos_s_4.mp4");
         data.put(data.size(), "file:///mnt/sdcard/vr/28.mp4");
