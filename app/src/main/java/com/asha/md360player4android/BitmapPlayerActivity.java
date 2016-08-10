@@ -4,8 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -18,6 +22,8 @@ import static com.squareup.picasso.MemoryPolicy.NO_STORE;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class BitmapPlayerActivity extends MD360PlayerActivity {
+
+    private static final String TAG = "BitmapPlayerActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +67,12 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
                         loadImage(getUri(),callback);
+                    }
+                })
+                .listenGesture(new MDVRLibrary.IGestureListener() {
+                    @Override
+                    public void onClick(MotionEvent e, MDRay ray, IMDHotspot hitHotspot) {
+                        Log.d(TAG,"Ray:" + ray + ", hitHotspot:" + hitHotspot);
                     }
                 })
                 .pinchEnabled(true)

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPanoramaPlugin;
@@ -88,7 +89,6 @@ public class MDVRLibrary {
 
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
-        mTouchHelper.addGestureListener(builder.gestureListener);
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
@@ -158,9 +158,11 @@ public class MDVRLibrary {
                 .build();
         setEyePickEnable(builder.eyePickEnabled);
         mPickerManager.setEyePickChangedListener(builder.eyePickChangedListener);
+        mPickerManager.setGestureListener(builder.gestureListener);
+
 
         // listener
-        mTouchHelper.addGestureListener(mPickerManager.getTouchPicker());
+        mTouchHelper.addClickListener(mPickerManager.getTouchPicker());
         mPluginManager.add(mPickerManager.getEyePicker());
     }
 
@@ -343,6 +345,10 @@ public class MDVRLibrary {
     }
 
     public interface IGestureListener {
+        void onClick(MotionEvent e, MDRay ray, IMDHotspot hitHotspot);
+    }
+
+    protected interface IPrivateClickListener {
         void onClick(MotionEvent e);
     }
 
