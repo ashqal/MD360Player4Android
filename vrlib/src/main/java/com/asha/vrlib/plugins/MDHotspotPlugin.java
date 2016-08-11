@@ -51,7 +51,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         size = new RectF(0, 0, builder.width, builder.height);
         clickListener = builder.clickListener;
         setTitle(builder.title);
-        setModelPosition(builder.position);
+        setModelPosition(builder.position == null ? MDPosition.sOriginalPosition : builder.position);
     }
 
     @Override
