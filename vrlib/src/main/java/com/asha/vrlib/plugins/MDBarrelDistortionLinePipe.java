@@ -41,6 +41,8 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
     private MD360Director mDirector;
 
+    private boolean mEnabled;
+
     private int mFrameBufferId;
 
     private int mTextureId;
@@ -145,7 +147,8 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
     @Override
     public void takeOver(int width, int height, int size) {
-        if (!mDisplayModeManager.isAntiDistortionEnabled()){
+        mEnabled = mDisplayModeManager.isAntiDistortionEnabled();
+        if (!mEnabled){
             return;
         }
 
@@ -165,10 +168,9 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
     @Override
     public void commit(int mWidth, int mHeight, int index){
-        if (!mDisplayModeManager.isAntiDistortionEnabled()){
+        if (!mEnabled){
             return;
         }
-
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         // Set our per-vertex lighting program.
