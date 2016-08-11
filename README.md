@@ -19,7 +19,7 @@ It is a lite library to render 360 degree panorama video for Android.
 
 ## Release Note
 
-**2.0.2.beta**
+**2.0.3.beta**
 * bug fix.
 * add anti-distortion support.
 ```java
