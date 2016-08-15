@@ -6,11 +6,13 @@ import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDBarrelDistortionLinePipe;
 import com.asha.vrlib.plugins.MDMainLinePipe;
+import com.asha.vrlib.plugins.MDMultiFisheyeConvertLinePipe;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
+
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -47,8 +49,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mPluginManager = params.pluginManager;
 
 		mMainLinePipe = new MDMainLinePipe();
-		// mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
-		mMainLinePipe.add(new MDBarrelDistortionLinePipe(mDisplayModeManager));
+		mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
+		//mMainLinePipe.add(new MDBarrelDistortionLinePipe(mDisplayModeManager));
 	}
 
 	@Override
@@ -84,8 +86,12 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mMainLinePipe.setup(mContext);
 		mMainLinePipe.takeOver(mWidth,mHeight,size);
 
+		List<MD360Director> directors = mProjectionModeManager.getDirectors();
+
 		for (int i = 0; i < size; i++){
-			MD360Director director = mProjectionModeManager.getDirectors().get(i);
+			if (i >= directors.size()) break;
+
+			MD360Director director = directors.get(i);
 			GLES20.glViewport(width * i, 0, width, height);
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 			GLES20.glScissor(width * i, 0, width, height);

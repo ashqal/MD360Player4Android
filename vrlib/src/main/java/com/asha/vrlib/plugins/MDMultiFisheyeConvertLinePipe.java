@@ -3,6 +3,7 @@ package com.asha.vrlib.plugins;
 import android.content.Context;
 import android.graphics.Rect;
 import android.opengl.GLES20;
+import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
@@ -192,8 +193,8 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
 
         private void generateMesh(MDAbsObject3D object3D){
             final float PI = (float) Math.PI;
-            int rows = 64;
-            int columns = 64;
+            int rows = 16;
+            int columns = 16;
             int numPoint = (rows + 1) * (columns + 1);
             short r, s;
             float z = -8;
@@ -205,6 +206,7 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
             short[] indices = new short[numPoint * 6];
 
 
+
             int t = 0;
             int v = 0;
             for(r = 0; r < rows + 1; r++) {
@@ -214,14 +216,38 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
                     vertexs[v++] = (r * R * 2 - 1);
                     vertexs[v++] = z;
 
+                    if (s * 2 < columns + 1){
+                        float FOV = 3.141592654f; // FOV of the fisheye, eg: 180 degrees
+                        float width = 1;
+                        float height = 1;
 
-                    float a = (float) (Math.sin( 2 * PI * s * S) * (r * R) * 1 * 1) * 0.5f + 0.5f;
-                    float b = (float) (Math.cos( 2 * PI * s * S ) * (r * R) * 1 * 1) * 0.5f + 0.5f;
+                        float theta = 2.0f * PI * (s * S * 2 - 0.5f)*0.5f; // -pi to pi
+                        float phi = PI * (r * R - 0.5f);  // -pi/2 to pi/2
 
-                    texcoords[t*2] = a;
-                    texcoords[t*2 + 1] = b;
+                        float psphx = (float) (Math.cos(phi) * Math.sin(theta));
+                        float psphy = (float) (Math.cos(phi) * Math.cos(theta));
+                        float psphz = (float) Math.sin(phi);
+
+                        theta = (float) Math.atan2(psphz, psphx);
+                        phi = (float) Math.atan2(Math.sqrt(psphx*psphx + psphz*psphz), psphy);
+                        float rr = 1 * phi / FOV;
+
+                        float a = (float) (0.5f * width + rr * Math.cos(theta));
+                        float b = (float) (0.5f * height + rr * Math.sin(theta));
+
+                        texcoords[t*2] = a;
+                        texcoords[t*2 + 1] = b;
+                        Log.e(TAG,String.format("t=%d, %f, %f => %f, %f", t - 1, s * S, r * R, a, b));
+                    } else {
+                        texcoords[t*2] = 0;
+                        texcoords[t*2 + 1] = 0;
+                    }
+
+
 
                     t++;
+
+
                 }
             }
 
