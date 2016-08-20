@@ -7,10 +7,13 @@ import android.opengl.Matrix;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
+import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPanoramaPlugin;
 
 /**
  * Created by hzqiujiadi on 16/6/26.
@@ -52,6 +55,11 @@ public class PlaneProjection extends AbsProjectionStrategy {
     @Override
     public MDPosition getModelPosition() {
         return position;
+    }
+
+    @Override
+    public MDAbsPlugin buildMainPlugin(MDMainPluginBuilder builder) {
+        return new MDPanoramaPlugin(builder);
     }
 
     @Override

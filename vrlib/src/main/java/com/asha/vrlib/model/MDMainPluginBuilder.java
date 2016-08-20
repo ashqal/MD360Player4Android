@@ -1,6 +1,5 @@
 package com.asha.vrlib.model;
 
-import com.asha.vrlib.MD360Renderer;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360Texture;
@@ -37,7 +36,7 @@ public class MDMainPluginBuilder {
 
     /**
      * set surface{@link MD360Texture} to this render
-     * @param texture {@link MD360Texture} surface may used by multiple render{@link MD360Renderer}
+     * @param texture {@link MD360Texture} surface may used by multiple render{@link com.asha.vrlib.MD360Renderer}
      * @return builder
      */
     public MDMainPluginBuilder setTexture(MD360Texture texture){

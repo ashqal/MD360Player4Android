@@ -86,6 +86,13 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		List<MD360Director> directors = mProjectionModeManager.getDirectors();
 
+		// main plugin
+		MDAbsPlugin mainPlugin = mProjectionModeManager.getMainPlugin();
+		if (mainPlugin != null){
+			mainPlugin.setup(mContext);
+			mainPlugin.beforeRenderer(this.mWidth, this.mHeight);
+		}
+
 		for (MDAbsPlugin plugin : mPluginManager.getPlugins()) {
 			plugin.setup(mContext);
 			plugin.beforeRenderer(this.mWidth, this.mHeight);
@@ -98,6 +105,10 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glViewport(width * i, 0, width, height);
 			GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
 			GLES20.glScissor(width * i, 0, width, height);
+
+			if (mainPlugin != null){
+				mainPlugin.renderer(i, width, height, director);
+			}
 
 			for (MDAbsPlugin plugin : mPluginManager.getPlugins()) {
 				plugin.renderer(i, width, height, director);

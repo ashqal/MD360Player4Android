@@ -76,6 +76,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
+                .projectionFactory(new CustomProjectionFactory())
                 .build(R.id.gl_view);
     }
 }

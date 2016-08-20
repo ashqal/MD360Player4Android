@@ -74,6 +74,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
+                .projectionFactory(new CustomProjectionFactory())
                 .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
                 .build(R.id.gl_view);
     }

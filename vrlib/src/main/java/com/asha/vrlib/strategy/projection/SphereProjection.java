@@ -2,10 +2,13 @@ package com.asha.vrlib.strategy.projection;
 
 import android.app.Activity;
 
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDSphere3D;
+import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPanoramaPlugin;
 
 /**
  * Created by hzqiujiadi on 16/6/25.
@@ -42,5 +45,10 @@ public class SphereProjection extends AbsProjectionStrategy {
     @Override
     public boolean isSupport(Activity activity) {
         return true;
+    }
+
+    @Override
+    public MDAbsPlugin buildMainPlugin(MDMainPluginBuilder builder) {
+        return new MDPanoramaPlugin(builder);
     }
 }

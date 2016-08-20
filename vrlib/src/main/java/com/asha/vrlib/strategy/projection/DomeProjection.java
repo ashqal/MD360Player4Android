@@ -3,10 +3,13 @@ package com.asha.vrlib.strategy.projection;
 import android.app.Activity;
 import android.graphics.RectF;
 
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDDome3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
+import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPanoramaPlugin;
 
 /**
  * Created by hzqiujiadi on 16/6/25.
@@ -52,5 +55,10 @@ public class DomeProjection extends AbsProjectionStrategy {
     @Override
     public MDPosition getModelPosition() {
         return MDPosition.sOriginalPosition;
+    }
+
+    @Override
+    public MDAbsPlugin buildMainPlugin(MDMainPluginBuilder builder) {
+        return new MDPanoramaPlugin(builder);
     }
 }

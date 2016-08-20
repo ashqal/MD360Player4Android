@@ -41,7 +41,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
     private MDDrawingCache mDrawingCache;
 
-    public MDMultiFishEyePlugin(MDMainPluginBuilder builder) {
+    public MDMultiFishEyePlugin(MDMainPluginBuilder builder, float radius, boolean isHorizontal) {
         mTexture = builder.getTexture();
         mProgram = new MD360Program(builder.getContentType());
         mBitmapProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
@@ -49,7 +49,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
         mProjectionModeManager = builder.getProjectionModeManager();
 
         mFixedDirector = new MD360DirectorFactory.OrthogonalImpl().createDirector(0);
-        mConverterObject3D = new MDMesh();
+        mConverterObject3D = new MDMesh(radius, isHorizontal);
         mDrawingCache = new MDDrawingCache();
     }
 
@@ -98,11 +98,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
     @Override
     public void destroy() {
-        if (mTexture != null){
-            mTexture.destroy();
-            mTexture.release();
-            mTexture = null;
-        }
+        mTexture = null;
     }
 
     @Override
@@ -146,7 +142,13 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
         private static final String TAG = "MDMesh";
 
-        public MDMesh() {
+        private final boolean isHorizontal;
+
+        private final float radius;
+
+        public MDMesh(float radius, boolean isHorizontal) {
+            this.radius = radius;
+            this.isHorizontal = isHorizontal;
         }
 
         @Override
@@ -191,16 +193,23 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
                     theta = (float) Math.atan2(psphz, psphx);
                     phi = (float) Math.atan2(Math.sqrt(psphx*psphx + psphz*psphz), psphy);
-                    float rr = 0.735f * phi / FOV;
+                    float rr = radius * phi / FOV;
 
                     float a = (float) (0.5f * width + rr * Math.cos(theta));
                     float b = (float) (0.5f * height + rr * Math.sin(theta));
 
-                    texcoords[t*2] = a;
-                    texcoords[t*2 + 1] = b* 0.5f;
+                    if (isHorizontal){
+                        texcoords[t*2] = a * 0.5f;
+                        texcoords[t*2 + 1] = b;
+                        texcoords2[t*2] = a * 0.5f + 0.5f;
+                        texcoords2[t*2 + 1] = b;
+                    } else {
+                        texcoords[t*2] = a;
+                        texcoords[t*2 + 1] = b * 0.5f;
+                        texcoords2[t*2] = a;
+                        texcoords2[t*2 + 1] = b * 0.5f + 0.5f;
+                    }
 
-                    texcoords2[t*2] = a;
-                    texcoords2[t*2 + 1] = b * 0.5f + 0.5f;
 
                     t++;
 

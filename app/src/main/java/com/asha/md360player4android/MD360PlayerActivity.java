@@ -60,7 +60,9 @@ public abstract class MD360PlayerActivity extends Activity {
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FIT,"PLANE FIT");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_CROP,"PLANE CROP");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,"PLANE FULL");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE,"MULTI FISHEYE");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL,"MULTI FISH EYE HORIZONTAL");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL,"MULTI FISH EYE VERTICAL");
+        sProjectionMode.put(CustomProjectionFactory.CUSTOM_PROJECTION_FISH_EYE_RADIUS_VERTICAL,"CUSTOM MULTI FISH EYE");
 
         sAntiDistortion.put(1,"ANTI-ENABLE");
         sAntiDistortion.put(0,"ANTI-DISABLE");

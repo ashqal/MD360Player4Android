@@ -6,8 +6,10 @@ import android.graphics.RectF;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
+import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.strategy.ModeManager;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     public static class Params{
         public RectF textureSize;
         public MD360DirectorFactory directorFactory;
+        public MDMainPluginBuilder mainPluginBuilder;
+        public IMDProjectionFactory projectionFactory;
     }
 
     private List<MD360Director> mDirectors = new CopyOnWriteArrayList<>();
@@ -32,10 +36,26 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
     private MD360DirectorFactory mCustomDirectorFactory;
 
+    private MDAbsPlugin mMainPlugin;
+
+    private MDMainPluginBuilder mMainPluginBuilder;
+
+    private IMDProjectionFactory mProjectionFactory;
+
     public ProjectionModeManager(int mode, Params projectionManagerParams) {
         super(mode);
         this.mTextureSize = projectionManagerParams.textureSize;
         this.mCustomDirectorFactory = projectionManagerParams.directorFactory;
+        this.mProjectionFactory = projectionManagerParams.projectionFactory;
+        this.mMainPluginBuilder = projectionManagerParams.mainPluginBuilder;
+        this.mMainPluginBuilder.setProjectionModeManager(this);
+    }
+
+    public MDAbsPlugin getMainPlugin() {
+        if (mMainPlugin == null){
+            mMainPlugin = getStrategy().buildMainPlugin(mMainPluginBuilder);
+        }
+        return mMainPlugin;
     }
 
     @Override
@@ -46,6 +66,12 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     @Override
     public void on(Activity activity) {
         super.on(activity);
+
+        // destroy prev main plugin
+        if( mMainPlugin != null){
+            mMainPlugin.destroy();
+            mMainPlugin = null;
+        }
 
         mDirectors.clear();
 
@@ -59,6 +85,11 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
     @Override
     protected AbsProjectionStrategy createStrategy(int mode) {
+        if (mProjectionFactory != null){
+            AbsProjectionStrategy strategy = mProjectionFactory.createStrategy(mode);
+            if (strategy != null) return strategy;
+        }
+        
         switch (mode){
             case MDVRLibrary.PROJECTION_MODE_DOME180:
                 return new DomeProjection(this.mTextureSize,180f,false);
@@ -74,8 +105,10 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
             case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
             case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
                 return PlaneProjection.create(mode,this.mTextureSize);
-            case MDVRLibrary.PROJECTION_MODE_MULTI_FISHEYE:
-                return new MultiFisheyeProjection();
+            case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL:
+                return new MultiFishEyeProjection(1f,true);
+            case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL:
+                return new MultiFishEyeProjection(1f,false);
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

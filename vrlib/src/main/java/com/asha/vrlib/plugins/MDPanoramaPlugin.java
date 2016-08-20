@@ -69,11 +69,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
     @Override
     public void destroy() {
-        if (mTexture != null){
-            mTexture.destroy();
-            mTexture.release();
-            mTexture = null;
-        }
+        mTexture = null;
     }
 
     @Override

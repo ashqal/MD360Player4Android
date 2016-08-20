@@ -4,10 +4,13 @@ import android.app.Activity;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDStereoSphere3D;
+import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPanoramaPlugin;
 
 /**
  * Created by hzqiujiadi on 16/6/26.
@@ -53,5 +56,10 @@ public class StereoSphereProjection extends AbsProjectionStrategy {
     @Override
     protected MD360DirectorFactory hijackDirectorFactory() {
         return new FixedDirectorFactory();
+    }
+
+    @Override
+    public MDAbsPlugin buildMainPlugin(MDMainPluginBuilder builder) {
+        return new MDPanoramaPlugin(builder);
     }
 }

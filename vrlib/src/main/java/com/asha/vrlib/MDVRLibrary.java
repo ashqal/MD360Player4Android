@@ -19,10 +19,10 @@ import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDMultiFishEyePlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
+import com.asha.vrlib.strategy.projection.IMDProjectionFactory;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
@@ -62,7 +62,8 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_PLANE_FIT = 207;
     public static final int PROJECTION_MODE_PLANE_CROP = 208;
     public static final int PROJECTION_MODE_PLANE_FULL = 209;
-    public static final int PROJECTION_MODE_MULTI_FISHEYE = 210;
+    public static final int PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL = 210;
+    public static final int PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL = 211;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private RectF mTextureSize = new RectF(0,0,1024,1024);
@@ -73,6 +74,7 @@ public class MDVRLibrary {
     private MDPickerManager mPickerManager;
     private MDGLScreenWrapper mScreenWrapper;
     private MDTouchHelper mTouchHelper;
+    private MD360Texture mTexture;
 
     private MDVRLibrary(Builder builder) {
 
@@ -88,6 +90,7 @@ public class MDVRLibrary {
         // init glSurfaceViews
         initOpenGL(builder.activity, builder.screenWrapper);
 
+        mTexture = builder.texture;
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.addClickListener(builder.gestureListener);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
@@ -124,6 +127,11 @@ public class MDVRLibrary {
         ProjectionModeManager.Params projectionManagerParams = new ProjectionModeManager.Params();
         projectionManagerParams.textureSize = mTextureSize;
         projectionManagerParams.directorFactory = builder.directorFactory;
+        projectionManagerParams.projectionFactory = builder.projectionFactory;
+        projectionManagerParams.mainPluginBuilder = new MDMainPluginBuilder()
+                .setContentType(builder.contentType)
+                .setTexture(builder.texture);
+
         mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, projectionManagerParams);
         mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
 
@@ -144,6 +152,7 @@ public class MDVRLibrary {
 
     private void initPluginManager(Builder builder) {
         mPluginManager = new MDPluginManager();
+        /*
         MDMainPluginBuilder mainPluginBuilder = new MDMainPluginBuilder()
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture)
@@ -151,6 +160,7 @@ public class MDVRLibrary {
         MDAbsPlugin mainPlugin = new MDMultiFishEyePlugin(mainPluginBuilder);
 
         mPluginManager.add(mainPlugin);
+        */
     }
 
     private void initPickerManager(Builder builder) {
@@ -312,6 +322,18 @@ public class MDVRLibrary {
             MDAbsPlugin plugin = iterator.next();
             plugin.destroy();
         }
+
+        MDAbsPlugin mainPlugin = mProjectionModeManager.getMainPlugin();
+        if (mainPlugin != null){
+            mainPlugin.destroy();
+        }
+
+        if (mTexture != null){
+            mTexture.destroy();
+            mTexture.release();
+            mTexture = null;
+        }
+
     }
 
     /**
@@ -392,6 +414,7 @@ public class MDVRLibrary {
         private int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         private SensorEventListener sensorListener;
         private MDGLScreenWrapper screenWrapper;
+        private IMDProjectionFactory projectionFactory;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -438,6 +461,7 @@ public class MDVRLibrary {
          * @param listener listener
          * @return builder
          */
+        @Deprecated
         public Builder gesture(IGestureListener listener) {
             gestureListener = listener;
             return this;
@@ -522,6 +546,11 @@ public class MDVRLibrary {
 
         public Builder directorFactory(MD360DirectorFactory directorFactory){
             this.directorFactory = directorFactory;
+            return this;
+        }
+
+        public Builder projectionFactory(IMDProjectionFactory projectionFactory){
+            this.projectionFactory = projectionFactory;
             return this;
         }
 
