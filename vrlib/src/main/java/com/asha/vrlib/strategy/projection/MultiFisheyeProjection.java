@@ -8,12 +8,12 @@ import com.asha.vrlib.plugins.MDMultiFishEyePlugin;
  * Created by hzqiujiadi on 16/7/29.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MultiFishEyeProjection extends SphereProjection {
+public class MultiFisheyeProjection extends SphereProjection {
 
     private float radius;
     private boolean isHorizontal;
 
-    public MultiFishEyeProjection(float radius, boolean isHorizontal) {
+    public MultiFisheyeProjection(float radius, boolean isHorizontal) {
         this.radius = radius;
         this.isHorizontal = isHorizontal;
     }
