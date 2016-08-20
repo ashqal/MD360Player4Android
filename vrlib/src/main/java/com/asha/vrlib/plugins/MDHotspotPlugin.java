@@ -70,6 +70,11 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
+    public void beforeRenderer(int totalWidth, int totalHeight) {
+
+    }
+
+    @Override
     public void renderer(int index, int width, int height, MD360Director director) {
 
         MD360Texture texture = textures.get(mCurrentTextureKey);

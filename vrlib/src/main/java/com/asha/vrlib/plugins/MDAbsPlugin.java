@@ -24,7 +24,9 @@ public abstract class MDAbsPlugin {
 
     abstract protected void init(Context context);
 
-    abstract public void renderer(int index, int width, int height, MD360Director director);
+    abstract public void beforeRenderer(int totalWidth, int totalHeight);
+
+    abstract public void renderer(int index, int itemWidth, int itemHeight, MD360Director director);
 
     abstract public void destroy();
 
@@ -37,4 +39,5 @@ public abstract class MDAbsPlugin {
     }
 
     abstract protected boolean removable();
+
 }

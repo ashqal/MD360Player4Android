@@ -57,6 +57,11 @@ public class MDPickerManager {
         }
 
         @Override
+        public void beforeRenderer(int totalWidth, int totalHeight) {
+
+        }
+
+        @Override
         public void renderer(int index, int width, int height, MD360Director director) {
             if (index == 0 && isEyePickEnable()){
                 rayPickAsEye(width >> 1, height >> 1, director);

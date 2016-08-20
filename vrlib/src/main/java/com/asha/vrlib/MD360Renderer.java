@@ -5,9 +5,9 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
+import com.asha.vrlib.plugins.MDAbsLinePipe;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDMainLinePipe;
-import com.asha.vrlib.plugins.MDMultiFisheyeConvertLinePipe;
+import com.asha.vrlib.plugins.MDBarrelDistortionLinePipe;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
@@ -32,7 +32,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private DisplayModeManager mDisplayModeManager;
 	private ProjectionModeManager mProjectionModeManager;
 	private MDPluginManager mPluginManager;
-	private MDMainLinePipe mMainLinePipe;
+	private MDAbsLinePipe mMainLinePipe;
 	private Fps mFps = new Fps();
 	private int mWidth;
 	private int mHeight;
@@ -48,9 +48,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mProjectionModeManager = params.projectionModeManager;
 		mPluginManager = params.pluginManager;
 
-		mMainLinePipe = new MDMainLinePipe();
-		mMainLinePipe.add(new MDMultiFisheyeConvertLinePipe());
-		//mMainLinePipe.add(new MDBarrelDistortionLinePipe(mDisplayModeManager));
+		mMainLinePipe = new MDBarrelDistortionLinePipe(mDisplayModeManager);
 	}
 
 	@Override
@@ -88,6 +86,11 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 
 		List<MD360Director> directors = mProjectionModeManager.getDirectors();
 
+		for (MDAbsPlugin plugin : mPluginManager.getPlugins()) {
+			plugin.setup(mContext);
+			plugin.beforeRenderer(this.mWidth, this.mHeight);
+		}
+
 		for (int i = 0; i < size; i++){
 			if (i >= directors.size()) break;
 
@@ -97,7 +100,6 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glScissor(width * i, 0, width, height);
 
 			for (MDAbsPlugin plugin : mPluginManager.getPlugins()) {
-				plugin.setup(mContext);
 				plugin.renderer(i, width, height, director);
 			}
 

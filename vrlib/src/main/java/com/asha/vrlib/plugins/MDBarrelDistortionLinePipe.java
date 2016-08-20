@@ -11,7 +11,6 @@ import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.BarrelDistortionConfig;
-import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
@@ -126,38 +125,18 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
     }
 
     @Override
-    public void renderer(int index, int width, int height, MD360Director director) {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    @Override
-    protected MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
-    }
-
-    @Override
-    protected boolean removable() {
-        return false;
-    }
-
-    @Override
-    public void takeOver(int width, int height, int size) {
+    public void takeOver(int totalWidth, int totalHeight, int size) {
         mEnabled = mDisplayModeManager.isAntiDistortionEnabled();
         if (!mEnabled){
             return;
         }
 
-        mDirector.updateViewport(width, height);
+        mDirector.updateViewport(totalWidth, totalHeight);
         object3D.setMode(size);
 
-        if (mViewport.width() != width || mViewport.height() != height){
-            createFrameBuffer(width, height);
-            mViewport.set(0,0,width,height);
+        if (mViewport.width() != totalWidth || mViewport.height() != totalHeight){
+            createFrameBuffer(totalWidth, totalHeight);
+            mViewport.set(0,0, totalWidth, totalHeight);
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
@@ -167,12 +146,23 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
     }
 
     @Override
-    public void commit(int mWidth, int mHeight, int index){
+    public void commit(int totalWidth, int totalHeight, int size){
         if (!mEnabled){
             return;
         }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
+        int width = totalWidth / size;
+        for (int i = 0; i < size; i++){
+            GLES20.glViewport(width * i, 0, width, totalHeight);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glScissor(width * i, 0, width, totalHeight);
+            draw(i);
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+        }
+    }
+
+    private void draw(int index){
         // Set our per-vertex lighting program.
         mProgram.use();
         glCheck("MDBarrelDistortionLinePipe mProgram use");
@@ -205,7 +195,6 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
             } else if (mode == 2){
                 return super.getTexCoordinateBuffer(index);
             } else {
-                // throw new RuntimeException("size of " + mode + " is not support in MDBarrelDistortionPlugin");
                 return null;
             }
         }

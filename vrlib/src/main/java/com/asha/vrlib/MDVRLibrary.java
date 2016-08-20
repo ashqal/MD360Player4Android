@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
@@ -143,11 +144,12 @@ public class MDVRLibrary {
 
     private void initPluginManager(Builder builder) {
         mPluginManager = new MDPluginManager();
-        MDAbsPlugin mainPlugin = new MDPanoramaPlugin.Builder()
+        MDMainPluginBuilder mainPluginBuilder = new MDMainPluginBuilder()
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture)
-                .setProjectionModeManager(mProjectionModeManager)
-                .build();
+                .setProjectionModeManager(mProjectionModeManager);
+        MDAbsPlugin mainPlugin = new MDPanoramaPlugin(mainPluginBuilder);
+
         mPluginManager.add(mainPlugin);
     }
 

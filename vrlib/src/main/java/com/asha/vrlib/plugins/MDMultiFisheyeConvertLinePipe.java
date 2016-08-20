@@ -7,10 +7,9 @@ import android.opengl.GLES20;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MD360Program;
-import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
+import com.asha.vrlib.texture.MD360Texture;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
@@ -28,8 +27,6 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
  */
 public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
 
-    private MD360Program mProgram;
-
     private MDMesh object3D;
 
     private MD360Director mDirector;
@@ -43,18 +40,16 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
     private Rect mViewport = new Rect();
 
     public MDMultiFisheyeConvertLinePipe() {
-        mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
         mDirector = new MD360DirectorFactory.OrthogonalImpl().createDirector(0);
         object3D = new MDMesh();
     }
 
     @Override
     public void init(final Context context) {
-        mProgram.build(context);
         MDObject3DHelper.loadObj(context,object3D);
     }
 
-    public void createFrameBuffer(int width, int height){
+    private void createFrameBuffer(int width, int height){
 
         if (this.mTextureId != 0) {
             GLES20.glDeleteTextures(1, new int[] { this.mTextureId }, 0);
@@ -111,41 +106,22 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
     }
 
     @Override
-    public void renderer(int index, int width, int height, MD360Director director) {
+    public void takeOver(int totalWidth, int totalHeight, int size) {
+        mDirector.updateViewport(totalWidth, totalHeight);
 
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    @Override
-    protected MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
-    }
-
-    @Override
-    protected boolean removable() {
-        return false;
-    }
-
-    @Override
-    public void takeOver(int width, int height, int size) {
-        mDirector.updateViewport(width, height);
-        object3D.setMode(size);
-
-        if (mViewport.width() != width || mViewport.height() != height){
-            createFrameBuffer(width, height);
-            mViewport.set(0,0,width,height);
+        if (mViewport.width() != totalWidth || mViewport.height() != totalHeight){
+            createFrameBuffer(totalWidth, totalHeight);
+            mViewport.set(0,0, totalWidth, totalHeight);
         }
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         glCheck("MDMultiFisheyeConvertLinePipe glClear");
 
+    }
+
+    public void draw(MD360Program program, MD360Texture texture, int width, int height){
         // Set our per-vertex lighting program.
-        mProgram.use();
         glCheck("MDMultiFisheyeConvertLinePipe mProgram use");
 
         int itemWidth = width / 2;
@@ -155,48 +131,41 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
             GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
             GLES20.glScissor(itemWidth * index, 0, itemWidth, itemHeight);
 
+            program.use();
+
+            texture.texture(program);
+
             mDirector.updateViewport(itemWidth, itemHeight);
-            object3D.uploadVerticesBufferIfNeed(mProgram, index);
-            object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
+            object3D.uploadVerticesBufferIfNeed(program, index);
+            object3D.uploadTexCoordinateBufferIfNeed(program, index);
 
             // Pass in the combined matrix.
-            mDirector.shot(mProgram);
+            mDirector.shot(program);
 
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
+            // GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            // GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
 
             object3D.draw();
 
             GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
         }
 
-
-
     }
 
     @Override
-    public void commit(int mWidth, int mHeight, int index){
+    public void commit(int totalWidth, int totalHeight, int index){
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+    }
 
+    public int getTextureId() {
+        return mTextureId;
     }
 
     private class MDMesh extends MDAbsObject3D {
 
         private static final String TAG = "MDMesh";
-        private int mode;
-        private FloatBuffer singleTexCoordinateBuffer;
 
         public MDMesh() {
-        }
-
-        @Override
-        public FloatBuffer getTexCoordinateBuffer(int index) {
-            if (mode == 1){
-                return singleTexCoordinateBuffer;
-            } else if (mode == 2){
-                return super.getTexCoordinateBuffer(index);
-            } else {
-                throw new RuntimeException("size of " + mode + " is not support in MDBarrelDistortionPlugin");
-            }
         }
 
         @Override
@@ -321,12 +290,6 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
             object3D.setVerticesBuffer(0,vertexBuffer);
             object3D.setVerticesBuffer(1,vertexBuffer);
             object3D.setNumIndices(indices.length);
-
-            singleTexCoordinateBuffer = texBuffer;
-        }
-
-        public void setMode(int mode) {
-            this.mode = mode;
         }
     }
 
