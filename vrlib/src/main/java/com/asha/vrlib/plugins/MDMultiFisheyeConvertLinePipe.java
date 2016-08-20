@@ -3,7 +3,6 @@ package com.asha.vrlib.plugins;
 import android.content.Context;
 import android.graphics.Rect;
 import android.opengl.GLES20;
-import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
@@ -144,26 +143,40 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, this.mFrameBufferId);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         glCheck("MDMultiFisheyeConvertLinePipe glClear");
+
+        // Set our per-vertex lighting program.
+        mProgram.use();
+        glCheck("MDMultiFisheyeConvertLinePipe mProgram use");
+
+        int itemWidth = width / 2;
+        int itemHeight = height;
+        for (int index = 0; index < 2; index++){
+            GLES20.glViewport(itemWidth * index, 0, itemWidth, itemHeight);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glScissor(itemWidth * index, 0, itemWidth, itemHeight);
+
+            mDirector.updateViewport(itemWidth, itemHeight);
+            object3D.uploadVerticesBufferIfNeed(mProgram, index);
+            object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
+
+            // Pass in the combined matrix.
+            mDirector.shot(mProgram);
+
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
+
+            object3D.draw();
+
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+        }
+
+
+
     }
 
     @Override
     public void commit(int mWidth, int mHeight, int index){
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
-        // Set our per-vertex lighting program.
 
-        mProgram.use();
-        glCheck("MDMultiFisheyeConvertLinePipe mProgram use");
-
-        object3D.uploadVerticesBufferIfNeed(mProgram, index);
-        object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
-
-        // Pass in the combined matrix.
-        mDirector.shot(mProgram);
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
-
-        object3D.draw();
     }
 
     private class MDMesh extends MDAbsObject3D {
@@ -203,6 +216,7 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
 
             float[] vertexs = new float[numPoint * 3];
             float[] texcoords = new float[numPoint * 2];
+            float[] texcoords2 = new float[numPoint * 2];
             short[] indices = new short[numPoint * 6];
 
 
@@ -234,13 +248,13 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
                     float a = (float) (0.5f * width + rr * Math.cos(theta));
                     float b = (float) (0.5f * height + rr * Math.sin(theta));
 
-                    texcoords[t*2] = a;
+                    texcoords[t*2] = a * 0.5f;
                     texcoords[t*2 + 1] = b;
-                    Log.e(TAG,String.format("t=%d, %f, %f => %f, %f", t - 1, s * S, r * R, a, b));
 
+                    texcoords2[t*2] = a * 0.5f + 0.5f;
+                    texcoords2[t*2 + 1] = b;
 
                     t++;
-
 
                 }
             }
@@ -284,6 +298,14 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
             texBuffer.put(texcoords);
             texBuffer.position(0);
 
+            // initialize vertex byte buffer for shape coordinates
+            ByteBuffer ee2 = ByteBuffer.allocateDirect(
+                    texcoords2.length * 4);
+            ee2.order(ByteOrder.nativeOrder());
+            FloatBuffer texBuffer2 = ee2.asFloatBuffer();
+            texBuffer2.put(texcoords2);
+            texBuffer2.position(0);
+
             // initialize byte buffer for the draw list
             ByteBuffer dlb = ByteBuffer.allocateDirect(
                     // (# of coordinate values * 2 bytes per short)
@@ -295,7 +317,7 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
 
             object3D.setIndicesBuffer(indexBuffer);
             object3D.setTexCoordinateBuffer(0,texBuffer);
-            object3D.setTexCoordinateBuffer(1,texBuffer);
+            object3D.setTexCoordinateBuffer(1,texBuffer2);
             object3D.setVerticesBuffer(0,vertexBuffer);
             object3D.setVerticesBuffer(1,vertexBuffer);
             object3D.setNumIndices(indices.length);
