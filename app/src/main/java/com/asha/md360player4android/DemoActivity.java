@@ -26,13 +26,13 @@ public class DemoActivity extends AppCompatActivity {
 
         SparseArray<String> data = new SparseArray<>();
 
+        data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
         data.put(data.size(), getDrawableUri(R.drawable.bitmap360).toString());
         data.put(data.size(), getDrawableUri(R.drawable.texture).toString());
         data.put(data.size(), getDrawableUri(R.drawable.dome_pic).toString());
         data.put(data.size(), getDrawableUri(R.drawable.stereo).toString());
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye).toString());
         data.put(data.size(), getDrawableUri(R.drawable.multifisheye2).toString());
-        data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
 
 
         data.put(data.size(), "rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");

@@ -216,33 +216,27 @@ public class MDMultiFisheyeConvertLinePipe extends MDAbsLinePipe {
                     vertexs[v++] = (r * R * 2 - 1);
                     vertexs[v++] = z;
 
-                    if (s * 2 < columns + 1){
-                        float FOV = 3.141592654f; // FOV of the fisheye, eg: 180 degrees
-                        float width = 1;
-                        float height = 1;
+                    float FOV = 3.141592654f; // FOV of the fisheye, eg: 180 degrees
+                    float width = 1;
+                    float height = 1;
 
-                        float theta = 2.0f * PI * (s * S * 2 - 0.5f)*0.5f; // -pi to pi
-                        float phi = PI * (r * R - 0.5f);  // -pi/2 to pi/2
+                    float theta = PI * (s * S - 0.5f); // -pi to pi
+                    float phi = PI * (r * R - 0.5f);  // -pi/2 to pi/2
 
-                        float psphx = (float) (Math.cos(phi) * Math.sin(theta));
-                        float psphy = (float) (Math.cos(phi) * Math.cos(theta));
-                        float psphz = (float) Math.sin(phi);
+                    float psphx = (float) (Math.cos(phi) * Math.sin(theta));
+                    float psphy = (float) (Math.cos(phi) * Math.cos(theta));
+                    float psphz = (float) Math.sin(phi);
 
-                        theta = (float) Math.atan2(psphz, psphx);
-                        phi = (float) Math.atan2(Math.sqrt(psphx*psphx + psphz*psphz), psphy);
-                        float rr = 1 * phi / FOV;
+                    theta = (float) Math.atan2(psphz, psphx);
+                    phi = (float) Math.atan2(Math.sqrt(psphx*psphx + psphz*psphz), psphy);
+                    float rr = 1 * phi / FOV;
 
-                        float a = (float) (0.5f * width + rr * Math.cos(theta));
-                        float b = (float) (0.5f * height + rr * Math.sin(theta));
+                    float a = (float) (0.5f * width + rr * Math.cos(theta));
+                    float b = (float) (0.5f * height + rr * Math.sin(theta));
 
-                        texcoords[t*2] = a;
-                        texcoords[t*2 + 1] = b;
-                        Log.e(TAG,String.format("t=%d, %f, %f => %f, %f", t - 1, s * S, r * R, a, b));
-                    } else {
-                        texcoords[t*2] = 0;
-                        texcoords[t*2 + 1] = 0;
-                    }
-
+                    texcoords[t*2] = a;
+                    texcoords[t*2 + 1] = b;
+                    Log.e(TAG,String.format("t=%d, %f, %f => %f, %f", t - 1, s * S, r * R, a, b));
 
 
                     t++;
