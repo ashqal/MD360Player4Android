@@ -348,7 +348,7 @@ public class MDVRLibrary {
         void onNotSupport(int mode);
     }
 
-    protected interface IGestureListener {
+    public interface IGestureListener {
         void onClick(MotionEvent e);
     }
 
