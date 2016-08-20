@@ -45,6 +45,8 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), "file:///mnt/sdcard/vr/stereo.mp4");
         data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
+        data.put(data.size(), "file:///mnt/sdcard/vr/video_31b451b7ca49710719b19d22e19d9e60.mp4");
+
         data.put(data.size(), "http://cache.utovr.com/201508270528174780.m3u8");
         data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
         data.put(data.size(), "file:///mnt/sdcard/vr/IJUN2902.jpg");
