@@ -19,7 +19,7 @@ import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDPanoramaPlugin;
+import com.asha.vrlib.plugins.MDMultiFishEyePlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
@@ -148,7 +148,7 @@ public class MDVRLibrary {
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture)
                 .setProjectionModeManager(mProjectionModeManager);
-        MDAbsPlugin mainPlugin = new MDPanoramaPlugin(mainPluginBuilder);
+        MDAbsPlugin mainPlugin = new MDMultiFishEyePlugin(mainPluginBuilder);
 
         mPluginManager.add(mainPlugin);
     }
