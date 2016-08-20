@@ -258,6 +258,10 @@ public class MDVRLibrary {
         mTouchHelper.reset();
     }
 
+    public void resetEyePick(){
+        mPickerManager.resetEyePick();
+    }
+
     public void setAntiDistortionEnabled(boolean enabled){
         mDisplayModeManager.setAntiDistortionEnabled(enabled);
     }

@@ -255,6 +255,10 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
                 String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
                 hotspotText.setText(text);
+
+                if (System.currentTimeMillis() - hitTimestamp > 5000){
+                    getVRLibrary().resetEyePick();
+                }
             }
         });
     }

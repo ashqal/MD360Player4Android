@@ -260,4 +260,10 @@ public class MDPickerManager {
             return this;
         }
     }
+
+    public void resetEyePick(){
+        if (mEyePickPoster != null){
+            mEyePickPoster.setHit(null);
+        }
+    }
 }
