@@ -106,9 +106,9 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
             case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
                 return PlaneProjection.create(mode,this.mTextureSize);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL:
-                return new Multi2FishEyeProjection(1f,true);
+                return new MultiFishEyeProjection(1f,true);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL:
-                return new Multi2FishEyeProjection(1f,false);
+                return new MultiFishEyeProjection(1f,false);
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

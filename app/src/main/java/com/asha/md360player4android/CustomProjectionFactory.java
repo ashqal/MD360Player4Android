@@ -2,7 +2,7 @@ package com.asha.md360player4android;
 
 import com.asha.vrlib.strategy.projection.AbsProjectionStrategy;
 import com.asha.vrlib.strategy.projection.IMDProjectionFactory;
-import com.asha.vrlib.strategy.projection.Multi2FishEyeProjection;
+import com.asha.vrlib.strategy.projection.MultiFishEyeProjection;
 
 /**
  * Created by hzqiujiadi on 16/8/20.
@@ -16,7 +16,7 @@ public class CustomProjectionFactory implements IMDProjectionFactory {
     public AbsProjectionStrategy createStrategy(int mode) {
         switch (mode){
             case CUSTOM_PROJECTION_FISH_EYE_RADIUS_VERTICAL:
-                return new Multi2FishEyeProjection(0.745f,false);
+                return new MultiFishEyeProjection(0.745f,false);
             default:return null;
         }
     }
