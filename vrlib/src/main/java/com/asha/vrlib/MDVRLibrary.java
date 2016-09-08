@@ -364,6 +364,10 @@ public class MDVRLibrary {
         return mProjectionModeManager.getMode();
     }
 
+    public void onOrientationChanged(Activity activity) {
+        mInteractiveModeManager.onOrientationChanged(activity);
+    }
+
     public interface IOnSurfaceReadyCallback {
         void onSurfaceReady(Surface surface);
     }

@@ -38,6 +38,11 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     }
 
     @Override
+    public void onOrientationChanged(Activity activity) {
+
+    }
+
+    @Override
     public void on(Activity activity) {
         for (MD360Director director : getDirectorList()){
             director.reset();

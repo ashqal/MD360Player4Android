@@ -47,6 +47,11 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     }
 
     @Override
+    public void onOrientationChanged(Activity activity) {
+        mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    }
+
+    @Override
     public void on(Activity activity) {
         mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         for (MD360Director director : getDirectorList()){

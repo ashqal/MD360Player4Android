@@ -66,4 +66,9 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     public boolean handleDrag(int distanceX, int distanceY) {
         return getStrategy().handleDrag(distanceX,distanceY);
     }
+
+    @Override
+    public void onOrientationChanged(Activity activity) {
+        getStrategy().onOrientationChanged(activity);
+    }
 }

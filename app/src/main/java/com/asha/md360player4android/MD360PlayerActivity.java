@@ -3,6 +3,7 @@ package com.asha.md360player4android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -285,6 +286,12 @@ public abstract class MD360PlayerActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mVRLibrary.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mVRLibrary.onOrientationChanged(this);
     }
 
     protected Uri getUri() {
