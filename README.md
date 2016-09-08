@@ -29,9 +29,6 @@ dependencies {
 }
 ```
 
-## CHANGELOG
-https://github.com/ashqal/MD360Player4Android/wiki/Changelog
-
 ## USAGE
 ### Using with GLSurfaceView
 **STEP1** Define `GLSurfaceView` in the layout xml.
@@ -107,6 +104,10 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     }
 }
 ```
+
+## CHANGELOG
+https://github.com/ashqal/MD360Player4Android/wiki/Changelog
+
 ## Advanced Usage
 https://github.com/ashqal/MD360Player4Android/wiki/Advanced-Usage
 
