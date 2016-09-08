@@ -14,144 +14,6 @@ It is a lite library to render 360 degree panorama video for Android.
 * This library do nothing but render the image of video frame, so you may deal with the issues about `MediaPlayer` or `IjkMediaPlayer` (e.g. play local file, rtmp, hls) by yourself;
 * 这个库只负责视频帧画面的渲染，所有的视频文件播放、控制的工作都交给了`MediaPlayer`或者`IjkMediaPlayer`，你可能需要自己处理使用Player过程中出现的问题(比如播放本地文件、rtmp、hls).
 
-## Last Commit
-**`-SNAPSHOT`**
-
-## Release Note
-
-**2.0.3.beta**
-* bug fix.
-* add anti-distortion support.
-```java
-// init configuation
-protected MDVRLibrary createVRLibrary() {
-    return MDVRLibrary.with(this)
-            ...
-            .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
-            .build(R.id.gl_view);
-}
-```
-```java
-// setter
-mVRLibrary.setAntiDistortionEnabled(true);
-```
-
-* hotspot and widget(which has normal/focused/checked status) supported.
-```java
-// add hotspot dynamicly.
-private MDPosition[] positions = new MDPosition[]{
-        MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
-        MDPosition.newInstance().setZ(-18.0f).setYaw(15.0f).setAngleX(15),
-};
-
-findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        final int index = (int) (Math.random() * 100) % positions.length;
-        MDPosition position = positions[index];
-
-        // create a hotspot builder
-        MDHotspotBuilder builder = MDHotspotBuilder.create()
-                .size(4f,4f)
-                .provider(0, new AndroidDrawableProvider(android.R.drawable.star_off))
-                .provider(1, new AndroidDrawableProvider(android.R.drawable.star_on))
-                .provider(10, new AndroidDrawableProvider(android.R.drawable.checkbox_off_background))
-                .provider(11, new AndroidDrawableProvider(android.R.drawable.checkbox_on_background))
-                .listenClick(new MDVRLibrary.ITouchPickListener() {
-                    @Override
-                    public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
-                        if (hitHotspot instanceof MDWidgetPlugin){
-                            MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
-                            widgetPlugin.setChecked(!widgetPlugin.getChecked());
-                        }
-                    }
-                })
-                .title("star" + index)
-                .position(position)
-                .status(0,1)
-                .checkedStatus(10,11);
-
-        // create a widget plugin
-        MDWidgetPlugin plugin = new MDWidgetPlugin(builder);
-        getVRLibrary().addPlugin(plugin);
-        Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
-    }
-});
-
-private class AndroidDrawableProvider implements MDVRLibrary.IBitmapProvider{
-
-    private int res;
-
-    public AndroidDrawableProvider(int res) {
-        this.res = res;
-    }
-
-    @Override
-    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), this.res);
-        callback.texture(bitmap);
-    }
-}
-```
-
-* eye picker
-```java
-// setEyePickChangedListener dynamicly.
-final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
-getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
-    @Override
-    public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
-        String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
-        hotspotText.setText(text);
-    }
-});
-```
-```java
-// disable the eye picker
-getVRLibrary().eyePickEanbled(false);
-```
-
-**1.5.3**
-* Keep the GLContext instance onPause.
-* GLTextureView supported!
-
-**1.5.0**
-* make the switch mode public. `switchInteractiveMode(Activity activity, int mode)` , `switchDisplayMode(Activity activity, int mode)` and `switchProjectionMode(Activity activity, int mode)`.
-* add dome support. 
-* add stereo support.
-* add plane support.
-* switch projection in runtime support.
-
-**1.4.0**
-* better way to render multi screen. note:*Only one GLSurfaceView required now* !!
-* `.build(R.id.surface_view1,R.id.surface_view2)` => `.build(R.id.surface_view)`
-* add motion with touch strategy.
-
-**1.3.0**
-* add some reset function, such as `MDVRLibrary#resetPinch`,`MDVRLibrary#resetTouch`
-* support sensor delay configuration in motion mode
-* support sensorCallback
-* fix a crucial bug: has an line in the center of the sphere
-
-**1.2.0**
-* pinch gesture supported
-* changed the way to listen onClick event
-* fix the image distortion on the polar of sphere
-
-**1.1.0**
-* Bitmap supported. For more info, See [BitmapPlayerActivity](https://github.com/ashqal/MD360Player4Android/tree/master/app/src/main/java/com/asha/md360player4android/BitmapPlayerActivity.java) in demo.
-* Add callback if the TYPE_ROTATION_VECTOR is NOT supported.
-* Use more divisions in sphere and load `.obj` file in working thread.
-* Bug fix: Can not drag after setOnClickListener.
-* Switch to [IjkMediaPlayer](https://github.com/Bilibili/ijkplayer) in demo.
-
-**1.0.0**
-* Motion Sensor
-* Glass Mode(multi-screen)
-* Fix a few bugs.
-* More easier.
-* Worked with MediaPlayer or ijkMediaPlayer.
-
 ## Gradle
 ```java
 allprojects {
@@ -163,7 +25,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:1.5.3'
+    compile 'com.github.ashqal:MD360Player4Android:2.0.5.beta'
 }
 ```
 
@@ -197,7 +59,7 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
         mVRLibrary = MDVRLibrary.with(this)
                     .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
                     .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_MOTION)
-                    .video(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                    .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                         @Override
                         public void onSurfaceReady(Surface surface) {
                             // IjkMediaPlayer or MediaPlayer
@@ -209,7 +71,7 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 }
 ```
 
-**STEP3** Addition call in `onTouchEvent` `onResume` `onPause` `onDestroy`.
+**STEP3** Addition call in `onTouchEvent` `onResume` `onPause` `onDestroy` `onConfigurationChanged`.
 ```java
 public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
     @Override
@@ -234,6 +96,126 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
         super.onDestroy();
         mVRLibrary.onDestroy();
     }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mVRLibrary.onOrientationChanged(this);
+    }
+}
+```
+### Enable Anti Distortion(since 2.0.0)
+```java
+// init configuation
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            ...
+            .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(true).setScale(0.95f))
+            .build(R.id.gl_view);
+}
+```
+```java
+// setter
+mVRLibrary.setAntiDistortionEnabled(true);
+```
+
+### Eye Picker(since 2.0.0)
+```java
+// setEyePickChangedListener dynamicly.
+final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
+getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IPickListener() {
+    @Override
+    public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+        String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
+        hotspotText.setText(text);
+    }
+});
+```
+```java
+// disable the eye picker
+getVRLibrary().eyePickEanbled(false);
+```
+
+### Hotspot(since 2.0.0)
+Hotspot
+
+### Switch projection (since 1.5.0)
+```java
+// projection mode in MDVRLibrary.java
+public static final int PROJECTION_MODE_SPHERE = 201;
+public static final int PROJECTION_MODE_DOME180 = 202;
+public static final int PROJECTION_MODE_DOME230 = 203;
+public static final int PROJECTION_MODE_DOME180_UPPER = 204;
+public static final int PROJECTION_MODE_DOME230_UPPER = 205;
+public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+public static final int PROJECTION_MODE_PLANE_FIT = 207;
+public static final int PROJECTION_MODE_PLANE_CROP = 208;
+public static final int PROJECTION_MODE_PLANE_FULL = 209;
+
+// You should call MDVRLibrary#onTextureResize(float width, float height)
+// If you are using DOME projection and PLANE projection.
+
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+    		...
+            .projectionMode(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE)
+            ...
+            .build(R.id.surface_view);
+}
+
+// switch in runtime
+// MDVRLibrary#switchProjectionMode(Activity activity, int mode)
+```
+
+### Motion configuration (since 1.3.0)
+* support sensor delay configuration in motion mode.
+```java
+MDVRLibrary.with(this)
+....
+.motionDelay(SensorManager.SENSOR_DELAY_GAME)
+...
+.build(R.id.surface_view);
+```
+* support sensorCallback
+```java
+MDVRLibrary.with(this)
+....
+.sensorCallback(new SensorEventListener() {
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+})
+....
+.build(R.id.surface_view);
+```
+
+### MD360Director Customize (since 1.2.0)
+```java
+@Override
+protected MDVRLibrary createVRLibrary() {
+    return MDVRLibrary.with(this)
+            ...
+            .directorFactory(new DirectorFactory()) //替换默认MD360DirectorFactory
+            ...
+            .build(R.id.surface_view);
+}
+
+private static class DirectorFactory extends MD360DirectorFactory{
+    @Override
+    public MD360Director createDirector(int index) {
+        switch (index){
+            // setAngle: angle to rotate in degrees
+            case 1:   return MD360Director.builder().setAngle(20).setEyeX(-2.0f).setLookX(-2.0f).build();
+            default:  return MD360Director.builder().setAngle(20).build();
+        }
+    }
 }
 ```
 
@@ -244,10 +226,10 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 protected MDVRLibrary createVRLibrary() {
     return MDVRLibrary.with(this)
             .....
-            .gesture(new MDVRLibrary.IGestureListener() {
+            .listenGesture(new MDVRLibrary.IGestureListener() {
                 @Override
                 public void onClick(MotionEvent e) {
-                    Toast.makeText(VideoPlayerActivity.this, "onClick!", Toast.LENGTH_SHORT).show();
+                    //....
                 }
             })
             .build(R.id.surface_view);
@@ -288,91 +270,10 @@ protected MDVRLibrary createVRLibrary() {
 
 ```
 
-### MD360Director Customize (since 1.2.0)
-```java
-@Override
-protected MDVRLibrary createVRLibrary() {
-    return MDVRLibrary.with(this)
-            ...
-            .directorFactory(new DirectorFactory()) //替换默认MD360DirectorFactory
-            ...
-            .build(R.id.surface_view);
-}
-
-private static class DirectorFactory extends MD360DirectorFactory{
-    @Override
-    public MD360Director createDirector(int index) {
-        switch (index){
-            // setAngle: angle to rotate in degrees
-            case 1:   return MD360Director.builder().setAngle(20).setEyeX(-2.0f).setLookX(-2.0f).build();
-            default:  return MD360Director.builder().setAngle(20).build();
-        }
-    }
-}
-```
-
-### Motion configuration (since 1.3.0)
-* support sensor delay configuration in motion mode.
-```java
-MDVRLibrary.with(this)
-....
-.motionDelay(SensorManager.SENSOR_DELAY_GAME)
-...
-.build(R.id.surface_view);
-```
-* support sensorCallback
-```java
-MDVRLibrary.with(this)
-....
-.sensorCallback(new SensorEventListener() {
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-})
-....
-.build(R.id.surface_view);
-```
-
-### Switch projection (since 1.5.0)
-```java
-// projection mode in MDVRLibrary.java
-public static final int PROJECTION_MODE_SPHERE = 201;
-public static final int PROJECTION_MODE_DOME180 = 202;
-public static final int PROJECTION_MODE_DOME230 = 203;
-public static final int PROJECTION_MODE_DOME180_UPPER = 204;
-public static final int PROJECTION_MODE_DOME230_UPPER = 205;
-public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
-public static final int PROJECTION_MODE_PLANE_FIT = 207;
-public static final int PROJECTION_MODE_PLANE_CROP = 208;
-public static final int PROJECTION_MODE_PLANE_FULL = 209;
-
-// You should call MDVRLibrary#onTextureResize(float width, float height)
-// If you are using DOME projection and PLANE projection.
-
-@Override
-protected MDVRLibrary createVRLibrary() {
-    return MDVRLibrary.with(this)
-    		...
-            .projectionMode(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE)
-            ...
-            .build(R.id.surface_view);
-}
-
-// switch in runtime
-// MDVRLibrary#switchProjectionMode(Activity activity, int mode)
-```
-
 ## Reference
 * [HTY360Player(360 VR Player for iOS)](https://github.com/hanton/HTY360Player)
 * [NitroAction360(VR player for Android)](https://github.com/Nitro888/NitroAction360)
 * [Learn-OpenGLES-Tutorials](https://github.com/learnopengles/Learn-OpenGLES-Tutorials)
-* [ANDROID高性能图形处理之二.OPENGL ES](http://tangzm.com/blog/?p=20)
 * [Moredoo.com](http://www.moredoo.com/)
 
 ## iOS Version
