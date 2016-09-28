@@ -2,6 +2,8 @@ package com.asha.vrlib.objects;
 
 import android.content.Context;
 
+import com.asha.vrlib.common.MDDirection;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -13,16 +15,22 @@ import java.nio.ShortBuffer;
  */
 public class MDStereoSphere3D extends MDAbsObject3D {
 
+    private MDDirection direction = MDDirection.HORIZONTAL;
+
+    public MDStereoSphere3D(MDDirection direction) {
+        this.direction = direction;
+    }
+
     @Override
     protected void executeLoad(Context context) {
-        generateSphere(this);
+        generateSphere(this, direction);
     }
 
-    private static void generateSphere(MDAbsObject3D object3D) {
-        generateSphere(18,75,150,object3D);
+    private static void generateSphere(MDAbsObject3D object3D, MDDirection direction) {
+        generateSphere(18, 75, 150, object3D, direction);
     }
 
-    private static void generateSphere(float radius, int rings, int sectors, MDAbsObject3D object3D) {
+    private static void generateSphere(float radius, int rings, int sectors, MDAbsObject3D object3D, MDDirection direction) {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
@@ -44,13 +52,23 @@ public class MDStereoSphere3D extends MDAbsObject3D {
                 y = - (float) Math.sin( -PI_2 + PI * r * R );
                 z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
 
-                texcoords[t] = s*S;
-                texcoords2[t] = s*S;
-                t++;
+                if (MDDirection.VERTICAL == direction){
+                    texcoords[t] = s*S;
+                    texcoords2[t] = s*S;
+                    t++;
 
-                texcoords[t] = r*R/2;
-                texcoords2[t] = r*R/2 + 0.5f;
-                t++;
+                    texcoords[t] = r*R/2;
+                    texcoords2[t] = r*R/2 + 0.5f;
+                    t++;
+                } else {
+                    texcoords[t] = s*S/2;
+                    texcoords2[t] = s*S/2 + 0.5f;
+                    t++;
+
+                    texcoords[t] = r*R;
+                    texcoords2[t] = r*R;
+                    t++;
+                }
 
                 vertexs[v++] = x * radius;
                 vertexs[v++] = y * radius;

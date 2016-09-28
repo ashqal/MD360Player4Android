@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDDirection;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -99,16 +100,19 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
                 return new DomeProjection(this.mTextureSize,180f,true);
             case MDVRLibrary.PROJECTION_MODE_DOME230_UPPER:
                 return new DomeProjection(this.mTextureSize,230f,true);
+            case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL:
+                return new StereoSphereProjection(MDDirection.HORIZONTAL);
             case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE:
-                return new StereoSphereProjection();
+            case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_VERTICAL:
+                return new StereoSphereProjection(MDDirection.VERTICAL);
             case MDVRLibrary.PROJECTION_MODE_PLANE_FIT:
             case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
             case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
                 return PlaneProjection.create(mode,this.mTextureSize);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL:
-                return new MultiFishEyeProjection(1f,true);
+                return new MultiFishEyeProjection(1f, MDDirection.HORIZONTAL);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL:
-                return new MultiFishEyeProjection(1f,false);
+                return new MultiFishEyeProjection(1f, MDDirection.VERTICAL);
             case MDVRLibrary.PROJECTION_MODE_SPHERE:
             default:
                 return new SphereProjection();

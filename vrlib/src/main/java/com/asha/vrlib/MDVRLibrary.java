@@ -58,12 +58,18 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_DOME230 = 203;
     public static final int PROJECTION_MODE_DOME180_UPPER = 204;
     public static final int PROJECTION_MODE_DOME230_UPPER = 205;
-    public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+    /**
+     * @deprecated since 2.0.4
+     * use {@link #PROJECTION_MODE_STEREO_SPHERE_VERTICAL}
+     */
+    @Deprecated public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
     public static final int PROJECTION_MODE_PLANE_FIT = 207;
     public static final int PROJECTION_MODE_PLANE_CROP = 208;
     public static final int PROJECTION_MODE_PLANE_FULL = 209;
     public static final int PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL = 210;
     public static final int PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL = 211;
+    public static final int PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL = 212;
+    public static final int PROJECTION_MODE_STEREO_SPHERE_VERTICAL = 213;
 
     // private int mDisplayMode = DISPLAY_MODE_NORMAL;
     private RectF mTextureSize = new RectF(0,0,1024,1024);

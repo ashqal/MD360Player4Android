@@ -17,9 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:label="IjkPlayerDemoActivity" android:name=".IjkPlayerDemoActivity" android:configChanges="screenSize|orientation" />
-        <activity android:label="VideoPlayerActivity" android:name=".VideoPlayerActivity" android:configChanges="screenSize|orientation" />
-        <activity android:label="BitmapPlayerActivity" android:name=".BitmapPlayerActivity" android:configChanges="screenSize|orientation" />
+        <activity android:label="IjkPlayerDemoActivity" android:name=".IjkPlayerDemoActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
+        <activity android:label="VideoPlayerActivity" android:name=".VideoPlayerActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
+        <activity android:label="BitmapPlayerActivity" android:name=".BitmapPlayerActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
     </application>
 
 </manifest>

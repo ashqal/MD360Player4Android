@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
+import com.asha.vrlib.common.MDDirection;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -25,11 +26,17 @@ public class StereoSphereProjection extends AbsProjectionStrategy {
         }
     }
 
+    private MDDirection direction;
+
     private MDAbsObject3D object3D;
+
+    public StereoSphereProjection(MDDirection direction) {
+        this.direction = direction;
+    }
 
     @Override
     public void on(Activity activity) {
-        object3D = new MDStereoSphere3D();
+        object3D = new MDStereoSphere3D(direction);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 

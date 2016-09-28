@@ -7,6 +7,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDDirection;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -41,7 +42,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
     private MDDrawingCache mDrawingCache;
 
-    public MDMultiFishEyePlugin(MDMainPluginBuilder builder, float radius, boolean isHorizontal) {
+    public MDMultiFishEyePlugin(MDMainPluginBuilder builder, float radius, MDDirection direction) {
         mTexture = builder.getTexture();
         mProgram = new MD360Program(builder.getContentType());
         mBitmapProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
@@ -49,7 +50,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
         mProjectionModeManager = builder.getProjectionModeManager();
 
         mFixedDirector = new MD360DirectorFactory.OrthogonalImpl().createDirector(0);
-        mConverterObject3D = new MDMesh(radius, isHorizontal);
+        mConverterObject3D = new MDMesh(radius, direction);
         mDrawingCache = new MDDrawingCache();
     }
 
@@ -142,13 +143,13 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
         private static final String TAG = "MDMesh";
 
-        private final boolean isHorizontal;
+        private final MDDirection direction;
 
         private final float radius;
 
-        public MDMesh(float radius, boolean isHorizontal) {
+        public MDMesh(float radius, MDDirection direction) {
             this.radius = radius;
-            this.isHorizontal = isHorizontal;
+            this.direction = direction;
         }
 
         @Override
@@ -198,7 +199,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
                     float a = (float) (0.5f * width + rr * Math.cos(theta));
                     float b = (float) (0.5f * height + rr * Math.sin(theta));
 
-                    if (isHorizontal){
+                    if (direction == MDDirection.HORIZONTAL){
                         texcoords[t*2] = a * 0.5f;
                         texcoords[t*2 + 1] = b;
                         texcoords2[t*2] = a * 0.5f + 0.5f;
