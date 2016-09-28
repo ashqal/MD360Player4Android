@@ -18,6 +18,8 @@ public class TouchStrategy extends AbsInteractiveStrategy {
 
     private static final String TAG = "TouchStrategy";
 
+    private UpdateDragRunnable runnable = new UpdateDragRunnable();
+
     public TouchStrategy(InteractiveModeManager.Params params) {
         super(params);
     }
@@ -29,12 +31,33 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     public void onPause(Context context) {}
 
     @Override
-    public boolean handleDrag(int distanceX, int distanceY) {
-        for (MD360Director director : getDirectorList()){
-            director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
-            director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
-        }
+    public boolean handleDrag(final int distanceX, final int distanceY) {
+        getParams().mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                runnable.handleDrag(distanceX, distanceY);
+                getParams().mGLHandler.post(runnable);
+            }
+        });
         return false;
+    }
+
+    private class UpdateDragRunnable implements Runnable {
+        private int distanceX;
+        private int distanceY;
+
+        private void handleDrag(int distanceX, int distanceY){
+            this.distanceX = distanceX;
+            this.distanceY = distanceY;
+        }
+
+        @Override
+        public void run() {
+            for (MD360Director director : getDirectorList()){
+                director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
+                director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
+            }
+        }
     }
 
     @Override
