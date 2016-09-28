@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.asha.vrlib.common.Fps;
+import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.plugins.MDAbsLinePipe;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDBarrelDistortionLinePipe;
@@ -33,6 +34,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private ProjectionModeManager mProjectionModeManager;
 	private MDPluginManager mPluginManager;
 	private MDAbsLinePipe mMainLinePipe;
+	private MDGLHandler mGLHandler;
 	private Fps mFps = new Fps();
 	private int mWidth;
 	private int mHeight;
@@ -47,6 +49,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mDisplayModeManager = params.displayModeManager;
 		mProjectionModeManager = params.projectionModeManager;
 		mPluginManager = params.pluginManager;
+		mGLHandler = params.glHandler;
 
 		mMainLinePipe = new MDBarrelDistortionLinePipe(mDisplayModeManager);
 	}
@@ -67,10 +70,14 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public void onSurfaceChanged(GL10 glUnused, int width, int height){
 		this.mWidth = width;
 		this.mHeight = height;
+
+		mGLHandler.dealMessage();
 	}
 
 	@Override
 	public void onDrawFrame(GL10 glUnused){
+		// gl thread
+		mGLHandler.dealMessage();
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 		glCheck("MD360Renderer onDrawFrame 1");
@@ -131,13 +138,19 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		private Context context;
 		private DisplayModeManager displayModeManager;
 		private ProjectionModeManager projectionModeManager;
-		public MDPluginManager pluginManager;
+		private MDGLHandler glHandler;
+		private MDPluginManager pluginManager;
 
 		private Builder() {
 		}
 
 		public MD360Renderer build(){
 			return new MD360Renderer(this);
+		}
+
+		public Builder setGLHandler(MDGLHandler glHandler){
+			this.glHandler = glHandler;
+			return this;
 		}
 
 		public Builder setPluginManager(MDPluginManager pluginManager) {

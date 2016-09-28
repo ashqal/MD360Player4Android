@@ -6,7 +6,7 @@ import android.opengl.GLUtils;
 
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.common.MDHandler;
+import com.asha.vrlib.common.MDMainHandler;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
         // call the provider
         // to load the bitmap.
-        MDHandler.sharedHandler().post(new Runnable() {
+        MDMainHandler.sharedHandler().post(new Runnable() {
             @Override
             public void run() {
                 mBitmapProvider.onProvideBitmap(callback);

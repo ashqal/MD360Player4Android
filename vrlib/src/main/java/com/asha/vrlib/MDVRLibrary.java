@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.common.GLUtil;
-import com.asha.vrlib.common.MDHandler;
+import com.asha.vrlib.common.MDGLHandler;
+import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDRay;
@@ -81,11 +82,15 @@ public class MDVRLibrary {
     private MDGLScreenWrapper mScreenWrapper;
     private MDTouchHelper mTouchHelper;
     private MD360Texture mTexture;
+    private MDGLHandler mGLHandler;
 
     private MDVRLibrary(Builder builder) {
 
         // init main handler
-        MDHandler.init();
+        MDMainHandler.init();
+
+        // init gl handler
+        mGLHandler = new MDGLHandler();
 
         // init mode manager
         initModeManager(builder);
@@ -100,6 +105,7 @@ public class MDVRLibrary {
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.addClickListener(builder.gestureListener);
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
+        final UpdatePinchRunnable updatePinchRunnable = new UpdatePinchRunnable();
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
@@ -107,13 +113,10 @@ public class MDVRLibrary {
             }
 
             @Override
-            public void onPinch(float scale) {
-                List<MD360Director> directors = mProjectionModeManager.getDirectors();
-                for (MD360Director director : directors){
-                    director.updateProjectionNearScale(scale);
-                }
+            public void onPinch(final float scale) {
+                updatePinchRunnable.setScale(scale);
+                mGLHandler.post(updatePinchRunnable);
             }
-
         });
 
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
@@ -125,6 +128,22 @@ public class MDVRLibrary {
 
         // init picker manager
         initPickerManager(builder);
+    }
+
+    private class UpdatePinchRunnable implements Runnable{
+        private float scale;
+
+        public void setScale(float scale) {
+            this.scale = scale;
+        }
+
+        @Override
+        public void run() {
+            List<MD360Director> directors = mProjectionModeManager.getDirectors();
+            for (MD360Director director : directors){
+                director.updateProjectionNearScale(scale);
+            }
+        }
     }
 
     private void initModeManager(Builder builder) {
@@ -152,21 +171,13 @@ public class MDVRLibrary {
         interactiveManagerParams.projectionModeManager = mProjectionModeManager;
         interactiveManagerParams.mMotionDelay = builder.motionDelay;
         interactiveManagerParams.mSensorListener = builder.sensorListener;
+        interactiveManagerParams.mGLHandler = mGLHandler;
         mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
     private void initPluginManager(Builder builder) {
         mPluginManager = new MDPluginManager();
-        /*
-        MDMainPluginBuilder mainPluginBuilder = new MDMainPluginBuilder()
-                .setContentType(builder.contentType)
-                .setTexture(builder.texture)
-                .setProjectionModeManager(mProjectionModeManager);
-        MDAbsPlugin mainPlugin = new MDMultiFishEyePlugin(mainPluginBuilder);
-
-        mPluginManager.add(mainPlugin);
-        */
     }
 
     private void initPickerManager(Builder builder) {
@@ -190,6 +201,7 @@ public class MDVRLibrary {
             // Request an OpenGL ES 2.0 compatible context.
 
             MD360Renderer renderer = MD360Renderer.with(context)
+                    .setGLHandler(mGLHandler)
                     .setPluginManager(mPluginManager)
                     .setProjectionModeManager(mProjectionModeManager)
                     .setDisplayModeManager(mDisplayModeManager)
@@ -204,8 +216,13 @@ public class MDVRLibrary {
         }
     }
 
-    public void switchInteractiveMode(Activity activity) {
-        mInteractiveModeManager.switchMode(activity);
+    public void switchInteractiveMode(final Activity activity) {
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mInteractiveModeManager.switchMode(activity);
+            }
+        });
     }
 
     /**
@@ -218,12 +235,22 @@ public class MDVRLibrary {
      * {@link #INTERACTIVE_MODE_TOUCH}
      * {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
      */
-    public void switchInteractiveMode(Activity activity, int mode){
-        mInteractiveModeManager.switchMode(activity,mode);
+    public void switchInteractiveMode(final Activity activity, final int mode){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mInteractiveModeManager.switchMode(activity, mode);
+            }
+        });
     }
 
-    public void switchDisplayMode(Activity activity){
-        mDisplayModeManager.switchMode(activity);
+    public void switchDisplayMode(final Activity activity){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mDisplayModeManager.switchMode(activity);
+            }
+        });
     }
 
     /**
@@ -235,8 +262,14 @@ public class MDVRLibrary {
      * {@link #DISPLAY_MODE_GLASS}
      * {@link #DISPLAY_MODE_NORMAL}
      */
-    public void switchDisplayMode(Activity activity, int mode){
-        mDisplayModeManager.switchMode(activity,mode);
+    public void switchDisplayMode(final Activity activity, final int mode){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mDisplayModeManager.switchMode(activity, mode);
+            }
+        });
+
     }
 
     /**
@@ -249,15 +282,25 @@ public class MDVRLibrary {
      * {@link #PROJECTION_MODE_DOME180}
      * and so on.
      */
-    public void switchProjectionMode(Activity activity, int mode) {
-        mProjectionModeManager.switchMode(activity, mode);
+    public void switchProjectionMode(final Activity activity, final int mode) {
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mProjectionModeManager.switchMode(activity, mode);
+            }
+        });
     }
 
     public void resetTouch(){
-        List<MD360Director> directors = mProjectionModeManager.getDirectors();
-        for (MD360Director director : directors){
-            director.reset();
-        }
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<MD360Director> directors = mProjectionModeManager.getDirectors();
+                for (MD360Director director : directors){
+                    director.reset();
+                }
+            }
+        });
     }
 
     public void resetPinch(){
@@ -327,6 +370,16 @@ public class MDVRLibrary {
     }
 
     public void onDestroy(){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                fireDestroy();
+            }
+        });
+        mGLHandler.destroy();
+    }
+
+    private void fireDestroy(){
         Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
         while (iterator.hasNext()){
             MDAbsPlugin plugin = iterator.next();
@@ -343,7 +396,6 @@ public class MDVRLibrary {
             mTexture.release();
             mTexture = null;
         }
-
     }
 
     /**

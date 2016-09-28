@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.hardware.SensorEventListener;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.strategy.ModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
@@ -22,6 +23,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         public int mMotionDelay;
         public SensorEventListener mSensorListener;
         public ProjectionModeManager projectionModeManager;
+        public MDGLHandler mGLHandler;
     }
 
     private Params mParams;

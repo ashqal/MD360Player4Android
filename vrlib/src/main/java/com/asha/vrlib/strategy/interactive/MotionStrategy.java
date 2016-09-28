@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
 
 /**
@@ -87,7 +88,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
             return;
         }
 
-        mSensorManager.registerListener(this, sensor, getParams().mMotionDelay);
+        mSensorManager.registerListener(this, sensor, getParams().mMotionDelay, MDMainHandler.sharedHandler());
 
         mRegistered = true;
     }
@@ -103,7 +104,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(final SensorEvent event) {
         if (event.accuracy != 0){
             if (getParams().mSensorListener != null){
                 getParams().mSensorListener.onSensorChanged(event);
@@ -112,11 +113,17 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
             int type = event.sensor.getType();
             switch (type){
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
-                    for (MD360Director director : getDirectorList()){
-                        director.updateSensorMatrix(mSensorMatrix);
-                        // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;
-                    }
+                    // post
+                    getParams().mGLHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
+                            for (MD360Director director : getDirectorList()){
+                                director.updateSensorMatrix(mSensorMatrix);
+                                // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;
+                            }
+                        }
+                    });
                     break;
             }
         }

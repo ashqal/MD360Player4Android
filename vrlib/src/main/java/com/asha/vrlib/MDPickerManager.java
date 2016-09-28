@@ -3,7 +3,7 @@ package com.asha.vrlib;
 import android.content.Context;
 import android.view.MotionEvent;
 
-import com.asha.vrlib.common.MDHandler;
+import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
@@ -147,12 +147,12 @@ public class MDPickerManager {
                 if (hasHit){
                     mTouchPickPoster.setRay(ray);
                     mTouchPickPoster.setHit(hitHotspot);
-                    MDHandler.sharedHandler().post(mTouchPickPoster);
+                    MDMainHandler.sharedHandler().post(mTouchPickPoster);
                 }
                 break;
             case HIT_FROM_EYE:
                 mEyePickPoster.setHit(hitHotspot);
-                MDHandler.sharedHandler().postDelayed(mEyePickPoster, 100);
+                MDMainHandler.sharedHandler().postDelayed(mEyePickPoster, 100);
                 break;
         }
 
@@ -187,7 +187,7 @@ public class MDPickerManager {
 
         @Override
         public void run() {
-            MDHandler.sharedHandler().removeCallbacks(this);
+            MDMainHandler.sharedHandler().removeCallbacks(this);
 
             if (mEyePickChangedListener != null){
                 mEyePickChangedListener.onHotspotHit(hit, timestamp);

@@ -106,7 +106,6 @@ public class MD360Director {
 
     public void shot(MD360Program program, MDPosition modelPosition) {
 
-
         if (mViewMatrixInvalidate){
             updateViewMatrix();
             mViewMatrixInvalidate = false;
@@ -135,7 +134,8 @@ public class MD360Director {
         updateProjection();
     }
 
-    protected void updateProjectionNearScale(float scale){
+    // call from gl thread
+    public void updateProjectionNearScale(float scale){
         mNearScale = scale;
         updateProjection();
     }
@@ -196,11 +196,13 @@ public class MD360Director {
         System.arraycopy(mTempMatrix, 0, mViewMatrix, 0, 16);
     }
 
+    // call in gl thread
     public void updateSensorMatrix(float[] sensorMatrix) {
-        System.arraycopy(sensorMatrix,0,mSensorMatrix,0,16);
+        System.arraycopy(sensorMatrix, 0, mSensorMatrix, 0, 16);
         mViewMatrixInvalidate = true;
     }
 
+    // call in gl thread
     public void reset(){
         mDeltaX = mDeltaY = mPreviousX = mPreviousY = 0;
         Matrix.setIdentityM(mSensorMatrix,0);

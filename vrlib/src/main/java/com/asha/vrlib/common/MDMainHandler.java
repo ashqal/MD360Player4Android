@@ -7,7 +7,7 @@ import android.os.Looper;
  * Created by hzqiujiadi on 16/8/4.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MDHandler {
+public class MDMainHandler {
 
     private static Handler sMainHandler;
 
