@@ -114,20 +114,22 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
             switch (type){
                 case Sensor.TYPE_ROTATION_VECTOR:
                     // post
-                    getParams().mGLHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
-                            for (MD360Director director : getDirectorList()){
-                                director.updateSensorMatrix(mSensorMatrix);
-                                // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;
-                            }
-                        }
-                    });
+                    VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
+                    getParams().mGLHandler.post(updateSensorRunnable);
                     break;
             }
         }
     }
+
+    private Runnable updateSensorRunnable = new Runnable() {
+        @Override
+        public void run() {
+            for (MD360Director director : getDirectorList()){
+                director.updateSensorMatrix(mSensorMatrix);
+                // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;
+            }
+        }
+    };
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
