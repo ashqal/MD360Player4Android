@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy.display;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.strategy.ModeManager;
 
@@ -15,8 +16,8 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
     private boolean antiDistortionEnabled;
     private BarrelDistortionConfig barrelDistortionConfig;
 
-    public DisplayModeManager(int mode) {
-        super(mode);
+    public DisplayModeManager(int mode, MDGLHandler handler) {
+        super(mode, handler);
     }
 
     @Override

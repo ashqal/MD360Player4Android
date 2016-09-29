@@ -2,7 +2,9 @@ package com.asha.md360player4android;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
+import android.view.View;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
@@ -16,6 +18,7 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
  */
 public class VideoPlayerActivity extends MD360PlayerActivity {
 
+    private static final String TAG = "VideoPlayerActivity";
     private MediaPlayerWrapper mMediaPlayerWrapper = new MediaPlayerWrapper();
 
 
@@ -27,6 +30,9 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             @Override
             public void onPrepared(IMediaPlayer mp) {
                 cancelBusy();
+                if (getVRLibrary() != null){
+                    getVRLibrary().notifyPlayerChanged();
+                }
             }
         });
 
@@ -52,6 +58,17 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             mMediaPlayerWrapper.prepare();
         }
 
+        findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayerWrapper.pause();
+                mMediaPlayerWrapper.destroy();
+                mMediaPlayerWrapper.init();
+                mMediaPlayerWrapper.openRemoteFile("file:///mnt/sdcard/vr/video_31b451b7ca49710719b19d22e19d9e60.mp4");
+                mMediaPlayerWrapper.prepare();
+            }
+        });
+
     }
 
     @Override
@@ -62,7 +79,8 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
-                        mMediaPlayerWrapper.getPlayer().setSurface(surface);
+                        Log.e(TAG,"onSurfaceReady!!!!!!!!!!!");
+                        mMediaPlayerWrapper.setSurface(surface);
                     }
                 })
                 .ifNotSupport(new MDVRLibrary.INotSupportCallback() {
@@ -82,18 +100,18 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMediaPlayerWrapper.onDestroy();
+        mMediaPlayerWrapper.destroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaPlayerWrapper.onPause();
+        mMediaPlayerWrapper.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMediaPlayerWrapper.onResume();
+        mMediaPlayerWrapper.resume();
     }
 }

@@ -2,6 +2,7 @@ package com.asha.md360player4android;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.view.Surface;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     private static final int STATUS_PAUSED = 4;
     private static final int STATUS_STOPPED = 5;
     private int mStatus = STATUS_IDLE;
+    private Surface mSurface;
 
     public void init(){
         mStatus = STATUS_IDLE;
@@ -54,9 +56,15 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
+    public void setSurface(Surface surface){
+        if (mSurface != surface){
+            getPlayer().setSurface(surface);
+            mSurface = surface;
+        }
+    }
+
     public void openRemoteFile(String url){
         try {
-            //"http://vod.moredoo.com/u/7575/m3u8/854x480/25883d97c738b1be48d1e106ede2789c/25883d97c738b1be48d1e106ede2789c.m3u8"
             mPlayer.setDataSource(url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +116,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
-    private void pause(){
+    public void pause(){
         if (mPlayer == null) return;
         if (mPlayer.isPlaying() && mStatus == STATUS_STARTED) {
             mPlayer.pause();
@@ -136,15 +144,11 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         if (mPreparedListener != null) mPreparedListener.onPrepared(mp);
     }
 
-    public void onPause() {
-        pause();
-    }
-
-    public void onResume() {
+    public void resume() {
         start();
     }
 
-    public void onDestroy() {
+    public void destroy() {
         stop();
         if (mPlayer != null) {
             mPlayer.setSurface(null);

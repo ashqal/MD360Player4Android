@@ -74,7 +74,7 @@ public class IjkPlayerDemoActivity extends Activity implements TextureView.Surfa
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
         surface = new Surface(surfaceTexture);
-        mMediaPlayerWrapper.getPlayer().setSurface(surface);
+        mMediaPlayerWrapper.setSurface(surface);
 
     }
 
@@ -85,7 +85,7 @@ public class IjkPlayerDemoActivity extends Activity implements TextureView.Surfa
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        mMediaPlayerWrapper.getPlayer().setSurface(null);
+        mMediaPlayerWrapper.setSurface(null);
         this.surface = null;
         return true;
     }
@@ -98,19 +98,19 @@ public class IjkPlayerDemoActivity extends Activity implements TextureView.Surfa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMediaPlayerWrapper.onDestroy();
+        mMediaPlayerWrapper.destroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaPlayerWrapper.onPause();
+        mMediaPlayerWrapper.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMediaPlayerWrapper.onResume();
+        mMediaPlayerWrapper.resume();
     }
 
     public void cancelBusy(){

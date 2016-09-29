@@ -74,6 +74,11 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     @Override
+    public void notifyChanged() {
+        // nop
+    }
+
+    @Override
     public boolean isReady() {
         return mIsReady;
     }

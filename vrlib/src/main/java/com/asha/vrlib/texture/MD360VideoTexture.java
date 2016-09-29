@@ -99,4 +99,11 @@ public class MD360VideoTexture extends MD360Texture {
         mSurfaceTexture.updateTexImage();
         return true;
     }
+
+    @Override
+    public void notifyChanged() {
+        if (mSurface != null && mOnSurfaceReadyListener != null) {
+            mOnSurfaceReadyListener.onSurfaceReady(mSurface);
+        }
+    }
 }

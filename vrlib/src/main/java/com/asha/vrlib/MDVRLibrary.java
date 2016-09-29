@@ -157,11 +157,11 @@ public class MDVRLibrary {
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture);
 
-        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, projectionManagerParams);
+        mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, mGLHandler, projectionManagerParams);
         mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
 
         // init DisplayModeManager
-        mDisplayModeManager = new DisplayModeManager(builder.displayMode);
+        mDisplayModeManager = new DisplayModeManager(builder.displayMode, mGLHandler);
         mDisplayModeManager.setBarrelDistortionConfig(builder.barrelDistortionConfig);
         mDisplayModeManager.setAntiDistortionEnabled(builder.barrelDistortionConfig.isDefaultEnabled());
         mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
@@ -171,8 +171,7 @@ public class MDVRLibrary {
         interactiveManagerParams.projectionModeManager = mProjectionModeManager;
         interactiveManagerParams.mMotionDelay = builder.motionDelay;
         interactiveManagerParams.mSensorListener = builder.sensorListener;
-        interactiveManagerParams.mGLHandler = mGLHandler;
-        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode,interactiveManagerParams);
+        mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode, mGLHandler, interactiveManagerParams);
         mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
     }
 
@@ -217,12 +216,7 @@ public class MDVRLibrary {
     }
 
     public void switchInteractiveMode(final Activity activity) {
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mInteractiveModeManager.switchMode(activity);
-            }
-        });
+        mInteractiveModeManager.switchMode(activity);
     }
 
     /**
@@ -236,21 +230,11 @@ public class MDVRLibrary {
      * {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
      */
     public void switchInteractiveMode(final Activity activity, final int mode){
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mInteractiveModeManager.switchMode(activity, mode);
-            }
-        });
+        mInteractiveModeManager.switchMode(activity, mode);
     }
 
     public void switchDisplayMode(final Activity activity){
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mDisplayModeManager.switchMode(activity);
-            }
-        });
+        mDisplayModeManager.switchMode(activity);
     }
 
     /**
@@ -263,13 +247,7 @@ public class MDVRLibrary {
      * {@link #DISPLAY_MODE_NORMAL}
      */
     public void switchDisplayMode(final Activity activity, final int mode){
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mDisplayModeManager.switchMode(activity, mode);
-            }
-        });
-
+        mDisplayModeManager.switchMode(activity, mode);
     }
 
     /**
@@ -283,12 +261,7 @@ public class MDVRLibrary {
      * and so on.
      */
     public void switchProjectionMode(final Activity activity, final int mode) {
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mProjectionModeManager.switchMode(activity, mode);
-            }
-        });
+        mProjectionModeManager.switchMode(activity, mode);
     }
 
     public void resetTouch(){
@@ -353,6 +326,11 @@ public class MDVRLibrary {
 
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
+    }
+
+
+    public void onOrientationChanged(Activity activity) {
+        mInteractiveModeManager.onOrientationChanged(activity);
     }
 
     public void onResume(Context context){
@@ -422,8 +400,10 @@ public class MDVRLibrary {
         return mProjectionModeManager.getMode();
     }
 
-    public void onOrientationChanged(Activity activity) {
-        mInteractiveModeManager.onOrientationChanged(activity);
+    public void notifyPlayerChanged(){
+        if (mTexture != null){
+            mTexture.notifyChanged();
+        }
     }
 
     public interface IOnSurfaceReadyCallback {

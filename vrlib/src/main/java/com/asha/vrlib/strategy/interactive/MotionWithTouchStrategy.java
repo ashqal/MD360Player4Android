@@ -14,34 +14,17 @@ public class MotionWithTouchStrategy extends MotionStrategy {
 
     private static final float sDamping = 0.2f;
 
-    private UpdateDragRunnable runnable = new UpdateDragRunnable();
-
     public MotionWithTouchStrategy(InteractiveModeManager.Params params) {
         super(params);
     }
 
     @Override
     public boolean handleDrag(int distanceX, int distanceY) {
-        runnable.handleDrag(distanceX, distanceY);
-        getParams().mGLHandler.post(runnable);
+        for (MD360Director director : getDirectorList()){
+            director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
+            // director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
+        }
         return false;
     }
 
-    private class UpdateDragRunnable implements Runnable {
-        private int distanceX;
-        private int distanceY;
-
-        private void handleDrag(int distanceX, int distanceY){
-            this.distanceX = distanceX;
-            this.distanceY = distanceY;
-        }
-
-        @Override
-        public void run() {
-            for (MD360Director director : getDirectorList()){
-                director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
-                // director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
-            }
-        }
-    }
 }

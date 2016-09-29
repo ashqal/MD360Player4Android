@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy.interactive;
 
 import android.app.Activity;
+import android.content.Context;
 import android.hardware.SensorEventListener;
 
 import com.asha.vrlib.MDVRLibrary;
@@ -14,6 +15,8 @@ import com.asha.vrlib.strategy.projection.ProjectionModeManager;
  */
 public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> implements IInteractiveMode {
 
+    private boolean mIsResumed;
+
     private static int[] sModes = {MDVRLibrary.INTERACTIVE_MODE_MOTION,
             MDVRLibrary.INTERACTIVE_MODE_TOUCH,
             MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH,
@@ -23,25 +26,20 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         public int mMotionDelay;
         public SensorEventListener mSensorListener;
         public ProjectionModeManager projectionModeManager;
-        public MDGLHandler mGLHandler;
+        public MDGLHandler glHandler;
     }
 
     private Params mParams;
 
-    public InteractiveModeManager(int mode, Params params) {
-        super(mode);
+    public InteractiveModeManager(int mode, MDGLHandler handler, Params params) {
+        super(mode, handler);
         mParams = params;
+        mParams.glHandler = getGLHandler();
     }
 
     @Override
     protected int[] getModes() {
         return sModes;
-    }
-
-    @Override
-    public void switchMode(Activity activity, int mode) {
-        super.switchMode(activity, mode);
-        if (isResumed()) onResume(activity);
     }
 
     @Override
@@ -57,6 +55,8 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         }
     }
 
+    private UpdateDragRunnable updateDragRunnable = new UpdateDragRunnable();
+
     /**
      * handle touch touch to rotate the model
      *
@@ -65,12 +65,57 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
      * @return true if handled.
      */
     @Override
-    public boolean handleDrag(int distanceX, int distanceY) {
-        return getStrategy().handleDrag(distanceX,distanceY);
+    public boolean handleDrag(final int distanceX, final int distanceY) {
+        updateDragRunnable.handleDrag(distanceX, distanceY);
+        getGLHandler().post(updateDragRunnable);
+        return false;
     }
 
     @Override
-    public void onOrientationChanged(Activity activity) {
-        getStrategy().onOrientationChanged(activity);
+    public void onOrientationChanged(final Activity activity) {
+        getGLHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                getStrategy().onOrientationChanged(activity);
+            }
+        });
+    }
+
+    private class UpdateDragRunnable implements Runnable {
+        private int distanceX;
+        private int distanceY;
+
+        private void handleDrag(int distanceX, int distanceY){
+            this.distanceX = distanceX;
+            this.distanceY = distanceY;
+        }
+
+        @Override
+        public void run() {
+            getStrategy().handleDrag(distanceX, distanceY);
+        }
+    }
+
+    public void onResume(Context context) {
+        mIsResumed = true;
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onResume(context);
+        }
+    }
+
+    @Override
+    public void on(Activity activity) {
+        super.on(activity);
+
+        if (mIsResumed){
+            onResume(activity);
+        }
+    }
+
+    public void onPause(Context context) {
+        mIsResumed = false;
+        if (getStrategy().isSupport((Activity)context)){
+            getStrategy().onPause(context);
+        }
     }
 }

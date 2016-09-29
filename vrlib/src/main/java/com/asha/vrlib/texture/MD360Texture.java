@@ -43,4 +43,6 @@ public abstract class MD360Texture {
     abstract protected int createTextureId();
 
     abstract public boolean texture(MD360Program program);
+
+    public abstract void notifyChanged();
 }

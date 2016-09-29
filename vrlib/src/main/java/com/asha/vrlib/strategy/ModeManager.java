@@ -1,9 +1,10 @@
 package com.asha.vrlib.strategy;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDGLHandler;
+import com.asha.vrlib.common.MDMainHandler;
 
 import java.util.Arrays;
 
@@ -14,10 +15,11 @@ import java.util.Arrays;
 public abstract class ModeManager<T extends IModeStrategy> {
     private int mMode;
     private T mStrategy;
-    private boolean mIsResumed;
     private MDVRLibrary.INotSupportCallback mCallback;
+    private MDGLHandler mGLHandler;
 
-    public ModeManager(int mode) {
+    public ModeManager(int mode, MDGLHandler handler) {
+        this.mGLHandler = handler;
         this.mMode = mode;
     }
 
@@ -34,32 +36,48 @@ public abstract class ModeManager<T extends IModeStrategy> {
 
     abstract protected int[] getModes();
 
-    private void initMode(Activity activity, int mode){
+    private void initMode(Activity activity, final int mode){
         if (mStrategy != null){
             off(activity);
         }
         mStrategy = createStrategy(mode);
         if (!mStrategy.isSupport(activity)){
-            if (mCallback != null) mCallback.onNotSupport(mode);
+            MDMainHandler.sharedHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mCallback != null) mCallback.onNotSupport(mode);
+                }
+            });
         } else {
             on(activity);
         }
     }
 
-    public void switchMode(Activity activity){
-        int[] modes = getModes();
-        int mode = getMode();
-        int index = Arrays.binarySearch(modes, mode);
-        int nextIndex = (index + 1) %  modes.length;
-        int nextMode = modes[nextIndex];
+    public void switchMode(final Activity activity){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                int[] modes = getModes();
+                int mode = getMode();
+                int index = Arrays.binarySearch(modes, mode);
+                int nextIndex = (index + 1) %  modes.length;
+                int nextMode = modes[nextIndex];
 
-        switchMode(activity,nextMode);
+                switchMode(activity, nextMode);
+            }
+        });
     }
 
-    public void switchMode(Activity activity, int mode){
-        if (mode == getMode()) return;
-        mMode = mode;
-        initMode(activity,mMode);
+    public void switchMode(final Activity activity, final int mode){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mode == getMode()) return;
+                mMode = mode;
+
+                initMode(activity, mMode);
+            }
+        });
     }
 
     public void on(Activity activity) {
@@ -80,21 +98,7 @@ public abstract class ModeManager<T extends IModeStrategy> {
         return mMode;
     }
 
-    public void onResume(Context context) {
-        mIsResumed = true;
-        if (getStrategy().isSupport((Activity)context)){
-            getStrategy().onResume(context);
-        }
-    }
-
-    public void onPause(Context context) {
-        mIsResumed = false;
-        if (getStrategy().isSupport((Activity)context)){
-            getStrategy().onPause(context);
-        }
-    }
-
-    public boolean isResumed() {
-        return mIsResumed;
+    public MDGLHandler getGLHandler() {
+        return mGLHandler;
     }
 }

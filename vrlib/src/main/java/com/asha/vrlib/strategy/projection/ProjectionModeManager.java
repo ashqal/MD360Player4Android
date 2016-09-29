@@ -7,6 +7,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.MDDirection;
+import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -43,8 +44,8 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
     private IMDProjectionFactory mProjectionFactory;
 
-    public ProjectionModeManager(int mode, Params projectionManagerParams) {
-        super(mode);
+    public ProjectionModeManager(int mode, MDGLHandler handler, Params projectionManagerParams) {
+        super(mode, handler);
         this.mTextureSize = projectionManagerParams.textureSize;
         this.mCustomDirectorFactory = projectionManagerParams.directorFactory;
         this.mProjectionFactory = projectionManagerParams.projectionFactory;
