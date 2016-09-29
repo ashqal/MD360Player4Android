@@ -17,6 +17,7 @@ import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDMainPluginBuilder;
+import com.asha.vrlib.model.MDPinchConfig;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
@@ -118,6 +119,7 @@ public class MDVRLibrary {
                 mGLHandler.post(updatePinchRunnable);
             }
         });
+        mTouchHelper.setPinchConfig(builder.pinchConfig);
 
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -308,6 +310,10 @@ public class MDVRLibrary {
         mPickerManager.setTouchPickListener(listener);
     }
 
+    public void setPinchScale(float scale){
+        mTouchHelper.scaleTo(scale);
+    }
+
     public int getScreenSize(){
         return mDisplayModeManager.getVisibleSize();
     }
@@ -461,6 +467,7 @@ public class MDVRLibrary {
         private SensorEventListener sensorListener;
         private MDGLScreenWrapper screenWrapper;
         private IMDProjectionFactory projectionFactory;
+        private MDPinchConfig pinchConfig;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -605,6 +612,11 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder pinchConfig(MDPinchConfig config){
+            this.pinchConfig = config;
+            return this;
+        }
+
         /**
          * build it!
          *
@@ -635,6 +647,7 @@ public class MDVRLibrary {
             notNull(texture,"You must call video/bitmap function before build");
             if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
             if (this.barrelDistortionConfig == null) barrelDistortionConfig = new BarrelDistortionConfig();
+            if (this.pinchConfig == null) pinchConfig = new MDPinchConfig();
             this.screenWrapper = screenWrapper;
             return new MDVRLibrary(this);
         }

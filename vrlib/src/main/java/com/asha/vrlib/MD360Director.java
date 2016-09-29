@@ -55,7 +55,6 @@ public class MD360Director {
         this.mLookX = builder.mLookX;
         this.mLookY = builder.mLookY;
         this.mCameraRotation = builder.mRotation;
-        initCamera();
         initModel();
     }
 
@@ -91,11 +90,6 @@ public class MD360Director {
 
     public void setPreviousX(float mPreviousX) {
         this.mPreviousX = mPreviousX;
-    }
-
-    private void initCamera() {
-        // View Matrix
-        updateViewMatrix();
     }
 
     private void initModel(){

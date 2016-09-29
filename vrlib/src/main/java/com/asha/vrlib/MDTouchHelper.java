@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.asha.vrlib.model.MDPinchConfig;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,16 +18,17 @@ import java.util.List;
  */
 public class MDTouchHelper {
 
-    private static final float sScaleMin = 1;
-    private static final float sScaleMax = 4;
-
     private MDVRLibrary.IAdvanceGestureListener mAdvanceGestureListener;
     private List<MDVRLibrary.IGestureListener> mClickListeners = new LinkedList<>();
     private GestureDetector mGestureDetector;
     private int mCurrentMode = 0;
     private PinchInfo mPinchInfo = new PinchInfo();
     private boolean mPinchEnabled;
-    private float mGlobalScale = sScaleMin;
+    private float minScale;
+    private float maxScale;
+    private float mSensitivity;
+    private float defaultScale;
+    private float mGlobalScale;
 
     private static final int MODE_INIT = 0;
     private static final int MODE_PINCH = 1;
@@ -92,21 +95,27 @@ public class MDTouchHelper {
         return true;
     }
 
-    private void handlePinch(float distance) {
-        if (mPinchEnabled){
-            float scale = mPinchInfo.pinch(distance);
-            if (mAdvanceGestureListener != null)
-                mAdvanceGestureListener.onPinch(scale);
 
-            mGlobalScale = scale;
-        }
+    public void scaleTo(float scale){
+        setScaleInner(mPinchInfo.setScale(scale));
     }
 
     public void reset(){
-        float currentPinch = mPinchInfo.reset();
-        mGlobalScale = currentPinch;
-        if (mAdvanceGestureListener != null)
-            mAdvanceGestureListener.onPinch(currentPinch);
+        setScaleInner(mPinchInfo.reset());
+    }
+
+    private void handlePinch(float distance) {
+        if (mPinchEnabled){
+            setScaleInner(mPinchInfo.pinch(distance));
+        }
+    }
+
+    private void setScaleInner(float scale){
+        if (mPinchEnabled){
+            if (mAdvanceGestureListener != null)
+                mAdvanceGestureListener.onPinch(scale);
+            mGlobalScale = scale;
+        }
     }
 
     private void markPinchInfo(float x1, float y1, float x2, float y2) {
@@ -129,15 +138,24 @@ public class MDTouchHelper {
         this.mPinchEnabled = mPinchEnabled;
     }
 
-    private static class PinchInfo{
-        private static final float sSensitivity = 3;
+    public void setPinchConfig(MDPinchConfig pinchConfig) {
+        this.minScale = pinchConfig.getMin();
+        this.maxScale = pinchConfig.getMax();
+        this.mSensitivity = pinchConfig.getSensitivity();
+        this.defaultScale = pinchConfig.getDefaultValue();
+        this.defaultScale = Math.max(minScale, this.defaultScale);
+        this.defaultScale = Math.min(maxScale, this.defaultScale);
+        setScaleInner(this.defaultScale);
+    }
+
+    private class PinchInfo{
         private float x1;
         private float y1;
         private float x2;
         private float y2;
         private float oDistance;
-        private float prevScale = sScaleMin;
-        private float currentScale = sScaleMin;
+        private float prevScale;
+        private float currentScale;
 
         public void mark(float x1, float y1, float x2, float y2){
             this.x1 = x1;
@@ -151,18 +169,22 @@ public class MDTouchHelper {
         public float pinch(float distance) {
             if (oDistance == 0) oDistance = distance;
             float scale = distance / oDistance - 1;
-            scale *= sSensitivity;
+            scale *= mSensitivity;
             currentScale = prevScale + scale;
             // range
-            if (currentScale < sScaleMin) currentScale = sScaleMin;
-            else if (currentScale > sScaleMax) currentScale = sScaleMax;
+            currentScale = Math.max(currentScale, minScale);
+            currentScale = Math.min(currentScale, maxScale);
+            return currentScale;
+        }
+
+        public float setScale(float scale){
+            prevScale = scale;
+            currentScale = scale;
             return currentScale;
         }
 
         public float reset(){
-            prevScale = sScaleMin;
-            currentScale = sScaleMin;
-            return currentScale;
+            return setScale(defaultScale);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.asha.md360player4android;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
@@ -11,6 +10,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDPinchConfig;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
@@ -63,6 +63,8 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getVRLibrary().setPinchScale(7);
+
                 mMediaPlayerWrapper.pause();
                 mMediaPlayerWrapper.destroy();
                 mMediaPlayerWrapper.init();
@@ -81,7 +83,6 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
-                        Log.e(TAG,"onSurfaceReady!!!!!!!!!!!");
                         mMediaPlayerWrapper.setSurface(surface);
                     }
                 })
@@ -93,11 +94,12 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                         Toast.makeText(VideoPlayerActivity.this, tip, Toast.LENGTH_SHORT).show();
                     }
                 })
+                .pinchConfig(new MDPinchConfig().setMin(1.0f).setMax(8.0f).setDefaultValue(0.1f))
                 .pinchEnabled(true)
                 .directorFactory(new MD360DirectorFactory() {
                     @Override
                     public MD360Director createDirector(int index) {
-                        return MD360Director.builder().setPitch(0).build();
+                        return MD360Director.builder().setPitch(90).build();
                     }
                 })
                 .projectionFactory(new CustomProjectionFactory())
