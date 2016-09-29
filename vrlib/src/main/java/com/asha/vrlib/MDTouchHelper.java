@@ -111,11 +111,9 @@ public class MDTouchHelper {
     }
 
     private void setScaleInner(float scale){
-        if (mPinchEnabled){
-            if (mAdvanceGestureListener != null)
-                mAdvanceGestureListener.onPinch(scale);
-            mGlobalScale = scale;
-        }
+        if (mAdvanceGestureListener != null)
+            mAdvanceGestureListener.onPinch(scale);
+        mGlobalScale = scale;
     }
 
     private void markPinchInfo(float x1, float y1, float x2, float y2) {
