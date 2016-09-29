@@ -307,6 +307,10 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
+    public void busy(){
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+
     private class AndroidDrawableProvider implements MDVRLibrary.IBitmapProvider{
 
         private int res;

@@ -25,6 +25,7 @@ public class MD360BitmapTexture extends MD360Texture {
     private MDVRLibrary.IBitmapProvider mBitmapProvider;
     private Map<String,AsyncCallback> mCallbackList = new HashMap<>();
     private boolean mIsReady;
+    private AsyncCallback callback;
 
     public MD360BitmapTexture(MDVRLibrary.IBitmapProvider bitmapProvider) {
         this.mBitmapProvider = bitmapProvider;
@@ -37,7 +38,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
         final int textureId = textureHandle[0];
 
-        final AsyncCallback callback = new AsyncCallback();
+        callback = new AsyncCallback();
 
         // save to thread local
         mCallbackList.put(Thread.currentThread().toString(),callback);
@@ -76,6 +77,12 @@ public class MD360BitmapTexture extends MD360Texture {
     @Override
     public void notifyChanged() {
         // nop
+        MDMainHandler.sharedHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                mBitmapProvider.onProvideBitmap(callback);
+            }
+        });
     }
 
     @Override

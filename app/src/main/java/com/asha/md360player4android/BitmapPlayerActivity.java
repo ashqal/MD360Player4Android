@@ -1,10 +1,14 @@
 package com.asha.md360player4android;
 
+import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.util.Log;
+import android.view.View;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDRay;
@@ -24,10 +28,20 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
 
     private static final String TAG = "BitmapPlayerActivity";
 
+    private Uri nextUri;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cancelBusy();
+
+        findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                busy();
+                nextUri = getDrawableUri(R.drawable.texture);
+                getVRLibrary().notifyPlayerChanged();
+            }
+        });
     }
 
     private Target mTarget;// keep the reference for picasso.
@@ -57,6 +71,14 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
         Picasso.with(getApplicationContext()).load(uri).resize(3072,2048).centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(mTarget);
     }
 
+    private Uri currentUri(){
+        if (nextUri == null){
+            return getUri();
+        } else {
+            return nextUri;
+        }
+    }
+
     @Override
     protected MDVRLibrary createVRLibrary() {
         return MDVRLibrary.with(this)
@@ -65,7 +87,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 .asBitmap(new MDVRLibrary.IBitmapProvider() {
                     @Override
                     public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
-                        loadImage(getUri(),callback);
+                        loadImage(currentUri(), callback);
                     }
                 })
                 .listenTouchPick(new MDVRLibrary.ITouchPickListener() {
@@ -77,5 +99,10 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 .pinchEnabled(true)
                 .projectionFactory(new CustomProjectionFactory())
                 .build(R.id.gl_view);
+    }
+
+    private Uri getDrawableUri(@DrawableRes int resId){
+        Resources resources = getResources();
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
     }
 }
