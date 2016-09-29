@@ -7,6 +7,8 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
+import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.MD360DirectorFactory;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 
@@ -92,6 +94,12 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
+                .directorFactory(new MD360DirectorFactory() {
+                    @Override
+                    public MD360Director createDirector(int index) {
+                        return MD360Director.builder().setPitch(0).build();
+                    }
+                })
                 .projectionFactory(new CustomProjectionFactory())
                 .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
                 .build(R.id.gl_view);

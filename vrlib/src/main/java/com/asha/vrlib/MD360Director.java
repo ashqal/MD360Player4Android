@@ -30,6 +30,7 @@ public class MD360Director {
     private float mLookY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
+    private final MDPosition mCameraRotation;
     private int mViewportWidth = 2;
     private int mViewportHeight = 1;
 
@@ -53,6 +54,7 @@ public class MD360Director {
         this.mEyeZ = builder.mEyeZ;
         this.mLookX = builder.mLookX;
         this.mLookY = builder.mLookY;
+        this.mCameraRotation = builder.mRotation;
         initCamera();
         initModel();
     }
@@ -189,6 +191,9 @@ public class MD360Director {
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCameraRotation.getMatrix(), 0);
+        System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
+
         Matrix.multiplyMM(mTempMatrix, 0, mSensorMatrix, 0, mCurrentRotation, 0);
         System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
 
@@ -221,6 +226,7 @@ public class MD360Director {
         private float mNearScale = 1f;
         private float mLookX = 0f;
         private float mLookY = 0f;
+        private MDPosition mRotation = MDPosition.newInstance();
 
         public Builder setLookX(float mLookX) {
             this.mLookX = mLookX;
@@ -247,24 +253,19 @@ public class MD360Director {
             return this;
         }
 
-        /**
-         * Deprecated since 1.4.0, please use {@link #setAngleX(float)}
-         * @param a
-         * @return
-         */
-        @Deprecated
-        public Builder setAngle(float a) {
-            return setAngleX(a);
+        public Builder setRoll(float roll){
+            mRotation.setRoll(roll);
+            return this;
         }
 
-        @Deprecated
-        public Builder setAngleX(float mAngle) {
-            throw new RuntimeException("please use MDPosition");
+        public Builder setPitch(float pitch){
+            mRotation.setPitch(pitch);
+            return this;
         }
 
-        @Deprecated
-        public Builder setAngleY(float mAngle) {
-            throw new RuntimeException("please use MDPosition");
+        public Builder setYaw(float yaw){
+            mRotation.setYaw(yaw);
+            return this;
         }
 
         public Builder setRatio(float mRatio) {

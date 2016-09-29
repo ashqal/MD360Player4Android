@@ -54,7 +54,6 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public void on(Activity activity) {
-        Log.e(TAG,"MotionStrategy on! " + Thread.currentThread());
         mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         for (MD360Director director : getDirectorList()){
             director.reset();
@@ -63,7 +62,6 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public void off(Activity activity) {
-        Log.e(TAG,"MotionStrategy off! " + Thread.currentThread());
         unregisterSensor(activity);
     }
 
@@ -127,7 +125,6 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
         @Override
         public void run() {
             if (!mRegistered) return;
-            Log.e(TAG,"MotionStrategy updateSensorRunnable! " + Thread.currentThread());
             for (MD360Director director : getDirectorList()){
                 director.updateSensorMatrix(mSensorMatrix);
                 // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;

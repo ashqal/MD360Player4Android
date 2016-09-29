@@ -3,7 +3,6 @@ package com.asha.vrlib.strategy.interactive;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 
@@ -45,7 +44,6 @@ public class TouchStrategy extends AbsInteractiveStrategy {
 
     @Override
     public void on(Activity activity) {
-        Log.e(TAG,"TouchStrategy on! " + Thread.currentThread());
         for (MD360Director director : getDirectorList()){
             director.reset();
         }
@@ -53,7 +51,6 @@ public class TouchStrategy extends AbsInteractiveStrategy {
 
     @Override
     public void off(Activity activity) {
-        Log.e(TAG,"TouchStrategy off! " + Thread.currentThread());
     }
 
     @Override
