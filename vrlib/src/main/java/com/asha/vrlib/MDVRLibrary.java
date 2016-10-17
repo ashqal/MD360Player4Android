@@ -658,4 +658,22 @@ public class MDVRLibrary {
         int BITMAP = 1;
         int DEFAULT = VIDEO;
     }
+
+    public void resetDirectors(float density, float damping){
+        List<MD360Director> directors = mProjectionModeManager.getDirectors();
+        for (MD360Director director : directors){
+            float x = director.getDeltaX();
+            float y = director.getDeltaY();
+            director.setDeltaX(x - x / density * damping);
+            director.setDeltaY(y - y / density * damping);
+        }
+    }
+
+    public void resetDirectors(){
+        List<MD360Director> directors = mProjectionModeManager.getDirectors();
+        for (MD360Director director : directors){
+            director.setDeltaX(0);
+            director.setDeltaY(0);
+        }
+    }
 }
