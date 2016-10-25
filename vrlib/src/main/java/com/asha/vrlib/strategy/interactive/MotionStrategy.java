@@ -24,9 +24,13 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     private float[] mSensorMatrix = new float[16];
 
+    private float[] mTmpMatrix = new float[16];
+
     private boolean mRegistered = false;
 
     private Boolean mIsSupport = null;
+
+    private final Object mMatrixLock = new Object();
 
     public MotionStrategy(InteractiveModeManager.Params params) {
         super(params);
@@ -115,6 +119,11 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
                 case Sensor.TYPE_ROTATION_VECTOR:
                     // post
                     VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
+
+                    // mTmpMatrix will be used in multi thread.
+                    synchronized (mMatrixLock){
+                        System.arraycopy(mSensorMatrix, 0, mTmpMatrix, 0, 16);
+                    }
                     getParams().glHandler.post(updateSensorRunnable);
                     break;
             }
@@ -125,9 +134,11 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
         @Override
         public void run() {
             if (!mRegistered) return;
-            for (MD360Director director : getDirectorList()){
-                director.updateSensorMatrix(mSensorMatrix);
-                // if (mDisplayMode == DISPLAY_MODE_NORMAL) break;
+            // mTmpMatrix will be used in multi thread.
+            synchronized (mMatrixLock){
+                for (MD360Director director : getDirectorList()){
+                    director.updateSensorMatrix(mTmpMatrix);
+                }
             }
         }
     };
