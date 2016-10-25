@@ -72,13 +72,9 @@ public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
 }
 ```
 
-**STEP3** Addition call in `onTouchEvent` `onResume` `onPause` `onDestroy` `onConfigurationChanged`.
+**STEP3** Addition call in `onResume` `onPause` `onDestroy` `onConfigurationChanged`.
 ```java
 public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mVRLibrary.handleTouchEvent(event) || super.onTouchEvent(event);
-    }
 
     @Override
     protected void onResume() {
