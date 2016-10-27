@@ -51,7 +51,7 @@ public abstract class MD360PlayerActivity extends Activity {
         sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION,"MOTION");
         sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_TOUCH,"TOUCH");
         sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH,"M & T");
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION,"cardboard M");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION,"CARDBOARD M");
 
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_SPHERE,"SPHERE");
         sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180,"DOME 180");
