@@ -49,6 +49,7 @@ public class MDVRLibrary {
     public static final int INTERACTIVE_MODE_MOTION = 1;
     public static final int INTERACTIVE_MODE_TOUCH = 2;
     public static final int INTERACTIVE_MODE_MOTION_WITH_TOUCH = 3;
+    public static final int INTERACTIVE_MODE_CARDBORAD_MOTION = 4;
 
     // display mode
     public static final int DISPLAY_MODE_NORMAL = 101;

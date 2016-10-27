@@ -20,6 +20,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     private static int[] sModes = {MDVRLibrary.INTERACTIVE_MODE_MOTION,
             MDVRLibrary.INTERACTIVE_MODE_TOUCH,
             MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH,
+            MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION,
     };
 
     public static class Params{
@@ -49,6 +50,8 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
                 return new MotionStrategy(mParams);
             case MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH:
                 return new MotionWithTouchStrategy(mParams);
+            case MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION:
+                return new CardboardMotionStrategy(mParams);
             case MDVRLibrary.INTERACTIVE_MODE_TOUCH:
             default:
                 return new TouchStrategy(mParams);
