@@ -63,12 +63,10 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getVRLibrary().setPinchScale(7);
-
                 mMediaPlayerWrapper.pause();
                 mMediaPlayerWrapper.destroy();
                 mMediaPlayerWrapper.init();
-                mMediaPlayerWrapper.openRemoteFile("file:///mnt/sdcard/vr/video_31b451b7ca49710719b19d22e19d9e60.mp4");
+                mMediaPlayerWrapper.openRemoteFile(DemoActivity.sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");
                 mMediaPlayerWrapper.prepare();
             }
         });

@@ -17,6 +17,11 @@ import android.widget.Toast;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class DemoActivity extends AppCompatActivity {
+
+    public static final String sPath = "file:///mnt/sdcard/vr/";
+
+    //public static final String sPath = "file:////storage/sdcard1/vr/";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,23 +41,23 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), getDrawableUri(R.drawable.fish2sphere180s).toString());
 
         data.put(data.size(), "rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");
-        data.put(data.size(), "file:///mnt/sdcard/vr/ch0_160701145544.ts");
-        data.put(data.size(), "file:///mnt/sdcard/vr/videos_s_4.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/28.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/haha.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/halfdome.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/dome.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/stereo.mp4");
+        data.put(data.size(), sPath + "ch0_160701145544.ts");
+        data.put(data.size(), sPath + "videos_s_4.mp4");
+        data.put(data.size(), sPath + "28.mp4");
+        data.put(data.size(), sPath + "haha.mp4");
+        data.put(data.size(), sPath + "halfdome.mp4");
+        data.put(data.size(), sPath + "dome.mp4");
+        data.put(data.size(), sPath + "stereo.mp4");
         data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
-        data.put(data.size(), "file:///mnt/sdcard/vr/video_31b451b7ca49710719b19d22e19d9e60.mp4");
+        data.put(data.size(), sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");
 
         data.put(data.size(), "http://cache.utovr.com/201508270528174780.m3u8");
-        data.put(data.size(), "file:///mnt/sdcard/vr/AGSK6416.jpg");
-        data.put(data.size(), "file:///mnt/sdcard/vr/IJUN2902.jpg");
-        data.put(data.size(), "file:///mnt/sdcard/vr/SUYZ2954.jpg");
-        data.put(data.size(), "file:///mnt/sdcard/vr/TEJD0097.jpg");
-        data.put(data.size(), "file:///mnt/sdcard/vr/WSGV6301.jpg");
+        data.put(data.size(), sPath + "AGSK6416.jpg");
+        data.put(data.size(), sPath + "IJUN2902.jpg");
+        data.put(data.size(), sPath + "SUYZ2954.jpg");
+        data.put(data.size(), sPath + "TEJD0097.jpg");
+        data.put(data.size(), sPath + "WSGV6301.jpg");
 
         SpinnerHelper.with(this)
                 .setData(data)

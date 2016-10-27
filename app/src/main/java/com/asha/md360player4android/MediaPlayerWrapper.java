@@ -57,10 +57,10 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     }
 
     public void setSurface(Surface surface){
-        if (mSurface != surface && getPlayer() != null){
+        if (getPlayer() != null){
             getPlayer().setSurface(surface);
-            mSurface = surface;
         }
+        mSurface = surface;
     }
 
     public void openRemoteFile(String url){
