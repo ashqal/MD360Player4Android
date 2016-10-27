@@ -35,14 +35,14 @@ public class MD360Director {
     private int mViewportHeight = 1;
 
     private float[] mCurrentRotation = new float[16];
+    private float[] mCurrentRotation2 = new float[16];
     private float[] mSensorMatrix = new float[16];
     private float[] mTempMatrix = new float[16];
 
-    private float mPreviousX;
-    private float mPreviousY;
-
     private float mDeltaX;
     private float mDeltaY;
+    private float mPostTouchX;
+    private float mPostTouchY;
 
     private boolean mViewMatrixInvalidate = true;
 
@@ -76,20 +76,14 @@ public class MD360Director {
         mViewMatrixInvalidate = true;
     }
 
-    public float getPreviousY() {
-        return mPreviousY;
+    public void postTouchX(float x){
+        this.mPostTouchX += x;
+        mViewMatrixInvalidate = true;
     }
 
-    public void setPreviousY(float mPreviousY) {
-        this.mPreviousY = mPreviousY;
-    }
-
-    public float getPreviousX() {
-        return mPreviousX;
-    }
-
-    public void setPreviousX(float mPreviousX) {
-        this.mPreviousX = mPreviousX;
+    public void postTouchY(float y){
+        this.mPostTouchY += y;
+        mViewMatrixInvalidate = true;
     }
 
     private void initModel(){
@@ -185,7 +179,13 @@ public class MD360Director {
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
+
+        Matrix.setRotateEulerM(mCurrentRotation2, 0, mPostTouchX, 0, 0);
+
         Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCameraRotation.getMatrix(), 0);
+        System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
+
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCurrentRotation2, 0);
         System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
 
         Matrix.multiplyMM(mTempMatrix, 0, mSensorMatrix, 0, mCurrentRotation, 0);
@@ -203,7 +203,7 @@ public class MD360Director {
 
     // call in gl thread
     public void reset(){
-        mDeltaX = mDeltaY = mPreviousX = mPreviousY = 0;
+        mDeltaX = mDeltaY = 0;
         Matrix.setIdentityM(mSensorMatrix,0);
         mViewMatrixInvalidate = true;
     }

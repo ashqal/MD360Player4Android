@@ -68,7 +68,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 mMediaPlayerWrapper.pause();
                 mMediaPlayerWrapper.destroy();
                 mMediaPlayerWrapper.init();
-                mMediaPlayerWrapper.openRemoteFile("file:///mnt/sdcard/vr/video_31b451b7ca49710719b19d22e19d9e60.mp4");
+                mMediaPlayerWrapper.openRemoteFile(DemoActivity.sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");
                 mMediaPlayerWrapper.prepare();
             }
         });
