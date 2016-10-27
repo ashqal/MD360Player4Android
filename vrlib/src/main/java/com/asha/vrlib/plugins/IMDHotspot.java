@@ -7,7 +7,7 @@ import com.asha.vrlib.model.MDRay;
  * hzqiujiadi ashqalcn@gmail.com
  */
 public interface IMDHotspot {
-    boolean hit(MDRay ray);
+    float hit(MDRay ray);
     void onEyeHitIn(long timestamp);
     void onEyeHitOut();
     void onTouchHit(MDRay ray);

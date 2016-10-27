@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.asha.vrlib.common.GLUtil.glCheck;
+import static com.asha.vrlib.common.VRUtil.sNotHit;
 
 /**
  * Created by hzqiujiadi on 16/8/2.
@@ -117,9 +118,9 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public boolean hit(MDRay ray) {
+    public float hit(MDRay ray) {
         if (object3D == null || object3D.getVerticesBuffer(0) == null){
-            return false;
+            return sNotHit;
         }
 
         MDPosition position = getModelPosition();
@@ -136,17 +137,14 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
             v.multiplyMV(model);
             points.add(v);
         }
-
-        boolean hit = false;
+        float hit1 = sNotHit;
+        float hit2 = sNotHit;
         if (points.size() == 4){
-            hit = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
-            hit |= VRUtil.intersectTriangle(ray,points.get(1), points.get(2), points.get(3));
+            hit1 = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
+            hit2 = VRUtil.intersectTriangle(ray,points.get(1), points.get(2), points.get(3));
         }
 
-        // Log.d(TAG,"Ray:" + ray);
-        // Log.e(TAG,"MDSimplePlugin hit:" + hit);
-
-        return hit;
+        return Math.min(hit1,hit2);
     }
 
     @Override

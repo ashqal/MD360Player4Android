@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
+import android.util.Log;
 import android.view.Surface;
 
 import com.asha.vrlib.MD360Director;
@@ -18,6 +19,7 @@ public class VRUtil {
 
     private static final String TAG = "VRUtil";
     private static float[] mTmp = new float[16];
+    public static final float sNotHit = Float.MAX_VALUE;
 
     public static void sensorRotationVector2Matrix(SensorEvent event, int rotation, float[] output) {
         float[] values = event.values;
@@ -116,7 +118,7 @@ public class VRUtil {
         }
     }
 
-    public static boolean intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2){
+    public static float intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2){
         // Find vectors for two edges sharing vert0
         MDVector3D edge1 = vec3Sub(v1 , v0);
         MDVector3D edge2 = vec3Sub(v2 , v0);
@@ -137,12 +139,12 @@ public class VRUtil {
         }
 
         if( det < 0.0001f )
-            return false;
+            return sNotHit;
 
         // Calculate U parameter and test bounds
         float u = vec3Dot( tvec, pvec );
         if( u < 0.0f || u > det ){
-            return false;
+            return sNotHit;
         }
 
         // Prepare to test V parameter
@@ -152,7 +154,7 @@ public class VRUtil {
         // Calculate V parameter and test bounds
         float v = vec3Dot(ray.getDir(), qvec);
         if( v < 0.0f || u + v > det ){
-            return false;
+            return sNotHit;
         }
 
         // Calculate t, scale parameters, ray intersects triangle
@@ -162,7 +164,10 @@ public class VRUtil {
         u *= fInvDet;
         v *= fInvDet;
 
-        return true;
+        if (t > 0){
+            return sNotHit;
+        }
+        return Math.abs(t);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.asha.vrlib;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.asha.vrlib.common.MDMainHandler;
@@ -13,6 +14,8 @@ import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
 import java.util.List;
+
+import static com.asha.vrlib.common.VRUtil.sNotHit;
 
 
 /**
@@ -129,14 +132,15 @@ public class MDPickerManager {
     private IMDHotspot hitTest(MDRay ray, int hitType) {
         List<MDAbsPlugin> plugins = mPluginManager.getPlugins();
         IMDHotspot hitHotspot = null;
-        boolean hasHit = false;
+        float currentDistance = sNotHit;
+
         for (MDAbsPlugin plugin : plugins) {
             if (plugin instanceof IMDHotspot) {
                 IMDHotspot hotspot = (IMDHotspot) plugin;
-                hasHit = hotspot.hit(ray);
-                if (hasHit){
+                float tmpDistance = hotspot.hit(ray);
+                if (tmpDistance != sNotHit && tmpDistance <= currentDistance){
                     hitHotspot = hotspot;
-                    break;
+                    currentDistance = tmpDistance;
                 }
             }
         }
@@ -144,7 +148,7 @@ public class MDPickerManager {
         switch (hitType) {
             case HIT_FROM_TOUCH:
                 // only post the hotspot which is hit.
-                if (hasHit){
+                if (currentDistance != sNotHit){
                     mTouchPickPoster.setRay(ray);
                     mTouchPickPoster.setHit(hitHotspot);
                     MDMainHandler.sharedHandler().post(mTouchPickPoster);

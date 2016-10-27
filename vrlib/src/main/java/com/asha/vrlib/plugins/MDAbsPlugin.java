@@ -13,7 +13,7 @@ public abstract class MDAbsPlugin {
 
     private boolean mIsInit;
 
-    MDPosition position = MDPosition.sOriginalPosition;
+    private MDPosition mPosition = MDPosition.sOriginalPosition;
 
     public final void setup(Context context){
         if (!mIsInit){
@@ -31,11 +31,11 @@ public abstract class MDAbsPlugin {
     abstract public void destroy();
 
     protected MDPosition getModelPosition(){
-        return position;
+        return mPosition;
     }
 
     public void setModelPosition(MDPosition position) {
-        this.position = position;
+        this.mPosition = position;
     }
 
     abstract protected boolean removable();
