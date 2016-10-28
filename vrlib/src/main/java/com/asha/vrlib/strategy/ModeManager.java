@@ -54,40 +54,44 @@ public abstract class ModeManager<T extends IModeStrategy> {
     }
 
     public void switchMode(final Activity activity){
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                int[] modes = getModes();
-                int mode = getMode();
-                int index = Arrays.binarySearch(modes, mode);
-                int nextIndex = (index + 1) %  modes.length;
-                int nextMode = modes[nextIndex];
+        int[] modes = getModes();
+        int mode = getMode();
+        int index = Arrays.binarySearch(modes, mode);
+        int nextIndex = (index + 1) %  modes.length;
+        int nextMode = modes[nextIndex];
 
-                switchMode(activity, nextMode);
-            }
-        });
+        switchMode(activity, nextMode);
     }
 
     public void switchMode(final Activity activity, final int mode){
-        mGLHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mode == getMode()) return;
-                mMode = mode;
+        if (mode == getMode()) return;
+        mMode = mode;
 
-                initMode(activity, mMode);
-            }
-        });
+        initMode(activity, mMode);
     }
 
-    public void on(Activity activity) {
-        if (mStrategy.isSupport(activity))
-            mStrategy.on(activity);
+    public void on(final Activity activity) {
+        final T tmpStrategy = mStrategy;
+        if (tmpStrategy.isSupport(activity)){
+            getGLHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    tmpStrategy.on(activity);
+                }
+            });
+        }
     }
 
-    public void off(Activity activity) {
-        if (mStrategy.isSupport(activity))
-            mStrategy.off(activity);
+    public void off(final Activity activity) {
+        final T tmpStrategy = mStrategy;
+        if (tmpStrategy.isSupport(activity)){
+            getGLHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    tmpStrategy.off(activity);
+                }
+            });
+        }
     }
 
     protected T getStrategy() {
