@@ -187,6 +187,7 @@ public class MDVRLibrary {
                 .setPluginManager(mPluginManager)
                 .setDisplayModeManager(mDisplayModeManager)
                 .setProjectionModeManager(mProjectionModeManager)
+                .setGLHandler(mGLHandler)
                 .build();
         setEyePickEnable(builder.eyePickEnabled);
         mPickerManager.setEyePickChangedListener(builder.eyePickChangedListener);

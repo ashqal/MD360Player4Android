@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDRay;
@@ -38,6 +39,8 @@ public class MDPickerManager {
 
     private MDPluginManager mPluginManager;
 
+    private MDGLHandler mGLHandler;
+
     private MDVRLibrary.IEyePickListener mEyePickChangedListener;
 
     private MDVRLibrary.ITouchPickListener mTouchPickListener;
@@ -46,10 +49,13 @@ public class MDPickerManager {
 
     private TouchPickPoster mTouchPickPoster = new TouchPickPoster();
 
+    private RayPickAsTouchTask mRayPickAsTouchRunnable = new RayPickAsTouchTask();
+
     private MDVRLibrary.IGestureListener mTouchPicker = new MDVRLibrary.IGestureListener() {
         @Override
         public void onClick(MotionEvent e) {
-            rayPickAsTouch(e);
+            mRayPickAsTouchRunnable.setEvent(e.getX(), e.getY());
+            mGLHandler.post(mRayPickAsTouchRunnable);
         }
     };
 
@@ -64,6 +70,7 @@ public class MDPickerManager {
 
         }
 
+        // gl thread
         @Override
         public void renderer(int index, int width, int height, MD360Director director) {
             if (index == 0 && isEyePickEnable()){
@@ -86,6 +93,7 @@ public class MDPickerManager {
         this.mDisplayModeManager = params.displayModeManager;
         this.mProjectionModeManager = params.projectionModeManager;
         this.mPluginManager = params.pluginManager;
+        this.mGLHandler = params.glHandler;
     }
 
     public boolean isEyePickEnable() {
@@ -96,9 +104,7 @@ public class MDPickerManager {
         this.mEyePickEnable = eyePickEnable;
     }
 
-    private void rayPickAsTouch(MotionEvent e) {
-        float x = e.getX();
-        float y = e.getY();
+    private void rayPickAsTouch(float  x, float y) {
         int size = mDisplayModeManager.getVisibleSize();
         if (size == 0){
             return;
@@ -237,10 +243,17 @@ public class MDPickerManager {
         }
     }
 
+    public void resetEyePick(){
+        if (mEyePickPoster != null){
+            mEyePickPoster.setHit(null);
+        }
+    }
+
     public static class Builder{
         private DisplayModeManager displayModeManager;
         private ProjectionModeManager projectionModeManager;
         private MDPluginManager pluginManager;
+        private MDGLHandler glHandler;
 
         private Builder() {
         }
@@ -263,11 +276,25 @@ public class MDPickerManager {
             this.projectionModeManager = projectionModeManager;
             return this;
         }
+
+        public Builder setGLHandler(MDGLHandler glHandler) {
+            this.glHandler = glHandler;
+            return this;
+        }
     }
 
-    public void resetEyePick(){
-        if (mEyePickPoster != null){
-            mEyePickPoster.setHit(null);
+    private class RayPickAsTouchTask implements Runnable {
+        float x;
+        float y;
+
+        public void setEvent(float x, float y){
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void run() {
+            rayPickAsTouch(x, y);
         }
     }
 }

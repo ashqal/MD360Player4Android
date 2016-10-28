@@ -100,7 +100,7 @@ public class VRUtil {
         v.setZ(1.0f);
 
         float[] view = director.getViewMatrix();
-        float[] temp = new float[16];
+        float[] temp = director.getTempInvertMatrix();
         boolean success = Matrix.invertM(temp,0,view,0);
         if (success){
             MDVector3D vPickRayDir = new MDVector3D();
