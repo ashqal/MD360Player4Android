@@ -316,10 +316,6 @@ public class MDVRLibrary {
         mTouchHelper.scaleTo(scale);
     }
 
-    public int getScreenSize(){
-        return mDisplayModeManager.getVisibleSize();
-    }
-
     public void addPlugin(MDAbsPlugin plugin){
         mPluginManager.add(plugin);
     }

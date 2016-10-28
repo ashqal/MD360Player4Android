@@ -133,8 +133,9 @@ public abstract class MD360PlayerActivity extends Activity {
                     public void onSpinnerClicked(int index, int key, String value) {
                         mVRLibrary.switchDisplayMode(MD360PlayerActivity.this, key);
                         int i = 0;
+                        int size = key == MDVRLibrary.DISPLAY_MODE_GLASS ? 2 : 1;
                         for (View point : hotspotPoints){
-                            point.setVisibility(i < mVRLibrary.getScreenSize() ? View.VISIBLE : View.GONE);
+                            point.setVisibility(i < size ? View.VISIBLE : View.GONE);
                             i++;
                         }
                     }

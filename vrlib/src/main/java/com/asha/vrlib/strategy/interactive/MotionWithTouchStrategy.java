@@ -21,9 +21,8 @@ public class MotionWithTouchStrategy extends MotionStrategy {
     @Override
     public boolean handleDrag(int distanceX, int distanceY) {
         for (MD360Director director : getDirectorList()){
-            director.postTouchXY(distanceX / sDensity * sDamping, distanceY / sDensity * sDamping);
-             //director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
-             //director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
+            director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
+            //director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
         }
         return false;
     }

@@ -35,12 +35,12 @@ public class MD360Director {
     private int mViewportHeight = 1;
 
     private float[] mCurrentRotation = new float[16];
-    private float[] mCurrentRotationPost = new float[16];
-    private float[] mAccumulatedRotation = new float[16];
+    // private float[] mCurrentRotationPost = new float[16];
+    // private float[] mAccumulatedRotation = new float[16];
 
     private float[] mSensorMatrix = new float[16];
     private float[] mTempMatrix = new float[16];
-    private float[] mTempSensorMatrix = new float[16];
+    // private float[] mTempSensorMatrix = new float[16];
     private float[] mTempInvertMatrix = new float[16];
 
     private float mDeltaX;
@@ -91,7 +91,6 @@ public class MD360Director {
     }
 
     private void initModel(){
-        Matrix.setIdentityM(mAccumulatedRotation, 0);
         Matrix.setIdentityM(mSensorMatrix, 0);
     }
 
@@ -169,16 +168,6 @@ public class MD360Director {
     }
 
     private void updateViewMatrix() {
-        System.arraycopy(mSensorMatrix, 0, mTempSensorMatrix, 0, 16);
-
-        Matrix.setIdentityM(mCurrentRotationPost, 0);
-        Matrix.rotateM(mCurrentRotationPost, 0, mPostTouchY, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotationPost, 0, mPostTouchX, 0.0f, 1.0f, 0.0f);
-        mPostTouchX = 0;
-        mPostTouchY = 0;
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mAccumulatedRotation, 0);
-        System.arraycopy(mTempMatrix, 0, mAccumulatedRotation, 0, 16);
-
         final float eyeX = mEyeX;
         final float eyeY = mEyeY;
         final float eyeZ = mEyeZ;
@@ -194,33 +183,14 @@ public class MD360Director {
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
-
-
         Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCameraRotation.getMatrix(), 0);
         System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
 
-        Matrix.multiplyMM(mTempMatrix, 0, mTempSensorMatrix, 0, mCurrentRotation, 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mSensorMatrix, 0, mCurrentRotation, 0);
         System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
-
-        // Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-        // System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
-
-        boolean suc = Matrix.invertM(mTempInvertMatrix, 0, mCurrentRotation, 0);
-        if (suc){
-            Matrix.multiplyMM(mTempMatrix, 0, mAccumulatedRotation, 0, mTempInvertMatrix, 0);
-            System.arraycopy(mTempMatrix, 0, mAccumulatedRotation, 0, 16);
-
-            Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-            System.arraycopy(mTempMatrix, 0, mAccumulatedRotation, 0, 16);
-
-            Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-            System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
-        }
-
 
         Matrix.multiplyMM(mTempMatrix, 0, mViewMatrix, 0, mCurrentRotation, 0);
         System.arraycopy(mTempMatrix, 0, mViewMatrix, 0, 16);
-
     }
 
     // call in gl thread
@@ -233,7 +203,6 @@ public class MD360Director {
     public void reset(){
         mDeltaX = mDeltaY = 0;
         Matrix.setIdentityM(mSensorMatrix,0);
-        Matrix.setIdentityM(mAccumulatedRotation,0);
         mViewMatrixInvalidate = true;
     }
 
