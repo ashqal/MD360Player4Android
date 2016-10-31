@@ -26,7 +26,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:2.0.5.beta'
+    compile 'com.github.ashqal:MD360Player4Android:2.1.0'
 }
 ```
 
