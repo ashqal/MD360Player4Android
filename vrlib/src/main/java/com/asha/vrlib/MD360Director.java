@@ -16,7 +16,6 @@ public class MD360Director {
     private static final String TAG = "MD360Director";
     private static final float sNear = 0.7f;
 
-    // private float[] mModelMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
 
@@ -35,18 +34,13 @@ public class MD360Director {
     private int mViewportHeight = 1;
 
     private float[] mCurrentRotation = new float[16];
-    // private float[] mCurrentRotationPost = new float[16];
-    // private float[] mAccumulatedRotation = new float[16];
-
+    private float[] mCurrentRotationPost = new float[16];
     private float[] mSensorMatrix = new float[16];
     private float[] mTempMatrix = new float[16];
-    // private float[] mTempSensorMatrix = new float[16];
     private float[] mTempInvertMatrix = new float[16];
 
     private float mDeltaX;
     private float mDeltaY;
-    private float mPostTouchX;
-    private float mPostTouchY;
 
     private boolean mViewMatrixInvalidate = true;
 
@@ -82,12 +76,6 @@ public class MD360Director {
 
     public float[] getTempInvertMatrix() {
         return mTempInvertMatrix;
-    }
-
-    public void postTouchXY(float x, float y){
-        this.mPostTouchX = x;
-        this.mPostTouchY = y;
-        mViewMatrixInvalidate = true;
     }
 
     private void initModel(){
@@ -182,11 +170,13 @@ public class MD360Director {
 
         Matrix.setIdentityM(mCurrentRotation, 0);
         Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCameraRotation.getMatrix(), 0);
-        System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
+        Matrix.setIdentityM(mCurrentRotationPost, 0);
+        Matrix.rotateM(mCurrentRotationPost, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
-        Matrix.multiplyMM(mTempMatrix, 0, mSensorMatrix, 0, mCurrentRotation, 0);
+        Matrix.setIdentityM(mTempMatrix, 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotation.getMatrix(), 0);
+        Matrix.multiplyMM(mCurrentRotationPost, 0, mSensorMatrix, 0, mTempMatrix, 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCurrentRotationPost, 0);
         System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
 
         Matrix.multiplyMM(mTempMatrix, 0, mViewMatrix, 0, mCurrentRotation, 0);

@@ -22,7 +22,7 @@ public class MotionWithTouchStrategy extends MotionStrategy {
     public boolean handleDrag(int distanceX, int distanceY) {
         for (MD360Director director : getDirectorList()){
             director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
-            //director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
+            director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
         }
         return false;
     }
