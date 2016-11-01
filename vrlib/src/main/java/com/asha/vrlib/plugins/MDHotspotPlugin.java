@@ -2,6 +2,7 @@ package com.asha.vrlib.plugins;
 
 import android.content.Context;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.opengl.GLES20;
 import android.util.SparseArray;
 
@@ -16,6 +17,7 @@ import com.asha.vrlib.model.MDVector3D;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.objects.MDPlane;
+import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 
 import java.nio.FloatBuffer;
@@ -39,16 +41,23 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
 
     private MD360Program program;
 
-    private SparseArray<MD360Texture> textures;
+    private SparseArray<Uri> uriList;
 
     private RectF size;
 
     private String title;
 
+    private int mPendingTextureKey = 0;
+
     private int mCurrentTextureKey = 0;
 
+    private MD360Texture texture;
+
+    private MDVRLibrary.IImageLoadProvider provider;
+
     public MDHotspotPlugin(MDHotspotBuilder builder) {
-        textures = builder.textures;
+        provider = builder.imageLoadProvider;
+        uriList = builder.uriList;
         size = new RectF(0, 0, builder.width, builder.height);
         clickListener = builder.clickListener;
         setTitle(builder.title);
@@ -61,13 +70,19 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         program = new MD360Program(MDVRLibrary.ContentType.BITMAP);
         program.build(context);
 
-        for (int i = 0; i < textures.size(); i++) {
-            textures.valueAt(i).create();
-        }
-
         object3D = new MDPlane(size);
         MDObject3DHelper.loadObj(context,object3D);
 
+        texture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
+            @Override
+            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                Uri uri = uriList.get(mCurrentTextureKey);
+                if (uri != null){
+                    provider.onProvideBitmap(uri, callback);
+                }
+            }
+        });
+        texture.create();
     }
 
     @Override
@@ -77,9 +92,14 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
 
     @Override
     public void renderer(int index, int width, int height, MD360Director director) {
+        if (texture == null){
+            return;
+        }
 
-        MD360Texture texture = textures.get(mCurrentTextureKey);
-        if (texture == null) return;
+        if (mPendingTextureKey != mCurrentTextureKey){
+            mCurrentTextureKey = mPendingTextureKey;
+            texture.notifyChanged();
+        }
 
         texture.texture(program);
         if (texture.isReady()){
@@ -171,7 +191,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
 
     @Override
     public void useTexture(int key) {
-        mCurrentTextureKey = key;
+        mPendingTextureKey = key;
     }
 
     public void setTitle(String title) {

@@ -1,10 +1,9 @@
 package com.asha.vrlib.model;
 
+import android.net.Uri;
 import android.util.SparseArray;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.texture.MD360BitmapTexture;
-import com.asha.vrlib.texture.MD360Texture;
 
 /**
  * Created by hzqiujiadi on 16/8/10.
@@ -22,14 +21,20 @@ public class MDHotspotBuilder {
 
     public MDPosition position;
 
-    public SparseArray<MD360Texture> textures = new SparseArray<>(6);
+    public SparseArray<Uri> uriList = new SparseArray<>(6);
 
     public int[] statusList;
 
     public int[] checkedStatusList;
 
-    public static MDHotspotBuilder create(){
-        return new MDHotspotBuilder();
+    public MDVRLibrary.IImageLoadProvider imageLoadProvider;
+
+    public static MDHotspotBuilder create(MDVRLibrary.IImageLoadProvider imageLoadProvider){
+        return new MDHotspotBuilder(imageLoadProvider);
+    }
+
+    public MDHotspotBuilder(MDVRLibrary.IImageLoadProvider imageLoadProvider) {
+        this.imageLoadProvider = imageLoadProvider;
     }
 
     private MDHotspotBuilder status(int normal, int focused, int pressed){
@@ -69,13 +74,13 @@ public class MDHotspotBuilder {
         return this;
     }
 
-    public MDHotspotBuilder provider(MDVRLibrary.IBitmapProvider provider){
-        provider(0,provider);
+    public MDHotspotBuilder provider(Uri uri){
+        provider(0, uri);
         return this;
     }
 
-    public MDHotspotBuilder provider(int key, MDVRLibrary.IBitmapProvider provider){
-        textures.append(key,new MD360BitmapTexture(provider));
+    public MDHotspotBuilder provider(int key, Uri uri){
+        uriList.append(key, uri);
         return this;
     }
 

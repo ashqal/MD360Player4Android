@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.RectF;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -417,6 +418,10 @@ public class MDVRLibrary {
 
     public interface IBitmapProvider {
         void onProvideBitmap(MD360BitmapTexture.Callback callback);
+    }
+
+    public interface IImageLoadProvider {
+        void onProvideBitmap(Uri uri, MD360BitmapTexture.Callback callback);
     }
 
     public interface INotSupportCallback{

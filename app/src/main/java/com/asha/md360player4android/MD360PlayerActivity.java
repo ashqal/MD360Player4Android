@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDUtil;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
@@ -24,10 +27,15 @@ import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDHotspotPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
 import com.asha.vrlib.texture.MD360BitmapTexture;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
+import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
+import static com.squareup.picasso.MemoryPolicy.NO_STORE;
 
 /**
  * using MD360Renderer
@@ -72,7 +80,6 @@ public abstract class MD360PlayerActivity extends Activity {
         sAntiDistortion.put(0,"ANTI-DISABLE");
     }
 
-
     public static void startVideo(Context context, Uri uri){
         start(context, uri, VideoPlayerActivity.class);
     }
@@ -88,6 +95,8 @@ public abstract class MD360PlayerActivity extends Activity {
     }
 
     private MDVRLibrary mVRLibrary;
+
+    private ImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
 
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
@@ -121,6 +130,8 @@ public abstract class MD360PlayerActivity extends Activity {
 
         // init VR Library
         mVRLibrary = createVRLibrary();
+
+        final Activity activity = this;
 
         final List<View> hotspotPoints = new LinkedList<>();
         hotspotPoints.add(findViewById(R.id.hotspot_point1));
@@ -181,12 +192,12 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDHotspotBuilder builder = MDHotspotBuilder.create()
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(0, new AndroidDrawableProvider(android.R.drawable.star_off))
-                        .provider(1, new AndroidDrawableProvider(android.R.drawable.star_on))
-                        .provider(10, new AndroidDrawableProvider(android.R.drawable.checkbox_off_background))
-                        .provider(11, new AndroidDrawableProvider(android.R.drawable.checkbox_on_background))
+                        .provider(0, MDUtil.getDrawableUri(activity, android.R.drawable.star_off))
+                        .provider(1, MDUtil.getDrawableUri(activity, android.R.drawable.star_on))
+                        .provider(10, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_off_background))
+                        .provider(11, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_on_background))
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
                             public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
@@ -212,15 +223,9 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotBuilder builder = MDHotspotBuilder.create()
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(new MDVRLibrary.IBitmapProvider() {
-                            @Override
-                            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.moredoo_logo);
-                                callback.texture(bitmap);
-                            }
-                        })
+                        .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
                         .title("logo")
                         .position(logoPosition)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
@@ -314,18 +319,33 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
-    private class AndroidDrawableProvider implements MDVRLibrary.IBitmapProvider{
+    private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider{
 
-        private int res;
-
-        public AndroidDrawableProvider(int res) {
-            this.res = res;
-        }
+        private SimpleArrayMap<Uri,Target> targetMap = new SimpleArrayMap<>();
 
         @Override
-        public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), this.res);
-            callback.texture(bitmap);
+        public void onProvideBitmap(final Uri uri, final MD360BitmapTexture.Callback callback) {
+            final Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    // texture
+                    callback.texture(bitmap);
+                    targetMap.remove(uri);
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    targetMap.remove(uri);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            targetMap.put(uri, target);
+            Picasso.with(getApplicationContext()).load(uri).resize(3072,2048).centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
+
         }
     }
 }
