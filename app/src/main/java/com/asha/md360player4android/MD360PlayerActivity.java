@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -30,6 +31,8 @@ import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -96,7 +99,9 @@ public abstract class MD360PlayerActivity extends Activity {
 
     private MDVRLibrary mVRLibrary;
 
-    private ImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
+    private MDVRLibrary.IImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
+
+    private MDVRLibrary.IImageLoadProvider mAndroidProvider = new AndroidProvider(this);
 
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
@@ -192,7 +197,7 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
                         .size(4f,4f)
                         .provider(0, MDUtil.getDrawableUri(activity, android.R.drawable.star_off))
                         .provider(1, MDUtil.getDrawableUri(activity, android.R.drawable.star_on))
@@ -223,7 +228,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
                         .size(4f,4f)
                         .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
                         .title("logo")
@@ -317,6 +322,28 @@ public abstract class MD360PlayerActivity extends Activity {
 
     public void busy(){
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+
+    private class AndroidProvider implements MDVRLibrary.IImageLoadProvider {
+
+        Activity activity;
+
+        public AndroidProvider(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public void onProvideBitmap(Uri uri, MD360BitmapTexture.Callback callback) {
+            //BitmapFactory.decodeStream()
+
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
+                callback.texture(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider{
