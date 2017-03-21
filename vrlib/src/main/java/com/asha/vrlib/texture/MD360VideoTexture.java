@@ -97,6 +97,8 @@ public class MD360VideoTexture extends MD360Texture {
         if (mSurfaceTexture == null) return false;
 
         mSurfaceTexture.updateTexImage();
+        mSurfaceTexture.getTransformMatrix(mTransformMatrix);
+        GLES20.glUniformMatrix4fv(program.getSTMatrixHandle(), 1, false, mTransformMatrix, 0);
         return true;
     }
 

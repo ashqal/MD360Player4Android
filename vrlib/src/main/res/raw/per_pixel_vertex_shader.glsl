@@ -1,10 +1,11 @@
 uniform mat4 u_MVPMatrix;		// A constant representing the combined model/view/projection matrix.      		       
 uniform mat4 u_MVMatrix;		// A constant representing the combined model/view matrix.
+uniform mat4 u_STMatrix;
 		  			
 attribute vec4 a_Position;		// Per-vertex position information we will pass in.   				
 //attribute vec4 a_Color;			// Per-vertex color information we will pass in.
 attribute vec3 a_Normal;		// Per-vertex normal information we will pass in.
-attribute vec2 a_TexCoordinate; // Per-vertex texture coordinate information we will pass in. 		
+attribute vec4 a_TexCoordinate; // Per-vertex texture coordinate information we will pass in.
 		  
 varying vec3 v_Position;		// This will be passed into the fragment shader.
 //varying vec4 v_Color;			// This will be passed into the fragment shader.
@@ -21,7 +22,7 @@ void main()
 	//v_Color = a_Color;
 	
 	// Pass through the texture coordinate.
-	v_TexCoordinate = a_TexCoordinate;                                      
+	v_TexCoordinate = (u_STMatrix * a_TexCoordinate).xy;
 	
 	// Transform the normal's orientation into eye space.
     //v_Normal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));

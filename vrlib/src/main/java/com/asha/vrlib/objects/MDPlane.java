@@ -115,7 +115,7 @@ public class MDPlane extends MDAbsObject3D {
         for(r = 0; r < rows + 1; r++) {
             for(s = 0; s < columns + 1; s++) {
                 texcoords[t++] = s*S;
-                texcoords[t++] = 1 - r*R;
+                texcoords[t++] = r*R;
             }
         }
 
