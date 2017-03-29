@@ -70,6 +70,7 @@ public class MD360BitmapTexture extends MD360Texture {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
             GLES20.glUniform1i(program.getTextureUniformHandle(),0);
+            GLES20.glUniformMatrix4fv(program.getSTMatrixHandle(), 1, false, mTransformMatrix, 0);
         }
         return true;
     }

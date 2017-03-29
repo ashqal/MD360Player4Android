@@ -49,7 +49,7 @@ public class MDSphere3D extends MDAbsObject3D {
                 z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
 
                 texcoords[t++] = s*S;
-                texcoords[t++] = r*R;
+                texcoords[t++] = 1 - r*R;
 
                 vertexs[v++] = x * radius;
                 vertexs[v++] = y * radius;
