@@ -4,7 +4,6 @@ import android.graphics.PointF;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
-import android.util.Log;
 import android.view.Surface;
 
 import com.asha.vrlib.MD360Director;
@@ -93,16 +92,16 @@ public class VRUtil {
     }
 
     public static MDRay point2Ray(float x, float y, MD360Director director){
-        MDVector3D v = new MDVector3D();
-        float[] projection = director.getProjectionMatrix();
-        v.setX(- ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0]);
-        v.setY(( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5]);
-        v.setZ(1.0f);
-
         float[] view = director.getViewMatrix();
         float[] temp = director.getTempInvertMatrix();
         boolean success = Matrix.invertM(temp,0,view,0);
         if (success){
+            MDVector3D v = new MDVector3D();
+            float[] projection = director.getProjectionMatrix();
+            v.setX(- ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0]);
+            v.setY(( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5]);
+            v.setZ(1.0f);
+
             MDVector3D vPickRayDir = new MDVector3D();
             MDVector3D vPickRayOrig = new MDVector3D();
 

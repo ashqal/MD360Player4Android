@@ -48,6 +48,7 @@ public class DemoActivity extends AppCompatActivity {
         data.put(data.size(), sPath + "halfdome.mp4");
         data.put(data.size(), sPath + "dome.mp4");
         data.put(data.size(), sPath + "stereo.mp4");
+        data.put(data.size(), sPath + "look25fps3M.mp4");
         data.put(data.size(), "http://10.240.131.39/vr/570624aae1c52.mp4");
         data.put(data.size(), "http://192.168.5.106/vr/570624aae1c52.mp4");
         data.put(data.size(), sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");

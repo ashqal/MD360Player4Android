@@ -62,6 +62,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
         // Pass in the combined matrix.
+        // model view projection matrix.
         director.shot(mProgram, getModelPosition());
         object3D.draw();
 

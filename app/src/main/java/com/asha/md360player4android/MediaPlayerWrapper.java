@@ -28,7 +28,6 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     private static final int STATUS_PAUSED = 4;
     private static final int STATUS_STOPPED = 5;
     private int mStatus = STATUS_IDLE;
-    private Surface mSurface;
 
     public void init(){
         mStatus = STATUS_IDLE;
@@ -60,7 +59,6 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         if (getPlayer() != null){
             getPlayer().setSurface(surface);
         }
-        mSurface = surface;
     }
 
     public void openRemoteFile(String url){

@@ -61,7 +61,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		
 		// use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
-		
+
 		// enable depth testing
 		// GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 	}
@@ -77,6 +77,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onDrawFrame(GL10 glUnused){
 		// gl thread
+		// 切换策略
+		// 热点拾取
 		mGLHandler.dealMessage();
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);

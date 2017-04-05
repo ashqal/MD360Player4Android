@@ -22,6 +22,7 @@ public class MDGLHandler {
     public MDGLHandler() {
     }
 
+    // main thread
     public void post(Runnable runnable){
         // destroyed ?
         if (died){

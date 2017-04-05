@@ -1,7 +1,6 @@
 package com.asha.vrlib;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.asha.vrlib.common.MDGLHandler;
@@ -49,7 +48,7 @@ public class MDPickerManager {
 
     private TouchPickPoster mTouchPickPoster = new TouchPickPoster();
 
-    private RayPickAsTouchTask mRayPickAsTouchRunnable = new RayPickAsTouchTask();
+    private RayPickAsTouchGLTask mRayPickAsTouchRunnable = new RayPickAsTouchGLTask();
 
     private MDVRLibrary.IGestureListener mTouchPicker = new MDVRLibrary.IGestureListener() {
         @Override
@@ -283,7 +282,7 @@ public class MDPickerManager {
         }
     }
 
-    private class RayPickAsTouchTask implements Runnable {
+    private class RayPickAsTouchGLTask implements Runnable {
         float x;
         float y;
 
