@@ -55,7 +55,7 @@ public class MD360BitmapTexture extends MD360Texture {
         int textureId = getCurrentTextureId();
         if (asyncCallback != null && asyncCallback.hasBitmap()){
             Bitmap bitmap = asyncCallback.getBitmap();
-            textureInThread(textureId,program,bitmap);
+            textureInThread(textureId, program, bitmap);
             asyncCallback.releaseBitmap();
             mIsReady = true;
         }
@@ -82,8 +82,13 @@ public class MD360BitmapTexture extends MD360Texture {
             mTmpAsyncCallback = null;
         }
 
+        // get texture max size.
+        int[] maxSize = new int[1];
+        GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxSize, 0);
+
         // create a new one
-        mTmpAsyncCallback = new AsyncCallback();
+        mTmpAsyncCallback = new AsyncCallback(maxSize[0]);
+
         MDMainHandler.sharedHandler().post(new Runnable() {
             @Override
             public void run() {
@@ -136,12 +141,23 @@ public class MD360BitmapTexture extends MD360Texture {
         glCheck("MD360BitmapTexture textureInThread");
     }
 
-    private static class AsyncCallback implements Callback{
+    private static class AsyncCallback implements Callback {
         private SoftReference<Bitmap> bitmapRef;
+
+        private int maxSize;
+
+        public AsyncCallback(int maxSize) {
+            this.maxSize = maxSize;
+        }
 
         @Override
         public void texture(Bitmap bitmap) {
             this.bitmapRef = new SoftReference<>(bitmap);
+        }
+
+        @Override
+        public int getMaxTextureSize() {
+            return maxSize;
         }
 
         public Bitmap getBitmap(){
@@ -162,5 +178,6 @@ public class MD360BitmapTexture extends MD360Texture {
 
     public interface Callback {
         void texture(Bitmap bitmap);
+        int getMaxTextureSize();
     }
 }

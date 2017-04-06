@@ -50,8 +50,10 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Log.d(TAG, "loaded image, size:" + bitmap.getWidth() + "," + bitmap.getHeight());
+
                 // notify if size changed
-                getVRLibrary().onTextureResize(bitmap.getWidth(),bitmap.getHeight());
+                getVRLibrary().onTextureResize(bitmap.getWidth(), bitmap.getHeight());
 
                 // texture
                 callback.texture(bitmap);
@@ -68,7 +70,14 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
 
             }
         };
-        Picasso.with(getApplicationContext()).load(uri).resize(3072,2048).centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(mTarget);
+        Log.d(TAG, "load image with max texture size:" + callback.getMaxTextureSize());
+        Picasso.with(getApplicationContext())
+                .load(uri)
+                .resize(callback.getMaxTextureSize(),callback.getMaxTextureSize())
+                .onlyScaleDown()
+                .centerInside()
+                .memoryPolicy(NO_CACHE, NO_STORE)
+                .into(mTarget);
     }
 
     private Uri currentUri(){
