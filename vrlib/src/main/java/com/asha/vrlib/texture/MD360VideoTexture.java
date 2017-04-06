@@ -21,6 +21,7 @@ public class MD360VideoTexture extends MD360Texture {
     private Surface mSurface;
     private SurfaceTexture mSurfaceTexture;
     private MDVRLibrary.IOnSurfaceReadyCallback mOnSurfaceReadyListener;
+    private float[] mTransformMatrix = new float[16];
 
     public MD360VideoTexture(MDVRLibrary.IOnSurfaceReadyCallback onSurfaceReadyListener) {
         mOnSurfaceReadyListener = onSurfaceReadyListener;
@@ -97,6 +98,8 @@ public class MD360VideoTexture extends MD360Texture {
         if (mSurfaceTexture == null) return false;
 
         mSurfaceTexture.updateTexImage();
+
+        // surface transform get
         mSurfaceTexture.getTransformMatrix(mTransformMatrix);
         GLES20.glUniformMatrix4fv(program.getSTMatrixHandle(), 1, false, mTransformMatrix, 0);
         return true;

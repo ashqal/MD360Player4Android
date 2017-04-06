@@ -1,12 +1,12 @@
 package com.asha.vrlib.texture;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDMainHandler;
 
 import java.lang.ref.SoftReference;
@@ -63,8 +63,8 @@ public class MD360BitmapTexture extends MD360Texture {
         if (isReady() && textureId != 0){
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
-            GLES20.glUniform1i(program.getTextureUniformHandle(),0);
-            GLES20.glUniformMatrix4fv(program.getSTMatrixHandle(), 1, false, mTransformMatrix, 0);
+            GLES20.glUniform1i(program.getTextureUniformHandle(), 0);
+            GLES20.glUniformMatrix4fv(program.getSTMatrixHandle(), 1, false, GLUtil.identityMatrix(), 0);
         }
         return true;
     }

@@ -4,10 +4,13 @@ precision mediump float;       	// Set the default precision to medium. We don't
 uniform sampler2D u_Texture;
   
 varying vec2 v_TexCoordinate;   // Interpolated texture coordinate per fragment.
+vec2 m_TmpCoordinate;
   
 // The entry point for our fragment shader.
 void main()                    		
-{                              
-    gl_FragColor =  texture2D(u_Texture, v_TexCoordinate);
+{
+    m_TmpCoordinate[0] = v_TexCoordinate[0];
+    m_TmpCoordinate[1] = 1. - v_TexCoordinate[1];
+    gl_FragColor =  texture2D(u_Texture, m_TmpCoordinate);
 }                                                                     	
 

@@ -1,7 +1,5 @@
 package com.asha.vrlib.texture;
 
-import android.opengl.Matrix;
-
 import com.asha.vrlib.MD360Program;
 
 /**
@@ -16,10 +14,8 @@ public abstract class MD360Texture {
     private static final int TEXTURE_EMPTY = 0;
     private static final String TAG = "MD360Texture";
     private int mTextureId = TEXTURE_EMPTY;
-    protected float[] mTransformMatrix = new float[16];
 
     public MD360Texture() {
-        Matrix.setIdentityM(mTransformMatrix, 0);
     }
 
     // may called from multi thread

@@ -57,16 +57,16 @@ public class MDStereoSphere3D extends MDAbsObject3D {
                     texcoords2[t] = s*S;
                     t++;
 
-                    texcoords[t] = r*R/2;
-                    texcoords2[t] = r*R/2 + 0.5f;
+                    texcoords[t] = 1 - r*R/2;
+                    texcoords2[t] = 0.5f - r*R/2;
                     t++;
                 } else {
                     texcoords[t] = s*S/2;
                     texcoords2[t] = s*S/2 + 0.5f;
                     t++;
 
-                    texcoords[t] = r*R;
-                    texcoords2[t] = r*R;
+                    texcoords[t] = 1 - r*R;
+                    texcoords2[t] = 1 - r*R;
                     t++;
                 }
 
