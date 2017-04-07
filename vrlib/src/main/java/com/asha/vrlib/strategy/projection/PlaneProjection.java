@@ -32,13 +32,13 @@ public class PlaneProjection extends AbsProjectionStrategy {
     }
 
     @Override
-    public void on(Activity activity) {
+    public void turnOnInGL(Activity activity) {
         object3D = new MDPlane(planeScaleCalculator);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 
     @Override
-    public void off(Activity activity) {
+    public void turnOffInGL(Activity activity) {
 
     }
 

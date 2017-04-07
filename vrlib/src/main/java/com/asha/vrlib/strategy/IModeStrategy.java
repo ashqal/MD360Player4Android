@@ -9,9 +9,9 @@ import android.content.Context;
  */
 public interface IModeStrategy {
 
-    void on(Activity activity);
+    void turnOnInGL(Activity activity);
 
-    void off(Activity activity);
+    void turnOffInGL(Activity activity);
     
     boolean isSupport(Activity activity);
 

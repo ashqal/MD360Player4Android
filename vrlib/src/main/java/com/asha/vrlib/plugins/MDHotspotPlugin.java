@@ -65,7 +65,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public void init(Context context) {
+    public void initInGL(Context context) {
 
         program = new MD360Program(MDVRLibrary.ContentType.BITMAP);
         program.build(context);
@@ -128,7 +128,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public void destroy() {
+    public void destroyInGL() {
 
     }
 

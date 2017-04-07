@@ -360,19 +360,19 @@ public class MDVRLibrary {
                 fireDestroy();
             }
         });
-        mGLHandler.destroy();
+        mGLHandler.markAsDestroy();
     }
 
     private void fireDestroy(){
         Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
         while (iterator.hasNext()){
             MDAbsPlugin plugin = iterator.next();
-            plugin.destroy();
+            plugin.destroyInGL();
         }
 
         MDAbsPlugin mainPlugin = mProjectionModeManager.getMainPlugin();
         if (mainPlugin != null){
-            mainPlugin.destroy();
+            mainPlugin.destroyInGL();
         }
 
         if (mTexture != null){

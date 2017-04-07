@@ -60,7 +60,7 @@ public class MDPickerManager {
 
     private MDAbsPlugin mEyePicker = new MDAbsPlugin() {
         @Override
-        protected void init(Context context) {
+        protected void initInGL(Context context) {
 
         }
 
@@ -78,7 +78,7 @@ public class MDPickerManager {
         }
 
         @Override
-        public void destroy() {
+        public void destroyInGL() {
 
         }
 

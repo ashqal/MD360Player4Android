@@ -12,10 +12,10 @@ public class GlassStrategy extends AbsDisplayStrategy {
     public GlassStrategy() {}
 
     @Override
-    public void on(Activity activity) {}
+    public void turnOnInGL(Activity activity) {}
 
     @Override
-    public void off(Activity activity) {}
+    public void turnOffInGL(Activity activity) {}
 
     @Override
     public boolean isSupport(Activity activity) {

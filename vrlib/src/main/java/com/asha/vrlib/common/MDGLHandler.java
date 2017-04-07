@@ -58,7 +58,7 @@ public class MDGLHandler {
         }
     }
 
-    public void destroy() {
+    public void markAsDestroy() {
         died = true;
     }
 }

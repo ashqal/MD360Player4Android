@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
+import android.os.Looper;
 import android.view.Surface;
 
 import com.asha.vrlib.MD360Director;
@@ -40,7 +41,21 @@ public class VRUtil {
     }
 
     public static void notNull(Object object, String error){
-        if (object == null) throw new RuntimeException(error);
+        if (object == null) {
+            throw new RuntimeException(error);
+        }
+    }
+
+    public static void checkMainThread(String error){
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            throw new RuntimeException(error);
+        }
+    }
+
+    public static void checkGLThread(String error){
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            throw new RuntimeException(error);
+        }
     }
 
     public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src){

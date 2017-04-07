@@ -8,6 +8,8 @@ import com.asha.vrlib.common.MDMainHandler;
 
 import java.util.Arrays;
 
+import static com.asha.vrlib.common.VRUtil.checkMainThread;
+
 /**
  * Created by hzqiujiadi on 16/3/19.
  * hzqiujiadi ashqalcn@gmail.com
@@ -45,12 +47,16 @@ public abstract class ModeManager<T extends IModeStrategy> {
             MDMainHandler.sharedHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCallback != null) mCallback.onNotSupport(mode);
+                    if (mCallback != null) {
+                        mCallback.onNotSupport(mode);
+                    }
                 }
             });
-        } else {
-            on(activity);
+            return;
         }
+
+        // t
+        on(activity);
     }
 
     public void switchMode(final Activity activity){
@@ -71,24 +77,28 @@ public abstract class ModeManager<T extends IModeStrategy> {
     }
 
     public void on(final Activity activity) {
+        checkMainThread("strategy on must call from main thread!");
+
         final T tmpStrategy = mStrategy;
         if (tmpStrategy.isSupport(activity)){
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    tmpStrategy.on(activity);
+                    tmpStrategy.turnOnInGL(activity);
                 }
             });
         }
     }
 
     public void off(final Activity activity) {
+        checkMainThread("strategy off must call from main thread!");
+
         final T tmpStrategy = mStrategy;
         if (tmpStrategy.isSupport(activity)){
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    tmpStrategy.off(activity);
+                    tmpStrategy.turnOffInGL(activity);
                 }
             });
         }

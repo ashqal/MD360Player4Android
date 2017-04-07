@@ -7,13 +7,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Surface;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.common.MDMainHandler;
-import com.asha.vrlib.common.VRUtil;
 import com.google.vrtoolkit.cardboard.sensors.internal.OrientationEKF;
 import com.google.vrtoolkit.cardboard.sensors.internal.Vector3d;
 
@@ -76,7 +74,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
     }
 
     @Override
-    public void on(Activity activity) {
+    public void turnOnInGL(Activity activity) {
         mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         for (MD360Director director : getDirectorList()){
             director.reset();
@@ -84,8 +82,13 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
     }
 
     @Override
-    public void off(Activity activity) {
-        unregisterSensor(activity);
+    public void turnOffInGL(final Activity activity) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                unregisterSensor(activity);
+            }
+        });
     }
 
     @Override

@@ -55,7 +55,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
     }
 
     @Override
-    public void init(Context context) {
+    public void initInGL(Context context) {
         mProgram.build(context);
         mBitmapProgram.build(context);
         mTexture.create();
@@ -98,7 +98,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
     }
 
     @Override
-    public void destroy() {
+    public void destroyInGL() {
         mTexture = null;
     }
 
