@@ -102,6 +102,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         }
 
         texture.texture(program);
+
         if (texture.isReady()){
             // Update Projection
             director.updateViewport(width, height);
