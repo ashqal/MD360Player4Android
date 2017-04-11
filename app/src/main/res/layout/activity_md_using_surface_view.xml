@@ -135,10 +135,45 @@
           android:background="@drawable/selector_button_background"
           android:layout_width="wrap_content"
           android:layout_height="42dp" />
+
    </LinearLayout>
 
    <LinearLayout
+       android:id="@+id/plugin_layout2"
        android:layout_below="@id/plugin_layout"
+       android:layout_marginTop="8dp"
+       android:orientation="horizontal"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+      <Button
+          android:id="@+id/button_add_plugin_front"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:text="addPluginFront"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+      <Button
+          android:id="@+id/button_bring_plugin_to_front"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="bringPluginToFront"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+   </LinearLayout>
+
+   <LinearLayout
+       android:layout_below="@id/plugin_layout2"
        android:layout_marginTop="8dp"
        android:orientation="horizontal"
        android:layout_width="match_parent"

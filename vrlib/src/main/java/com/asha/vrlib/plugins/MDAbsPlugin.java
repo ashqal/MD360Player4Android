@@ -13,7 +13,7 @@ public abstract class MDAbsPlugin {
 
     private boolean mIsInit;
 
-    private MDPosition mPosition = MDPosition.sOriginalPosition;
+    private MDPosition mPosition = MDPosition.getOriginalPosition();
 
     public final void setupInGL(Context context){
         if (!mIsInit){

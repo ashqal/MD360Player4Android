@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.position.MDMutablePosition;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -29,7 +30,7 @@ public class MD360Director {
     private float mLookY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
-    private final MDPosition mCameraRotation;
+    private final MDPosition mCameraRotatePosition;
     private int mViewportWidth = 2;
     private int mViewportHeight = 1;
 
@@ -39,6 +40,9 @@ public class MD360Director {
     private float[] mTempMatrix = new float[16];
     private float[] mTempInvertMatrix = new float[16];
     private float[] mCameraMatrix = new float[16];
+
+
+    private float[] mXXX = new float[16];
 
     private float mDeltaX;
     private float mDeltaY;
@@ -54,7 +58,7 @@ public class MD360Director {
         this.mEyeZ = builder.mEyeZ;
         this.mLookX = builder.mLookX;
         this.mLookY = builder.mLookY;
-        this.mCameraRotation = builder.mRotation;
+        this.mCameraRotatePosition = builder.mRotation;
         initModel();
     }
 
@@ -86,10 +90,14 @@ public class MD360Director {
     }
 
     public void shot(MD360Program program) {
-        shot(program, MDPosition.sOriginalPosition);
+        shot(program, MDPosition.getOriginalPosition());
     }
 
     public void shot(MD360Program program, MDPosition modelPosition) {
+        shot(program, modelPosition, false);
+    }
+
+    public void shot(MD360Program program, MDPosition modelPosition, boolean isHotspot) {
         if (mCameraMatrixInvalidate || mRotationMatrixInvalidate){
             if (mCameraMatrixInvalidate){
                 updateCameraMatrix();
@@ -106,7 +114,20 @@ public class MD360Director {
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, modelPosition.getMatrix(), 0);
+
+        if (isHotspot){
+            Matrix.setIdentityM(mTempMatrix, 0);
+            Matrix.setIdentityM(mXXX, 0);
+
+            Matrix.invertM(mXXX,0,mRotationMatrix,0);
+
+
+            Matrix.multiplyMM(mTempMatrix, 0,  mXXX, 0, modelPosition.getMatrix(), 0);
+            Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, mTempMatrix, 0);
+        } else {
+            Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, modelPosition.getMatrix(), 0);
+        }
+
 
         // This multiplies the model view matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
@@ -118,6 +139,8 @@ public class MD360Director {
         // Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(program.getMVPMatrixHandle(), 1, false, mMVPMatrix, 0);
     }
+
+
 
     public void updateViewport(int width, int height){
         // Projection Matrix
@@ -187,7 +210,7 @@ public class MD360Director {
         Matrix.rotateM(mCurrentRotationPost, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
         Matrix.setIdentityM(mTempMatrix, 0);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotation.getMatrix(), 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotatePosition.getMatrix(), 0);
         Matrix.multiplyMM(mCurrentRotationPost, 0, mSensorMatrix, 0, mTempMatrix, 0);
         Matrix.multiplyMM(mTempMatrix, 0, mRotationMatrix, 0, mCurrentRotationPost, 0);
         System.arraycopy(mTempMatrix, 0, mRotationMatrix, 0, 16);
@@ -218,7 +241,7 @@ public class MD360Director {
         private float mNearScale = 1f;
         private float mLookX = 0f;
         private float mLookY = 0f;
-        private MDPosition mRotation = MDPosition.newInstance();
+        private MDMutablePosition mRotation = MDMutablePosition.newInstance();
 
         public Builder setLookX(float mLookX) {
             this.mLookX = mLookX;

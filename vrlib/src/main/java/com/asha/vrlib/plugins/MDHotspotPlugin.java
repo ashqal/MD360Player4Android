@@ -61,7 +61,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
         size = new RectF(0, 0, builder.width, builder.height);
         clickListener = builder.clickListener;
         setTitle(builder.title);
-        setModelPosition(builder.position == null ? MDPosition.sOriginalPosition : builder.position);
+        setModelPosition(builder.position == null ? MDPosition.getOriginalPosition() : builder.position);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
             object3D.uploadTexCoordinateBufferIfNeed(program, index);
 
             // Pass in the combined matrix.
-            director.shot(program, getModelPosition());
+            director.shot(program, getModelPosition(), true);
 
             GLES20.glEnable(GLES20.GL_BLEND);
             GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);

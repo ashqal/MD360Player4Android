@@ -22,6 +22,7 @@ import com.asha.vrlib.common.MDUtil;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.model.position.MDMutablePosition;
 import com.asha.vrlib.plugins.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDHotspotPlugin;
@@ -103,7 +104,7 @@ public abstract class MD360PlayerActivity extends Activity {
 
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
-    private MDPosition logoPosition = MDPosition.newInstance().setY(-8.0f).setYaw(-90.0f);
+    private MDPosition logoPosition = MDMutablePosition.newInstance().setY(-8.0f).setYaw(-90.0f);
 
     private MDPosition[] positions = new MDPosition[]{
             MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
@@ -259,6 +260,27 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 plugins.clear();
                 getVRLibrary().removePlugins();
+            }
+        });
+
+        findViewById(R.id.button_add_plugin_front).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                        .size(4f,4f)
+                        .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
+                        .title("front logo")
+                        .position(MDPosition.newInstance().setZ(-8.0f));
+                MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
+                plugins.add(plugin);
+                getVRLibrary().addPlugin(plugin);
+            }
+        });
+
+        findViewById(R.id.button_bring_plugin_to_front).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

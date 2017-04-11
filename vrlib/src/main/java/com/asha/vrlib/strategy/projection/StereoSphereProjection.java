@@ -57,7 +57,7 @@ public class StereoSphereProjection extends AbsProjectionStrategy {
 
     @Override
     public MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
+        return MDPosition.getOriginalPosition();
     }
 
     @Override

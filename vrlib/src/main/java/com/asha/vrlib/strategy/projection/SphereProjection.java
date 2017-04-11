@@ -29,7 +29,7 @@ public class SphereProjection extends AbsProjectionStrategy {
 
     @Override
     public MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
+        return MDPosition.getOriginalPosition();
     }
 
     @Override
