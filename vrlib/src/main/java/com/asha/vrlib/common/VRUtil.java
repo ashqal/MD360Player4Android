@@ -5,6 +5,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Surface;
 
 import com.asha.vrlib.MD360Director;
@@ -22,7 +23,27 @@ public class VRUtil {
     private static float[] sGLThreadTmp = new float[16];
     public static final float sNotHit = Float.MAX_VALUE;
 
+    private static float[] sTruncatedVector = new float[4];
+    private static boolean sIsTruncated = false;
+
     public static void sensorRotationVector2Matrix(SensorEvent event, int rotation, float[] output) {
+        if (!sIsTruncated) {
+            try {
+                SensorManager.getRotationMatrixFromVector(sUIThreadTmp, event.values);
+            } catch (Exception e) {
+                // On some Samsung devices, SensorManager#getRotationMatrixFromVector throws an exception
+                // if the rotation vector has more than 4 elements. Since only the four first elements are used,
+                // we can truncate the vector without losing precision.
+                Log.e(TAG, "maybe Samsung bug, will truncate vector");
+                sIsTruncated = true;
+            }
+        }
+
+        if (sIsTruncated){
+            System.arraycopy(event.values, 0, sTruncatedVector, 0, 4);
+            SensorManager.getRotationMatrixFromVector(sUIThreadTmp, sTruncatedVector);
+        }
+
         float[] values = event.values;
         switch (rotation){
             case Surface.ROTATION_0:
