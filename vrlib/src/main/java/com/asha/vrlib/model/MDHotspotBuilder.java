@@ -1,9 +1,11 @@
 package com.asha.vrlib.model;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.SparseArray;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.common.MDUtil;
 
 /**
  * Created by hzqiujiadi on 16/8/10.
@@ -78,6 +80,26 @@ public class MDHotspotBuilder {
 
     public MDHotspotBuilder provider(Uri uri){
         provider(0, uri);
+        return this;
+    }
+
+    public MDHotspotBuilder provider(String url){
+        provider(0, url);
+        return this;
+    }
+
+    public MDHotspotBuilder provider(Context context, int drawableRes){
+        provider(0, context, drawableRes);
+        return this;
+    }
+
+    public MDHotspotBuilder provider(int key, String url){
+        provider(key, Uri.parse(url));
+        return this;
+    }
+
+    public MDHotspotBuilder provider(int key, Context context, int drawableRes){
+        provider(key, MDUtil.getDrawableUri(context, drawableRes));
         return this;
     }
 

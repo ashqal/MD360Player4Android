@@ -18,15 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.common.MDUtil;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.model.position.MDMutablePosition;
-import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDHotspotPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.MDAbsHotspot;
+import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -196,12 +196,12 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(0, MDUtil.getDrawableUri(activity, android.R.drawable.star_off))
-                        .provider(1, MDUtil.getDrawableUri(activity, android.R.drawable.star_on))
-                        .provider(10, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_off_background))
-                        .provider(11, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_on_background))
+                        .provider(0, activity, android.R.drawable.star_off)
+                        .provider(1, activity, android.R.drawable.star_on)
+                        .provider(10, activity, android.R.drawable.checkbox_off_background)
+                        .provider(11, activity, android.R.drawable.checkbox_on_background)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
                             public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
@@ -227,9 +227,9 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
+                        .provider(activity, R.drawable.moredoo_logo)
                         .title("logo")
                         .position(logoPosition)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
@@ -238,9 +238,9 @@ public abstract class MD360PlayerActivity extends Activity {
                                 Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
                             }
                         });
-                MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
-                plugins.add(plugin);
-                getVRLibrary().addPlugin(plugin);
+                MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
+                plugins.add(hotspot);
+                getVRLibrary().addPlugin(hotspot);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
             }
         });
@@ -266,13 +266,13 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_hotspot_front).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
+                        .provider(activity, R.drawable.moredoo_logo)
                         .title("front logo")
                         .tag("tag-front")
                         .position(MDPosition.newInstance().setZ(-12.0f).setY(-1.0f));
-                MDHotspotPlugin hotspot = new MDHotspotPlugin(builder);
+                MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
                 hotspot.rotateToCamera();
                 plugins.add(hotspot);
                 getVRLibrary().addPlugin(hotspot);
