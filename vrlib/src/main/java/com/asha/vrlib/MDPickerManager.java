@@ -7,7 +7,7 @@ import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
 import com.asha.vrlib.strategy.display.DisplayModeManager;

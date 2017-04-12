@@ -2,6 +2,8 @@ package com.asha.vrlib.plugins;
 
 import android.text.TextUtils;
 
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

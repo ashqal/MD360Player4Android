@@ -12,7 +12,7 @@ import android.view.View;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;

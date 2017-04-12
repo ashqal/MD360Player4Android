@@ -1,4 +1,4 @@
-package com.asha.vrlib.plugins;
+package com.asha.vrlib.plugins.hotspot;
 
 import com.asha.vrlib.model.MDRay;
 

@@ -23,7 +23,7 @@ import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.model.position.MDMutablePosition;
-import com.asha.vrlib.plugins.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDHotspotPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
