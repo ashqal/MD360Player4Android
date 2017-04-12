@@ -23,6 +23,7 @@ import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
+import com.asha.vrlib.plugins.hotspot.MDAbsView;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.strategy.projection.IMDProjectionFactory;
@@ -332,6 +333,10 @@ public class MDVRLibrary {
 
     public IMDHotspot findHotspotByTag(String tag){
         return mPluginManager.findHotspotByTag(tag);
+    }
+
+    public MDAbsView findViewByTag(String tag){
+        return mPluginManager.findViewByTag(tag);
     }
 
     public void onTextureResize(float width, float height){

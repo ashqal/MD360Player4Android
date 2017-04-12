@@ -11,7 +11,6 @@ public interface IMDHotspot {
     void onEyeHitIn(long timestamp);
     void onEyeHitOut();
     void onTouchHit(MDRay ray);
-    void useTexture(int key);
     String getTitle();
     String getTag();
     void rotateToCamera();

@@ -13,17 +13,7 @@ import com.asha.vrlib.common.MDUtil;
  */
 public class MDHotspotBuilder {
 
-    public float width = 2;
-
-    public float height = 2;
-
-    public String tag;
-
-    public String title;
-
-    public MDVRLibrary.ITouchPickListener clickListener;
-
-    public MDPosition position;
+    public MDPluginBuilder builderDelegate;
 
     public SparseArray<Uri> uriList = new SparseArray<>(6);
 
@@ -39,6 +29,7 @@ public class MDHotspotBuilder {
 
     public MDHotspotBuilder(MDVRLibrary.IImageLoadProvider imageLoadProvider) {
         this.imageLoadProvider = imageLoadProvider;
+        this.builderDelegate = new MDPluginBuilder();
     }
 
     private MDHotspotBuilder status(int normal, int focused, int pressed){
@@ -65,17 +56,6 @@ public class MDHotspotBuilder {
 
     public MDHotspotBuilder checkedStatus(int normal){
         return checkedStatus(normal, normal);
-    }
-
-    public MDHotspotBuilder title(String title){
-        this.title = title;
-        return this;
-    }
-
-    public MDHotspotBuilder size(float width, float height){
-        this.width = width;
-        this.height = height;
-        return this;
     }
 
     public MDHotspotBuilder provider(Uri uri){
@@ -108,18 +88,30 @@ public class MDHotspotBuilder {
         return this;
     }
 
-    public MDHotspotBuilder position(MDPosition position) {
-        this.position = position;
+    // delegate
+
+    public MDHotspotBuilder title(String title) {
+        builderDelegate.title(title);
         return this;
     }
 
-    public MDHotspotBuilder listenClick(MDVRLibrary.ITouchPickListener listener){
-        this.clickListener = listener;
+    public MDHotspotBuilder size(float width, float height) {
+        builderDelegate.size(width, height);
+        return this;
+    }
+
+    public MDHotspotBuilder position(MDPosition position) {
+        builderDelegate.position(position);
+        return this;
+    }
+
+    public MDHotspotBuilder listenClick(MDVRLibrary.ITouchPickListener listener) {
+        builderDelegate.listenClick(listener);
         return this;
     }
 
     public MDHotspotBuilder tag(String tag) {
-        this.tag = tag;
+        builderDelegate.tag(tag);
         return this;
     }
 }

@@ -1,21 +1,14 @@
 package com.asha.vrlib.plugins.hotspot;
 
 import android.content.Context;
-import android.graphics.RectF;
+import android.net.Uri;
+import android.util.SparseArray;
 
-import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDHotspotBuilder;
-import com.asha.vrlib.model.MDPosition;
-import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.model.MDVector3D;
-import com.asha.vrlib.objects.MDObject3DHelper;
-import com.asha.vrlib.objects.MDPlane;
-
-import java.nio.FloatBuffer;
-import java.util.LinkedList;
-import java.util.List;
-
-import static com.asha.vrlib.common.VRUtil.sNotHit;
+import com.asha.vrlib.texture.MD360BitmapTexture;
+import com.asha.vrlib.texture.MD360Texture;
 
 /**
  * Created by hzqiujiadi on 2017/4/12.
@@ -26,55 +19,58 @@ public class MDSimpleHotspot extends MDAbsHotspot {
 
     private static final String TAG = "MDSimplePlugin";
 
+    private SparseArray<Uri> uriList;
+
+    private int mPendingTextureKey = 0;
+
+    private int mCurrentTextureKey = 0;
+
     // plugin
-    private RectF size;
+    private MDVRLibrary.IImageLoadProvider provider;
+
+    private MD360Texture texture;
 
     public MDSimpleHotspot(MDHotspotBuilder builder) {
-        super(builder);
-        size = new RectF(0, 0, builder.width, builder.height);
+        super(builder.builderDelegate);
+        this.provider = builder.imageLoadProvider;
+        this.uriList = builder.uriList;
     }
 
     @Override
-    public void initInGL(Context context) {
+    protected void initInGL(Context context) {
         super.initInGL(context);
 
-        object3D = new MDPlane(size);
-        MDObject3DHelper.loadObj(context,object3D);
+        texture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
+            @Override
+            public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                Uri uri = uriList.get(mCurrentTextureKey);
+                if (uri != null){
+                    provider.onProvideBitmap(uri, callback);
+                }
+            }
+        });
+        texture.create();
     }
 
     @Override
-    public void destroyInGL() {
-        super.destroyInGL();
+    public void renderer(int index, int width, int height, MD360Director director) {
+        if (texture == null){
+            return;
+        }
+
+        if (mPendingTextureKey != mCurrentTextureKey){
+            mCurrentTextureKey = mPendingTextureKey;
+            texture.notifyChanged();
+        }
+
+        texture.texture(program);
+
+        if (texture.isReady()){
+            super.renderer(index, width, height, director);
+        }
     }
 
-    @Override
-    public float hit(MDRay ray) {
-        if (object3D == null || object3D.getVerticesBuffer(0) == null){
-            return sNotHit;
-        }
-
-        MDPosition position = getModelPosition();
-        float[] model = position.getMatrix();
-
-        List<MDVector3D> points = new LinkedList<>();
-
-        FloatBuffer buffer = object3D.getVerticesBuffer(0);
-        int numPoints = buffer.capacity() / 3;
-
-        for (int i = 0; i < numPoints; i++){
-            MDVector3D v = new MDVector3D();
-            v.setX(buffer.get(i * 3)).setY(buffer.get(i * 3 + 1)).setZ(buffer.get(i * 3 + 2));
-            v.multiplyMV(model);
-            points.add(v);
-        }
-        float hit1 = sNotHit;
-        float hit2 = sNotHit;
-        if (points.size() == 4){
-            hit1 = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
-            hit2 = VRUtil.intersectTriangle(ray,points.get(1), points.get(2), points.get(3));
-        }
-
-        return Math.min(hit1,hit2);
+    public void useTexture(int key) {
+        mPendingTextureKey = key;
     }
-
 }

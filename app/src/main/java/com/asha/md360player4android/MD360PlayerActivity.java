@@ -21,12 +21,15 @@ import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.model.MDViewBuilder;
 import com.asha.vrlib.model.position.MDMutablePosition;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
 import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.hotspot.MDAbsHotspot;
 import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
+import com.asha.vrlib.plugins.hotspot.MDAbsView;
+import com.asha.vrlib.plugins.hotspot.MDView;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -285,6 +288,40 @@ public abstract class MD360PlayerActivity extends Activity {
                 IMDHotspot hotspot = getVRLibrary().findHotspotByTag("tag-front");
                 if (hotspot != null){
                     hotspot.rotateToCamera();
+                }
+            }
+        });
+
+        findViewById(R.id.button_add_md_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView = new TextView(activity);
+                textView.setBackgroundColor(0x55FFCC11);
+                textView.setText("Hello World");
+
+                MDViewBuilder builder = MDViewBuilder.create()
+                        .size(4, 1)
+                        .provider(textView, 400, 100)
+                        .position(MDPosition.newInstance().setZ(-12.0f))
+                        .title("md view")
+                        .tag("tag-md-text-view")
+                        ;
+
+                MDAbsView mdView = new MDView(builder);
+                plugins.add(mdView);
+                getVRLibrary().addPlugin(mdView);
+            }
+        });
+
+        findViewById(R.id.button_update_md_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MDAbsView mdView = getVRLibrary().findViewByTag("tag-md-text-view");
+                if (mdView != null && mdView.getAttachedView() instanceof TextView){
+                    TextView textView = (TextView) mdView.getAttachedView();
+                    textView.setText("Cheer up!");
+                    textView.setBackgroundColor(0x8800FF00);
+                    mdView.invalidate();
                 }
             }
         });

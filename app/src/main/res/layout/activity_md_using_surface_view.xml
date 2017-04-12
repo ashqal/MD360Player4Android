@@ -170,6 +170,32 @@
           android:layout_width="wrap_content"
           android:layout_height="42dp" />
 
+      <Button
+          android:id="@+id/button_add_md_view"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="add MDView"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+      <Button
+          android:id="@+id/button_update_md_view"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="update MDView"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
    </LinearLayout>
 
    <LinearLayout
