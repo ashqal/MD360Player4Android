@@ -330,6 +330,10 @@ public class MDVRLibrary {
         mPluginManager.removeAll();
     }
 
+    public IMDHotspot findHotspotByTag(String tag){
+        return mPluginManager.findHotspotByTag(tag);
+    }
+
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }

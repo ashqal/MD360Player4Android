@@ -23,6 +23,7 @@ import com.asha.vrlib.texture.MD360Texture;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.asha.vrlib.common.GLUtil.glCheck;
 import static com.asha.vrlib.common.VRUtil.sNotHit;
@@ -31,15 +32,19 @@ import static com.asha.vrlib.common.VRUtil.sNotHit;
  * Created by hzqiujiadi on 16/8/2.
  * hzqiujiadi ashqalcn@gmail.com
  */
-public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
+public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot {
 
     private static final String TAG = "MDSimplePlugin";
 
-    private MDVRLibrary.ITouchPickListener clickListener;
-
+    // plugin
     private MDAbsObject3D object3D;
 
     private MD360Program program;
+
+    private MD360Texture texture;
+
+    // hotspot
+    private MDVRLibrary.ITouchPickListener clickListener;
 
     private SparseArray<Uri> uriList;
 
@@ -47,19 +52,22 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
 
     private String title;
 
+    private String tag;
+
     private int mPendingTextureKey = 0;
 
     private int mCurrentTextureKey = 0;
 
-    private MD360Texture texture;
-
     private MDVRLibrary.IImageLoadProvider provider;
+
+    private AtomicBoolean mPendingRotateToCamera = new AtomicBoolean(false);
 
     public MDHotspotPlugin(MDHotspotBuilder builder) {
         provider = builder.imageLoadProvider;
         uriList = builder.uriList;
         size = new RectF(0, 0, builder.width, builder.height);
         clickListener = builder.clickListener;
+        tag = builder.tag;
         setTitle(builder.title);
         setModelPosition(builder.position == null ? MDPosition.getOriginalPosition() : builder.position);
     }
@@ -116,7 +124,9 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
             object3D.uploadTexCoordinateBufferIfNeed(program, index);
 
             // Pass in the combined matrix.
-            director.shot(program, getModelPosition(), true);
+            director.beforeShot();
+            consumePendingRotateToCamera(director);
+            director.shot(program, getModelPosition());
 
             GLES20.glEnable(GLES20.GL_BLEND);
             GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -186,17 +196,39 @@ public class MDHotspotPlugin extends MDAbsPlugin implements IMDHotspot{
     }
 
     @Override
-    public String getTitle() {
-        return title;
+    public void useTexture(int key) {
+        mPendingTextureKey = key;
     }
 
     @Override
-    public void useTexture(int key) {
-        mPendingTextureKey = key;
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    @Override
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    @Override
+    public void rotateToCamera(){
+        mPendingRotateToCamera.set(true);
+    }
+
+    private void consumePendingRotateToCamera(MD360Director director) {
+        if (mPendingRotateToCamera.get()){
+            MDPosition position = getModelPosition();
+            float[] rotation = director.getWorldRotationInvert();
+            position.setRotationMatrix(rotation);
+            mPendingRotateToCamera.set(false);
+        }
+    }
 }

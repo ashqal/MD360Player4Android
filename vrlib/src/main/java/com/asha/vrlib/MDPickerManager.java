@@ -103,6 +103,7 @@ public class MDPickerManager {
         this.mEyePickEnable = eyePickEnable;
     }
 
+    // gl thread.
     private void rayPickAsTouch(float  x, float y) {
         int size = mDisplayModeManager.getVisibleSize();
         if (size == 0){

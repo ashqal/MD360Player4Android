@@ -15,6 +15,8 @@ public class MDHotspotBuilder {
 
     public float height = 2;
 
+    public String tag;
+
     public String title;
 
     public MDVRLibrary.ITouchPickListener clickListener;
@@ -91,6 +93,11 @@ public class MDHotspotBuilder {
 
     public MDHotspotBuilder listenClick(MDVRLibrary.ITouchPickListener listener){
         this.clickListener = listener;
+        return this;
+    }
+
+    public MDHotspotBuilder tag(String tag) {
+        this.tag = tag;
         return this;
     }
 }

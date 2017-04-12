@@ -93,6 +93,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
         object3D.uploadTexCoordinateBufferIfNeed(mBitmapProgram, index);
 
         // Pass in the combined matrix.
+        director.beforeShot();
         director.shot(mBitmapProgram, getModelPosition());
         object3D.draw();
     }
@@ -130,7 +131,8 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
             mConverterObject3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
             // Pass in the combined matrix.
-            mFixedDirector.shot(mProgram);
+            mFixedDirector.beforeShot();
+            mFixedDirector.shot(mProgram, MDPosition.getOriginalPosition());
 
             mConverterObject3D.draw();
 

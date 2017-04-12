@@ -1,7 +1,11 @@
 package com.asha.vrlib.model;
 
+import android.util.Log;
+
+import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.model.position.MDMutablePosition;
-import com.asha.vrlib.model.position.MDOriginalPosition;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by hzqiujiadi on 16/8/3.
@@ -24,5 +28,19 @@ public abstract class MDPosition {
 
     // abstract
     public abstract void setRotationMatrix(float[] rotation);
+
+    private static class MDOriginalPosition extends MDPosition {
+
+        @Override
+        public float[] getMatrix() {
+            return GLUtil.identityMatrix();
+        }
+
+        @Override
+        public void setRotationMatrix(float[] rotation) {
+            Log.e(TAG, "call setRotationMatrix to MDOriginalPosition");
+        }
+    }
+
 
 }

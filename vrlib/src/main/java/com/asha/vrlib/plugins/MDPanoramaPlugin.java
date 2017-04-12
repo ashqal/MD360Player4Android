@@ -63,6 +63,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
         // Pass in the combined matrix.
         // model view projection matrix.
+        director.beforeShot();
         director.shot(mProgram, getModelPosition());
         object3D.draw();
 

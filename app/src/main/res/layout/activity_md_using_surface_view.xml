@@ -158,7 +158,7 @@
           android:layout_height="42dp" />
 
       <Button
-          android:id="@+id/button_bring_plugin_to_front"
+          android:id="@+id/button_rotate_to_camera_plugin"
           android:textSize="13sp"
           android:textColor="@android:color/white"
           android:layout_marginLeft="8dp"

@@ -270,17 +270,22 @@ public abstract class MD360PlayerActivity extends Activity {
                         .size(4f,4f)
                         .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
                         .title("front logo")
-                        .position(MDPosition.newInstance().setZ(-8.0f));
+                        .tag("tag-front")
+                        .position(MDPosition.newInstance().setZ(-12.0f).setY(-1.0f));
                 MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
+                plugin.rotateToCamera();
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
             }
         });
 
-        findViewById(R.id.button_bring_plugin_to_front).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_rotate_to_camera_plugin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                IMDHotspot hotspot = getVRLibrary().findHotspotByTag("tag-front");
+                if (hotspot != null){
+                    hotspot.rotateToCamera();
+                }
             }
         });
 

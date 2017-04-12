@@ -1,6 +1,7 @@
 package com.asha.vrlib.plugins;
 
-import java.util.Iterator;
+import android.text.TextUtils;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,12 +34,22 @@ public class MDPluginManager {
     }
 
     public void removeAll() {
-        Iterator<MDAbsPlugin> iterator = mList.iterator();
-        while (iterator.hasNext()){
-            MDAbsPlugin plugin = iterator.next();
-            if (plugin.removable()){
+        for (MDAbsPlugin plugin : mList) {
+            if (plugin.removable()) {
                 mList.remove(plugin);
             }
         }
+    }
+
+    public IMDHotspot findHotspotByTag(String tag) {
+        for (MDAbsPlugin plugin : mList) {
+            if (plugin.removable() && plugin instanceof IMDHotspot) {
+                IMDHotspot hotspot = (IMDHotspot) plugin;
+                if (TextUtils.equals(tag, hotspot.getTag())){
+                    return hotspot;
+                }
+            }
+        }
+        return null;
     }
 }

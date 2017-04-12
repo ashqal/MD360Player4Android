@@ -18,7 +18,8 @@ import com.asha.vrlib.model.MDVector3D;
 public class VRUtil {
 
     private static final String TAG = "VRUtil";
-    private static float[] mTmp = new float[16];
+    private static float[] sUIThreadTmp = new float[16];
+    private static float[] sGLThreadTmp = new float[16];
     public static final float sNotHit = Float.MAX_VALUE;
 
     public static void sensorRotationVector2Matrix(SensorEvent event, int rotation, float[] output) {
@@ -29,12 +30,12 @@ public class VRUtil {
                 SensorManager.getRotationMatrixFromVector(output, values);
                 break;
             case Surface.ROTATION_90:
-                SensorManager.getRotationMatrixFromVector(mTmp, values);
-                SensorManager.remapCoordinateSystem(mTmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, output);
+                SensorManager.getRotationMatrixFromVector(sUIThreadTmp, values);
+                SensorManager.remapCoordinateSystem(sUIThreadTmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, output);
                 break;
             case Surface.ROTATION_270:
-                SensorManager.getRotationMatrixFromVector(mTmp, values);
-                SensorManager.remapCoordinateSystem(mTmp, SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X, output);
+                SensorManager.getRotationMatrixFromVector(sUIThreadTmp, values);
+                SensorManager.remapCoordinateSystem(sUIThreadTmp, SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X, output);
                 break;
         }
         Matrix.rotateM(output, 0, 90.0F, 1.0F, 0.0F, 0.0F);
@@ -106,10 +107,19 @@ public class VRUtil {
         return v1.getX() * v2.getX() + v1.getY() * v2.getY() + v1.getZ() * v2.getZ();
     }
 
+    public static boolean invertM(float[] output, float[] input){
+        if (input == output){
+            return false;
+        }
+
+        return Matrix.invertM(output, 0, input, 0);
+    }
+
     public static MDRay point2Ray(float x, float y, MD360Director director){
+        checkGLThread("point2Ray must called in GLThread");
         float[] view = director.getViewMatrix();
-        float[] temp = director.getTempInvertMatrix();
-        boolean success = Matrix.invertM(temp,0,view,0);
+        float[] temp = sGLThreadTmp;
+        boolean success = invertM(temp, view);
         if (success){
             MDVector3D v = new MDVector3D();
             float[] projection = director.getProjectionMatrix();
