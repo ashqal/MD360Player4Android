@@ -263,7 +263,7 @@ public abstract class MD360PlayerActivity extends Activity {
             }
         });
 
-        findViewById(R.id.button_add_plugin_front).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_add_hotspot_front).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)

@@ -146,10 +146,10 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content">
       <Button
-          android:id="@+id/button_add_plugin_front"
+          android:id="@+id/button_add_hotspot_front"
           android:textSize="13sp"
           android:textColor="@android:color/white"
-          android:text="addPluginFront"
+          android:text="AddHotspotFront"
           android:paddingLeft="8dp"
           android:paddingRight="8dp"
           android:includeFontPadding="false"
@@ -162,7 +162,7 @@
           android:textSize="13sp"
           android:textColor="@android:color/white"
           android:layout_marginLeft="8dp"
-          android:text="bringPluginToFront"
+          android:text="RotateToCamera"
           android:paddingLeft="8dp"
           android:paddingRight="8dp"
           android:includeFontPadding="false"
