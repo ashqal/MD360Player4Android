@@ -272,10 +272,10 @@ public abstract class MD360PlayerActivity extends Activity {
                         .title("front logo")
                         .tag("tag-front")
                         .position(MDPosition.newInstance().setZ(-12.0f).setY(-1.0f));
-                MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
-                plugin.rotateToCamera();
-                plugins.add(plugin);
-                getVRLibrary().addPlugin(plugin);
+                MDHotspotPlugin hotspot = new MDHotspotPlugin(builder);
+                hotspot.rotateToCamera();
+                plugins.add(hotspot);
+                getVRLibrary().addPlugin(hotspot);
             }
         });
 
