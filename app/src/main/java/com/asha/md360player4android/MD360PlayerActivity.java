@@ -101,8 +101,10 @@ public abstract class MD360PlayerActivity extends Activity {
 
     private MDVRLibrary mVRLibrary;
 
+    // load resource from android drawable and remote url.
     private MDVRLibrary.IImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
 
+    // load resource from android drawable only.
     private MDVRLibrary.IImageLoadProvider mAndroidProvider = new AndroidProvider(this);
 
     private List<MDAbsPlugin> plugins = new LinkedList<>();
@@ -300,7 +302,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 textView.setText("Hello world.");
 
                 MDViewBuilder builder = MDViewBuilder.create()
-                        .provider(textView, 400, 100)
+                        .provider(textView, 400/*view width*/, 100/*view height*/)
                         .size(4, 1)
                         .position(MDPosition.newInstance().setZ(-12.0f))
                         .title("md view")
@@ -386,6 +388,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
+    // android impl
     private class AndroidProvider implements MDVRLibrary.IImageLoadProvider {
 
         Activity activity;
@@ -406,13 +409,16 @@ public abstract class MD360PlayerActivity extends Activity {
         }
     }
 
+    // picasso impl
     private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider{
 
         private SimpleArrayMap<Uri,Target> targetMap = new SimpleArrayMap<>();
 
         @Override
         public void onProvideBitmap(final Uri uri, final MD360BitmapTexture.Callback callback) {
+
             final Target target = new Target() {
+
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     // texture
