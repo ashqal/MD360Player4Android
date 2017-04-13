@@ -29,7 +29,7 @@ public class HeadTracker implements SensorEventListener {
     private final Display display;
     private final float[] ekfToHeadTracker = new float[16];
     private final float[] sensorToDisplay = new float[16];
-    private float displayRotation = 0.0F;
+    private float displayRotation = -1.0F;
     private final float[] neckModelTranslation = new float[16];
     private final float[] tmpHeadView = new float[16];
     private final float[] tmpHeadView2 = new float[16];
