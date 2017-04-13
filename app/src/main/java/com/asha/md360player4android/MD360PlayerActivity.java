@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -19,19 +18,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.common.MDUtil;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.IMDHotspot;
+import com.asha.vrlib.model.MDViewBuilder;
+import com.asha.vrlib.model.position.MDMutablePosition;
 import com.asha.vrlib.plugins.MDAbsPlugin;
-import com.asha.vrlib.plugins.MDHotspotPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.MDAbsHotspot;
+import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
+import com.asha.vrlib.plugins.hotspot.MDAbsView;
+import com.asha.vrlib.plugins.hotspot.MDView;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,13 +101,15 @@ public abstract class MD360PlayerActivity extends Activity {
 
     private MDVRLibrary mVRLibrary;
 
+    // load resource from android drawable and remote url.
     private MDVRLibrary.IImageLoadProvider mImageLoadProvider = new ImageLoadProvider();
 
+    // load resource from android drawable only.
     private MDVRLibrary.IImageLoadProvider mAndroidProvider = new AndroidProvider(this);
 
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
-    private MDPosition logoPosition = MDPosition.newInstance().setY(-8.0f).setYaw(-90.0f);
+    private MDPosition logoPosition = MDMutablePosition.newInstance().setY(-8.0f).setYaw(-90.0f);
 
     private MDPosition[] positions = new MDPosition[]{
             MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
@@ -197,12 +201,12 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 final int index = (int) (Math.random() * 100) % positions.length;
                 MDPosition position = positions[index];
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(0, MDUtil.getDrawableUri(activity, android.R.drawable.star_off))
-                        .provider(1, MDUtil.getDrawableUri(activity, android.R.drawable.star_on))
-                        .provider(10, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_off_background))
-                        .provider(11, MDUtil.getDrawableUri(activity, android.R.drawable.checkbox_on_background))
+                        .provider(0, activity, android.R.drawable.star_off)
+                        .provider(1, activity, android.R.drawable.star_on)
+                        .provider(10, activity, android.R.drawable.checkbox_off_background)
+                        .provider(11, activity, android.R.drawable.checkbox_on_background)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
                             public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
@@ -228,9 +232,9 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDHotspotBuilder builder = MDHotspotBuilder.create(mAndroidProvider)
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
                         .size(4f,4f)
-                        .provider(MDUtil.getDrawableUri(activity, R.drawable.moredoo_logo))
+                        .provider(activity, R.drawable.moredoo_logo)
                         .title("logo")
                         .position(logoPosition)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
@@ -239,9 +243,9 @@ public abstract class MD360PlayerActivity extends Activity {
                                 Toast.makeText(MD360PlayerActivity.this, "click logo", Toast.LENGTH_SHORT).show();
                             }
                         });
-                MDHotspotPlugin plugin = new MDHotspotPlugin(builder);
-                plugins.add(plugin);
-                getVRLibrary().addPlugin(plugin);
+                MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
+                plugins.add(hotspot);
+                getVRLibrary().addPlugin(hotspot);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
             }
         });
@@ -261,6 +265,66 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 plugins.clear();
                 getVRLibrary().removePlugins();
+            }
+        });
+
+        findViewById(R.id.button_add_hotspot_front).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
+                        .size(4f,4f)
+                        .provider(activity, R.drawable.moredoo_logo)
+                        .title("front logo")
+                        .tag("tag-front")
+                        .position(MDPosition.newInstance().setZ(-12.0f).setY(-1.0f));
+                MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
+                hotspot.rotateToCamera();
+                plugins.add(hotspot);
+                getVRLibrary().addPlugin(hotspot);
+            }
+        });
+
+        findViewById(R.id.button_rotate_to_camera_plugin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IMDHotspot hotspot = getVRLibrary().findHotspotByTag("tag-front");
+                if (hotspot != null){
+                    hotspot.rotateToCamera();
+                }
+            }
+        });
+
+        findViewById(R.id.button_add_md_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView textView = new TextView(activity);
+                textView.setBackgroundColor(0x55FFCC11);
+                textView.setText("Hello world.");
+
+                MDViewBuilder builder = MDViewBuilder.create()
+                        .provider(textView, 400/*view width*/, 100/*view height*/)
+                        .size(4, 1)
+                        .position(MDPosition.newInstance().setZ(-12.0f))
+                        .title("md view")
+                        .tag("tag-md-text-view")
+                        ;
+
+                MDAbsView mdView = new MDView(builder);
+                plugins.add(mdView);
+                getVRLibrary().addPlugin(mdView);
+            }
+        });
+
+        findViewById(R.id.button_update_md_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MDAbsView mdView = getVRLibrary().findViewByTag("tag-md-text-view");
+                if (mdView != null){
+                    TextView textView = mdView.castAttachedView(TextView.class);
+                    textView.setText("Cheer up!");
+                    textView.setBackgroundColor(0x8800FF00);
+                    mdView.invalidate();
+                }
             }
         });
 
@@ -324,6 +388,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
+    // android impl
     private class AndroidProvider implements MDVRLibrary.IImageLoadProvider {
 
         Activity activity;
@@ -334,8 +399,6 @@ public abstract class MD360PlayerActivity extends Activity {
 
         @Override
         public void onProvideBitmap(Uri uri, MD360BitmapTexture.Callback callback) {
-            //BitmapFactory.decodeStream()
-
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(uri));
                 callback.texture(bitmap);
@@ -346,13 +409,16 @@ public abstract class MD360PlayerActivity extends Activity {
         }
     }
 
+    // picasso impl
     private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider{
 
         private SimpleArrayMap<Uri,Target> targetMap = new SimpleArrayMap<>();
 
         @Override
         public void onProvideBitmap(final Uri uri, final MD360BitmapTexture.Callback callback) {
+
             final Target target = new Target() {
+
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     // texture
@@ -371,8 +437,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 }
             };
             targetMap.put(uri, target);
-            Picasso.with(getApplicationContext()).load(uri).resize(3072,2048).centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
-
+            Picasso.with(getApplicationContext()).load(uri).resize(callback.getMaxTextureSize(),callback.getMaxTextureSize()).onlyScaleDown().centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
         }
     }
 }

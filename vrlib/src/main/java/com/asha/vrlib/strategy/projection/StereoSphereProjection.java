@@ -35,13 +35,13 @@ public class StereoSphereProjection extends AbsProjectionStrategy {
     }
 
     @Override
-    public void on(Activity activity) {
+    public void turnOnInGL(Activity activity) {
         object3D = new MDStereoSphere3D(direction);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 
     @Override
-    public void off(Activity activity) {
+    public void turnOffInGL(Activity activity) {
 
     }
 
@@ -57,7 +57,7 @@ public class StereoSphereProjection extends AbsProjectionStrategy {
 
     @Override
     public MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
+        return MDPosition.getOriginalPosition();
     }
 
     @Override

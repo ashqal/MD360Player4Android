@@ -32,13 +32,13 @@ public class DomeProjection extends AbsProjectionStrategy {
     }
 
     @Override
-    public void on(Activity activity) {
+    public void turnOnInGL(Activity activity) {
         object3D = new MDDome3D(mTextureSize, mDegree, mIsUpper);
         MDObject3DHelper.loadObj(activity, object3D);
     }
 
     @Override
-    public void off(Activity activity) {
+    public void turnOffInGL(Activity activity) {
 
     }
 
@@ -54,7 +54,7 @@ public class DomeProjection extends AbsProjectionStrategy {
 
     @Override
     public MDPosition getModelPosition() {
-        return MDPosition.sOriginalPosition;
+        return MDPosition.getOriginalPosition();
     }
 
     @Override

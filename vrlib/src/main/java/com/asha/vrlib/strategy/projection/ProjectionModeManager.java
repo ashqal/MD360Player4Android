@@ -17,6 +17,8 @@ import com.asha.vrlib.strategy.ModeManager;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.asha.vrlib.common.VRUtil.checkGLThread;
+
 /**
  * Created by hzqiujiadi on 16/6/25.
  * hzqiujiadi ashqalcn@gmail.com
@@ -71,7 +73,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
         // destroy prev main plugin
         if( mMainPlugin != null){
-            mMainPlugin.destroy();
+            getGLHandler().post(new PluginDestroyTask(mMainPlugin));
             mMainPlugin = null;
         }
 
@@ -137,5 +139,24 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
     public List<MD360Director> getDirectors() {
         return mDirectors;
+    }
+
+    private static class PluginDestroyTask implements Runnable {
+
+        private MDAbsPlugin plugin;
+
+        public PluginDestroyTask(MDAbsPlugin plugin) {
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void run() {
+            checkGLThread("must call in gl thread");
+
+            plugin.destroyInGL();
+            plugin = null;
+        }
+
+
     }
 }

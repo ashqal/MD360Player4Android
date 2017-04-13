@@ -31,7 +31,7 @@ public class GLUtil {
     public static final float[] sIdentityMatrix = new float[16];
 
     static {
-        Matrix.setIdentityM(sIdentityMatrix,0);
+        Matrix.setIdentityM(sIdentityMatrix, 0);
     }
 
     public static float[] identityMatrix() {

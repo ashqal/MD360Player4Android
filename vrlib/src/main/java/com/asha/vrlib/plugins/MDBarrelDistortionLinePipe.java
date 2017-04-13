@@ -10,6 +10,7 @@ import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.objects.MDObject3DHelper;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
@@ -103,7 +104,8 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
         object3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
         // Pass in the combined matrix.
-        mDirector.shot(mProgram);
+        mDirector.beforeShot();
+        mDirector.shot(mProgram, MDPosition.getOriginalPosition());
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mDrawingCache.getTextureOutput());

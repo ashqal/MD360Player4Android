@@ -3,7 +3,9 @@ package com.asha.vrlib;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.position.MDMutablePosition;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -29,20 +31,22 @@ public class MD360Director {
     private float mLookY = 0f;
     private float mRatio = 0f;
     private float mNearScale = 0f;
-    private final MDPosition mCameraRotation;
+    private final MDPosition mCameraRotatePosition;
     private int mViewportWidth = 2;
     private int mViewportHeight = 1;
 
-    private float[] mCurrentRotation = new float[16];
+    private float[] mWorldRotationMatrix = new float[16];
+    private float[] mWorldRotationInvertMatrix = new float[16];
     private float[] mCurrentRotationPost = new float[16];
     private float[] mSensorMatrix = new float[16];
     private float[] mTempMatrix = new float[16];
-    private float[] mTempInvertMatrix = new float[16];
+    private float[] mCameraMatrix = new float[16];
 
     private float mDeltaX;
     private float mDeltaY;
 
-    private boolean mViewMatrixInvalidate = true;
+    private boolean mCameraMatrixInvalidate = true;
+    private boolean mWorldRotationMatrixInvalidate = true;
 
     protected MD360Director(Builder builder) {
         this.mRatio = builder.mRatio;
@@ -52,7 +56,7 @@ public class MD360Director {
         this.mEyeZ = builder.mEyeZ;
         this.mLookX = builder.mLookX;
         this.mLookY = builder.mLookY;
-        this.mCameraRotation = builder.mRotation;
+        this.mCameraRotatePosition = builder.mRotation;
         initModel();
     }
 
@@ -62,7 +66,7 @@ public class MD360Director {
 
     public void setDeltaY(float mDeltaY) {
         this.mDeltaY = mDeltaY;
-        mViewMatrixInvalidate = true;
+        mWorldRotationMatrixInvalidate = true;
     }
 
     public float getDeltaX() {
@@ -71,31 +75,23 @@ public class MD360Director {
 
     public void setDeltaX(float mDeltaX) {
         this.mDeltaX = mDeltaX;
-        mViewMatrixInvalidate = true;
-    }
-
-    public float[] getTempInvertMatrix() {
-        return mTempInvertMatrix;
+        mWorldRotationMatrixInvalidate = true;
     }
 
     private void initModel(){
+        Matrix.setIdentityM(mViewMatrix, 0);
         Matrix.setIdentityM(mSensorMatrix, 0);
     }
 
-    public void shot(MD360Program program) {
-        shot(program, MDPosition.sOriginalPosition);
+    public void beforeShot(){
+        updateViewMatrixIfNeed();
     }
 
     public void shot(MD360Program program, MDPosition modelPosition) {
-
-        if (mViewMatrixInvalidate){
-            updateViewMatrix();
-            mViewMatrixInvalidate = false;
-        }
-
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
         Matrix.multiplyMM(mMVMatrix, 0, mViewMatrix, 0, modelPosition.getMatrix(), 0);
+
 
         // This multiplies the model view matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
@@ -106,6 +102,22 @@ public class MD360Director {
 
         // Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(program.getMVPMatrixHandle(), 1, false, mMVPMatrix, 0);
+    }
+
+    private void updateViewMatrixIfNeed(){
+        if (mCameraMatrixInvalidate || mWorldRotationMatrixInvalidate){
+            if (mCameraMatrixInvalidate){
+                updateCameraMatrix();
+                mCameraMatrixInvalidate = false;
+            }
+
+            if (mWorldRotationMatrixInvalidate){
+                updateWorldRotationMatrix();
+                mWorldRotationMatrixInvalidate = false;
+            }
+
+            Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
+        }
     }
 
     public void updateViewport(int width, int height){
@@ -155,7 +167,7 @@ public class MD360Director {
         return mViewMatrix;
     }
 
-    private void updateViewMatrix() {
+    private void updateCameraMatrix() {
         final float eyeX = mEyeX;
         final float eyeY = mEyeY;
         final float eyeZ = mEyeZ;
@@ -165,39 +177,48 @@ public class MD360Director {
         final float upX = 0.0f;
         final float upY = 1.0f;
         final float upZ = 0.0f;
-        Matrix.setIdentityM(mViewMatrix, 0);
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        Matrix.setIdentityM(mCameraMatrix, 0);
+        Matrix.setLookAtM(mCameraMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+    }
 
-        Matrix.setIdentityM(mCurrentRotation, 0);
-        Matrix.rotateM(mCurrentRotation, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
+    private void updateWorldRotationMatrix(){
+        Matrix.setIdentityM(mWorldRotationMatrix, 0);
+        Matrix.rotateM(mWorldRotationMatrix, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.setIdentityM(mCurrentRotationPost, 0);
         Matrix.rotateM(mCurrentRotationPost, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
         Matrix.setIdentityM(mTempMatrix, 0);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotation.getMatrix(), 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotatePosition.getMatrix(), 0);
         Matrix.multiplyMM(mCurrentRotationPost, 0, mSensorMatrix, 0, mTempMatrix, 0);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotation, 0, mCurrentRotationPost, 0);
-        System.arraycopy(mTempMatrix, 0, mCurrentRotation, 0, 16);
+        Matrix.multiplyMM(mTempMatrix, 0, mWorldRotationMatrix, 0, mCurrentRotationPost, 0);
+        System.arraycopy(mTempMatrix, 0, mWorldRotationMatrix, 0, 16);
 
-        Matrix.multiplyMM(mTempMatrix, 0, mViewMatrix, 0, mCurrentRotation, 0);
-        System.arraycopy(mTempMatrix, 0, mViewMatrix, 0, 16);
+        boolean success = VRUtil.invertM(mWorldRotationInvertMatrix, mWorldRotationMatrix);
+        if (!success){
+            Matrix.setIdentityM(mWorldRotationInvertMatrix, 0);
+        }
+
     }
 
     // call in gl thread
     public void updateSensorMatrix(float[] sensorMatrix) {
         System.arraycopy(sensorMatrix, 0, mSensorMatrix, 0, 16);
-        mViewMatrixInvalidate = true;
+        mWorldRotationMatrixInvalidate = true;
     }
 
     // call in gl thread
     public void reset(){
         mDeltaX = mDeltaY = 0;
         Matrix.setIdentityM(mSensorMatrix,0);
-        mViewMatrixInvalidate = true;
+        mWorldRotationMatrixInvalidate = true;
     }
 
     public static Builder builder(){
         return new Builder();
+    }
+
+    public float[] getWorldRotationInvert() {
+        return mWorldRotationInvertMatrix;
     }
 
     public static class Builder {
@@ -208,7 +229,7 @@ public class MD360Director {
         private float mNearScale = 1f;
         private float mLookX = 0f;
         private float mLookY = 0f;
-        private MDPosition mRotation = MDPosition.newInstance();
+        private MDMutablePosition mRotation = MDMutablePosition.newInstance();
 
         public Builder setLookX(float mLookX) {
             this.mLookX = mLookX;

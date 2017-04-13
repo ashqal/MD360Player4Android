@@ -31,7 +31,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
     }
 
     @Override
-    public void init(Context context) {
+    public void initInGL(Context context) {
         mProgram.build(context);
         mTexture.create();
     }
@@ -63,13 +63,14 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
         // Pass in the combined matrix.
         // model view projection matrix.
+        director.beforeShot();
         director.shot(mProgram, getModelPosition());
         object3D.draw();
 
     }
 
     @Override
-    public void destroy() {
+    public void destroyInGL() {
         mTexture = null;
     }
 

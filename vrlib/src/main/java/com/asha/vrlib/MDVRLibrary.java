@@ -20,9 +20,10 @@ import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPinchConfig;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.IMDHotspot;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDPluginManager;
+import com.asha.vrlib.plugins.hotspot.MDAbsView;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.strategy.projection.IMDProjectionFactory;
@@ -330,6 +331,14 @@ public class MDVRLibrary {
         mPluginManager.removeAll();
     }
 
+    public IMDHotspot findHotspotByTag(String tag){
+        return mPluginManager.findHotspotByTag(tag);
+    }
+
+    public MDAbsView findViewByTag(String tag){
+        return mPluginManager.findViewByTag(tag);
+    }
+
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }
@@ -360,19 +369,19 @@ public class MDVRLibrary {
                 fireDestroy();
             }
         });
-        mGLHandler.destroy();
+        mGLHandler.markAsDestroy();
     }
 
     private void fireDestroy(){
         Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
         while (iterator.hasNext()){
             MDAbsPlugin plugin = iterator.next();
-            plugin.destroy();
+            plugin.destroyInGL();
         }
 
         MDAbsPlugin mainPlugin = mProjectionModeManager.getMainPlugin();
         if (mainPlugin != null){
-            mainPlugin.destroy();
+            mainPlugin.destroyInGL();
         }
 
         if (mTexture != null){

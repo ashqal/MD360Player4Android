@@ -1,4 +1,4 @@
-package com.asha.vrlib.plugins;
+package com.asha.vrlib.plugins.hotspot;
 
 import com.asha.vrlib.model.MDRay;
 
@@ -12,5 +12,6 @@ public interface IMDHotspot {
     void onEyeHitOut();
     void onTouchHit(MDRay ray);
     String getTitle();
-    void useTexture(int key);
+    String getTag();
+    void rotateToCamera();
 }

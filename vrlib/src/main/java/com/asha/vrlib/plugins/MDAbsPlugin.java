@@ -13,22 +13,22 @@ public abstract class MDAbsPlugin {
 
     private boolean mIsInit;
 
-    private MDPosition mPosition = MDPosition.sOriginalPosition;
+    private MDPosition mPosition = MDPosition.getOriginalPosition();
 
-    public final void setup(Context context){
+    public final void setupInGL(Context context){
         if (!mIsInit){
-            init(context);
+            initInGL(context);
             mIsInit = true;
         }
     }
 
-    abstract protected void init(Context context);
+    abstract protected void initInGL(Context context);
+
+    abstract public void destroyInGL();
 
     abstract public void beforeRenderer(int totalWidth, int totalHeight);
 
     abstract public void renderer(int index, int itemWidth, int itemHeight, MD360Director director);
-
-    abstract public void destroy();
 
     protected MDPosition getModelPosition(){
         return mPosition;

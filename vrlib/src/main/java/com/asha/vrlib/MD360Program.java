@@ -19,6 +19,7 @@ public class MD360Program {
     private int mTextureCoordinateHandle;
     private int mProgramHandle;
     private int mSTMatrixHandle;
+    private int mUseTextureTransformHandle;
     private int mContentType;
 
     public MD360Program(int type) {
@@ -51,6 +52,7 @@ public class MD360Program {
         mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
         mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
         mSTMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_STMatrix");
+        mUseTextureTransformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_UseSTM");
     }
 
     protected String getVertexShader(Context context){
@@ -83,6 +85,10 @@ public class MD360Program {
 
     public int getSTMatrixHandle() {
         return mSTMatrixHandle;
+    }
+
+    public int getUseTextureTransformHandle() {
+        return mUseTextureTransformHandle;
     }
 
     public int getTextureCoordinateHandle() {
