@@ -25,7 +25,7 @@ public abstract class MDAbsView extends MDAbsHotspot {
 
     private boolean mInvalidate;
 
-    private MD360Texture texture;
+    private MD360Texture mTexture;
 
     private View mAttachedView;
 
@@ -41,13 +41,21 @@ public abstract class MDAbsView extends MDAbsHotspot {
         this.mLayoutParams = builder.layoutParams;
         this.mAttachedView.setLayoutParams(this.mLayoutParams);
 
-        this.mBitmap = Bitmap.createBitmap(mLayoutParams.width, mLayoutParams.height, Bitmap.Config.ARGB_8888);
-        this.mCanvas = new Canvas(mBitmap);
+        try {
+            this.mBitmap = Bitmap.createBitmap(mLayoutParams.width, mLayoutParams.height, Bitmap.Config.ARGB_8888);
+            this.mCanvas = new Canvas(mBitmap);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         requestLayout();
     }
 
     public void invalidate(){
+        if (mBitmap == null){
+            return;
+        }
+
         checkMainThread("invalidate must called in main thread.");
         notNull(mLayoutParams, "layout params can't be null");
         notNull(mAttachedView, "attached view can't be null");
@@ -58,7 +66,11 @@ public abstract class MDAbsView extends MDAbsHotspot {
     }
 
     public void requestLayout(){
-        checkMainThread("invalidate must called in main thread.");
+        if (mBitmap == null){
+            return;
+        }
+
+        checkMainThread("requestLayout must called in main thread.");
         notNull(mLayoutParams, "layout params can't be null");
         notNull(mAttachedView, "attached view can't be null");
 
@@ -75,31 +87,38 @@ public abstract class MDAbsView extends MDAbsHotspot {
     protected void initInGL(Context context) {
         super.initInGL(context);
 
-        texture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
+        mTexture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
             @Override
             public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                callback.texture(mBitmap);
+                if (mBitmap != null){
+                    callback.texture(mBitmap);
+                }
             }
         });
-        texture.create();
+        mTexture.create();
     }
 
     @Override
     public void renderer(int index, int width, int height, MD360Director director) {
-        if (texture == null){
+        if (mTexture == null || mBitmap == null){
             return;
         }
 
         if (mInvalidate){
             mInvalidate = false;
-            texture.notifyChanged();
+            mTexture.notifyChanged();
         }
 
-        texture.texture(program);
+        mTexture.texture(program);
 
-        if (texture.isReady()){
+        if (mTexture.isReady()){
             super.renderer(index, width, height, director);
         }
+    }
+
+    public <T extends View> T castAttachedView(Class<T> clazz){
+        notNull(clazz, "param clz can't be null.");
+        return clazz.cast(mAttachedView);
     }
 
     public View getAttachedView() {

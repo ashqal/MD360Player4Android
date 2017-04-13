@@ -297,11 +297,11 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onClick(View v) {
                 TextView textView = new TextView(activity);
                 textView.setBackgroundColor(0x55FFCC11);
-                textView.setText("Hello World");
+                textView.setText("Hello world.");
 
                 MDViewBuilder builder = MDViewBuilder.create()
-                        .size(4, 1)
                         .provider(textView, 400, 100)
+                        .size(4, 1)
                         .position(MDPosition.newInstance().setZ(-12.0f))
                         .title("md view")
                         .tag("tag-md-text-view")
@@ -317,8 +317,8 @@ public abstract class MD360PlayerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 MDAbsView mdView = getVRLibrary().findViewByTag("tag-md-text-view");
-                if (mdView != null && mdView.getAttachedView() instanceof TextView){
-                    TextView textView = (TextView) mdView.getAttachedView();
+                if (mdView != null){
+                    TextView textView = mdView.castAttachedView(TextView.class);
                     textView.setText("Cheer up!");
                     textView.setBackgroundColor(0x8800FF00);
                     mdView.invalidate();
