@@ -26,7 +26,7 @@ allprojects {
 ```
 ```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:2.1.0'
+    compile 'com.github.ashqal:MD360Player4Android:2.3.0'
 }
 ```
 
@@ -42,7 +42,7 @@ dependencies {
 
 **STEP2** Init the `MDVRLibrary` in the Activity.
 ```java
-public class MDVRLibraryDemoActivity extends MediaPlayerActivity {
+public class MDVRLibraryDemoActivity extends Activity {
 
     private MDVRLibrary mVRLibrary;
 
