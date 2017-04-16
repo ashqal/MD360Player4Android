@@ -125,7 +125,11 @@ public class VRUtil {
     }
 
     public static float vec3Dot(MDVector3D v1, MDVector3D v2){
-        return v1.getX() * v2.getX() + v1.getY() * v2.getY() + v1.getZ() * v2.getZ();
+        return vec3Dot(v1.getX(), v1.getY(), v1.getZ(), v2.getX(), v2.getY(), v2.getZ());
+    }
+
+    public static float vec3Dot(float x1, float y1, float z1, float x2, float y2, float z2){
+        return x1 * x2 + y1 * y2 + z1 * z2;
     }
 
     public static boolean invertM(float[] output, float[] input){
@@ -213,6 +217,35 @@ public class VRUtil {
             return sNotHit;
         }
         return Math.abs(t);
+    }
+
+    public static void getEulerAngles(float[] headView, float[] output) {
+        float pitch = (float) Math.asin((double) headView[6]);
+        float yaw;
+        float roll;
+        if (Math.abs(headView[6]) < 0.9999999999D) {
+            yaw = (float) Math.atan2((double) (-headView[2]), (double) headView[10]);
+            roll = (float) Math.atan2((double) (-headView[4]), (double) headView[5]);
+        } else {
+            yaw = 0.0F;
+            roll = (float) Math.atan2((double) headView[1], (double) headView[0]);
+        }
+        output[0] = -pitch;
+        output[1] = -yaw;
+        output[2] = -roll;
+        float pitchAngle = (float) Math.toDegrees(output[0]);
+        float yawAngle = (float) Math.toDegrees(output[1]);
+        float rollAngle = (float) Math.toDegrees(output[2]);
+
+        Log.e(TAG, String.format("pitchAngle=%f, yawAngle=%f, rollAngle=%f", pitchAngle, yawAngle, rollAngle));
+    }
+
+    public static void printMatrix(float[] m){
+        Log.d(TAG, "printMatrix");
+        Log.d(TAG, String.format("%f, %f, %f, %f",m[0],m[1],m[2],m[3]));
+        Log.d(TAG, String.format("%f, %f, %f, %f",m[4],m[5],m[6],m[7]));
+        Log.d(TAG, String.format("%f, %f, %f, %f",m[8],m[9],m[10],m[11]));
+        Log.d(TAG, String.format("%f, %f, %f, %f",m[12],m[13],m[14],m[15]));
     }
 
 }
