@@ -126,7 +126,7 @@ https://github.com/ashqal/MD360Player4Android/wiki/Advanced-Usage
 * or QQ Group.<br/>
 ![QQ Group](https://cloud.githubusercontent.com/assets/5126517/16213934/e398b010-3785-11e6-8877-5d88d9dc3f33.jpeg)
 
-##LICENSE
+## LICENSE
 ```
 Copyright 2016 Asha
 
