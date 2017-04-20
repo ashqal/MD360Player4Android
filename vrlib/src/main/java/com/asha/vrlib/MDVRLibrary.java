@@ -16,7 +16,10 @@ import android.widget.Toast;
 import com.asha.vrlib.common.GLUtil;
 import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.common.MDMainHandler;
+import com.asha.vrlib.compact.CompactEyePickAdapter;
+import com.asha.vrlib.compact.CompactTouchPickAdapter;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPinchConfig;
 import com.asha.vrlib.model.MDRay;
@@ -190,7 +193,6 @@ public class MDVRLibrary {
                 .setPluginManager(mPluginManager)
                 .setDisplayModeManager(mDisplayModeManager)
                 .setProjectionModeManager(mProjectionModeManager)
-                .setGLHandler(mGLHandler)
                 .build();
         setEyePickEnable(builder.eyePickEnabled);
         mPickerManager.setEyePickChangedListener(builder.eyePickChangedListener);
@@ -307,11 +309,21 @@ public class MDVRLibrary {
         mPickerManager.setEyePickEnable(eyePickEnable);
     }
 
+    @Deprecated
     public void setEyePickChangedListener(IEyePickListener listener){
+        mPickerManager.setEyePickChangedListener(new CompactEyePickAdapter(listener));
+    }
+
+    @Deprecated
+    public void setTouchPickListener(ITouchPickListener listener){
+        mPickerManager.setTouchPickListener(new CompactTouchPickAdapter(listener));
+    }
+
+    public void setEyePickChangedListener(IEyePickListener2 listener){
         mPickerManager.setEyePickChangedListener(listener);
     }
 
-    public void setTouchPickListener(ITouchPickListener listener){
+    public void setTouchPickListener(ITouchPickListener2 listener){
         mPickerManager.setTouchPickListener(listener);
     }
 
@@ -446,13 +458,24 @@ public class MDVRLibrary {
         void onPinch(float scale);
     }
 
+    @Deprecated
     public interface IEyePickListener {
         void onHotspotHit(IMDHotspot hitHotspot, long hitTimestamp);
     }
 
+    public interface IEyePickListener2 {
+        void onHotspotHit(MDHitEvent hitEvent);
+    }
+
+    @Deprecated
     public interface ITouchPickListener {
         void onHotspotHit(IMDHotspot hitHotspot, MDRay ray);
     }
+
+    public interface ITouchPickListener2 {
+        void onHotspotHit(MDHitEvent hitEvent);
+    }
+
 
     public static Builder with(Activity activity){
         return new Builder(activity);
@@ -473,8 +496,8 @@ public class MDVRLibrary {
         private boolean pinchEnabled; // default false.
         private boolean eyePickEnabled = true; // default true.
         private BarrelDistortionConfig barrelDistortionConfig;
-        private IEyePickListener eyePickChangedListener;
-        private ITouchPickListener touchPickChangedListener;
+        private IEyePickListener2 eyePickChangedListener;
+        private ITouchPickListener2 touchPickChangedListener;
         private MD360DirectorFactory directorFactory;
         private int motionDelay = SensorManager.SENSOR_DELAY_GAME;
         private SensorEventListener sensorListener;
@@ -573,8 +596,9 @@ public class MDVRLibrary {
          * @param listener listener
          * @return builder
          */
-        public Builder listenEyePick(IEyePickListener listener){
-            this.eyePickChangedListener = listener;
+        @Deprecated
+        public Builder listenEyePick(final IEyePickListener listener){
+            this.eyePickChangedListener = new CompactEyePickAdapter(listener);
             return this;
         }
 
@@ -584,8 +608,9 @@ public class MDVRLibrary {
          * @param listener listener
          * @return builder
          */
-        public Builder listenTouchPick(ITouchPickListener listener){
-            this.touchPickChangedListener = listener;
+        @Deprecated
+        public Builder listenTouchPick(final ITouchPickListener listener){
+            this.touchPickChangedListener = new CompactTouchPickAdapter(listener);
             return this;
         }
 

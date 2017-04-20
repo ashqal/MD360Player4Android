@@ -8,7 +8,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 
-import com.asha.vrlib.MD360Director;
+import com.asha.vrlib.model.MDDirectorBrief;
+import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.model.MDVector3D;
 
@@ -21,7 +22,6 @@ public class VRUtil {
     private static final String TAG = "VRUtil";
     private static float[] sUIThreadTmp = new float[16];
     private static float[] sGLThreadTmp = new float[16];
-    public static final float sNotHit = Float.MAX_VALUE;
 
     private static float[] sTruncatedVector = new float[4];
     private static boolean sIsTruncated = false;
@@ -140,16 +140,16 @@ public class VRUtil {
         return Matrix.invertM(output, 0, input, 0);
     }
 
-    public static MDRay point2Ray(float x, float y, MD360Director director){
-        checkGLThread("point2Ray must called in GLThread");
-        float[] view = director.getViewMatrix();
-        float[] temp = sGLThreadTmp;
+    public static MDRay point2Ray(float x, float y, MDDirectorBrief info){
+        checkMainThread("point2Ray must called in main Thread");
+        float[] view = info.getViewMatrix();
+        float[] temp = sUIThreadTmp;
         boolean success = invertM(temp, view);
         if (success){
             MDVector3D v = new MDVector3D();
-            float[] projection = director.getProjectionMatrix();
-            v.setX(- ( ( ( 2.0f * x ) / director.getViewportWidth() ) - 1 ) / projection[0]);
-            v.setY(( ( ( 2.0f * y ) / director.getViewportHeight() ) - 1 ) / projection[5]);
+            float[] projection = info.getProjectionMatrix();
+            v.setX(- ( ( ( 2.0f * x ) / info.getViewportWidth() ) - 1 ) / projection[0]);
+            v.setY(( ( ( 2.0f * y ) / info.getViewportHeight() ) - 1 ) / projection[5]);
             v.setZ(1.0f);
 
             MDVector3D vPickRayDir = new MDVector3D();
@@ -167,7 +167,7 @@ public class VRUtil {
         }
     }
 
-    public static float intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2){
+    public static void intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2, MDHitPoint result){
         // Find vectors for two edges sharing vert0
         MDVector3D edge1 = vec3Sub(v1 , v0);
         MDVector3D edge2 = vec3Sub(v2 , v0);
@@ -187,13 +187,16 @@ public class VRUtil {
             det = -det;
         }
 
-        if( det < 0.0001f )
-            return sNotHit;
+        if( det < 0.0001f ){
+            result.asNotHit();
+            return;
+        }
 
         // Calculate U parameter and test bounds
-        float u = vec3Dot( tvec, pvec );
+        float u = vec3Dot(tvec, pvec);
         if( u < 0.0f || u > det ){
-            return sNotHit;
+            result.asNotHit();
+            return;
         }
 
         // Prepare to test V parameter
@@ -203,7 +206,8 @@ public class VRUtil {
         // Calculate V parameter and test bounds
         float v = vec3Dot(ray.getDir(), qvec);
         if( v < 0.0f || u + v > det ){
-            return sNotHit;
+            result.asNotHit();
+            return;
         }
 
         // Calculate t, scale parameters, ray intersects triangle
@@ -214,9 +218,11 @@ public class VRUtil {
         v *= fInvDet;
 
         if (t > 0){
-            return sNotHit;
+            result.asNotHit();
+            return;
         }
-        return Math.abs(t);
+
+        result.set(t, u, v);
     }
 
     public static void getEulerAngles(float[] headView, float[] output) {
