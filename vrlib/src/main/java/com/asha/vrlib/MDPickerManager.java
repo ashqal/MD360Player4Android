@@ -148,8 +148,8 @@ public class MDPickerManager {
         if (brief == null){
             return;
         }
-
         MDRay ray = VRUtil.point2Ray(brief.getViewportWidth() / 2, brief.getViewportHeight() / 2, brief);
+
         pick(ray, HIT_FROM_EYE);
     }
 
@@ -182,12 +182,12 @@ public class MDPickerManager {
                 // only post the hotspot which is hit.
                 if (hitHotspot != null && !currentDistance.isNotHit()){
                     hitHotspot.onTouchHit(ray);
-                    mTouchPickPoster.fire(hitHotspot, ray);
+                    mTouchPickPoster.fire(hitHotspot, ray, currentDistance);
                 }
                 break;
 
             case HIT_FROM_EYE:
-                mEyePickPoster.fire(hitHotspot, ray);
+                mEyePickPoster.fire(hitHotspot, ray, currentDistance);
                 break;
         }
 
@@ -212,57 +212,6 @@ public class MDPickerManager {
 
     public void setTouchPickListener(MDVRLibrary.ITouchPickListener2 touchPickListener) {
         this.mTouchPickListener = touchPickListener;
-    }
-
-    private class EyePickPoster {
-
-        private IMDHotspot hit;
-
-        private long timestamp;
-
-        void fire(IMDHotspot hit, MDRay ray) {
-            setHit(hit);
-            if (mEyePickChangedListener != null){
-                MDHitEvent event = MDHitEvent.obtain();
-                event.setHotspot(hit);
-                event.setRay(ray);
-                event.setTimestamp(timestamp);
-                mEyePickChangedListener.onHotspotHit(event);
-                MDHitEvent.recycle(event);
-            }
-        }
-
-        void setHit(IMDHotspot hit){
-            if (this.hit != hit){
-                timestamp = System.currentTimeMillis();
-
-                if (this.hit != null){
-                    this.hit.onEyeHitOut();
-                }
-            }
-
-            this.hit = hit;
-
-            if (this.hit != null){
-                this.hit.onEyeHitIn(timestamp);
-            }
-
-        }
-    }
-
-    private class TouchPickPoster {
-
-        void fire(IMDHotspot hitHotspot, MDRay ray) {
-
-            if (mTouchPickListener != null){
-                MDHitEvent event = MDHitEvent.obtain();
-                event.setHotspot(hitHotspot);
-                event.setRay(ray);
-                event.setTimestamp(System.currentTimeMillis());
-                mTouchPickListener.onHotspotHit(event);
-                MDHitEvent.recycle(event);
-            }
-        }
     }
 
     void resetEyePick(){
@@ -326,6 +275,62 @@ public class MDPickerManager {
                 rayPickAsEye(mDirectorContext);
             }
 
+        }
+    }
+
+    private class EyePickPoster {
+
+        private IMDHotspot hit;
+
+        private long timestamp;
+
+        void fire(IMDHotspot hit, MDRay ray, MDHitPoint hitPoint) {
+            setHit(hit);
+
+            MDHitEvent event = MDHitEvent.obtain();
+            event.setHotspot(hit);
+            event.setRay(ray);
+            event.setTimestamp(timestamp);
+            event.setHitPoint(hitPoint);
+
+            if (this.hit != null){
+                this.hit.onEyeHitIn(event);
+            }
+
+            if (mEyePickChangedListener != null){
+                mEyePickChangedListener.onHotspotHit(event);
+            }
+
+            MDHitEvent.recycle(event);
+        }
+
+        void setHit(IMDHotspot hit){
+
+            if (this.hit != hit){
+                if (this.hit != null){
+                    this.hit.onEyeHitOut(timestamp);
+                }
+
+                timestamp = System.currentTimeMillis();
+            }
+
+            this.hit = hit;
+        }
+    }
+
+    private class TouchPickPoster {
+
+        void fire(IMDHotspot hitHotspot, MDRay ray, MDHitPoint hitPoint) {
+
+            if (mTouchPickListener != null){
+                MDHitEvent event = MDHitEvent.obtain();
+                event.setHotspot(hitHotspot);
+                event.setRay(ray);
+                event.setTimestamp(System.currentTimeMillis());
+                event.setHitPoint(hitPoint);
+                mTouchPickListener.onHotspotHit(event);
+                MDHitEvent.recycle(event);
+            }
         }
     }
 

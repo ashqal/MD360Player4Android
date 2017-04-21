@@ -8,6 +8,7 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
@@ -45,8 +46,19 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
 
     private MDVRLibrary.ITouchPickListener clickListener;
 
-    private MDHitPoint hitPoint1 = new MDHitPoint();
-    private MDHitPoint hitPoint2 = new MDHitPoint();
+    private MDHitPoint hitPoint1 = new MDHitPoint(){
+        @Override
+        public float getV() {
+            return 1 - super.getV();
+        }
+    };
+
+    private MDHitPoint hitPoint2 = new MDHitPoint(){
+        @Override
+        public float getU() {
+            return 1 - super.getU();
+        }
+    };
 
     private AtomicBoolean mPendingRotateToCamera = new AtomicBoolean(false);
 
@@ -153,19 +165,19 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
         MDHitPoint hit2 = hitPoint2;
         if (points.size() == 4){
             VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2), hitPoint1);
-            VRUtil.intersectTriangle(ray, points.get(1), points.get(2), points.get(3), hitPoint2);
+            VRUtil.intersectTriangle(ray, points.get(3), points.get(2), points.get(1), hitPoint2);
         }
 
         return MDHitPoint.min(hit1, hit2);
     }
 
     @Override
-    public void onEyeHitIn(long timestamp) {
+    public void onEyeHitIn(MDHitEvent hitEvent) {
 
     }
 
     @Override
-    public void onEyeHitOut() {
+    public void onEyeHitOut(long timestamp) {
 
     }
 

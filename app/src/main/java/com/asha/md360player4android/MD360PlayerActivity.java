@@ -27,8 +27,8 @@ import com.asha.vrlib.plugins.MDAbsPlugin;
 import com.asha.vrlib.plugins.MDWidgetPlugin;
 import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.hotspot.MDAbsHotspot;
-import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
 import com.asha.vrlib.plugins.hotspot.MDAbsView;
+import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
 import com.asha.vrlib.plugins.hotspot.MDView;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
@@ -325,6 +325,27 @@ public abstract class MD360PlayerActivity extends Activity {
                     textView.setBackgroundColor(0x8800FF00);
                     mdView.invalidate();
                 }
+            }
+        });
+
+        findViewById(R.id.button_md_view_hover).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View view = new HoverView(activity);
+                view.setBackgroundColor(0x55FFCC11);
+
+                MDViewBuilder builder = MDViewBuilder.create()
+                        .provider(view, 300/*view width*/, 200/*view height*/)
+                        .size(3, 2)
+                        .position(MDPosition.newInstance().setZ(-8.0f))
+                        .title("md view")
+                        .tag("tag-md-text-view")
+                        ;
+
+                MDAbsView mdView = new MDView(builder);
+                mdView.rotateToCamera();
+                plugins.add(mdView);
+                getVRLibrary().addPlugin(mdView);
             }
         });
 

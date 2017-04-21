@@ -33,14 +33,22 @@ public class MDHitPoint {
         return this.distance <= other.distance;
     }
 
-    public static MDHitPoint min(MDHitPoint a, MDHitPoint b){
-        return a.distance < b.distance ? a : b;
+    public float getU() {
+        return u;
+    }
+
+    public float getV() {
+        return v;
     }
 
     public void set(float t, float u, float v) {
         this.distance = t;
         this.u = u;
         this.v = v;
+    }
+
+    public static MDHitPoint min(MDHitPoint a, MDHitPoint b){
+        return a.distance < b.distance ? a : b;
     }
 
     public static MDHitPoint notHit(){

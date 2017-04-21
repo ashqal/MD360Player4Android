@@ -1,5 +1,6 @@
 package com.asha.vrlib.plugins.hotspot;
 
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDRay;
 
@@ -9,10 +10,19 @@ import com.asha.vrlib.model.MDRay;
  */
 public interface IMDHotspot {
     MDHitPoint hit(MDRay ray);
-    void onEyeHitIn(long timestamp);
-    void onEyeHitOut();
+
+    void onEyeHitIn(MDHitEvent hitEvent);
+
+    /**
+     * @param timestamp down timestamp
+     * */
+    void onEyeHitOut(long timestamp);
+
     void onTouchHit(MDRay ray);
+
     String getTitle();
+
     String getTag();
+
     void rotateToCamera();
 }

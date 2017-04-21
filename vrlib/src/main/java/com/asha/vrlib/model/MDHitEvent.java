@@ -18,6 +18,8 @@ public class MDHitEvent {
 
     private MDRay ray;
 
+    private MDHitPoint hitPoint;
+
     public IMDHotspot getHotspot() {
         return hotspot;
     }
@@ -42,6 +44,13 @@ public class MDHitEvent {
         this.ray = ray;
     }
 
+    public MDHitPoint getHitPoint() {
+        return hitPoint;
+    }
+
+    public void setHitPoint(MDHitPoint hitPoint) {
+        this.hitPoint = hitPoint;
+    }
 
     // pool
 
@@ -57,6 +66,7 @@ public class MDHitEvent {
         event.hotspot = null;
         event.timestamp = 0;
         event.ray = null;
+        event.hitPoint = null;
         sPool.add(event);
     }
 

@@ -573,7 +573,7 @@ public class MDVRLibrary {
          * @param enabled default is false
          * @return builder
          */
-        public Builder eyePickEanbled(boolean enabled) {
+        public Builder eyePickEnabled(boolean enabled) {
             this.eyePickEnabled = enabled;
             return this;
         }
