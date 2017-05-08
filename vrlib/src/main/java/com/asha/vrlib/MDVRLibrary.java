@@ -691,9 +691,10 @@ public class MDVRLibrary {
         }
     }
 
-    public interface ContentType{
+    public interface ContentType {
         int VIDEO = 0;
         int BITMAP = 1;
+        int FBO = 2;
         int DEFAULT = VIDEO;
     }
 }

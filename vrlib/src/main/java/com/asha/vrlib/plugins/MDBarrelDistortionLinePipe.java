@@ -50,7 +50,7 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
     public MDBarrelDistortionLinePipe(DisplayModeManager displayModeManager) {
         mDisplayModeManager = displayModeManager;
         mConfiguration = displayModeManager.getBarrelDistortionConfig();
-        mProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
+        mProgram = new MD360Program(MDVRLibrary.ContentType.FBO);
         mDirector = new MD360DirectorFactory.OrthogonalImpl().createDirector(0);
         object3D = new MDBarrelDistortionMesh();
         mDrawingCache = new MDDrawingCache();

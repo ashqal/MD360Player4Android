@@ -45,7 +45,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
     public MDMultiFishEyePlugin(MDMainPluginBuilder builder, float radius, MDDirection direction) {
         mTexture = builder.getTexture();
         mProgram = new MD360Program(builder.getContentType());
-        mBitmapProgram = new MD360Program(MDVRLibrary.ContentType.BITMAP);
+        mBitmapProgram = new MD360Program(MDVRLibrary.ContentType.FBO);
 
         mProjectionModeManager = builder.getProjectionModeManager();
 

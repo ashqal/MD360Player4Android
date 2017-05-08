@@ -95,13 +95,16 @@ public class MD360Program {
         return mTextureCoordinateHandle;
     }
 
-    private static class FragmentShaderFactory{
+    private static class FragmentShaderFactory {
 
         static String fs(Context context, int type){
             int resId;
             switch (type){
                 case MDVRLibrary.ContentType.BITMAP:
                     resId = R.raw.per_pixel_fragment_shader_bitmap;
+                    break;
+                case MDVRLibrary.ContentType.FBO:
+                    resId = R.raw.per_pixel_fragment_shader_bitmap_fbo;
                     break;
                 case MDVRLibrary.ContentType.VIDEO:
                 default:
