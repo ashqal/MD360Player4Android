@@ -36,6 +36,8 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     private DeviceSensorLooper mDeviceSensorLooper;
 
+    private boolean isOn;
+
     public CardboardMotionStrategy(InteractiveModeManager.Params params) {
         super(params);
     }
@@ -61,6 +63,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public void turnOnInGL(Activity activity) {
+        isOn = true;
         for (MD360Director director : getDirectorList()){
             director.reset();
         }
@@ -68,6 +71,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public void turnOffInGL(final Activity activity) {
+        isOn = false;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -128,7 +132,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
-        if (event.accuracy != 0){
+        if (isOn && event.accuracy != 0){
             if (getParams().mSensorListener != null){
                 getParams().mSensorListener.onSensorChanged(event);
             }
@@ -160,7 +164,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
         @Override
         public void run() {
-            if (!mRegistered) return;
+            if (!mRegistered || !isOn) return;
 
             synchronized (matrixLock){
                 for (MD360Director director : getDirectorList()){
