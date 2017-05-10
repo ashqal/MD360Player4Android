@@ -161,13 +161,14 @@ public class MDMutablePosition extends MDPosition {
     }
 
     private void ensure(){
-        if (!changed){
-            return;
-        }
-
         // model
         if (mModelMatrix == null){
             mModelMatrix = new float[16];
+            Matrix.setIdentityM(mModelMatrix, 0);
+        }
+
+        if (!changed){
+            return;
         }
 
         Matrix.setIdentityM(mModelMatrix, 0);
