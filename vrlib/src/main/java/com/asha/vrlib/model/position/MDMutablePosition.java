@@ -204,6 +204,10 @@ public class MDMutablePosition extends MDPosition {
         changed = true;
     }
 
+    public boolean isChanged() {
+        return changed;
+    }
+
     @Override
     public float[] getMatrix() {
         ensure();

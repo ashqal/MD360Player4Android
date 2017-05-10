@@ -94,7 +94,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
     public void renderer(int index, int width, int height, MD360Director director) {
 
         // Update Projection
-        director.updateViewport(width, height);
+        director.setViewport(width, height);
 
         // Set our per-vertex lighting program.
         program.use();

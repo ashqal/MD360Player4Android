@@ -80,8 +80,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL = 212;
     public static final int PROJECTION_MODE_STEREO_SPHERE_VERTICAL = 213;
 
-    // private int mDisplayMode = DISPLAY_MODE_NORMAL;
-    private RectF mTextureSize = new RectF(0,0,1024,1024);
+    private RectF mTextureSize = new RectF(0, 0, 1024, 1024);
     private InteractiveModeManager mInteractiveModeManager;
     private DisplayModeManager mDisplayModeManager;
     private ProjectionModeManager mProjectionModeManager;
@@ -89,6 +88,7 @@ public class MDVRLibrary {
     private MDPickerManager mPickerManager;
     private MDGLScreenWrapper mScreenWrapper;
     private MDTouchHelper mTouchHelper;
+    private MD360CameraUpdate mCameraUpdate;
     private MD360Texture mTexture;
     private MDGLHandler mGLHandler;
 
@@ -99,6 +99,9 @@ public class MDVRLibrary {
 
         // init gl handler
         mGLHandler = new MDGLHandler();
+
+        // init camera update
+        mCameraUpdate = new MD360CameraUpdate();
 
         // init mode manager
         initModeManager(builder);
@@ -150,7 +153,7 @@ public class MDVRLibrary {
         public void run() {
             List<MD360Director> directors = mProjectionModeManager.getDirectors();
             for (MD360Director director : directors){
-                director.updateProjectionNearScale(scale);
+                director.setNearScale(scale);
             }
         }
     }
@@ -163,6 +166,7 @@ public class MDVRLibrary {
         projectionManagerParams.directorFactory = builder.directorFactory;
         projectionManagerParams.projectionFactory = builder.projectionFactory;
         projectionManagerParams.mainPluginBuilder = new MDMainPluginBuilder()
+                .setCameraUpdate(mCameraUpdate)
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture);
 
@@ -222,6 +226,10 @@ public class MDVRLibrary {
             this.mScreenWrapper.getView().setVisibility(View.GONE);
             Toast.makeText(context, "OpenGLES2 not supported.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public MD360CameraUpdate updateCamera(){
+        return mCameraUpdate;
     }
 
     public void switchInteractiveMode(final Activity activity) {

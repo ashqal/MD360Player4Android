@@ -5,7 +5,6 @@ import android.opengl.Matrix;
 
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDPosition;
-import com.asha.vrlib.model.position.MDMutablePosition;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -24,16 +23,9 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private float mEyeX = 0f;
-    private float mEyeY = 0f;
-    private float mEyeZ = 0f;
-    private float mLookX = 0f;
-    private float mLookY = 0f;
-    private float mRatio = 0f;
-    private float mNearScale = 0f;
-    private final MDPosition mCameraRotatePosition;
-    private int mViewportWidth = 2;
-    private int mViewportHeight = 1;
+    private final MD360Camera mCamera;
+
+    private final MD360CameraUpdate mCameraUpdate = new MD360CameraUpdate();
 
     private float[] mWorldRotationMatrix = new float[16];
     private float[] mWorldRotationInvertMatrix = new float[16];
@@ -45,18 +37,10 @@ public class MD360Director {
     private float mDeltaX;
     private float mDeltaY;
 
-    private boolean mCameraMatrixInvalidate = true;
     private boolean mWorldRotationMatrixInvalidate = true;
 
     protected MD360Director(Builder builder) {
-        this.mRatio = builder.mRatio;
-        this.mNearScale = builder.mNearScale;
-        this.mEyeX = builder.mEyeX;
-        this.mEyeY = builder.mEyeY;
-        this.mEyeZ = builder.mEyeZ;
-        this.mLookX = builder.mLookX;
-        this.mLookY = builder.mLookY;
-        this.mCameraRotatePosition = builder.mRotation;
+        this.mCamera = builder.mCamera;
         initModel();
     }
 
@@ -84,7 +68,11 @@ public class MD360Director {
     }
 
     public void beforeShot(){
+        updateProjectionIfNeed();
         updateViewMatrixIfNeed();
+
+        // consume
+        mCameraUpdate.consumeChanged();
     }
 
     public void shot(MD360Program program, MDPosition modelPosition) {
@@ -105,38 +93,44 @@ public class MD360Director {
     }
 
     private void updateViewMatrixIfNeed(){
-        if (mCameraMatrixInvalidate || mWorldRotationMatrixInvalidate){
-            if (mCameraMatrixInvalidate){
-                updateCameraMatrix();
-                mCameraMatrixInvalidate = false;
-            }
+        boolean camera = mCamera.isPositionValidate() || mCameraUpdate.isChanged();
+        boolean world = mWorldRotationMatrixInvalidate || mCamera.isRotationValidate();
 
-            if (mWorldRotationMatrixInvalidate){
-                updateWorldRotationMatrix();
-                mWorldRotationMatrixInvalidate = false;
-            }
+        if (camera){
+            updateCameraMatrix();
+            mCamera.consumePositionValidate();
+        }
 
+        if (world){
+            // mCamera changed will be consumed after updateWorldRotationMatrix
+            updateWorldRotationMatrix();
+            mWorldRotationMatrixInvalidate = false;
+        }
+
+        if (camera || world){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
         }
     }
 
-    public void updateViewport(int width, int height){
+    public void setViewport(int width, int height){
         // Projection Matrix
-        mViewportWidth = width;
-        mViewportHeight = height;
-        mRatio = width * 1.0f / height;
-        updateProjection();
+        mCamera.updateViewport(width, height);
     }
 
-    // call from gl thread
-    public void updateProjectionNearScale(float scale){
-        mNearScale = scale;
-        updateProjection();
+    public void setNearScale(float scale){
+        mCamera.setNearScale(scale);
+    }
+
+    private void updateProjectionIfNeed(){
+        if (mCamera.isProjectionValidate() || mCameraUpdate.isChanged()){
+            updateProjection();
+            mCamera.consumeProjectionValidate();
+        }
     }
 
     protected void updateProjection(){
-        final float left = -mRatio/2;
-        final float right = mRatio/2;
+        final float left = -mCamera.getRatio()/2;
+        final float right = mCamera.getRatio()/2;
         final float bottom = -0.5f;
         final float top = 0.5f;
         final float far = 500;
@@ -144,11 +138,11 @@ public class MD360Director {
     }
 
     protected float getNear(){
-        return mNearScale * sNear;
+        return (mCamera.getNearScale() + mCameraUpdate.getNearScale()) * sNear;
     }
 
     protected float getRatio(){
-        return mRatio;
+        return mCamera.getRatio();
     }
 
     public float[] getProjectionMatrix(){
@@ -156,11 +150,11 @@ public class MD360Director {
     }
 
     public int getViewportWidth() {
-        return mViewportWidth;
+        return mCamera.getViewportWidth();
     }
 
     public int getViewportHeight() {
-        return mViewportHeight;
+        return mCamera.getViewportHeight();
     }
 
     public float[] getViewMatrix() {
@@ -168,11 +162,11 @@ public class MD360Director {
     }
 
     private void updateCameraMatrix() {
-        final float eyeX = mEyeX;
-        final float eyeY = mEyeY;
-        final float eyeZ = mEyeZ;
-        final float lookX = mLookX;
-        final float lookY = mLookY;
+        final float eyeX = mCamera.getEyeX() + mCameraUpdate.getEyeX();
+        final float eyeY = mCamera.getEyeY() + mCameraUpdate.getEyeY();
+        final float eyeZ = mCamera.getEyeZ() + mCameraUpdate.getEyeZ();
+        final float lookX = mCamera.getLookX() + mCameraUpdate.getLookX();
+        final float lookY = mCamera.getLookY() + mCameraUpdate.getLookY();
         final float lookZ = -1.0f;
         final float upX = 0.0f;
         final float upY = 1.0f;
@@ -188,7 +182,7 @@ public class MD360Director {
         Matrix.rotateM(mCurrentRotationPost, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
         Matrix.setIdentityM(mTempMatrix, 0);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotatePosition.getMatrix(), 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCamera.getRotateMatrix(), 0);
         Matrix.multiplyMM(mCurrentRotationPost, 0, mSensorMatrix, 0, mTempMatrix, 0);
         Matrix.multiplyMM(mTempMatrix, 0, mWorldRotationMatrix, 0, mCurrentRotationPost, 0);
         System.arraycopy(mTempMatrix, 0, mWorldRotationMatrix, 0, 16);
@@ -221,63 +215,60 @@ public class MD360Director {
         return mWorldRotationInvertMatrix;
     }
 
+    public void apply(MD360CameraUpdate cameraUpdate) {
+        mCameraUpdate.copy(cameraUpdate);
+    }
+
     public static class Builder {
-        private float mEyeX = 0f;
-        private float mEyeY = 0f;
-        private float mEyeZ = 0f;
-        private float mRatio = 1.5f;
-        private float mNearScale = 1f;
-        private float mLookX = 0f;
-        private float mLookY = 0f;
-        private MDMutablePosition mRotation = MDMutablePosition.newInstance();
+
+        private MD360Camera mCamera = new MD360Camera();
+
+        private MD360Camera camera(){
+            return mCamera;
+        }
 
         public Builder setLookX(float mLookX) {
-            this.mLookX = mLookX;
+            camera().setLookX(mLookX);
             return this;
         }
 
         public Builder setLookY(float mLookY) {
-            this.mLookY = mLookY;
+            camera().setLookY(mLookY);
             return this;
         }
 
         public Builder setEyeX(float mEyeX) {
-            this.mEyeX = mEyeX;
+            camera().setEyeX(mEyeX);
             return this;
         }
 
         public Builder setEyeY(float mEyeY) {
-            this.mEyeY = mEyeY;
+            camera().setEyeY(mEyeY);
             return this;
         }
 
         public Builder setEyeZ(float mEyeZ) {
-            this.mEyeZ = mEyeZ;
-            return this;
-        }
-
-        public Builder setRoll(float roll){
-            mRotation.setRoll(roll);
-            return this;
-        }
-
-        public Builder setPitch(float pitch){
-            mRotation.setPitch(pitch);
-            return this;
-        }
-
-        public Builder setYaw(float yaw){
-            mRotation.setYaw(yaw);
-            return this;
-        }
-
-        public Builder setRatio(float mRatio) {
-            this.mRatio = mRatio;
+            camera().setEyeZ(mEyeZ);
             return this;
         }
 
         public Builder setNearScale(float scale) {
-            this.mNearScale = scale;
+            camera().setNearScale(scale);
+            return this;
+        }
+
+        public Builder setRoll(float roll){
+            camera().setRoll(roll);
+            return this;
+        }
+
+        public Builder setPitch(float pitch){
+            camera().setPitch(pitch);
+            return this;
+        }
+
+        public Builder setYaw(float yaw){
+            camera().setYaw(yaw);
             return this;
         }
 

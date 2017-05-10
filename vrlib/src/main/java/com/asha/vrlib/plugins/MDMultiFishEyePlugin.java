@@ -65,7 +65,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
     @Override
     public void beforeRenderer(int totalWidth, int totalHeight) {
-        mFixedDirector.updateViewport(totalWidth, totalHeight);
+        mFixedDirector.setViewport(totalWidth, totalHeight);
         mDrawingCache.bind(totalWidth, totalHeight);
         drawConverter(totalWidth,totalHeight);
         mDrawingCache.unbind();
@@ -79,7 +79,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
         if (object3D == null) return;
 
         // Update Projection
-        director.updateViewport(width, height);
+        director.setViewport(width, height);
 
         // Set our per-vertex lighting program.
         mBitmapProgram.use();
@@ -126,7 +126,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
             mProgram.use();
             mTexture.texture(mProgram);
 
-            mFixedDirector.updateViewport(itemWidth, height);
+            mFixedDirector.setViewport(itemWidth, height);
             mConverterObject3D.uploadVerticesBufferIfNeed(mProgram, index);
             mConverterObject3D.uploadTexCoordinateBufferIfNeed(mProgram, index);
 
