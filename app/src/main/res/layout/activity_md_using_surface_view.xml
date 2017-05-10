@@ -229,6 +229,31 @@
           android:layout_width="wrap_content"
           android:layout_height="42dp" />
 
+      <Button
+          android:id="@+id/button_camera_little_planet"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="Camera Little Planet"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
+
+      <Button
+          android:id="@+id/button_camera_to_normal"
+          android:textSize="13sp"
+          android:textColor="@android:color/white"
+          android:layout_marginLeft="8dp"
+          android:text="Camera Normal"
+          android:paddingLeft="8dp"
+          android:paddingRight="8dp"
+          android:includeFontPadding="false"
+          android:background="@drawable/selector_button_background"
+          android:layout_width="wrap_content"
+          android:layout_height="42dp" />
    </LinearLayout>
 
    <TextView

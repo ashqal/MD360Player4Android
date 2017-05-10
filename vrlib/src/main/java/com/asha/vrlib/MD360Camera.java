@@ -9,20 +9,22 @@ import com.asha.vrlib.model.position.MDMutablePosition;
 
 public class MD360Camera {
 
-    private final MDMutablePosition mRotation = MDMutablePosition.newInstance();
-
-    private boolean mPositionValidate = true;
+    private boolean mPositionValidate;
     private float mEyeX = 0f;
     private float mEyeY = 0f;
     private float mEyeZ = 0f;
     private float mLookX = 0f;
     private float mLookY = 0f;
 
-    private boolean mProjectionValidate = true;
+    private boolean mProjectionValidate;
     private float mNearScale = 1f;
     private float mRatio = 1.5f;
     private int mViewportWidth = 2;
     private int mViewportHeight = 1;
+
+    private boolean mRotationValidate;
+    private final MDMutablePosition mRotation = MDMutablePosition.newInstance();
+
 
     MD360Camera setLookX(float mLookX) {
         this.mLookX = mLookX;
@@ -86,17 +88,32 @@ public class MD360Camera {
 
     MD360Camera setRoll(float roll){
         mRotation.setRoll(roll);
+        mRotationValidate = true;
         return this;
     }
 
     MD360Camera setPitch(float pitch){
         mRotation.setPitch(pitch);
+        mRotationValidate = true;
         return this;
     }
 
     MD360Camera setYaw(float yaw){
         mRotation.setYaw(yaw);
+        mRotationValidate = true;
         return this;
+    }
+
+    float getPitch() {
+        return mRotation.getPitch();
+    }
+
+    float getYaw() {
+        return mRotation.getYaw();
+    }
+
+    float getRoll() {
+        return mRotation.getRoll();
     }
 
     MD360Camera updateViewport(int width, int height){
@@ -120,7 +137,7 @@ public class MD360Camera {
     }
 
     boolean isRotationValidate() {
-        return mRotation.isChanged();
+        return mRotationValidate;
     }
 
     public boolean isPositionValidate() {
@@ -139,7 +156,7 @@ public class MD360Camera {
         mProjectionValidate = false;
     }
 
-    float[] getRotateMatrix() {
-        return mRotation.getMatrix();
+    public void consumeRotationValidate() {
+        mRotationValidate = false;
     }
 }

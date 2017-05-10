@@ -1,5 +1,7 @@
 package com.asha.md360player4android;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asha.vrlib.MD360CameraUpdate;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
@@ -39,6 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.animation.PropertyValuesHolder.ofFloat;
 import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
 import static com.squareup.picasso.MemoryPolicy.NO_STORE;
 
@@ -361,6 +365,55 @@ public abstract class MD360PlayerActivity extends Activity {
                 }
             }
         });
+
+        findViewById(R.id.button_camera_little_planet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MD360CameraUpdate cameraUpdate = getVRLibrary().updateCamera();
+                PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), -0.5f);
+                PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 18f);
+                PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 90f);
+                PropertyValuesHolder yaw = PropertyValuesHolder.ofFloat("yaw", cameraUpdate.getYaw(), 90f);
+                PropertyValuesHolder roll = PropertyValuesHolder.ofFloat("roll", cameraUpdate.getRoll(), 0f);
+                startCameraAnimation(cameraUpdate, near, eyeZ, pitch, yaw, roll);
+            }
+        });
+
+        findViewById(R.id.button_camera_to_normal).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MD360CameraUpdate cameraUpdate = getVRLibrary().updateCamera();
+                PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), 0f);
+                PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 0f);
+                PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 0f);
+                PropertyValuesHolder yaw = PropertyValuesHolder.ofFloat("yaw", cameraUpdate.getYaw(), 0f);
+                PropertyValuesHolder roll = PropertyValuesHolder.ofFloat("roll", cameraUpdate.getRoll(), 0f);
+                startCameraAnimation(cameraUpdate, near, eyeZ, pitch, yaw, roll);
+            }
+        });
+    }
+
+
+    private ValueAnimator animator;
+
+    private void startCameraAnimation(final MD360CameraUpdate cameraUpdate, PropertyValuesHolder... values){
+        if (animator != null){
+            animator.cancel();
+        }
+
+        animator = ValueAnimator.ofPropertyValuesHolder(values).setDuration(2000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float near = (float) animation.getAnimatedValue("near");
+                float eyeZ = (float) animation.getAnimatedValue("eyeZ");
+                float pitch = (float) animation.getAnimatedValue("pitch");
+                float yaw = (float) animation.getAnimatedValue("yaw");
+                float roll = (float) animation.getAnimatedValue("roll");
+                cameraUpdate.setEyeZ(eyeZ).setNearScale(near).setPitch(pitch).setYaw(yaw).setRoll(roll);
+            }
+        });
+        animator.start();
     }
 
     abstract protected MDVRLibrary createVRLibrary();

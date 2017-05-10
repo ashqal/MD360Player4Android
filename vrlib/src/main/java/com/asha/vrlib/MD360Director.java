@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.position.MDMutablePosition;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -23,16 +24,16 @@ public class MD360Director {
     private float[] mMVMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
 
-    private final MD360Camera mCamera;
-
-    private final MD360CameraUpdate mCameraUpdate = new MD360CameraUpdate();
-
     private float[] mWorldRotationMatrix = new float[16];
     private float[] mWorldRotationInvertMatrix = new float[16];
     private float[] mCurrentRotationPost = new float[16];
     private float[] mSensorMatrix = new float[16];
     private float[] mTempMatrix = new float[16];
     private float[] mCameraMatrix = new float[16];
+
+    private final MD360Camera mCamera;
+    private final MD360CameraUpdate mCameraUpdate = new MD360CameraUpdate();
+    private final MDMutablePosition mCameraRotation = MDMutablePosition.newInstance();
 
     private float mDeltaX;
     private float mDeltaY;
@@ -70,9 +71,6 @@ public class MD360Director {
     public void beforeShot(){
         updateProjectionIfNeed();
         updateViewMatrixIfNeed();
-
-        // consume
-        mCameraUpdate.consumeChanged();
     }
 
     public void shot(MD360Program program, MDPosition modelPosition) {
@@ -93,18 +91,25 @@ public class MD360Director {
     }
 
     private void updateViewMatrixIfNeed(){
-        boolean camera = mCamera.isPositionValidate() || mCameraUpdate.isChanged();
-        boolean world = mWorldRotationMatrixInvalidate || mCamera.isRotationValidate();
+        boolean camera = mCamera.isPositionValidate() || mCameraUpdate.isPositionValidate();
+        boolean world = mWorldRotationMatrixInvalidate || mCamera.isRotationValidate() || mCameraUpdate.isRotationValidate();
 
         if (camera){
             updateCameraMatrix();
             mCamera.consumePositionValidate();
+            mCameraUpdate.consumePositionValidate();
         }
 
         if (world){
+            mCameraRotation.setPitch(mCamera.getPitch() + mCameraUpdate.getPitch());
+            mCameraRotation.setRoll(mCamera.getRoll() + mCameraUpdate.getRoll());
+            mCameraRotation.setYaw(mCamera.getYaw() + mCameraUpdate.getYaw());
+
             // mCamera changed will be consumed after updateWorldRotationMatrix
             updateWorldRotationMatrix();
             mWorldRotationMatrixInvalidate = false;
+            mCamera.consumeRotationValidate();
+            mCameraUpdate.consumeRotationValidate();
         }
 
         if (camera || world){
@@ -122,9 +127,10 @@ public class MD360Director {
     }
 
     private void updateProjectionIfNeed(){
-        if (mCamera.isProjectionValidate() || mCameraUpdate.isChanged()){
+        if (mCamera.isProjectionValidate() || mCameraUpdate.isProjectionValidate()){
             updateProjection();
             mCamera.consumeProjectionValidate();
+            mCameraUpdate.consumeProjectionValidate();
         }
     }
 
@@ -182,7 +188,8 @@ public class MD360Director {
         Matrix.rotateM(mCurrentRotationPost, 0, -mDeltaX, 0.0f, 1.0f, 0.0f);
 
         Matrix.setIdentityM(mTempMatrix, 0);
-        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCamera.getRotateMatrix(), 0);
+        Matrix.multiplyMM(mTempMatrix, 0, mCurrentRotationPost, 0, mCameraRotation.getMatrix(), 0);
+
         Matrix.multiplyMM(mCurrentRotationPost, 0, mSensorMatrix, 0, mTempMatrix, 0);
         Matrix.multiplyMM(mTempMatrix, 0, mWorldRotationMatrix, 0, mCurrentRotationPost, 0);
         System.arraycopy(mTempMatrix, 0, mWorldRotationMatrix, 0, 16);

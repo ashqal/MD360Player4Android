@@ -7,55 +7,39 @@ package com.asha.vrlib;
 
 public class MD360CameraUpdate {
 
-    private boolean changed = false;
-
     private MD360Camera delegate = new MD360Camera();
 
     public MD360CameraUpdate() {
         clear();
     }
 
-    public boolean isChanged() {
-        return changed;
-    }
-
-    public void consumeChanged(){
-        changed = false;
-    }
-
     public MD360CameraUpdate setLookX(float mLookX) {
         delegate.setLookX(mLookX);
-        changed = true;
         return this;
     }
 
     public MD360CameraUpdate setLookY(float mLookY) {
         delegate.setLookY(mLookY);
-        changed = true;
         return this;
     }
 
     public MD360CameraUpdate setEyeX(float mEyeX) {
         delegate.setEyeX(mEyeX);
-        changed = true;
         return this;
     }
 
     public MD360CameraUpdate setEyeY(float mEyeY) {
         delegate.setEyeY(mEyeY);
-        changed = true;
         return this;
     }
 
     public MD360CameraUpdate setEyeZ(float mEyeZ) {
         delegate.setEyeZ(mEyeZ);
-        changed = true;
         return this;
     }
 
     public MD360CameraUpdate setNearScale(float scale) {
         delegate.setNearScale(scale);
-        changed = true;
         return this;
     }
 
@@ -83,6 +67,57 @@ public class MD360CameraUpdate {
         return delegate.getNearScale();
     }
 
+    public MD360CameraUpdate setRoll(float roll) {
+        delegate.setRoll(roll);
+        return this;
+    }
+
+    public MD360CameraUpdate setPitch(float pitch) {
+        delegate.setPitch(pitch);
+        return this;
+    }
+
+    public MD360CameraUpdate setYaw(float yaw) {
+        delegate.setYaw(yaw);
+        return this;
+    }
+
+    public float getPitch() {
+        return delegate.getPitch();
+    }
+
+    public float getYaw() {
+        return delegate.getYaw();
+    }
+
+    public float getRoll() {
+        return delegate.getRoll();
+    }
+
+    public boolean isRotationValidate() {
+        return delegate.isRotationValidate();
+    }
+
+    public boolean isPositionValidate() {
+        return delegate.isPositionValidate();
+    }
+
+    public boolean isProjectionValidate() {
+        return delegate.isProjectionValidate();
+    }
+
+    public void consumePositionValidate() {
+        delegate.consumePositionValidate();
+    }
+
+    public void consumeProjectionValidate() {
+        delegate.consumeProjectionValidate();
+    }
+
+    public void consumeRotationValidate() {
+        delegate.consumeRotationValidate();
+    }
+
     public void clear(){
         setLookX(0);
         setLookY(0);
@@ -90,6 +125,9 @@ public class MD360CameraUpdate {
         setEyeY(0);
         setEyeZ(0);
         setNearScale(0);
+        setPitch(0);
+        setYaw(0);
+        setRoll(0);
     }
 
     public void copy(MD360CameraUpdate cameraUpdate) {
@@ -99,5 +137,18 @@ public class MD360CameraUpdate {
         setEyeY(cameraUpdate.getEyeY());
         setEyeZ(cameraUpdate.getEyeZ());
         setNearScale(cameraUpdate.getNearScale());
+        setPitch(cameraUpdate.getPitch());
+        setYaw(cameraUpdate.getYaw());
+        setRoll(cameraUpdate.getRoll());
+    }
+
+    public boolean isChanged() {
+        return isPositionValidate() || isRotationValidate() || isProjectionValidate();
+    }
+
+    public void consumeChanged() {
+        consumePositionValidate();
+        consumeRotationValidate();
+        consumeProjectionValidate();
     }
 }
