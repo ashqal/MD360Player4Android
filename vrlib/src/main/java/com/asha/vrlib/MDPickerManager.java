@@ -1,21 +1,25 @@
 package com.asha.vrlib;
 
-import android.content.Context;
 import android.view.MotionEvent;
 
-import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.model.MDDirectorSnapshot;
+import com.asha.vrlib.model.MDHitEvent;
+import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPluginAdapter;
 import com.asha.vrlib.plugins.MDPluginManager;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import static com.asha.vrlib.common.VRUtil.sNotHit;
+import static com.asha.vrlib.common.VRUtil.checkGLThread;
+import static com.asha.vrlib.common.VRUtil.checkMainThread;
 
 
 /**
@@ -38,53 +42,48 @@ public class MDPickerManager {
 
     private MDPluginManager mPluginManager;
 
-    private MDGLHandler mGLHandler;
+    private MDVRLibrary.IEyePickListener2 mEyePickChangedListener;
 
-    private MDVRLibrary.IEyePickListener mEyePickChangedListener;
-
-    private MDVRLibrary.ITouchPickListener mTouchPickListener;
+    private MDVRLibrary.ITouchPickListener2 mTouchPickListener;
 
     private EyePickPoster mEyePickPoster = new EyePickPoster();
 
     private TouchPickPoster mTouchPickPoster = new TouchPickPoster();
 
-    private RayPickAsTouchGLTask mRayPickAsTouchRunnable = new RayPickAsTouchGLTask();
+    private RayPickAsTouchMainTask mRayPickAsTouchRunnable = new RayPickAsTouchMainTask();
+
+    private RayPickAsEyeMainTask mRayPickAsEyeRunnable = new RayPickAsEyeMainTask();
+
+    private DirectorContext mDirectorContext = new DirectorContext();
+
+    private final Object mDirectorLock = new Object();
 
     private MDVRLibrary.IGestureListener mTouchPicker = new MDVRLibrary.IGestureListener() {
         @Override
         public void onClick(MotionEvent e) {
             mRayPickAsTouchRunnable.setEvent(e.getX(), e.getY());
-            mGLHandler.post(mRayPickAsTouchRunnable);
+            mRayPickAsTouchRunnable.run();
         }
     };
 
-    private MDAbsPlugin mEyePicker = new MDAbsPlugin() {
-        @Override
-        protected void initInGL(Context context) {
+    private MDAbsPlugin mEyePicker = new MDPluginAdapter() {
 
-        }
-
-        @Override
-        public void beforeRenderer(int totalWidth, int totalHeight) {
-
-        }
+        private long pickTs;
 
         // gl thread
         @Override
-        public void renderer(int index, int width, int height, MD360Director director) {
-            if (index == 0 && isEyePickEnable()){
-                rayPickAsEye(width >> 1, height >> 1, director);
+        public void beforeRenderer(int totalWidth, int totalHeight) {
+            synchronized (mDirectorLock){
+                mDirectorContext.snapshot(mProjectionModeManager.getDirectors());
             }
-        }
 
-        @Override
-        public void destroyInGL() {
-
-        }
-
-        @Override
-        protected boolean removable() {
-            return false;
+            if (isEyePickEnable()){
+                long current = System.currentTimeMillis();
+                if (current - pickTs > 100){
+                    MDMainHandler.sharedHandler().post(mRayPickAsEyeRunnable);
+                    pickTs = current;
+                }
+            }
         }
     };
 
@@ -92,7 +91,6 @@ public class MDPickerManager {
         this.mDisplayModeManager = params.displayModeManager;
         this.mProjectionModeManager = params.projectionModeManager;
         this.mPluginManager = params.pluginManager;
-        this.mGLHandler = params.glHandler;
     }
 
     public boolean isEyePickEnable() {
@@ -103,30 +101,43 @@ public class MDPickerManager {
         this.mEyePickEnable = eyePickEnable;
     }
 
-    // gl thread.
-    private void rayPickAsTouch(float  x, float y) {
+    // main thread.
+    private void rayPickAsTouch(float  x, float y, DirectorContext directorContext) {
         int size = mDisplayModeManager.getVisibleSize();
         if (size == 0){
             return;
         }
 
-        int itemWidth = mProjectionModeManager.getDirectors().get(0).getViewportWidth();
+        MDDirectorSnapshot snapshot = directorContext.getSnapshot(0);
+        if (snapshot == null){
+            return;
+        }
+
+        int itemWidth = (int) snapshot.getViewportWidth();
 
         int index = (int) (x / itemWidth);
         if (index >= size){
             return;
         }
-        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, mProjectionModeManager.getDirectors().get(index));
 
-        IMDHotspot hotspot = pick(ray, HIT_FROM_TOUCH);
-
-        if (ray != null && mTouchPickListener != null){
-            mTouchPickListener.onHotspotHit(hotspot, ray);
+        snapshot = directorContext.getSnapshot(index);
+        if (snapshot == null){
+            return;
         }
+
+        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, snapshot);
+
+        pick(ray, HIT_FROM_TOUCH);
     }
 
-    private void rayPickAsEye(float x, float y, MD360Director director) {
-        MDRay ray = VRUtil.point2Ray(x, y, director);
+    // main thread.
+    private void rayPickAsEye(DirectorContext mDirectorContext) {
+        MDDirectorSnapshot snapshot = mDirectorContext.getSnapshot(0);
+        if (snapshot == null){
+            return;
+        }
+        MDRay ray = VRUtil.point2Ray(snapshot.getViewportWidth() / 2, snapshot.getViewportHeight() / 2, snapshot);
+
         pick(ray, HIT_FROM_EYE);
     }
 
@@ -136,15 +147,18 @@ public class MDPickerManager {
     }
 
     private IMDHotspot hitTest(MDRay ray, int hitType) {
+        // main thread
+        checkMainThread("hitTest must in main thread");
+
         List<MDAbsPlugin> plugins = mPluginManager.getPlugins();
         IMDHotspot hitHotspot = null;
-        float currentDistance = sNotHit;
+        MDHitPoint currentDistance = MDHitPoint.notHit();
 
         for (MDAbsPlugin plugin : plugins) {
             if (plugin instanceof IMDHotspot) {
                 IMDHotspot hotspot = (IMDHotspot) plugin;
-                float tmpDistance = hotspot.hit(ray);
-                if (tmpDistance != sNotHit && tmpDistance <= currentDistance){
+                MDHitPoint tmpDistance = hotspot.hit(ray);
+                if (!tmpDistance.isNotHit() && tmpDistance.nearThen(currentDistance)){
                     hitHotspot = hotspot;
                     currentDistance = tmpDistance;
                 }
@@ -154,15 +168,14 @@ public class MDPickerManager {
         switch (hitType) {
             case HIT_FROM_TOUCH:
                 // only post the hotspot which is hit.
-                if (currentDistance != sNotHit){
-                    mTouchPickPoster.setRay(ray);
-                    mTouchPickPoster.setHit(hitHotspot);
-                    MDMainHandler.sharedHandler().post(mTouchPickPoster);
+                if (hitHotspot != null && !currentDistance.isNotHit()){
+                    hitHotspot.onTouchHit(ray);
+                    mTouchPickPoster.fire(hitHotspot, ray, currentDistance);
                 }
                 break;
+
             case HIT_FROM_EYE:
-                mEyePickPoster.setHit(hitHotspot);
-                MDMainHandler.sharedHandler().postDelayed(mEyePickPoster, 100);
+                mEyePickPoster.fire(hitHotspot, ray, currentDistance);
                 break;
         }
 
@@ -181,79 +194,24 @@ public class MDPickerManager {
         return new Builder();
     }
 
-    public void setEyePickChangedListener(MDVRLibrary.IEyePickListener eyePickChangedListener) {
+    public void setEyePickChangedListener(MDVRLibrary.IEyePickListener2 eyePickChangedListener) {
         this.mEyePickChangedListener = eyePickChangedListener;
     }
 
-    public void setTouchPickListener(MDVRLibrary.ITouchPickListener touchPickListener) {
+    public void setTouchPickListener(MDVRLibrary.ITouchPickListener2 touchPickListener) {
         this.mTouchPickListener = touchPickListener;
     }
 
-    private class EyePickPoster implements Runnable{
-
-        private IMDHotspot hit;
-
-        private long timestamp;
-
-        @Override
-        public void run() {
-            MDMainHandler.sharedHandler().removeCallbacks(this);
-
-            if (mEyePickChangedListener != null){
-                mEyePickChangedListener.onHotspotHit(hit, timestamp);
-            }
-        }
-
-        public void setHit(IMDHotspot hit) {
-            if (this.hit != hit){
-                timestamp = System.currentTimeMillis();
-
-                if (this.hit != null){
-                    this.hit.onEyeHitOut();
-                }
-            }
-
-            this.hit = hit;
-
-            if (this.hit != null){
-                this.hit.onEyeHitIn(timestamp);
-            }
-        }
-    }
-
-    private static class TouchPickPoster implements Runnable{
-
-        private IMDHotspot hit;
-
-        private MDRay ray;
-
-        @Override
-        public void run() {
-            if (hit != null){
-                hit.onTouchHit(ray);
-            }
-        }
-
-        public void setRay(MDRay ray) {
-            this.ray = ray;
-        }
-
-        public void setHit(IMDHotspot hit) {
-            this.hit = hit;
-        }
-    }
-
-    public void resetEyePick(){
+    void resetEyePick(){
         if (mEyePickPoster != null){
             mEyePickPoster.setHit(null);
         }
     }
 
-    public static class Builder{
+    public static class Builder {
         private DisplayModeManager displayModeManager;
         private ProjectionModeManager projectionModeManager;
         private MDPluginManager pluginManager;
-        private MDGLHandler glHandler;
 
         private Builder() {
         }
@@ -276,14 +234,9 @@ public class MDPickerManager {
             this.projectionModeManager = projectionModeManager;
             return this;
         }
-
-        public Builder setGLHandler(MDGLHandler glHandler) {
-            this.glHandler = glHandler;
-            return this;
-        }
     }
 
-    private class RayPickAsTouchGLTask implements Runnable {
+    private class RayPickAsTouchMainTask implements Runnable {
         float x;
         float y;
 
@@ -294,7 +247,107 @@ public class MDPickerManager {
 
         @Override
         public void run() {
-            rayPickAsTouch(x, y);
+            synchronized (mDirectorLock){
+                rayPickAsTouch(x, y, mDirectorContext);
+            }
+        }
+    }
+
+    private class RayPickAsEyeMainTask implements Runnable {
+
+        @Override
+        public void run() {
+            synchronized (mDirectorLock){
+                rayPickAsEye(mDirectorContext);
+            }
+        }
+    }
+
+    private class EyePickPoster {
+
+        private IMDHotspot hit;
+
+        private long timestamp;
+
+        void fire(IMDHotspot hit, MDRay ray, MDHitPoint hitPoint) {
+            setHit(hit);
+
+            MDHitEvent event = MDHitEvent.obtain();
+            event.setHotspot(hit);
+            event.setRay(ray);
+            event.setTimestamp(timestamp);
+            event.setHitPoint(hitPoint);
+
+            if (this.hit != null){
+                this.hit.onEyeHitIn(event);
+            }
+
+            if (mEyePickChangedListener != null){
+                mEyePickChangedListener.onHotspotHit(event);
+            }
+
+            MDHitEvent.recycle(event);
+        }
+
+        void setHit(IMDHotspot hit){
+
+            if (this.hit != hit){
+                if (this.hit != null){
+                    this.hit.onEyeHitOut(timestamp);
+                }
+
+                timestamp = System.currentTimeMillis();
+            }
+
+            this.hit = hit;
+        }
+    }
+
+    private class TouchPickPoster {
+
+        void fire(IMDHotspot hitHotspot, MDRay ray, MDHitPoint hitPoint) {
+
+            if (mTouchPickListener != null){
+                MDHitEvent event = MDHitEvent.obtain();
+                event.setHotspot(hitHotspot);
+                event.setRay(ray);
+                event.setTimestamp(System.currentTimeMillis());
+                event.setHitPoint(hitPoint);
+                mTouchPickListener.onHotspotHit(event);
+                MDHitEvent.recycle(event);
+            }
+        }
+    }
+
+    private static class DirectorContext {
+
+        private int size;
+
+        private List<MDDirectorSnapshot> list = new LinkedList<>();
+
+        public void snapshot(List<MD360Director> directorList){
+            checkGLThread("snapshot must in gl thread!");
+
+            ensureSize(directorList.size());
+            for (int i = 0; i < directorList.size(); i++){
+                list.get(i).copy(directorList.get(i));
+            }
+        }
+
+        private void ensureSize(int size){
+            this.size = size;
+
+            while (list.size() < size){
+                list.add(new MDDirectorSnapshot());
+            }
+        }
+
+        public MDDirectorSnapshot getSnapshot(int i) {
+            if (i < size){
+                return list.get(0);
+            }
+
+            return null;
         }
     }
 }

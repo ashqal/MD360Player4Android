@@ -41,8 +41,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setPitch(float pitch) {
+        changed |= this.mPitch != pitch;
         this.mPitch = pitch;
-        changed = true;
         return this;
     }
 
@@ -51,8 +51,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setYaw(float yaw) {
+        changed |= this.mYaw != yaw;
         this.mYaw = yaw;
-        changed = true;
         return this;
     }
 
@@ -61,8 +61,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setRoll(float roll) {
+        changed |= this.mRoll != roll;
         this.mRoll = roll;
-        changed = true;
         return this;
     }
 
@@ -71,8 +71,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setX(float x) {
+        changed |= this.mX != x;
         this.mX = x;
-        changed = true;
         return this;
     }
 
@@ -81,8 +81,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setY(float y) {
+        changed |= this.mY != y;
         this.mY = y;
-        changed = true;
         return this;
     }
 
@@ -91,8 +91,8 @@ public class MDMutablePosition extends MDPosition {
     }
 
     public MDMutablePosition setZ(float z) {
+        changed |= this.mZ != z;
         this.mZ = z;
-        changed = true;
         return this;
     }
 
@@ -106,8 +106,8 @@ public class MDMutablePosition extends MDPosition {
      * @return self
      */
     public MDMutablePosition setAngleX(float angleX) {
+        changed |= this.mAngleX != angleX;
         this.mAngleX = angleX;
-        changed = true;
         return this;
     }
 
@@ -121,8 +121,8 @@ public class MDMutablePosition extends MDPosition {
      * @return self
      */
     public MDMutablePosition setAngleY(float angleY) {
+        changed |= this.mAngleY != angleY;
         this.mAngleY = angleY;
-        changed = true;
         return this;
     }
 
@@ -136,8 +136,8 @@ public class MDMutablePosition extends MDPosition {
      * @return self
      */
     public MDMutablePosition setAngleZ(float angleZ) {
+        changed |= this.mAngleX != angleZ;
         this.mAngleZ = angleZ;
-        changed = true;
         return this;
     }
 
@@ -161,19 +161,20 @@ public class MDMutablePosition extends MDPosition {
     }
 
     private void ensure(){
+        // model
+        if (mModelMatrix == null){
+            mModelMatrix = new float[16];
+            Matrix.setIdentityM(mModelMatrix, 0);
+        }
+
         if (!changed){
             return;
         }
 
-        // model
-        if (mModelMatrix == null){
-            mModelMatrix = new float[16];
-        }
-
         Matrix.setIdentityM(mModelMatrix, 0);
 
-        Matrix.rotateM(mModelMatrix, 0, getAngleY(), 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, getAngleX(), 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, getAngleX(), 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, getAngleY(), 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, getAngleZ(), 0.0f, 0.0f, 1.0f);
 
         Matrix.translateM(mModelMatrix, 0, getX(),getY(),getZ());

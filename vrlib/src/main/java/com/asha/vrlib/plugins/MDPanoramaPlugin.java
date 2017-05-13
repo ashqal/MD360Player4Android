@@ -2,13 +2,17 @@ package com.asha.vrlib.plugins;
 
 import android.content.Context;
 
+import com.asha.vrlib.MDDirectorCamUpdate;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
+import com.asha.vrlib.MDDirectorFilter;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360Texture;
+
+import java.util.List;
 
 import static com.asha.vrlib.common.GLUtil.glCheck;
 
@@ -24,10 +28,16 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
     private ProjectionModeManager mProjectionModeManager;
 
+    private MDDirectorCamUpdate mDirectorCameraUpdate;
+
+    private MDDirectorFilter mDirectorFilter;
+
     public MDPanoramaPlugin(MDMainPluginBuilder builder) {
         mTexture = builder.getTexture();
         mProgram = new MD360Program(builder.getContentType());
         mProjectionModeManager = builder.getProjectionModeManager();
+        mDirectorCameraUpdate = builder.getCameraUpdate();
+        mDirectorFilter = builder.getFilter();
     }
 
     @Override
@@ -38,7 +48,19 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
     @Override
     public void beforeRenderer(int totalWidth, int totalHeight) {
+        List<MD360Director> directors = mProjectionModeManager.getDirectors();
+        if (directors != null){
+            // apply the update
+            for (MD360Director director : directors){
+                if (mDirectorCameraUpdate.isChanged()){
+                    director.applyUpdate(mDirectorCameraUpdate);
+                }
 
+                director.applyFilter(mDirectorFilter);
+            }
+
+            mDirectorCameraUpdate.consumeChanged();
+        }
     }
 
     @Override
@@ -49,7 +71,7 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         if (object3D == null) return;
 
         // Update Projection
-        director.updateViewport(width, height);
+        director.setViewport(width, height);
 
         // Set our per-vertex lighting program.
         mProgram.use();

@@ -1,5 +1,6 @@
 package com.asha.vrlib.plugins;
 
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHotspotBuilder;
 
 /**
@@ -42,15 +43,15 @@ public class MDWidgetPlugin extends MDHotspotPlugin {
 
 
     @Override
-    public void onEyeHitIn(long timestamp) {
-        super.onEyeHitIn(timestamp);
+    public void onEyeHitIn(MDHitEvent hitEvent) {
+        super.onEyeHitIn(hitEvent);
         mCurrentStatus = STATUS_FOCUSED;
         updateStatus();
     }
 
     @Override
-    public void onEyeHitOut() {
-        super.onEyeHitOut();
+    public void onEyeHitOut(long timestamp) {
+        super.onEyeHitOut(timestamp);
         mCurrentStatus = STATUS_NORMAL;
         updateStatus();
     }

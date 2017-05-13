@@ -5,10 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDHitEvent;
+import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDViewBuilder;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360Texture;
@@ -34,6 +38,12 @@ public abstract class MDAbsView extends MDAbsHotspot {
     private Canvas mCanvas;
 
     private Bitmap mBitmap;
+
+    private TouchStatus mTouchStatus;
+
+    private enum TouchStatus{
+        NOP, DOWN
+    }
 
     public MDAbsView(MDViewBuilder builder) {
         super(builder.builderDelegate);
@@ -114,6 +124,41 @@ public abstract class MDAbsView extends MDAbsHotspot {
         if (mTexture.isReady()){
             super.renderer(index, width, height, director);
         }
+    }
+
+    @Override
+    public void onEyeHitIn(MDHitEvent hitEvent) {
+        super.onEyeHitIn(hitEvent);
+
+        MDHitPoint point = hitEvent.getHitPoint();
+        if (point == null || mAttachedView == null) {
+            return;
+        }
+        int action = mTouchStatus == TouchStatus.NOP ? MotionEvent.ACTION_HOVER_ENTER : MotionEvent.ACTION_HOVER_MOVE;
+        float x = mAttachedView.getLeft() + mAttachedView.getWidth() * point.getU();
+        float y = mAttachedView.getTop() + mAttachedView.getHeight() * point.getV();
+
+        MotionEvent motionEvent = MotionEvent.obtain(hitEvent.getTimestamp(), System.currentTimeMillis(), action, x, y, 0);
+        motionEvent.setSource(InputDevice.SOURCE_CLASS_POINTER);
+        mAttachedView.dispatchGenericMotionEvent(motionEvent);
+        motionEvent.recycle();
+        mTouchStatus = TouchStatus.DOWN;
+
+        invalidate();
+    }
+
+    @Override
+    public void onEyeHitOut(long timestamp) {
+        super.onEyeHitOut(timestamp);
+        if (mTouchStatus == TouchStatus.DOWN){
+            MotionEvent motionEvent = MotionEvent.obtain(timestamp, System.currentTimeMillis(), MotionEvent.ACTION_HOVER_EXIT, 0, 0, 0);
+            motionEvent.setSource(InputDevice.SOURCE_CLASS_POINTER);
+            mAttachedView.dispatchGenericMotionEvent(motionEvent);
+            motionEvent.recycle();
+        }
+        mTouchStatus = TouchStatus.NOP;
+
+        invalidate();
     }
 
     public <T extends View> T castAttachedView(Class<T> clazz){

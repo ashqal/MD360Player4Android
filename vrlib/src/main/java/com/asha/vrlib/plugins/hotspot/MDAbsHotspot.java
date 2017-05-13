@@ -8,6 +8,8 @@ import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.VRUtil;
+import com.asha.vrlib.model.MDHitEvent;
+import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
@@ -23,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.asha.vrlib.common.GLUtil.glCheck;
-import static com.asha.vrlib.common.VRUtil.sNotHit;
 
 /**
  * Created by hzqiujiadi on 2017/4/12.
@@ -44,6 +45,20 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
     private String tag;
 
     private MDVRLibrary.ITouchPickListener clickListener;
+
+    private MDHitPoint hitPoint1 = new MDHitPoint(){
+        @Override
+        public float getV() {
+            return 1 - super.getV();
+        }
+    };
+
+    private MDHitPoint hitPoint2 = new MDHitPoint(){
+        @Override
+        public float getU() {
+            return 1 - super.getU();
+        }
+    };
 
     private AtomicBoolean mPendingRotateToCamera = new AtomicBoolean(false);
 
@@ -79,7 +94,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
     public void renderer(int index, int width, int height, MD360Director director) {
 
         // Update Projection
-        director.updateViewport(width, height);
+        director.setViewport(width, height);
 
         // Set our per-vertex lighting program.
         program.use();
@@ -127,9 +142,9 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
     }
 
     @Override
-    public float hit(MDRay ray) {
+    public MDHitPoint hit(MDRay ray) {
         if (object3D == null || object3D.getVerticesBuffer(0) == null){
-            return sNotHit;
+            return MDHitPoint.notHit();
         }
 
         MDPosition position = getModelPosition();
@@ -146,23 +161,23 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
             v.multiplyMV(model);
             points.add(v);
         }
-        float hit1 = sNotHit;
-        float hit2 = sNotHit;
+        MDHitPoint hit1 = hitPoint1;
+        MDHitPoint hit2 = hitPoint2;
         if (points.size() == 4){
-            hit1 = VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2));
-            hit2 = VRUtil.intersectTriangle(ray,points.get(1), points.get(2), points.get(3));
+            VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2), hitPoint1);
+            VRUtil.intersectTriangle(ray, points.get(3), points.get(2), points.get(1), hitPoint2);
         }
 
-        return Math.min(hit1,hit2);
+        return MDHitPoint.min(hit1, hit2);
     }
 
     @Override
-    public void onEyeHitIn(long timestamp) {
+    public void onEyeHitIn(MDHitEvent hitEvent) {
 
     }
 
     @Override
-    public void onEyeHitOut() {
+    public void onEyeHitOut(long timestamp) {
 
     }
 
