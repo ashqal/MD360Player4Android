@@ -173,8 +173,8 @@ public class MDMutablePosition extends MDPosition {
 
         Matrix.setIdentityM(mModelMatrix, 0);
 
-        Matrix.rotateM(mModelMatrix, 0, getAngleY(), 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, getAngleX(), 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, getAngleX(), 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, getAngleY(), 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, getAngleZ(), 0.0f, 0.0f, 1.0f);
 
         Matrix.translateM(mModelMatrix, 0, getX(),getY(),getZ());

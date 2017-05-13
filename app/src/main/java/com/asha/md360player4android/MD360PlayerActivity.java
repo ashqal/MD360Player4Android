@@ -354,11 +354,15 @@ public abstract class MD360PlayerActivity extends Activity {
         });
 
         final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
+        final TextView directorBriefText = (TextView) findViewById(R.id.director_brief_text);
         getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickListener() {
             @Override
             public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
                 String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
                 hotspotText.setText(text);
+
+                String brief = getVRLibrary().getDirectorBrief().toString();
+                directorBriefText.setText(brief);
 
                 if (System.currentTimeMillis() - hitTimestamp > 5000){
                     getVRLibrary().resetEyePick();

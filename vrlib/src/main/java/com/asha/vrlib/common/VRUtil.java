@@ -8,7 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 
-import com.asha.vrlib.model.MDDirectorBrief;
+import com.asha.vrlib.model.MDDirectorSnapshot;
 import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.model.MDVector3D;
@@ -140,7 +140,7 @@ public class VRUtil {
         return Matrix.invertM(output, 0, input, 0);
     }
 
-    public static MDRay point2Ray(float x, float y, MDDirectorBrief info){
+    public static MDRay point2Ray(float x, float y, MDDirectorSnapshot info){
         checkMainThread("point2Ray must called in main Thread");
         float[] view = info.getViewMatrix();
         float[] temp = sUIThreadTmp;

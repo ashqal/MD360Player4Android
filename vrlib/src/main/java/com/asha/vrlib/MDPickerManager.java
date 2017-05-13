@@ -1,17 +1,17 @@
 package com.asha.vrlib;
 
-import android.content.Context;
 import android.view.MotionEvent;
 
 import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.common.VRUtil;
-import com.asha.vrlib.model.MDDirectorBrief;
+import com.asha.vrlib.model.MDDirectorSnapshot;
 import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHitPoint;
 import com.asha.vrlib.model.MDRay;
-import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.MDAbsPlugin;
+import com.asha.vrlib.plugins.MDPluginAdapter;
 import com.asha.vrlib.plugins.MDPluginManager;
+import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.strategy.display.DisplayModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 
@@ -66,11 +66,9 @@ public class MDPickerManager {
         }
     };
 
-    private MDAbsPlugin mEyePicker = new MDAbsPlugin() {
-        @Override
-        protected void initInGL(Context context) {
+    private MDAbsPlugin mEyePicker = new MDPluginAdapter() {
 
-        }
+        private long pickTs;
 
         // gl thread
         @Override
@@ -80,22 +78,12 @@ public class MDPickerManager {
             }
 
             if (isEyePickEnable()){
-                MDMainHandler.sharedHandler().postDelayed(mRayPickAsEyeRunnable, 100);
+                long current = System.currentTimeMillis();
+                if (current - pickTs > 100){
+                    MDMainHandler.sharedHandler().post(mRayPickAsEyeRunnable);
+                    pickTs = current;
+                }
             }
-        }
-
-        @Override
-        public void renderer(int index, int width, int height, MD360Director director) {
-        }
-
-        @Override
-        public void destroyInGL() {
-
-        }
-
-        @Override
-        protected boolean removable() {
-            return false;
         }
     };
 
@@ -120,35 +108,35 @@ public class MDPickerManager {
             return;
         }
 
-        MDDirectorBrief brief = directorContext.getBrief(0);
-        if (brief == null){
+        MDDirectorSnapshot snapshot = directorContext.getSnapshot(0);
+        if (snapshot == null){
             return;
         }
 
-        int itemWidth = (int) brief.getViewportWidth();
+        int itemWidth = (int) snapshot.getViewportWidth();
 
         int index = (int) (x / itemWidth);
         if (index >= size){
             return;
         }
 
-        brief = directorContext.getBrief(index);
-        if (brief == null){
+        snapshot = directorContext.getSnapshot(index);
+        if (snapshot == null){
             return;
         }
 
-        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, brief);
+        MDRay ray = VRUtil.point2Ray(x - itemWidth * index, y, snapshot);
 
         pick(ray, HIT_FROM_TOUCH);
     }
 
     // main thread.
     private void rayPickAsEye(DirectorContext mDirectorContext) {
-        MDDirectorBrief brief = mDirectorContext.getBrief(0);
-        if (brief == null){
+        MDDirectorSnapshot snapshot = mDirectorContext.getSnapshot(0);
+        if (snapshot == null){
             return;
         }
-        MDRay ray = VRUtil.point2Ray(brief.getViewportWidth() / 2, brief.getViewportHeight() / 2, brief);
+        MDRay ray = VRUtil.point2Ray(snapshot.getViewportWidth() / 2, snapshot.getViewportHeight() / 2, snapshot);
 
         pick(ray, HIT_FROM_EYE);
     }
@@ -269,12 +257,9 @@ public class MDPickerManager {
 
         @Override
         public void run() {
-            MDMainHandler.sharedHandler().removeCallbacks(mRayPickAsEyeRunnable);
-
             synchronized (mDirectorLock){
                 rayPickAsEye(mDirectorContext);
             }
-
         }
     }
 
@@ -338,7 +323,7 @@ public class MDPickerManager {
 
         private int size;
 
-        private List<MDDirectorBrief> list = new LinkedList<>();
+        private List<MDDirectorSnapshot> list = new LinkedList<>();
 
         public void snapshot(List<MD360Director> directorList){
             checkGLThread("snapshot must in gl thread!");
@@ -353,11 +338,11 @@ public class MDPickerManager {
             this.size = size;
 
             while (list.size() < size){
-                list.add(new MDDirectorBrief());
+                list.add(new MDDirectorSnapshot());
             }
         }
 
-        public MDDirectorBrief getBrief(int i) {
+        public MDDirectorSnapshot getSnapshot(int i) {
             if (i < size){
                 return list.get(0);
             }

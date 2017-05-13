@@ -19,6 +19,7 @@ import com.asha.vrlib.common.MDMainHandler;
 import com.asha.vrlib.compact.CompactEyePickAdapter;
 import com.asha.vrlib.compact.CompactTouchPickAdapter;
 import com.asha.vrlib.model.BarrelDistortionConfig;
+import com.asha.vrlib.model.MDDirectorBrief;
 import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPinchConfig;
@@ -140,6 +141,9 @@ public class MDVRLibrary {
 
         // init picker manager
         initPickerManager(builder);
+
+        // add plugin
+        initPlugin();
     }
 
     private class UpdatePinchRunnable implements Runnable{
@@ -204,7 +208,6 @@ public class MDVRLibrary {
 
         // listener
         mTouchHelper.addClickListener(mPickerManager.getTouchPicker());
-        mPluginManager.add(mPickerManager.getEyePicker());
     }
 
     private void initOpenGL(Context context, MDGLScreenWrapper screenWrapper) {
@@ -228,8 +231,17 @@ public class MDVRLibrary {
         }
     }
 
+    private void initPlugin() {
+        addPlugin(mProjectionModeManager.getDirectorUpdatePlugin());
+        addPlugin(mPickerManager.getEyePicker());
+    }
+
     public MD360CameraUpdate updateCamera(){
         return mCameraUpdate;
+    }
+
+    public MDDirectorBrief getDirectorBrief(){
+        return mProjectionModeManager.getDirectorBrief();
     }
 
     public void switchInteractiveMode(final Activity activity) {

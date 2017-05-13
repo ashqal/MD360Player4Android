@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 
 import com.asha.vrlib.common.VRUtil;
 import com.asha.vrlib.model.MDPosition;
+import com.asha.vrlib.model.MDQuaternion;
 import com.asha.vrlib.model.position.MDMutablePosition;
 
 /**
@@ -34,6 +35,7 @@ public class MD360Director {
     private final MD360Camera mCamera;
     private final MD360CameraUpdate mCameraUpdate = new MD360CameraUpdate();
     private final MDMutablePosition mCameraRotation = MDMutablePosition.newInstance();
+    private final MDQuaternion mViewQuaternion = new MDQuaternion();
 
     private float mDeltaX;
     private float mDeltaY;
@@ -66,6 +68,7 @@ public class MD360Director {
     private void initModel(){
         Matrix.setIdentityM(mViewMatrix, 0);
         Matrix.setIdentityM(mSensorMatrix, 0);
+        mViewQuaternion.fromMatrix(mViewMatrix);
     }
 
     public void beforeShot(){
@@ -114,6 +117,7 @@ public class MD360Director {
 
         if (camera || world){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
+            mViewQuaternion.fromMatrix(mViewMatrix);
         }
     }
 
@@ -165,6 +169,10 @@ public class MD360Director {
 
     public float[] getViewMatrix() {
         return mViewMatrix;
+    }
+
+    public MDQuaternion getViewQuaternion() {
+        return mViewQuaternion;
     }
 
     private void updateCameraMatrix() {

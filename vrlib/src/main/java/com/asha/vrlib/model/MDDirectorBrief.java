@@ -1,40 +1,52 @@
 package com.asha.vrlib.model;
 
-import com.asha.vrlib.MD360Director;
-
 /**
- * Created by hzqiujiadi on 2017/4/20.
+ * Created by hzqiujiadi on 2017/5/13.
  * hzqiujiadi ashqalcn@gmail.com
  */
 
 public class MDDirectorBrief {
 
-    private float[] viewMatrix = new float[16];
-    private float[] projectionMatrix = new float[16];
-    private float viewportWidth;
-    private float viewportHeight;
+    private float pitch;
+    private float yaw;
+    private float roll;
 
-    public float[] getViewMatrix() {
-        return viewMatrix;
+    public void make(MDQuaternion quaternion){
+        this.pitch = quaternion.getPitch();
+        this.yaw = quaternion.getYaw();
+        this.roll = quaternion.getRoll();
     }
 
-    public float[] getProjectionMatrix() {
-        return projectionMatrix;
+    /**
+     * getPitch
+     * @return value in degree
+     * */
+    public float getPitch() {
+        return pitch;
     }
 
-    public float getViewportWidth() {
-        return viewportWidth;
+    /**
+     * getYaw
+     * @return value in degree
+     * */
+    public float getYaw() {
+        return yaw;
     }
 
-    public float getViewportHeight() {
-        return viewportHeight;
+    /**
+     * getRoll
+     * @return value in degree
+     * */
+    public float getRoll() {
+        return roll;
     }
 
-    public void copy(MD360Director director) {
-        this.viewportWidth = director.getViewportWidth();
-        this.viewportHeight = director.getViewportHeight();
-
-        System.arraycopy(director.getViewMatrix(), 0, viewMatrix, 0, 16);
-        System.arraycopy(director.getProjectionMatrix(), 0, projectionMatrix, 0, 16);
+    @Override
+    public String toString() {
+        return "{" +
+                "pitch=" + pitch +
+                ", yaw=" + yaw +
+                ", roll=" + roll +
+                '}';
     }
 }
