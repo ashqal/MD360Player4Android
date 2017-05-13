@@ -5,40 +5,40 @@ package com.asha.vrlib;
  * hzqiujiadi ashqalcn@gmail.com
  */
 
-public class MD360CameraUpdate {
+public class MDDirectorCamUpdate {
 
-    private MD360Camera delegate = new MD360Camera();
+    private MDDirectorCamera delegate = new MDDirectorCamera();
 
-    public MD360CameraUpdate() {
+    public MDDirectorCamUpdate() {
         clear();
     }
 
-    public MD360CameraUpdate setLookX(float mLookX) {
+    public MDDirectorCamUpdate setLookX(float mLookX) {
         delegate.setLookX(mLookX);
         return this;
     }
 
-    public MD360CameraUpdate setLookY(float mLookY) {
+    public MDDirectorCamUpdate setLookY(float mLookY) {
         delegate.setLookY(mLookY);
         return this;
     }
 
-    public MD360CameraUpdate setEyeX(float mEyeX) {
+    public MDDirectorCamUpdate setEyeX(float mEyeX) {
         delegate.setEyeX(mEyeX);
         return this;
     }
 
-    public MD360CameraUpdate setEyeY(float mEyeY) {
+    public MDDirectorCamUpdate setEyeY(float mEyeY) {
         delegate.setEyeY(mEyeY);
         return this;
     }
 
-    public MD360CameraUpdate setEyeZ(float mEyeZ) {
+    public MDDirectorCamUpdate setEyeZ(float mEyeZ) {
         delegate.setEyeZ(mEyeZ);
         return this;
     }
 
-    public MD360CameraUpdate setNearScale(float scale) {
+    public MDDirectorCamUpdate setNearScale(float scale) {
         delegate.setNearScale(scale);
         return this;
     }
@@ -67,17 +67,17 @@ public class MD360CameraUpdate {
         return delegate.getNearScale();
     }
 
-    public MD360CameraUpdate setRoll(float roll) {
+    public MDDirectorCamUpdate setRoll(float roll) {
         delegate.setRoll(roll);
         return this;
     }
 
-    public MD360CameraUpdate setPitch(float pitch) {
+    public MDDirectorCamUpdate setPitch(float pitch) {
         delegate.setPitch(pitch);
         return this;
     }
 
-    public MD360CameraUpdate setYaw(float yaw) {
+    public MDDirectorCamUpdate setYaw(float yaw) {
         delegate.setYaw(yaw);
         return this;
     }
@@ -130,7 +130,7 @@ public class MD360CameraUpdate {
         setRoll(0);
     }
 
-    public void copy(MD360CameraUpdate cameraUpdate) {
+    public void copy(MDDirectorCamUpdate cameraUpdate) {
         setLookX(cameraUpdate.getLookX());
         setLookY(cameraUpdate.getLookY());
         setEyeX(cameraUpdate.getEyeX());

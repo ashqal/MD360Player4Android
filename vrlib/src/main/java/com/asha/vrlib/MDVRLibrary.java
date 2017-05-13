@@ -89,9 +89,10 @@ public class MDVRLibrary {
     private MDPickerManager mPickerManager;
     private MDGLScreenWrapper mScreenWrapper;
     private MDTouchHelper mTouchHelper;
-    private MD360CameraUpdate mCameraUpdate;
     private MD360Texture mTexture;
     private MDGLHandler mGLHandler;
+    private MDDirectorCamUpdate mDirectorCameraUpdate;
+    private MDDirectorFilter mDirectorFilter;
 
     private MDVRLibrary(Builder builder) {
 
@@ -100,9 +101,6 @@ public class MDVRLibrary {
 
         // init gl handler
         mGLHandler = new MDGLHandler();
-
-        // init camera update
-        mCameraUpdate = new MD360CameraUpdate();
 
         // init mode manager
         initModeManager(builder);
@@ -163,6 +161,12 @@ public class MDVRLibrary {
     }
 
     private void initModeManager(Builder builder) {
+        // init director camera update
+        mDirectorCameraUpdate = new MDDirectorCamUpdate();
+
+        // init director
+        mDirectorFilter = new MDDirectorFilter();
+        mDirectorFilter.setDelegate(builder.directorFilter);
 
         // init ProjectionModeManager
         ProjectionModeManager.Params projectionManagerParams = new ProjectionModeManager.Params();
@@ -170,7 +174,8 @@ public class MDVRLibrary {
         projectionManagerParams.directorFactory = builder.directorFactory;
         projectionManagerParams.projectionFactory = builder.projectionFactory;
         projectionManagerParams.mainPluginBuilder = new MDMainPluginBuilder()
-                .setCameraUpdate(mCameraUpdate)
+                .setCameraUpdate(mDirectorCameraUpdate)
+                .setFilter(mDirectorFilter)
                 .setContentType(builder.contentType)
                 .setTexture(builder.texture);
 
@@ -236,8 +241,8 @@ public class MDVRLibrary {
         addPlugin(mPickerManager.getEyePicker());
     }
 
-    public MD360CameraUpdate updateCamera(){
-        return mCameraUpdate;
+    public MDDirectorCamUpdate updateCamera(){
+        return mDirectorCameraUpdate;
     }
 
     public MDDirectorBrief getDirectorBrief(){
@@ -349,6 +354,10 @@ public class MDVRLibrary {
 
     public void setPinchScale(float scale){
         mTouchHelper.scaleTo(scale);
+    }
+
+    public void setDirectorFilter(IDirectorFilter filter){
+        mDirectorFilter.setDelegate(filter);
     }
 
     public void addPlugin(MDAbsPlugin plugin){
@@ -473,6 +482,39 @@ public class MDVRLibrary {
         void onClick(MotionEvent e);
     }
 
+    public interface IDirectorFilter {
+        /**
+         * @param input pitch(x-axis, from -90 to 90 in degree)
+         * */
+        float onFilterPitch(float input);
+        /**
+         * @param input yaw(y-axis, from -180 to 180 in degree)
+         * */
+        float onFilterYaw(float input);
+        /**
+         * @param input roll(z-axis, from -180 to 180 in degree)
+         * */
+        float onFilterRoll(float input);
+    }
+
+    public static class DirectorFilterAdatper implements IDirectorFilter {
+
+        @Override
+        public float onFilterPitch(float input) {
+            return input;
+        }
+
+        @Override
+        public float onFilterYaw(float input) {
+            return input;
+        }
+
+        @Override
+        public float onFilterRoll(float input) {
+            return input;
+        }
+    }
+
     interface IAdvanceGestureListener {
         void onDrag(float distanceX, float distanceY);
         void onPinch(float scale);
@@ -524,6 +566,7 @@ public class MDVRLibrary {
         private MDGLScreenWrapper screenWrapper;
         private IMDProjectionFactory projectionFactory;
         private MDPinchConfig pinchConfig;
+        private IDirectorFilter directorFilter;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -672,6 +715,11 @@ public class MDVRLibrary {
 
         public Builder pinchConfig(MDPinchConfig config){
             this.pinchConfig = config;
+            return this;
+        }
+
+        public Builder directorFilter(IDirectorFilter filter){
+            this.directorFilter = filter;
             return this;
         }
 

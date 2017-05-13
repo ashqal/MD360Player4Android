@@ -7,7 +7,7 @@ import com.asha.vrlib.model.position.MDMutablePosition;
  * hzqiujiadi ashqalcn@gmail.com
  */
 
-public class MD360Camera {
+public class MDDirectorCamera {
 
     private boolean mPositionValidate;
     private float mEyeX = 0f;
@@ -26,31 +26,31 @@ public class MD360Camera {
     private final MDMutablePosition mRotation = MDMutablePosition.newInstance();
 
 
-    MD360Camera setLookX(float mLookX) {
+    MDDirectorCamera setLookX(float mLookX) {
         this.mLookX = mLookX;
         mPositionValidate = true;
         return this;
     }
 
-    MD360Camera setLookY(float mLookY) {
+    MDDirectorCamera setLookY(float mLookY) {
         this.mLookY = mLookY;
         mPositionValidate = true;
         return this;
     }
 
-    MD360Camera setEyeX(float mEyeX) {
+    MDDirectorCamera setEyeX(float mEyeX) {
         this.mEyeX = mEyeX;
         mPositionValidate = true;
         return this;
     }
 
-    MD360Camera setEyeY(float mEyeY) {
+    MDDirectorCamera setEyeY(float mEyeY) {
         this.mEyeY = mEyeY;
         mPositionValidate = true;
         return this;
     }
 
-    MD360Camera setEyeZ(float mEyeZ) {
+    MDDirectorCamera setEyeZ(float mEyeZ) {
         this.mEyeZ = mEyeZ;
         mPositionValidate = true;
         return this;
@@ -80,25 +80,25 @@ public class MD360Camera {
         return mNearScale;
     }
 
-    MD360Camera setNearScale(float scale) {
+    MDDirectorCamera setNearScale(float scale) {
         this.mNearScale = scale;
         mProjectionValidate = true;
         return this;
     }
 
-    MD360Camera setRoll(float roll){
+    MDDirectorCamera setRoll(float roll){
         mRotation.setRoll(roll);
         mRotationValidate = true;
         return this;
     }
 
-    MD360Camera setPitch(float pitch){
+    MDDirectorCamera setPitch(float pitch){
         mRotation.setPitch(pitch);
         mRotationValidate = true;
         return this;
     }
 
-    MD360Camera setYaw(float yaw){
+    MDDirectorCamera setYaw(float yaw){
         mRotation.setYaw(yaw);
         mRotationValidate = true;
         return this;
@@ -116,7 +116,7 @@ public class MD360Camera {
         return mRotation.getRoll();
     }
 
-    MD360Camera updateViewport(int width, int height){
+    MDDirectorCamera updateViewport(int width, int height){
         mViewportWidth = width;
         mViewportHeight = height;
         mRatio = width * 1.0f / height;

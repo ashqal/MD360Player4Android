@@ -1,6 +1,7 @@
 package com.asha.vrlib.model;
 
-import com.asha.vrlib.MD360CameraUpdate;
+import com.asha.vrlib.MDDirectorCamUpdate;
+import com.asha.vrlib.MDDirectorFilter;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360Texture;
@@ -13,7 +14,8 @@ public class MDMainPluginBuilder {
     private MD360Texture texture;
     private int contentType = MDVRLibrary.ContentType.DEFAULT;
     private ProjectionModeManager projectionModeManager;
-    private MD360CameraUpdate cameraUpdate;
+    private MDDirectorCamUpdate cameraUpdate;
+    private MDDirectorFilter filter;
 
     public MDMainPluginBuilder() {
     }
@@ -35,8 +37,12 @@ public class MDMainPluginBuilder {
         return this;
     }
 
-    public MD360CameraUpdate getCameraUpdate() {
+    public MDDirectorCamUpdate getCameraUpdate() {
         return cameraUpdate;
+    }
+
+    public MDDirectorFilter getFilter() {
+        return filter;
     }
 
     /**
@@ -54,8 +60,13 @@ public class MDMainPluginBuilder {
         return this;
     }
 
-    public MDMainPluginBuilder setCameraUpdate(MD360CameraUpdate cameraUpdate) {
+    public MDMainPluginBuilder setCameraUpdate(MDDirectorCamUpdate cameraUpdate) {
         this.cameraUpdate = cameraUpdate;
+        return this;
+    }
+
+    public MDMainPluginBuilder setFilter(MDDirectorFilter filter) {
+        this.filter = filter;
         return this;
     }
 }

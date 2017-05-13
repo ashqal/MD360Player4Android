@@ -2,9 +2,10 @@ package com.asha.vrlib.plugins;
 
 import android.content.Context;
 
-import com.asha.vrlib.MD360CameraUpdate;
+import com.asha.vrlib.MDDirectorCamUpdate;
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360Program;
+import com.asha.vrlib.MDDirectorFilter;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.objects.MDAbsObject3D;
@@ -27,13 +28,16 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
 
     private ProjectionModeManager mProjectionModeManager;
 
-    private MD360CameraUpdate mCameraUpdate;
+    private MDDirectorCamUpdate mDirectorCameraUpdate;
+
+    private MDDirectorFilter mDirectorFilter;
 
     public MDPanoramaPlugin(MDMainPluginBuilder builder) {
         mTexture = builder.getTexture();
         mProgram = new MD360Program(builder.getContentType());
         mProjectionModeManager = builder.getProjectionModeManager();
-        mCameraUpdate = builder.getCameraUpdate();
+        mDirectorCameraUpdate = builder.getCameraUpdate();
+        mDirectorFilter = builder.getFilter();
     }
 
     @Override
@@ -45,13 +49,17 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
     @Override
     public void beforeRenderer(int totalWidth, int totalHeight) {
         List<MD360Director> directors = mProjectionModeManager.getDirectors();
-        if (mCameraUpdate.isChanged() && directors != null){
+        if (directors != null){
             // apply the update
             for (MD360Director director : directors){
-                director.apply(mCameraUpdate);
+                if (mDirectorCameraUpdate.isChanged()){
+                    director.applyUpdate(mDirectorCameraUpdate);
+                }
+
+                director.applyFilter(mDirectorFilter);
             }
 
-            mCameraUpdate.consumeChanged();
+            mDirectorCameraUpdate.consumeChanged();
         }
     }
 

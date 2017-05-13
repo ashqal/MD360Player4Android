@@ -32,10 +32,11 @@ public class MD360Director {
     private float[] mTempMatrix = new float[16];
     private float[] mCameraMatrix = new float[16];
 
-    private final MD360Camera mCamera;
-    private final MD360CameraUpdate mCameraUpdate = new MD360CameraUpdate();
+    private final MDDirectorCamera mCamera;
+    private final MDDirectorCamUpdate mCameraUpdate = new MDDirectorCamUpdate();
     private final MDMutablePosition mCameraRotation = MDMutablePosition.newInstance();
     private final MDQuaternion mViewQuaternion = new MDQuaternion();
+    private MDDirectorFilter mDirectorFilter;
 
     private float mDeltaX;
     private float mDeltaY;
@@ -118,6 +119,18 @@ public class MD360Director {
         if (camera || world){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
             mViewQuaternion.fromMatrix(mViewMatrix);
+            float pitch = mViewQuaternion.getPitch();
+            float yaw = mViewQuaternion.getYaw();
+            float roll = mViewQuaternion.getRoll();
+
+            float filterPitch = mDirectorFilter.onFilterPitch(pitch);
+            float filterYaw = mDirectorFilter.onFilterYaw(yaw);
+            float filterRoll = mDirectorFilter.onFilterRoll(roll);
+
+            if (pitch != filterPitch || yaw != filterYaw || roll != filterRoll){
+                mViewQuaternion.setEulerAngles(filterPitch, filterYaw, filterRoll);
+                mViewQuaternion.toMatrix(mViewMatrix);
+            }
         }
     }
 
@@ -230,15 +243,19 @@ public class MD360Director {
         return mWorldRotationInvertMatrix;
     }
 
-    public void apply(MD360CameraUpdate cameraUpdate) {
+    public void applyUpdate(MDDirectorCamUpdate cameraUpdate) {
         mCameraUpdate.copy(cameraUpdate);
+    }
+
+    public void applyFilter(MDDirectorFilter directorFilter) {
+        this.mDirectorFilter = directorFilter;
     }
 
     public static class Builder {
 
-        private MD360Camera mCamera = new MD360Camera();
+        private MDDirectorCamera mCamera = new MDDirectorCamera();
 
-        private MD360Camera camera(){
+        private MDDirectorCamera camera(){
             return mCamera;
         }
 

@@ -19,7 +19,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asha.vrlib.MD360CameraUpdate;
+import com.asha.vrlib.MDDirectorCamUpdate;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
@@ -60,6 +60,7 @@ public abstract class MD360PlayerActivity extends Activity {
     private static final SparseArray<String> sInteractiveMode = new SparseArray<>();
     private static final SparseArray<String> sProjectionMode = new SparseArray<>();
     private static final SparseArray<String> sAntiDistortion = new SparseArray<>();
+    private static final SparseArray<String> sPitchFilter = new SparseArray<>();
 
     static {
         sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL,"NORMAL");
@@ -87,6 +88,9 @@ public abstract class MD360PlayerActivity extends Activity {
 
         sAntiDistortion.put(1,"ANTI-ENABLE");
         sAntiDistortion.put(0,"ANTI-DISABLE");
+
+        sPitchFilter.put(1,"FILTER PITCH");
+        sPitchFilter.put(0,"FILTER NOP");
     }
 
     public static void startVideo(Context context, Uri uri){
@@ -373,7 +377,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_camera_little_planet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MD360CameraUpdate cameraUpdate = getVRLibrary().updateCamera();
+                MDDirectorCamUpdate cameraUpdate = getVRLibrary().updateCamera();
                 PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), -0.5f);
                 PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 18f);
                 PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 90f);
@@ -386,7 +390,7 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_camera_to_normal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MD360CameraUpdate cameraUpdate = getVRLibrary().updateCamera();
+                MDDirectorCamUpdate cameraUpdate = getVRLibrary().updateCamera();
                 PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), 0f);
                 PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 0f);
                 PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 0f);
@@ -395,12 +399,38 @@ public abstract class MD360PlayerActivity extends Activity {
                 startCameraAnimation(cameraUpdate, near, eyeZ, pitch, yaw, roll);
             }
         });
+
+        SpinnerHelper.with(this)
+                .setData(sPitchFilter)
+                .setDefault(0)
+                .setClickHandler(new SpinnerHelper.ClickHandler() {
+                    @Override
+                    public void onSpinnerClicked(int index, int key, String value) {
+                        MDVRLibrary.IDirectorFilter filter = key == 0 ? null : new MDVRLibrary.DirectorFilterAdatper() {
+                            @Override
+                            public float onFilterPitch(float input) {
+                                if (input > 70){
+                                    return 70;
+                                }
+
+                                if (input < -70){
+                                    return -70;
+                                }
+
+                                return input;
+                            }
+                        };
+
+                        getVRLibrary().setDirectorFilter(filter);
+                    }
+                })
+                .init(R.id.spinner_pitch_filter);
     }
 
 
     private ValueAnimator animator;
 
-    private void startCameraAnimation(final MD360CameraUpdate cameraUpdate, PropertyValuesHolder... values){
+    private void startCameraAnimation(final MDDirectorCamUpdate cameraUpdate, PropertyValuesHolder... values){
         if (animator != null){
             animator.cancel();
         }

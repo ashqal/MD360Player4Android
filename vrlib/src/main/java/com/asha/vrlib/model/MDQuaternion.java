@@ -281,16 +281,16 @@ public class MDQuaternion {
         set(w, x, y, z);
     }
 
-    public void setEulerAngles (float yaw, float pitch, float roll) {
-        setEulerAnglesRad(yaw * MathUtils.degreesToRadians, pitch * MathUtils.degreesToRadians, roll * MathUtils.degreesToRadians);
+    public void setEulerAngles (float pitch, float yaw, float roll) {
+        setEulerAnglesRad(pitch * MathUtils.degreesToRadians, yaw * MathUtils.degreesToRadians, roll * MathUtils.degreesToRadians);
     }
 
     /** Sets the quaternion to the given euler angles in radians.
-     * @param yaw the rotation around the y axis in radians
      * @param pitch the rotation around the x axis in radians
+     * @param yaw the rotation around the y axis in radians
      * @param roll the rotation around the z axis in radians
      * @return this quaternion */
-    public void setEulerAnglesRad (float yaw, float pitch, float roll) {
+    public void setEulerAnglesRad (float pitch, float yaw, float roll) {
         final float hr = roll * 0.5f;
         final float shr = (float)Math.sin(hr);
         final float chr = (float)Math.cos(hr);

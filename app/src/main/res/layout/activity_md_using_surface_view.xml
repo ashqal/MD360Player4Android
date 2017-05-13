@@ -199,6 +199,7 @@
    </LinearLayout>
 
    <LinearLayout
+       android:id="@+id/plugin_layout3"
        android:layout_below="@id/plugin_layout2"
        android:layout_marginTop="8dp"
        android:orientation="horizontal"
@@ -255,6 +256,25 @@
           android:layout_width="wrap_content"
           android:layout_height="42dp" />
    </LinearLayout>
+
+
+   <LinearLayout
+       android:layout_below="@id/plugin_layout3"
+       android:layout_marginTop="8dp"
+       android:orientation="horizontal"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
+      <android.support.v7.widget.AppCompatSpinner
+          android:layout_marginLeft="0dp"
+          android:paddingLeft="0dp"
+          android:paddingRight="0dp"
+          android:id="@+id/spinner_pitch_filter"
+          android:layout_width="100dp"
+          android:minWidth="100dp"
+          android:layout_height="wrap_content"/>
+   </LinearLayout>
+
 
    <TextView
        android:layout_alignParentBottom="true"
