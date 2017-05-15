@@ -20,6 +20,7 @@ import com.asha.vrlib.compact.CompactEyePickAdapter;
 import com.asha.vrlib.compact.CompactTouchPickAdapter;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDDirectorBrief;
+import com.asha.vrlib.model.MDFlingConfig;
 import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDMainPluginBuilder;
 import com.asha.vrlib.model.MDPinchConfig;
@@ -112,9 +113,20 @@ public class MDVRLibrary {
         initOpenGL(builder.activity, builder.screenWrapper);
 
         mTexture = builder.texture;
+
+        // init touch helper
+        initTouchHelper(builder);
+
+        // init picker manager
+        initPickerManager(builder);
+
+        // add plugin
+        initPlugin();
+    }
+
+    private void initTouchHelper(Builder builder) {
         mTouchHelper = new MDTouchHelper(builder.activity);
         mTouchHelper.addClickListener(builder.gestureListener);
-        mTouchHelper.setPinchEnabled(builder.pinchEnabled);
         final UpdatePinchRunnable updatePinchRunnable = new UpdatePinchRunnable();
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
@@ -128,7 +140,11 @@ public class MDVRLibrary {
                 mGLHandler.post(updatePinchRunnable);
             }
         });
+        mTouchHelper.setPinchEnabled(builder.pinchEnabled);
         mTouchHelper.setPinchConfig(builder.pinchConfig);
+
+        mTouchHelper.setFlingEnabled(builder.flingEnabled);
+        mTouchHelper.setFlingConfig(builder.flingConfig);
 
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -137,11 +153,6 @@ public class MDVRLibrary {
             }
         });
 
-        // init picker manager
-        initPickerManager(builder);
-
-        // add plugin
-        initPlugin();
     }
 
     private class UpdatePinchRunnable implements Runnable{
@@ -356,6 +367,30 @@ public class MDVRLibrary {
         mTouchHelper.scaleTo(scale);
     }
 
+    public boolean isPinchEnabled(){
+        return mTouchHelper.isPinchEnabled();
+    }
+
+    public void setPinchEnabled(boolean enabled) {
+        mTouchHelper.setPinchEnabled(enabled);
+    }
+
+    public void setPinchConfig(MDPinchConfig pinchConfig){
+        mTouchHelper.setPinchConfig(pinchConfig);
+    }
+
+    public boolean isFlingEnabled(){
+        return mTouchHelper.isFlingEnabled();
+    }
+
+    public void setFlingEnabled(boolean enabled) {
+        mTouchHelper.setFlingEnabled(enabled);
+    }
+
+    public void setFlingConfig(MDFlingConfig flingConfig){
+        mTouchHelper.setFlingConfig(flingConfig);
+    }
+
     public void setDirectorFilter(IDirectorFilter filter){
         mDirectorFilter.setDelegate(filter);
     }
@@ -383,7 +418,6 @@ public class MDVRLibrary {
     public void onTextureResize(float width, float height){
         mTextureSize.set(0,0,width,height);
     }
-
 
     public void onOrientationChanged(Activity activity) {
         mInteractiveModeManager.onOrientationChanged(activity);
@@ -567,6 +601,8 @@ public class MDVRLibrary {
         private IMDProjectionFactory projectionFactory;
         private MDPinchConfig pinchConfig;
         private IDirectorFilter directorFilter;
+        private boolean flingEnabled = true; // default true
+        private MDFlingConfig flingConfig;
 
         private Builder(Activity activity) {
             this.activity = activity;
@@ -723,6 +759,16 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder flingEnabled(boolean enabled){
+            this.flingEnabled = enabled;
+            return this;
+        }
+
+        public Builder flingConfig(MDFlingConfig config){
+            this.flingConfig = config;
+            return this;
+        }
+
         /**
          * build it!
          *
@@ -751,9 +797,10 @@ public class MDVRLibrary {
 
         private MDVRLibrary build(MDGLScreenWrapper screenWrapper){
             notNull(texture,"You must call video/bitmap function before build");
-            if (this.directorFactory == null) directorFactory = new MD360DirectorFactory.DefaultImpl();
-            if (this.barrelDistortionConfig == null) barrelDistortionConfig = new BarrelDistortionConfig();
-            if (this.pinchConfig == null) pinchConfig = new MDPinchConfig();
+            if (this.directorFactory == null) this.directorFactory = new MD360DirectorFactory.DefaultImpl();
+            if (this.barrelDistortionConfig == null) this.barrelDistortionConfig = new BarrelDistortionConfig();
+            if (this.pinchConfig == null) this.pinchConfig = new MDPinchConfig();
+            if (this.flingConfig == null) this.flingConfig = new MDFlingConfig();
             this.screenWrapper = screenWrapper;
             return new MDVRLibrary(this);
         }
