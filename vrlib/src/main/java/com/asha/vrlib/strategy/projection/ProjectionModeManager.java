@@ -1,6 +1,6 @@
 package com.asha.vrlib.strategy.projection;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.RectF;
 
 import com.asha.vrlib.MD360Director;
@@ -79,13 +79,13 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     }
 
     @Override
-    public void switchMode(Activity activity, int mode) {
-        super.switchMode(activity, mode);
+    public void switchMode(Context context, int mode) {
+        super.switchMode(context, mode);
     }
 
     @Override
-    public void on(Activity activity) {
-        super.on(activity);
+    public void on(Context context) {
+        super.on(context);
 
         // destroy prev main plugin
         if( mMainPlugin != null){

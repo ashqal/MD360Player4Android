@@ -1,6 +1,6 @@
 package com.asha.vrlib.strategy.projection;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.RectF;
 
 import com.asha.vrlib.model.MDMainPluginBuilder;
@@ -32,18 +32,18 @@ public class DomeProjection extends AbsProjectionStrategy {
     }
 
     @Override
-    public void turnOnInGL(Activity activity) {
+    public void turnOnInGL(Context context) {
         object3D = new MDDome3D(mTextureSize, mDegree, mIsUpper);
-        MDObject3DHelper.loadObj(activity, object3D);
+        MDObject3DHelper.loadObj(context, object3D);
     }
 
     @Override
-    public void turnOffInGL(Activity activity) {
+    public void turnOffInGL(Context context) {
 
     }
 
     @Override
-    public boolean isSupport(Activity activity) {
+    public boolean isSupport(Context context) {
         return true;
     }
 

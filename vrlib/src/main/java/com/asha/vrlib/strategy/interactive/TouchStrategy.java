@@ -1,6 +1,5 @@
 package com.asha.vrlib.strategy.interactive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -38,23 +37,23 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     }
 
     @Override
-    public void onOrientationChanged(Activity activity) {
+    public void onOrientationChanged(Context context) {
 
     }
 
     @Override
-    public void turnOnInGL(Activity activity) {
+    public void turnOnInGL(Context context) {
         for (MD360Director director : getDirectorList()){
             director.reset();
         }
     }
 
     @Override
-    public void turnOffInGL(Activity activity) {
+    public void turnOffInGL(Context context) {
     }
 
     @Override
-    public boolean isSupport(Activity activity) {
+    public boolean isSupport(Context context) {
         return true;
     }
 }

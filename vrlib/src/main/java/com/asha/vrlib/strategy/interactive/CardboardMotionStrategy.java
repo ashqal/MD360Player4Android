@@ -1,6 +1,5 @@
 package com.asha.vrlib.strategy.interactive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -58,11 +57,11 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
     }
 
     @Override
-    public void onOrientationChanged(Activity activity) {
+    public void onOrientationChanged(Context context) {
     }
 
     @Override
-    public void turnOnInGL(Activity activity) {
+    public void turnOnInGL(Context context) {
         isOn = true;
         for (MD360Director director : getDirectorList()){
             director.reset();
@@ -70,20 +69,20 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
     }
 
     @Override
-    public void turnOffInGL(final Activity activity) {
+    public void turnOffInGL(final Context context) {
         isOn = false;
-        activity.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                unregisterSensor(activity);
+                unregisterSensor(context);
             }
         });
     }
 
     @Override
-    public boolean isSupport(Activity activity) {
+    public boolean isSupport(Context context) {
         if (mIsSupport == null){
-            SensorManager mSensorManager = (SensorManager) activity
+            SensorManager mSensorManager = (SensorManager) context
                     .getSystemService(Context.SENSOR_SERVICE);
             Sensor sensor1 = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             Sensor sensor2 = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
