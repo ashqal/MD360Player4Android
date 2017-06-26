@@ -273,6 +273,15 @@
           android:layout_width="100dp"
           android:minWidth="100dp"
           android:layout_height="wrap_content"/>
+
+       <android.support.v7.widget.AppCompatSpinner
+           android:layout_marginLeft="8dp"
+           android:paddingLeft="0dp"
+           android:paddingRight="0dp"
+           android:id="@+id/spinner_fling_enable"
+           android:layout_width="100dp"
+           android:minWidth="100dp"
+           android:layout_height="wrap_content"/>
    </LinearLayout>
 
 
