@@ -1,6 +1,5 @@
 package com.asha.vrlib.strategy.interactive;
 
-import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -15,5 +14,5 @@ public interface IInteractiveMode {
 
     boolean handleDrag(int distanceX, int distanceY);
 
-    void onOrientationChanged(Activity activity);
+    void onOrientationChanged(Context context);
 }

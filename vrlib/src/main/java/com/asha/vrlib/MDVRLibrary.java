@@ -1,6 +1,5 @@
 package com.asha.vrlib;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.RectF;
 import android.hardware.SensorEventListener;
@@ -110,9 +109,11 @@ public class MDVRLibrary {
         initPluginManager(builder);
 
         // init glSurfaceViews
-        initOpenGL(builder.activity, builder.screenWrapper);
+        initOpenGL(builder.context, builder.screenWrapper);
 
         mTexture = builder.texture;
+
+        mTouchHelper = new MDTouchHelper(builder.context);
 
         // init touch helper
         initTouchHelper(builder);
@@ -125,7 +126,7 @@ public class MDVRLibrary {
     }
 
     private void initTouchHelper(Builder builder) {
-        mTouchHelper = new MDTouchHelper(builder.activity);
+        mTouchHelper = new MDTouchHelper(builder.context);
         mTouchHelper.addClickListener(builder.gestureListener);
         final UpdatePinchRunnable updatePinchRunnable = new UpdatePinchRunnable();
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
@@ -191,13 +192,13 @@ public class MDVRLibrary {
                 .setTexture(builder.texture);
 
         mProjectionModeManager = new ProjectionModeManager(builder.projectionMode, mGLHandler, projectionManagerParams);
-        mProjectionModeManager.prepare(builder.activity, builder.notSupportCallback);
+        mProjectionModeManager.prepare(builder.context, builder.notSupportCallback);
 
         // init DisplayModeManager
         mDisplayModeManager = new DisplayModeManager(builder.displayMode, mGLHandler);
         mDisplayModeManager.setBarrelDistortionConfig(builder.barrelDistortionConfig);
         mDisplayModeManager.setAntiDistortionEnabled(builder.barrelDistortionConfig.isDefaultEnabled());
-        mDisplayModeManager.prepare(builder.activity, builder.notSupportCallback);
+        mDisplayModeManager.prepare(builder.context, builder.notSupportCallback);
 
         // init InteractiveModeManager
         InteractiveModeManager.Params interactiveManagerParams = new InteractiveModeManager.Params();
@@ -205,7 +206,7 @@ public class MDVRLibrary {
         interactiveManagerParams.mMotionDelay = builder.motionDelay;
         interactiveManagerParams.mSensorListener = builder.sensorListener;
         mInteractiveModeManager = new InteractiveModeManager(builder.interactiveMode, mGLHandler, interactiveManagerParams);
-        mInteractiveModeManager.prepare(builder.activity, builder.notSupportCallback);
+        mInteractiveModeManager.prepare(builder.context, builder.notSupportCallback);
     }
 
     private void initPluginManager(Builder builder) {
@@ -260,26 +261,26 @@ public class MDVRLibrary {
         return mProjectionModeManager.getDirectorBrief();
     }
 
-    public void switchInteractiveMode(final Activity activity) {
-        mInteractiveModeManager.switchMode(activity);
+    public void switchInteractiveMode(final Context context) {
+        mInteractiveModeManager.switchMode(context);
     }
 
     /**
      * Switch Interactive Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #INTERACTIVE_MODE_MOTION}
      * {@link #INTERACTIVE_MODE_TOUCH}
      * {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
      */
-    public void switchInteractiveMode(final Activity activity, final int mode){
-        mInteractiveModeManager.switchMode(activity, mode);
+    public void switchInteractiveMode(final Context context, final int mode){
+        mInteractiveModeManager.switchMode(context, mode);
     }
 
-    public void switchDisplayMode(final Activity activity){
-        mDisplayModeManager.switchMode(activity);
+    public void switchDisplayMode(final Context context){
+        mDisplayModeManager.switchMode(context);
     }
 
     /**
@@ -291,22 +292,22 @@ public class MDVRLibrary {
      * {@link #DISPLAY_MODE_GLASS}
      * {@link #DISPLAY_MODE_NORMAL}
      */
-    public void switchDisplayMode(final Activity activity, final int mode){
-        mDisplayModeManager.switchMode(activity, mode);
+    public void switchDisplayMode(final Context context, final int mode){
+        mDisplayModeManager.switchMode(context, mode);
     }
 
     /**
      * Switch Projection Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #PROJECTION_MODE_SPHERE}
      * {@link #PROJECTION_MODE_DOME180}
      * and so on.
      */
-    public void switchProjectionMode(final Activity activity, final int mode) {
-        mProjectionModeManager.switchMode(activity, mode);
+    public void switchProjectionMode(final Context context, final int mode) {
+        mProjectionModeManager.switchMode(context, mode);
     }
 
     public void resetTouch(){
@@ -419,8 +420,8 @@ public class MDVRLibrary {
         mTextureSize.set(0,0,width,height);
     }
 
-    public void onOrientationChanged(Activity activity) {
-        mInteractiveModeManager.onOrientationChanged(activity);
+    public void onOrientationChanged(Context context) {
+        mInteractiveModeManager.onOrientationChanged(context);
     }
 
     public void onResume(Context context){
@@ -474,7 +475,7 @@ public class MDVRLibrary {
      * @return true if handled.
      */
     public boolean handleTouchEvent(MotionEvent event) {
-        Log.e(TAG,"please remove the handleTouchEvent in activity!");
+        Log.e(TAG,"please remove the handleTouchEvent in context!");
         return false;
     }
 
@@ -573,8 +574,8 @@ public class MDVRLibrary {
     }
 
 
-    public static Builder with(Activity activity){
-        return new Builder(activity);
+    public static Builder with(Context context){
+        return new Builder(context);
     }
 
     /**
@@ -584,7 +585,7 @@ public class MDVRLibrary {
         private int displayMode = DISPLAY_MODE_NORMAL;
         private int interactiveMode = INTERACTIVE_MODE_MOTION;
         private int projectionMode = PROJECTION_MODE_SPHERE;
-        private Activity activity;
+        private Context context;
         private int contentType = ContentType.DEFAULT;
         private MD360Texture texture;
         private INotSupportCallback notSupportCallback;
@@ -604,8 +605,8 @@ public class MDVRLibrary {
         private boolean flingEnabled = true; // default true
         private MDFlingConfig flingConfig;
 
-        private Builder(Activity activity) {
-            this.activity = activity;
+        private Builder(Context context) {
+            this.context = context;
         }
 
         public Builder displayMode(int displayMode){
@@ -772,16 +773,14 @@ public class MDVRLibrary {
         /**
          * build it!
          *
-         * @param glViewId will find the GLSurfaceView by glViewId in the giving {@link #activity}
-         *                 or find the GLTextureView by glViewId
+         * @param glView GLSurfaceView or GLTextureView
          * @return vr lib
          */
-        public MDVRLibrary build(int glViewId){
-            View view = activity.findViewById(glViewId);
-            if (view instanceof GLSurfaceView){
-                return build((GLSurfaceView) view);
-            } else if(view instanceof GLTextureView){
-                return build((GLTextureView) view);
+        public MDVRLibrary build(View glView){
+            if (glView instanceof GLSurfaceView){
+                return build((GLSurfaceView) glView);
+            } else if(glView instanceof GLTextureView){
+                return build((GLTextureView) glView);
             } else {
                 throw new RuntimeException("Please ensure the glViewId is instance of GLSurfaceView or GLTextureView");
             }

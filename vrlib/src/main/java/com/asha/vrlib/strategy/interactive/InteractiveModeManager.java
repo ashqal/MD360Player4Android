@@ -1,6 +1,5 @@
 package com.asha.vrlib.strategy.interactive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.SensorEventListener;
 
@@ -77,11 +76,11 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     }
 
     @Override
-    public void onOrientationChanged(final Activity activity) {
+    public void onOrientationChanged(final Context context) {
         getGLHandler().post(new Runnable() {
             @Override
             public void run() {
-                getStrategy().onOrientationChanged(activity);
+                getStrategy().onOrientationChanged(context);
             }
         });
     }
@@ -103,23 +102,23 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
 
     public void onResume(Context context) {
         mIsResumed = true;
-        if (getStrategy().isSupport((Activity)context)){
+        if (getStrategy().isSupport(context)){
             getStrategy().onResume(context);
         }
     }
 
     @Override
-    public void on(Activity activity) {
-        super.on(activity);
+    public void on(Context context) {
+        super.on(context);
 
         if (mIsResumed){
-            onResume(activity);
+            onResume(context);
         }
     }
 
     public void onPause(Context context) {
         mIsResumed = false;
-        if (getStrategy().isSupport((Activity)context)){
+        if (getStrategy().isSupport(context)){
             getStrategy().onPause(context);
         }
     }

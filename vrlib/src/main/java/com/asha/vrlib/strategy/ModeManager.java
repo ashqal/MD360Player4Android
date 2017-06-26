@@ -1,6 +1,7 @@
 package com.asha.vrlib.strategy;
 
-import android.app.Activity;
+
+import android.content.Context;
 
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.MDGLHandler;
@@ -27,23 +28,23 @@ public abstract class ModeManager<T extends IModeStrategy> {
 
     /**
      * must call after new instance
-     * @param activity activity
+     * @param context context
      */
-    public void prepare(Activity activity, MDVRLibrary.INotSupportCallback callback){
+    public void prepare(Context context, MDVRLibrary.INotSupportCallback callback){
         mCallback = callback;
-        initMode(activity,mMode);
+        initMode(context,mMode);
     }
 
     abstract protected T createStrategy(int mode);
 
     abstract protected int[] getModes();
 
-    private void initMode(Activity activity, final int mode){
+    private void initMode(Context context, final int mode){
         if (mStrategy != null){
-            off(activity);
+            off(context);
         }
         mStrategy = createStrategy(mode);
-        if (!mStrategy.isSupport(activity)){
+        if (!mStrategy.isSupport(context)){
             MDMainHandler.sharedHandler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -56,49 +57,49 @@ public abstract class ModeManager<T extends IModeStrategy> {
         }
 
         // t
-        on(activity);
+        on(context);
     }
 
-    public void switchMode(final Activity activity){
+    public void switchMode(final Context context){
         int[] modes = getModes();
         int mode = getMode();
         int index = Arrays.binarySearch(modes, mode);
         int nextIndex = (index + 1) %  modes.length;
         int nextMode = modes[nextIndex];
 
-        switchMode(activity, nextMode);
+        switchMode(context, nextMode);
     }
 
-    public void switchMode(final Activity activity, final int mode){
+    public void switchMode(final Context context, final int mode){
         if (mode == getMode()) return;
         mMode = mode;
 
-        initMode(activity, mMode);
+        initMode(context, mMode);
     }
 
-    public void on(final Activity activity) {
+    public void on(final Context context) {
         checkMainThread("strategy on must call from main thread!");
 
         final T tmpStrategy = mStrategy;
-        if (tmpStrategy.isSupport(activity)){
+        if (tmpStrategy.isSupport(context)){
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    tmpStrategy.turnOnInGL(activity);
+                    tmpStrategy.turnOnInGL(context);
                 }
             });
         }
     }
 
-    public void off(final Activity activity) {
+    public void off(final Context context) {
         checkMainThread("strategy off must call from main thread!");
 
         final T tmpStrategy = mStrategy;
-        if (tmpStrategy.isSupport(activity)){
+        if (tmpStrategy.isSupport(context)){
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    tmpStrategy.turnOffInGL(activity);
+                    tmpStrategy.turnOffInGL(context);
                 }
             });
         }

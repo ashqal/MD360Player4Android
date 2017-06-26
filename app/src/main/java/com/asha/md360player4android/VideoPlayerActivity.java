@@ -102,7 +102,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 })
                 .projectionFactory(new CustomProjectionFactory())
                 .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
-                .build(R.id.gl_view);
+                .build(findViewById(R.id.gl_view));
     }
 
     @Override
