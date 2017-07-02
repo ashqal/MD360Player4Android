@@ -118,19 +118,27 @@ public class MD360Director {
 
         if (camera || world){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
-            mViewQuaternion.fromMatrix(mViewMatrix);
-            float pitch = mViewQuaternion.getPitch();
-            float yaw = mViewQuaternion.getYaw();
-            float roll = mViewQuaternion.getRoll();
+            filterViewMatrix();
+        }
+    }
 
-            float filterPitch = mDirectorFilter.onFilterPitch(pitch);
-            float filterYaw = mDirectorFilter.onFilterYaw(yaw);
-            float filterRoll = mDirectorFilter.onFilterRoll(roll);
+    private void filterViewMatrix() {
+        if (mDirectorFilter == null) {
+            return;
+        }
 
-            if (pitch != filterPitch || yaw != filterYaw || roll != filterRoll){
-                mViewQuaternion.setEulerAngles(filterPitch, filterYaw, filterRoll);
-                mViewQuaternion.toMatrix(mViewMatrix);
-            }
+        mViewQuaternion.fromMatrix(mViewMatrix);
+        float pitch = mViewQuaternion.getPitch();
+        float yaw = mViewQuaternion.getYaw();
+        float roll = mViewQuaternion.getRoll();
+
+        float filterPitch = mDirectorFilter.onFilterPitch(pitch);
+        float filterYaw = mDirectorFilter.onFilterYaw(yaw);
+        float filterRoll = mDirectorFilter.onFilterRoll(roll);
+
+        if (pitch != filterPitch || yaw != filterYaw || roll != filterRoll){
+            mViewQuaternion.setEulerAngles(filterPitch, filterYaw, filterRoll);
+            mViewQuaternion.toMatrix(mViewMatrix);
         }
     }
 
