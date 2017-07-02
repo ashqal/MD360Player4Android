@@ -1,9 +1,12 @@
 package com.asha.vrlib;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.asha.vrlib.model.MDFlingConfig;
 import com.asha.vrlib.model.MDPinchConfig;
 
 import java.util.LinkedList;
@@ -29,6 +32,10 @@ public class MDTouchHelper {
     private float mSensitivity;
     private float defaultScale;
     private float mGlobalScale;
+    private ValueAnimator valueAnimator;
+
+    private boolean mFlingEnabled;
+    private MDFlingConfig mFlingConfig;
 
     private static final int MODE_INIT = 0;
     private static final int MODE_PINCH = 1;
@@ -49,11 +56,53 @@ public class MDTouchHelper {
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
-                if (mAdvanceGestureListener != null)
+                if (mAdvanceGestureListener != null){
                     mAdvanceGestureListener.onDrag(distanceX / mGlobalScale, distanceY / mGlobalScale);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (mCurrentMode == MODE_PINCH) return false;
+                if (!mFlingEnabled) return false;
+
+                animStart(velocityX, velocityY);
                 return true;
             }
         });
+    }
+
+    private void animCancel(){
+        if (valueAnimator != null){
+            valueAnimator.cancel();
+        }
+    }
+
+    private void animStart(float velocityX, float velocityY) {
+        animCancel();
+
+        PropertyValuesHolder hvx = PropertyValuesHolder.ofFloat("vx", velocityX, 0);
+        PropertyValuesHolder hvy = PropertyValuesHolder.ofFloat("vy", velocityY, 0);
+        valueAnimator = ValueAnimator.ofPropertyValuesHolder(hvx, hvy).setDuration(mFlingConfig.getDuring());
+        valueAnimator.setInterpolator(mFlingConfig.getInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            private long lastTime = 0;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                long now = animation.getCurrentPlayTime();
+                long dur = (now - lastTime);
+                float sx = (float) animation.getAnimatedValue("vx") * dur / -1000 * mFlingConfig.getSensitivity();
+                float sy = (float) animation.getAnimatedValue("vy") * dur / -1000 * mFlingConfig.getSensitivity();
+                lastTime = now;
+
+                if (mAdvanceGestureListener != null){
+                    mAdvanceGestureListener.onDrag(sx / mGlobalScale, sy / mGlobalScale);
+                }
+            }
+        });
+        valueAnimator.start();
     }
 
     public boolean handleTouchEvent(MotionEvent event) {
@@ -89,6 +138,8 @@ public class MDTouchHelper {
                     // mLastMovePoint.set(lineCenter[0], lineCenter[1]);
                     handlePinch(distance);
                 }
+        } else if (action == MotionEvent.ACTION_DOWN){
+            animCancel();
         }
 
         mGestureDetector.onTouchEvent(event);
@@ -132,6 +183,10 @@ public class MDTouchHelper {
         this.mAdvanceGestureListener = listener;
     }
 
+    public boolean isPinchEnabled() {
+        return mPinchEnabled;
+    }
+
     public void setPinchEnabled(boolean mPinchEnabled) {
         this.mPinchEnabled = mPinchEnabled;
     }
@@ -144,6 +199,18 @@ public class MDTouchHelper {
         this.defaultScale = Math.max(minScale, this.defaultScale);
         this.defaultScale = Math.min(maxScale, this.defaultScale);
         setScaleInner(this.defaultScale);
+    }
+
+    public boolean isFlingEnabled() {
+        return mFlingEnabled;
+    }
+
+    public void setFlingEnabled(boolean flingEnabled) {
+        this.mFlingEnabled = flingEnabled;
+    }
+
+    public void setFlingConfig(MDFlingConfig flingConfig) {
+        this.mFlingConfig = flingConfig;
     }
 
     private class PinchInfo{

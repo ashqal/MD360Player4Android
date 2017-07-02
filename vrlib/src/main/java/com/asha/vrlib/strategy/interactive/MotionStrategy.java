@@ -1,12 +1,12 @@
 package com.asha.vrlib.strategy.interactive;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.common.MDMainHandler;
@@ -54,34 +54,36 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     }
 
     @Override
-    public void onOrientationChanged(Activity activity) {
-        mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    public void onOrientationChanged(Context context) {
+        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        mDeviceRotation = windowManager.getDefaultDisplay().getRotation();
     }
 
     @Override
-    public void turnOnInGL(Activity activity) {
+    public void turnOnInGL(Context context) {
         isOn = true;
-        mDeviceRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        mDeviceRotation = windowManager.getDefaultDisplay().getRotation();
         for (MD360Director director : getDirectorList()){
             director.reset();
         }
     }
 
     @Override
-    public void turnOffInGL(final Activity activity) {
+    public void turnOffInGL(final Context context) {
         isOn = false;
-        activity.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                unregisterSensor(activity);
+                unregisterSensor(context);
             }
         });
     }
 
     @Override
-    public boolean isSupport(Activity activity) {
+    public boolean isSupport(Context context) {
         if (mIsSupport == null){
-            SensorManager mSensorManager = (SensorManager) activity
+            SensorManager mSensorManager = (SensorManager) context
                     .getSystemService(Context.SENSOR_SERVICE);
             Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
             mIsSupport = (sensor != null);

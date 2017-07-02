@@ -61,6 +61,7 @@ public abstract class MD360PlayerActivity extends Activity {
     private static final SparseArray<String> sProjectionMode = new SparseArray<>();
     private static final SparseArray<String> sAntiDistortion = new SparseArray<>();
     private static final SparseArray<String> sPitchFilter = new SparseArray<>();
+    private static final SparseArray<String> sFlingEnabled = new SparseArray<>();
 
     static {
         sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL,"NORMAL");
@@ -91,6 +92,9 @@ public abstract class MD360PlayerActivity extends Activity {
 
         sPitchFilter.put(1,"FILTER PITCH");
         sPitchFilter.put(0,"FILTER NOP");
+
+        sFlingEnabled.put(1, "FLING ENABLED");
+        sFlingEnabled.put(0, "FLING DISABLED");
     }
 
     public static void startVideo(Context context, Uri uri){
@@ -425,6 +429,17 @@ public abstract class MD360PlayerActivity extends Activity {
                     }
                 })
                 .init(R.id.spinner_pitch_filter);
+
+        SpinnerHelper.with(this)
+                .setData(sFlingEnabled)
+                .setDefault(getVRLibrary().isFlingEnabled() ? 1 : 0)
+                .setClickHandler(new SpinnerHelper.ClickHandler() {
+                    @Override
+                    public void onSpinnerClicked(int index, int key, String value) {
+                        getVRLibrary().setFlingEnabled(key == 1);
+                    }
+                })
+                .init(R.id.spinner_fling_enable);
     }
 
 

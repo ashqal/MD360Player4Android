@@ -1,6 +1,5 @@
 package com.asha.vrlib.strategy;
 
-import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -9,11 +8,11 @@ import android.content.Context;
  */
 public interface IModeStrategy {
 
-    void turnOnInGL(Activity activity);
+    void turnOnInGL(Context context);
 
-    void turnOffInGL(Activity activity);
+    void turnOffInGL(Context context);
     
-    boolean isSupport(Activity activity);
+    boolean isSupport(Context context);
 
     void onResume(Context context);
 
