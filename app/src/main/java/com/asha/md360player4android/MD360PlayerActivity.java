@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -151,6 +152,17 @@ public abstract class MD360PlayerActivity extends Activity {
 
         // init VR Library
         mVRLibrary = createVRLibrary();
+        mVRLibrary.addClickListener(new MDVRLibrary.IGestureListener() {
+            @Override
+            public void onClick(MotionEvent e) {
+                View view = findViewById(R.id.control_layout);
+                if (view.getVisibility() == View.VISIBLE){
+                    view.setVisibility(View.GONE);
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         final Activity activity = this;
 
