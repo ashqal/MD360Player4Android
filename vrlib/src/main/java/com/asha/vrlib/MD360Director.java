@@ -116,7 +116,7 @@ public class MD360Director {
             mCameraUpdate.consumeRotationValidate();
         }
 
-        if (camera || world){
+        if (null != mDirectorFilter && (camera || world)){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
             mViewQuaternion.fromMatrix(mViewMatrix);
             float pitch = mViewQuaternion.getPitch();
