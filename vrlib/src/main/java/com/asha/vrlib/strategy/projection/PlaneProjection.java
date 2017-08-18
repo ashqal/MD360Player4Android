@@ -3,6 +3,7 @@ package com.asha.vrlib.strategy.projection;
 import android.content.Context;
 import android.graphics.RectF;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MD360DirectorFactory;
@@ -243,7 +244,8 @@ public class PlaneProjection extends AbsProjectionStrategy {
             final float bottom = - planeScaleCalculator.getViewportHeight()/2;
             final float top = planeScaleCalculator.getViewportHeight()/2;
             final float far = 500;
-            Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
+//            Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
+            Matrix.frustumM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
         }
     }
 

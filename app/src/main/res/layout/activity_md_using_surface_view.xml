@@ -108,7 +108,8 @@
                 android:paddingRight="8dp"
                 android:text="addPlugin"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_remove_plugin"
@@ -121,7 +122,8 @@
                 android:paddingRight="8dp"
                 android:text="removePlugin"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_add_plugin_logo"
@@ -134,7 +136,8 @@
                 android:paddingRight="8dp"
                 android:text="addPluginLogo"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_remove_plugins"
@@ -147,7 +150,8 @@
                 android:paddingRight="8dp"
                 android:text="removePlugins"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -169,7 +173,8 @@
                 android:paddingRight="8dp"
                 android:text="AddHotspotFront"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_rotate_to_camera_plugin"
@@ -182,7 +187,8 @@
                 android:paddingRight="8dp"
                 android:text="RotateToCamera"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_add_md_view"
@@ -208,7 +214,8 @@
                 android:paddingRight="8dp"
                 android:text="update MDView"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 

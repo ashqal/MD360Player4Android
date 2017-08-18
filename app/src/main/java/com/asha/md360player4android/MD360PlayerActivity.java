@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,7 +65,26 @@ public abstract class MD360PlayerActivity extends Activity {
     private static final SparseArray<String> sPitchFilter = new SparseArray<>();
     private static final SparseArray<String> sFlingEnabled = new SparseArray<>();
 
+    private static final SparseArray<String> sControlItems = new SparseArray<>();
+    private static final SparseArray<String> sControlType = new SparseArray<>();
+
     static {
+
+        sControlItems.put(0, "Left");
+        sControlItems.put(1, "Right");
+        sControlItems.put(2, "Back");
+        sControlItems.put(3, "Front");
+
+        sControlType.put(0, "X");
+        sControlType.put(1, "Y");
+        sControlType.put(2, "Z");
+        sControlType.put(3, "AngleX");
+        sControlType.put(4, "AngleY");
+        sControlType.put(5, "AngleZ");
+        sControlType.put(6, "Pitch(x-axis)");
+        sControlType.put(7, "Yaw(y-axis)");
+        sControlType.put(8, "Roll(z-axis)");
+
         sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL,"NORMAL");
         sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_GLASS,"GLASS");
 
@@ -170,37 +190,63 @@ public abstract class MD360PlayerActivity extends Activity {
         hotspotPoints.add(findViewById(R.id.hotspot_point1));
         hotspotPoints.add(findViewById(R.id.hotspot_point2));
 
+//        SpinnerHelper.with(this)
+//                .setData(sDisplayMode)
+//                .setDefault(mVRLibrary.getDisplayMode())
+//                .setClickHandler(new SpinnerHelper.ClickHandler() {
+//                    @Override
+//                    public void onSpinnerClicked(int index, int key, String value) {
+//                        mVRLibrary.switchDisplayMode(MD360PlayerActivity.this, key);
+//                        int i = 0;
+//                        int size = key == MDVRLibrary.DISPLAY_MODE_GLASS ? 2 : 1;
+//                        for (View point : hotspotPoints){
+//                            point.setVisibility(i < size ? View.VISIBLE : View.GONE);
+//                            i++;
+//                        }
+//                    }
+//                })
+//                .init(R.id.spinner_display);
+
         SpinnerHelper.with(this)
-                .setData(sDisplayMode)
-                .setDefault(mVRLibrary.getDisplayMode())
+                .setData(sControlType)
+                .setDefault(0)
                 .setClickHandler(new SpinnerHelper.ClickHandler() {
                     @Override
                     public void onSpinnerClicked(int index, int key, String value) {
-                        mVRLibrary.switchDisplayMode(MD360PlayerActivity.this, key);
-                        int i = 0;
-                        int size = key == MDVRLibrary.DISPLAY_MODE_GLASS ? 2 : 1;
-                        for (View point : hotspotPoints){
-                            point.setVisibility(i < size ? View.VISIBLE : View.GONE);
-                            i++;
-                        }
+                        controlType = key;
                     }
                 })
                 .init(R.id.spinner_display);
 
+//
+//        SpinnerHelper.with(this)
+//                .setData(sInteractiveMode)
+//                .setDefault(mVRLibrary.getInteractiveMode())
+//                .setClickHandler(new SpinnerHelper.ClickHandler() {
+//                    @Override
+//                    public void onSpinnerClicked(int index, int key, String value) {
+//                        mVRLibrary.switchInteractiveMode(MD360PlayerActivity.this, key);
+//                    }
+//                })
+//                .init(R.id.spinner_interactive);
+//
+
+
         SpinnerHelper.with(this)
-                .setData(sInteractiveMode)
-                .setDefault(mVRLibrary.getInteractiveMode())
+                .setData(sControlItems)
+                .setDefault(0)
                 .setClickHandler(new SpinnerHelper.ClickHandler() {
                     @Override
                     public void onSpinnerClicked(int index, int key, String value) {
-                        mVRLibrary.switchInteractiveMode(MD360PlayerActivity.this, key);
+                        controlItem = key;
                     }
                 })
                 .init(R.id.spinner_interactive);
 
+
         SpinnerHelper.with(this)
                 .setData(sProjectionMode)
-                .setDefault(mVRLibrary.getProjectionMode())
+                .setDefault(MDVRLibrary.PROJECTION_MODE_PLANE_FIT)
                 .setClickHandler(new SpinnerHelper.ClickHandler() {
                     @Override
                     public void onSpinnerClicked(int index, int key, String value) {
@@ -300,7 +346,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         .provider(activity, R.drawable.moredoo_logo)
                         .title("front logo")
                         .tag("tag-front")
-                        .position(MDPosition.newInstance().setZ(-12.0f).setY(-1.0f));
+                        .position(MDPosition.newInstance().setZ(-12.0f).setX(-0.3f));
                 MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
                 hotspot.rotateToCamera();
                 plugins.add(hotspot);
@@ -319,25 +365,48 @@ public abstract class MD360PlayerActivity extends Activity {
         });
 
         findViewById(R.id.button_add_md_view).setOnClickListener(new View.OnClickListener() {
+            int i = 0;
             @Override
             public void onClick(View v) {
+                if (i >= 4){
+                    return;
+                }
                 TextView textView = new TextView(activity);
-                textView.setBackgroundColor(0x55FFCC11);
-                textView.setText("Hello world.");
-
+                textView.setTextSize(30);
+                textView.setTextColor(getResources().getColor(R.color.colorAccent));
                 MDViewBuilder builder = MDViewBuilder.create()
-                        .provider(textView, 400/*view width*/, 100/*view height*/)
-                        .size(4, 1)
-                        .position(MDPosition.newInstance().setZ(-12.0f))
-                        .title("md view")
-                        .tag("tag-md-text-view")
-                        ;
-
+                        .provider(textView, 1000/*view width*/, 1000/*view height*/)
+                        .size(0.32f * 2f, 0.18f * 2f)
+                        .title("md view");
+                if (i == 0) {
+                    textView.setText("left");
+                    textView.setBackgroundResource(R.drawable.left);
+                    builder.tag("tag_left");
+                    builder.position(position0);
+                } else if (i == 1){
+                    textView.setText("rigth");
+                    textView.setBackgroundResource(R.drawable.right);
+                    builder.tag("tag_right");
+                    builder.position(position1);
+                } else if (i == 2){
+                    textView.setText("back");
+                    textView.setBackgroundResource(R.drawable.back);
+                    builder.tag("tag_back");
+                    builder.position(position2);
+                } else if (i == 3){
+                    textView.setText("front");
+                    textView.setBackgroundResource(R.drawable.front);
+                    builder.tag("tag_front");
+                    builder.position(position3);
+                }
                 MDAbsView mdView = new MDView(builder);
                 plugins.add(mdView);
                 getVRLibrary().addPlugin(mdView);
+                i++;
             }
         });
+
+
 
         findViewById(R.id.button_update_md_view).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -355,23 +424,69 @@ public abstract class MD360PlayerActivity extends Activity {
         findViewById(R.id.button_md_view_hover).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View view = new HoverView(activity);
-                view.setBackgroundColor(0x55FFCC11);
+                MDMutablePosition position = null;
+                if (controlItem == 0) {
+                    position = position0;
+                } else if (controlItem == 1){
+                    position = position1;
+                } else if (controlItem == 2){
+                    position = position2;
+                } else if (controlItem == 3){
+                    position = position3;
+                }
 
-                MDViewBuilder builder = MDViewBuilder.create()
-                        .provider(view, 300/*view width*/, 200/*view height*/)
-                        .size(3, 2)
-                        .position(MDPosition.newInstance().setZ(-8.0f))
-                        .title("md view")
-                        .tag("tag-md-text-view")
-                        ;
-
-                MDAbsView mdView = new MDView(builder);
-                mdView.rotateToCamera();
-                plugins.add(mdView);
-                getVRLibrary().addPlugin(mdView);
+                if (controlType == 0){
+                    float x = position.getX() + 0.01f;
+                    position.setX(x);
+                } else if (controlType == 1){
+                    float y = position.getY() + 0.01f;
+                    position.setY(y);
+                } else if (controlType == 2){
+                    float z = position.getZ() + 0.01f;
+                    position.setZ(z);
+                } else if (controlType == 3){
+                    float angleX = position.getAngleX() + 1;
+                    position.setAngleX(angleX);
+                } else if (controlType == 4){
+                    float angleY = position.getAngleY() + 1;
+                    position.setAngleY(angleY);
+                } else if (controlType == 5){
+                    float angleZ = position.getAngleZ() + 1;
+                    position.setAngleZ(angleZ);
+                } else if (controlType == 6){
+                    float pitch = position.getPitch() + 1;
+                    position.setPitch(pitch);
+                } else if (controlType == 7){
+                    float yaw = position.getYaw() + 1;
+                    position.setYaw(yaw);
+                } else if (controlType == 8){
+                    float roll = position.getRoll() + 1;
+                    position.setRoll(roll);
+                }
+                Log.e(TAG, "cur pos " + position.toString());
             }
         });
+
+//        findViewById(R.id.button_md_view_hover).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                View view = new HoverView(activity);
+//                view.setBackgroundColor(0x55FFCC11);
+//
+//                MDViewBuilder builder = MDViewBuilder.create()
+//                        .provider(view, 300/*view width*/, 200/*view height*/)
+//                        .size(3, 2)
+//                        .position(MDPosition.newInstance().setZ(-8.0f).setX(-0.2f))
+//                        .title("md view")
+//                        .tag("tag-md-text-view")
+//                        ;
+//
+//                MDAbsView mdView = new MDView(builder);
+//                mdView.rotateToCamera();
+//                plugins.add(mdView);
+//                getVRLibrary().addPlugin(mdView);
+//            }
+//        });
 
         final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
         final TextView directorBriefText = (TextView) findViewById(R.id.director_brief_text);
@@ -390,18 +505,67 @@ public abstract class MD360PlayerActivity extends Activity {
             }
         });
 
+//        findViewById(R.id.button_camera_little_planet).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MDDirectorCamUpdate cameraUpdate = getVRLibrary().updateCamera();
+//                PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), -0.5f);
+//                PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 30f);
+//                PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 90f);
+//                PropertyValuesHolder yaw = PropertyValuesHolder.ofFloat("yaw", cameraUpdate.getYaw(), 90f);
+//                PropertyValuesHolder roll = PropertyValuesHolder.ofFloat("roll", cameraUpdate.getRoll(), 0f);
+//                startCameraAnimation(cameraUpdate, near, eyeZ, pitch, yaw, roll);
+//            }
+//        });
+
+
         findViewById(R.id.button_camera_little_planet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MDDirectorCamUpdate cameraUpdate = getVRLibrary().updateCamera();
-                PropertyValuesHolder near = ofFloat("near", cameraUpdate.getNearScale(), -0.5f);
-                PropertyValuesHolder eyeZ = PropertyValuesHolder.ofFloat("eyeZ", cameraUpdate.getEyeZ(), 18f);
-                PropertyValuesHolder pitch = PropertyValuesHolder.ofFloat("pitch", cameraUpdate.getPitch(), 90f);
-                PropertyValuesHolder yaw = PropertyValuesHolder.ofFloat("yaw", cameraUpdate.getYaw(), 90f);
-                PropertyValuesHolder roll = PropertyValuesHolder.ofFloat("roll", cameraUpdate.getRoll(), 0f);
-                startCameraAnimation(cameraUpdate, near, eyeZ, pitch, yaw, roll);
+                MDMutablePosition position = null;
+                if (controlItem == 0) {
+                    position = position0;
+                } else if (controlItem == 1){
+                    position = position1;
+                } else if (controlItem == 2){
+                    position = position2;
+                } else if (controlItem == 3){
+                    position = position3;
+                }
+
+                if (controlType == 0){
+                    float x = position.getX() - 0.01f;
+                    position.setX(x);
+                } else if (controlType == 1){
+                    float y = position.getY() - 0.01f;
+                    position.setY(y);
+                } else if (controlType == 2){
+                    float z = position.getZ() - 0.01f;
+                    position.setZ(z);
+                } else if (controlType == 3){
+                    float angleX = position.getAngleX() - 1;
+                    position.setAngleX(angleX);
+                } else if (controlType == 4){
+                    float angleY = position.getAngleY() - 1;
+                    position.setAngleY(angleY);
+                } else if (controlType == 5){
+                    float angleZ = position.getAngleZ() - 1;
+                    position.setAngleZ(angleZ);
+                } else if (controlType == 6){
+                    float pitch = position.getPitch() - 1;
+                    position.setPitch(pitch);
+                } else if (controlType == 7){
+                    float yaw = position.getYaw() - 1;
+                    position.setYaw(yaw);
+                } else if (controlType == 8){
+                    float roll = position.getRoll() - 1;
+                    position.setRoll(roll);
+                }
+                Log.e(TAG, "cur pos " + position.toString());
             }
         });
+
+
 
         findViewById(R.id.button_camera_to_normal).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -476,6 +640,17 @@ public abstract class MD360PlayerActivity extends Activity {
         });
         animator.start();
     }
+
+    private int controlItem = 0;
+
+    private  MDMutablePosition position0 = MDPosition.newInstance().setZ(-2.0f).setX(0.05f).setY(0.17f);
+    private  MDMutablePosition position1 = MDPosition.newInstance().setZ(-2.0f).setX(-0.02f).setY(-0.16f);
+    private  MDMutablePosition position2 = MDPosition.newInstance().setZ(-2.0f).setX(-0.38f).setY(0.02f).setRoll(93.0f);
+    private  MDMutablePosition position3 = MDPosition.newInstance().setZ(-2.0f).setX(0.38f).setRoll(-87f);
+
+
+    private int controlType = 0;
+
 
     abstract protected MDVRLibrary createVRLibrary();
 
