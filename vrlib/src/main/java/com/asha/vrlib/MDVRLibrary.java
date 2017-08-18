@@ -372,6 +372,10 @@ public class MDVRLibrary {
         return mTouchHelper.isPinchEnabled();
     }
 
+    public void addClickListener(IGestureListener listener) {
+        mTouchHelper.addClickListener(listener);
+    }
+
     public void setPinchEnabled(boolean enabled) {
         mTouchHelper.setPinchEnabled(enabled);
     }

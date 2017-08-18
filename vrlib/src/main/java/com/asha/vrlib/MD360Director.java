@@ -88,7 +88,7 @@ public class MD360Director {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVMatrix, 0);
 
         // Pass in the model view matrix
-        GLES20.glUniformMatrix4fv(program.getMVMatrixHandle(), 1, false, mMVMatrix, 0);
+        //GLES20.glUniformMatrix4fv(program.getMVMatrixHandle(), 1, false, mMVMatrix, 0);
 
         // Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(program.getMVPMatrixHandle(), 1, false, mMVPMatrix, 0);
@@ -116,7 +116,7 @@ public class MD360Director {
             mCameraUpdate.consumeRotationValidate();
         }
 
-        if (camera || world){
+        if (null != mDirectorFilter && (camera || world)){
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
             filterViewMatrix();
         }

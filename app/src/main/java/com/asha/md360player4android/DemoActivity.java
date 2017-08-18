@@ -1,6 +1,8 @@
 package com.asha.md360player4android;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.leon.lfilepickerlibrary.LFilePicker;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.io.File;
+import java.util.List;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by hzqiujiadi on 16/1/26.
  * hzqiujiadi ashqalcn@gmail.com
@@ -22,12 +33,16 @@ public class DemoActivity extends AppCompatActivity {
 
     //public static final String sPath = "file:////storage/sdcard1/vr/";
 
+    private static final int REQUEST_CODE_CHOOSE = 0;
+
+    private EditText et;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
 
-        final EditText et = (EditText) findViewById(R.id.edit_text_url);
+        et = (EditText) findViewById(R.id.edit_text_url);
 
         SparseArray<String> data = new SparseArray<>();
 
@@ -105,10 +120,57 @@ public class DemoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        findViewById(R.id.choose_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                RxPermissions rxPermissions = new RxPermissions(DemoActivity.this);
+                rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(new Observer<Boolean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    new LFilePicker()
+                                            .withActivity(DemoActivity.this)
+                                            .withRequestCode(REQUEST_CODE_CHOOSE)
+                                            .start();
+                                } else {
+                                    Toast.makeText(DemoActivity.this, "Permission Denied!", Toast.LENGTH_LONG)
+                                            .show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+            }
+        });
     }
 
     private Uri getDrawableUri(@DrawableRes int resId){
         Resources resources = getResources();
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            List<String> list = data.getStringArrayListExtra("paths");
+            et.setText(Uri.fromFile(new File(list.get(0))).toString());
+        }
     }
 }
