@@ -2,6 +2,7 @@ uniform mat4 u_MVPMatrix;		// A constant representing the combined model/view/pr
 uniform mat4 u_MVMatrix;		// A constant representing the combined model/view matrix.
 uniform mat4 u_STMatrix;
 uniform bool u_UseSTM;
+uniform bool u_IsSkybox;
 		  			
 attribute vec4 a_Position;		// Per-vertex position information we will pass in.   				
 //attribute vec4 a_Color;			// Per-vertex color information we will pass in.

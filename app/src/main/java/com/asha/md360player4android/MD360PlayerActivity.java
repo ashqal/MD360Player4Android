@@ -105,6 +105,10 @@ public abstract class MD360PlayerActivity extends Activity {
         start(context, uri, BitmapPlayerActivity.class);
     }
 
+    public static void startCubemap(Context context, Uri uri){
+        start(context, uri, CubemapPlayerActivity.class);
+    }
+
     private static void start(Context context, Uri uri, Class<? extends Activity> clz){
         Intent i = new Intent(context,clz);
         i.setData(uri);
