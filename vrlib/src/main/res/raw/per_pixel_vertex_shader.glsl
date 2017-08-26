@@ -16,8 +16,13 @@ varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
 // The entry point for our vertex shader.  
 void main()                                                 	
 {                                                         
-	// Transform the vertex into eye space. 	
-	v_Position = vec3(u_MVMatrix * a_Position);
+    // Transform the vertex into eye space.
+    if(!u_IsSkybox) {
+        v_Position = vec3(u_MVMatrix * a_Position);
+    } else {
+        // When using cubemap, coordinates are the same as the position
+        v_Position = vec3(a_Position);
+    }
 		
 	// Pass through the color.
 	//v_Color = a_Color;

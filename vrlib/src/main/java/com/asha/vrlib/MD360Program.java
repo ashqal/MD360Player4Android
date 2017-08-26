@@ -20,6 +20,7 @@ public class MD360Program {
     private int mProgramHandle;
     private int mSTMatrixHandle;
     private int mUseTextureTransformHandle;
+    private int mIsSkyboxHandle;
     private int mContentType;
 
     public MD360Program(int type) {
@@ -53,6 +54,7 @@ public class MD360Program {
         mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
         mSTMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_STMatrix");
         mUseTextureTransformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_UseSTM");
+        mIsSkyboxHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_IsSkybox");
     }
 
     protected String getVertexShader(Context context){
@@ -91,6 +93,10 @@ public class MD360Program {
         return mUseTextureTransformHandle;
     }
 
+    public int getIsSkyboxHandle() {
+        return mIsSkyboxHandle;
+    }
+
     public int getTextureCoordinateHandle() {
         return mTextureCoordinateHandle;
     }
@@ -105,6 +111,9 @@ public class MD360Program {
                     break;
                 case MDVRLibrary.ContentType.FBO:
                     resId = R.raw.per_pixel_fragment_shader_bitmap_fbo;
+                    break;
+                case MDVRLibrary.ContentType.CUBEMAP:
+                    resId = R.raw.per_pixel_fragment_shader_cubemap;
                     break;
                 case MDVRLibrary.ContentType.VIDEO:
                 default:
