@@ -41,12 +41,7 @@ public class MD360CubemapTexture extends MD360Texture {
     private AtomicBoolean mTextureDirty = new AtomicBoolean(false);
     private static final int[] sIsSkybox = new int[]{1};
 
-    int currentFaceLoading = CUBE_FRONT;
-
-    private boolean[] allBitmapsLoadedArray = new boolean[]{false, false, false, false, false, false};
-
-    // avoid looping array of booleans everytime we draw
-    //private AtomicBoolean allBitmapsLoaded = new AtomicBoolean(false);
+    private int currentFaceLoading = CUBE_FRONT;
 
     public MD360CubemapTexture(MDVRLibrary.ICubemapProvider cubemapProvider) {
         this.mCubemapProvider = cubemapProvider;
@@ -73,9 +68,6 @@ public class MD360CubemapTexture extends MD360Texture {
 
             loadTexture();
 
-            for(int i = 0; i < 6; i++)
-                allBitmapsLoadedArray[i] = false;
-            //allBitmapsLoaded.set(false);
             mIsReady = false;
         }
 
@@ -84,26 +76,20 @@ public class MD360CubemapTexture extends MD360Texture {
         int textureId = getCurrentTextureId();
 
         if (!mIsReady && asyncCallback != null) {
-            int faceLoading = currentFaceLoading;
 
             if (asyncCallback.hasBitmap()){
                 Bitmap bitmap = asyncCallback.getBitmap();
-                Log.d(TAG, "Set texture "+faceLoading);
+                Log.d(TAG, "Set texture "+currentFaceLoading);
 
-                textureInThread(textureId, program, bitmap, faceLoading);
+                textureInThread(textureId, program, bitmap, currentFaceLoading);
                 asyncCallback.releaseBitmap();
-                allBitmapsLoadedArray[faceLoading] = true;
 
                 currentFaceLoading++;
                 if(currentFaceLoading < 6)
                     requestBitmap();
             }
 
-            boolean allLoaded = true;
-            for(int i = 0; i < 6; i++)
-                allLoaded = allLoaded && allBitmapsLoadedArray[i];
-
-            if(allLoaded) {
+            if(currentFaceLoading >= 6) {
                 mIsReady = true;
 
                 if(mCubemapProvider != null) {
