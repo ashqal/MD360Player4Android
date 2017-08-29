@@ -322,6 +322,18 @@ public class MDVRLibrary {
         });
     }
 
+    public void resetTouch(final int deltaX, final int deltaY){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<MD360Director> directors = mProjectionModeManager.getDirectors();
+                for (MD360Director director : directors){
+                    director.reset(deltaX, deltaY);
+                }
+            }
+        });
+    }
+
     public void resetPinch(){
         mTouchHelper.reset();
     }
