@@ -243,6 +243,14 @@ public class MD360Director {
         mWorldRotationMatrixInvalidate = true;
     }
 
+    // call in gl thread
+    public void reset(int deltaX, int deltaY){
+        mDeltaX = deltaX;
+        mDeltaY = deltaY;
+        Matrix.setIdentityM(mSensorMatrix,0);
+        mWorldRotationMatrixInvalidate = true;
+    }
+
     public static Builder builder(){
         return new Builder();
     }
