@@ -19,8 +19,8 @@ import com.asha.vrlib.common.VRUtil;
 public class MotionStrategy extends AbsInteractiveStrategy implements SensorEventListener {
 
     private static final String TAG = "MotionStrategy";
-
-    private int mDeviceRotation;
+	
+    private WindowManager windowManager;
 
     private float[] mSensorMatrix = new float[16];
 
@@ -55,15 +55,12 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public void onOrientationChanged(Context context) {
-        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        mDeviceRotation = windowManager.getDefaultDisplay().getRotation();
     }
 
     @Override
     public void turnOnInGL(Context context) {
         isOn = true;
-        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        mDeviceRotation = windowManager.getDefaultDisplay().getRotation();
+        windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         for (MD360Director director : getDirectorList()){
             director.reset();
         }
@@ -129,7 +126,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
             switch (type){
                 case Sensor.TYPE_ROTATION_VECTOR:
                     // post
-                    VRUtil.sensorRotationVector2Matrix(event, mDeviceRotation, mSensorMatrix);
+                    VRUtil.sensorRotationVector2Matrix(event, windowManager.getDefaultDisplay().getRotation(), mSensorMatrix);
 
                     // mTmpMatrix will be used in multi thread.
                     synchronized (mMatrixLock){
