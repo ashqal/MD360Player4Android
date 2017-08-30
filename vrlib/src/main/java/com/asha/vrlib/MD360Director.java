@@ -1,5 +1,6 @@
 package com.asha.vrlib;
 
+import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
@@ -238,7 +239,16 @@ public class MD360Director {
 
     // call in gl thread
     public void reset(){
-        mDeltaX = mDeltaY = 0;
+        reset(null);
+    }
+
+    // call in gl thread
+    public void reset(PointF delta){
+        if(delta == null)
+            delta = new PointF(0, 0);
+
+        mDeltaX = delta.x;
+        mDeltaY = delta.y;
         Matrix.setIdentityM(mSensorMatrix,0);
         mWorldRotationMatrixInvalidate = true;
     }
