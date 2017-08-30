@@ -1,6 +1,7 @@
 package com.asha.vrlib;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -286,7 +287,7 @@ public class MDVRLibrary {
     /**
      * Switch Display Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #DISPLAY_MODE_GLASS}
@@ -310,6 +311,14 @@ public class MDVRLibrary {
         mProjectionModeManager.switchMode(context, mode);
     }
 
+    public PointF getTouchDelta(){
+        List<MD360Director> directors = mProjectionModeManager.getDirectors();
+        if(directors.size() > 0)
+            return new PointF(directors.get(0).getDeltaX(), directors.get(0).getDeltaY());
+
+        return new PointF(0, 0);
+    }
+
     public void resetTouch(){
         mGLHandler.post(new Runnable() {
             @Override
@@ -317,6 +326,18 @@ public class MDVRLibrary {
                 List<MD360Director> directors = mProjectionModeManager.getDirectors();
                 for (MD360Director director : directors){
                     director.reset();
+                }
+            }
+        });
+    }
+
+    public void setTouchDelta(final PointF delta){
+        mGLHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<MD360Director> directors = mProjectionModeManager.getDirectors();
+                for (MD360Director director : directors){
+                    director.reset(delta);
                 }
             }
         });
