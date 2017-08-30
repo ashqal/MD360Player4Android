@@ -286,7 +286,7 @@ public class MDVRLibrary {
     /**
      * Switch Display Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #DISPLAY_MODE_GLASS}
