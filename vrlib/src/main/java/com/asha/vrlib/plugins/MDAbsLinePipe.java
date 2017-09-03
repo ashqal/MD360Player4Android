@@ -12,10 +12,17 @@ public abstract class MDAbsLinePipe {
     abstract protected void init(Context context);
 
     private boolean mIsInit;
+    private long mTid;
 
     // MDPosition position = MDPosition.sOriginalPosition;
 
     public final void setup(Context context){
+        long tid = Thread.currentThread().getId();
+        if (mTid != tid) {
+            mTid = tid;
+            mIsInit = false;
+        }
+
         if (!mIsInit){
             init(context);
             mIsInit = true;

@@ -43,13 +43,13 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLTextureView extends TextureView implements TextureView.SurfaceTextureListener {
     private final static String TAG = "GLTextureView";
-    private final static boolean LOG_ATTACH_DETACH = false;
-    private final static boolean LOG_THREADS = false;
-    private final static boolean LOG_PAUSE_RESUME = false;
-    private final static boolean LOG_SURFACE = false;
-    private final static boolean LOG_RENDERER = false;
-    private final static boolean LOG_RENDERER_DRAW_FRAME = false;
-    private final static boolean LOG_EGL = false;
+    private final static boolean LOG_ATTACH_DETACH = true;
+    private final static boolean LOG_THREADS = true;
+    private final static boolean LOG_PAUSE_RESUME = true;
+    private final static boolean LOG_SURFACE = true;
+    private final static boolean LOG_RENDERER = true;
+    private final static boolean LOG_RENDERER_DRAW_FRAME = true;
+    private final static boolean LOG_EGL = true;
     /**
      * The renderer only renders
      * when the surface is created, or when {@link #requestRender} is called.
@@ -464,12 +464,20 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
         }
         if (mDetached && (mRenderer != null)) {
             int renderMode = RENDERMODE_CONTINUOUSLY;
+            int w = 0, h = 0;
+
             if (mGLThread != null) {
                 renderMode = mGLThread.getRenderMode();
+                w = mGLThread.mWidth;
+                h = mGLThread.mHeight;
             }
             mGLThread = new GLThread(mThisWeakRef);
             if (renderMode != RENDERMODE_CONTINUOUSLY) {
                 mGLThread.setRenderMode(renderMode);
+            }
+            if (w != 0 && h != 0) {
+                mGLThread.mWidth = w;
+                mGLThread.mHeight = h;
             }
             mGLThread.start();
         }
@@ -484,7 +492,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     @Override
     protected void onDetachedFromWindow() {
         if (LOG_ATTACH_DETACH) {
-            Log.d(TAG, "onDetachedFromWindow");
+            Log.d(TAG, "onDetachedFromWindow:" + mGLThread);
         }
         if (mGLThread != null) {
             mGLThread.requestExitAndWait();
@@ -1063,6 +1071,8 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
                 while (true) {
                     synchronized (sGLThreadManager) {
                         while (true) {
+                            Log.e(TAG, "guardedRun run:" + Thread.currentThread());
+
                             if (mShouldExit) {
                                 return;
                             }
@@ -1335,6 +1345,8 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
                     stopEglSurfaceLocked();
                     stopEglContextLocked();
                 }
+
+                Log.e(TAG, "guardedRun exit:" + Thread.currentThread());
             }
         }
 
@@ -1451,6 +1463,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
         }
 
         public void onWindowResize(int w, int h) {
+            Log.d(TAG, "onWindowResize:" + w + "," + h);
             synchronized (sGLThreadManager) {
                 mWidth = w;
                 mHeight = h;

@@ -151,6 +151,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
         @Override
         public void texture(Bitmap bitmap) {
+            releaseBitmap();
             this.bitmapRef = new SoftReference<>(bitmap);
         }
 

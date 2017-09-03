@@ -82,7 +82,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		mGLHandler.dealMessage();
 
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-		glCheck("MD360Renderer onDrawFrame 1");
+		glCheck("MD360Renderer onDrawFrame begin. ");
 
 		int size = mDisplayModeManager.getVisibleSize();
 
@@ -127,6 +127,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 		}
 
 		mMainLinePipe.commit(mWidth,mHeight,size);
+		glCheck("MD360Renderer onDrawFrame end. ");
 		// mFps.step();
 	}
 

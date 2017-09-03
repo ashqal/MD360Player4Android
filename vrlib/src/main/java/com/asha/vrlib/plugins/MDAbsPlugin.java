@@ -13,9 +13,17 @@ public abstract class MDAbsPlugin {
 
     private boolean mIsInit;
 
+    private long mTid;
+
     private MDPosition mPosition = MDPosition.getOriginalPosition();
 
     public final void setupInGL(Context context){
+        long tid = Thread.currentThread().getId();
+        if (tid != mTid) {
+            mTid = tid;
+            mIsInit = false;
+        }
+
         if (!mIsInit){
             initInGL(context);
             mIsInit = true;
