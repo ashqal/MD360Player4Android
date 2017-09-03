@@ -105,6 +105,21 @@ public class DemoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        findViewById(R.id.cubemap_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = et.getText().toString();
+
+                MD360PlayerActivity.startCubemap(DemoActivity.this, null);
+
+                /*if (!TextUtils.isEmpty(url)){
+                    MD360PlayerActivity.startCubemap(DemoActivity.this, Uri.parse(url));
+                } else {
+                    Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
+                }*/
+            }
+        });
     }
 
     private Uri getDrawableUri(@DrawableRes int resId){
