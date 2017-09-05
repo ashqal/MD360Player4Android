@@ -126,7 +126,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 			GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
 		}
 
-		mMainLinePipe.commit(mWidth,mHeight,size);
+		mMainLinePipe.commit(mWidth, mHeight, size);
 		glCheck("MD360Renderer onDrawFrame end. ");
 		// mFps.step();
 	}

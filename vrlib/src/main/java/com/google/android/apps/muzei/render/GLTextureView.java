@@ -43,13 +43,13 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLTextureView extends TextureView implements TextureView.SurfaceTextureListener {
     private final static String TAG = "GLTextureView";
-    private final static boolean LOG_ATTACH_DETACH = true;
-    private final static boolean LOG_THREADS = true;
-    private final static boolean LOG_PAUSE_RESUME = true;
-    private final static boolean LOG_SURFACE = true;
-    private final static boolean LOG_RENDERER = true;
-    private final static boolean LOG_RENDERER_DRAW_FRAME = true;
-    private final static boolean LOG_EGL = true;
+    private final static boolean LOG_ATTACH_DETACH = false;
+    private final static boolean LOG_THREADS = false;
+    private final static boolean LOG_PAUSE_RESUME = false;
+    private final static boolean LOG_SURFACE = false;
+    private final static boolean LOG_RENDERER = false;
+    private final static boolean LOG_RENDERER_DRAW_FRAME = false;
+    private final static boolean LOG_EGL = false;
     /**
      * The renderer only renders
      * when the surface is created, or when {@link #requestRender} is called.
@@ -1071,7 +1071,20 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
                 while (true) {
                     synchronized (sGLThreadManager) {
                         while (true) {
-                            Log.e(TAG, "guardedRun run:" + Thread.currentThread());
+                            if (LOG_RENDERER_DRAW_FRAME) {
+                                Log.v(TAG, "guardedRun run, tid=" + getId()
+                                        + " mHaveEglContext: " + mHaveEglContext
+                                        + " mHaveEglSurface: " + mHaveEglSurface
+                                        + " mFinishedCreatingEglSurface: " + mFinishedCreatingEglSurface
+                                        + " mPaused: " + mPaused
+                                        + " mHasSurface: " + mHasSurface
+                                        + " mSurfaceIsBad: " + mSurfaceIsBad
+                                        + " mWaitingForSurface: " + mWaitingForSurface
+                                        + " mWidth: " + mWidth
+                                        + " mHeight: " + mHeight
+                                        + " mRequestRender: " + mRequestRender
+                                        + " mRenderMode: " + mRenderMode);
+                            }
 
                             if (mShouldExit) {
                                 return;

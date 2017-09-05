@@ -85,13 +85,15 @@ public class MD360BitmapTexture extends MD360Texture {
         int[] maxSize = new int[1];
         GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxSize, 0);
 
+        final AsyncCallback finalCallback = new AsyncCallback(maxSize[0]);
+
         // create a new one
-        mTmpAsyncCallback = new AsyncCallback(maxSize[0]);
+        mTmpAsyncCallback = finalCallback;
 
         MDMainHandler.sharedHandler().post(new Runnable() {
             @Override
             public void run() {
-                mBitmapProvider.onProvideBitmap(mTmpAsyncCallback);
+                mBitmapProvider.onProvideBitmap(finalCallback);
             }
         });
     }
@@ -136,7 +138,7 @@ public class MD360BitmapTexture extends MD360Texture {
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
         glCheck("MD360BitmapTexture texImage2D");
 
-        GLES20.glUniform1i(program.getTextureUniformHandle(),0);
+        GLES20.glUniform1i(program.getTextureUniformHandle(), 0);
         glCheck("MD360BitmapTexture textureInThread");
     }
 

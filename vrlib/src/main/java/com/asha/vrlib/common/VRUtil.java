@@ -21,7 +21,6 @@ public class VRUtil {
 
     private static final String TAG = "VRUtil";
     private static float[] sUIThreadTmp = new float[16];
-    private static float[] sGLThreadTmp = new float[16];
 
     private static float[] sTruncatedVector = new float[4];
     private static boolean sIsTruncated = false;
@@ -77,6 +76,12 @@ public class VRUtil {
     public static void checkGLThread(String error){
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new RuntimeException(error);
+        }
+    }
+
+    public static void checkNaN(float[] mat) {
+        if (Float.isNaN(mat[0]) || Float.isNaN(mat[1])) {
+            throw new RuntimeException("mat not a number");
         }
     }
 

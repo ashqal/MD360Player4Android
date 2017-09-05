@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDPinchConfig;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.google.android.apps.muzei.render.GLTextureView;
 import com.squareup.picasso.Picasso;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.asha.vrlib.MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH;
+import static com.asha.vrlib.MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
@@ -239,7 +240,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            return position == 0 ? 0 : 1;
+            return position == 0 || position == 5 ? 0 : 1;
         }
 
         @Override
@@ -278,11 +279,12 @@ public class RecyclerViewActivity extends AppCompatActivity {
             this.activity = activity;
         }
 
-        public MDVRLibrary create(MDVRLibrary.IBitmapProvider  provider, GLTextureView textureView) {
-            MDVRLibrary lib =  MDVRLibrary.with(activity).
-                    asBitmap(provider).
-                    interactiveMode(INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH).
-                    build(textureView);
+        public MDVRLibrary create(MDVRLibrary.IBitmapProvider provider, GLTextureView textureView) {
+            MDVRLibrary lib =  MDVRLibrary.with(activity)
+                    .asBitmap(provider)
+                    .pinchConfig(new MDPinchConfig().setMin(0.8f).setSensitivity(8).setDefaultValue(0.8f))
+                    .interactiveMode(INTERACTIVE_MODE_MOTION_WITH_TOUCH)
+                    .build(textureView);
             add(lib);
             return lib;
         }
