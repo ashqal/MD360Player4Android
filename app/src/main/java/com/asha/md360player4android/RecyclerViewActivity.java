@@ -2,6 +2,8 @@ package com.asha.md360player4android;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -39,8 +41,12 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     private VRLibManager manager;
 
-    public RecyclerViewActivity() {
+    public static void start(Context context) {
+        Intent i = new Intent(context, RecyclerViewActivity.class);
+        context.startActivity(i);
     }
+
+    public RecyclerViewActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
