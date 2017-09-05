@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.asha.vrlib.MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH;
+import static com.asha.vrlib.MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
@@ -289,7 +289,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
             MDVRLibrary lib =  MDVRLibrary.with(activity)
                     .asBitmap(provider)
                     .pinchConfig(new MDPinchConfig().setMin(0.8f).setSensitivity(8).setDefaultValue(0.8f))
-                    .interactiveMode(INTERACTIVE_MODE_MOTION_WITH_TOUCH)
+                    .interactiveMode(INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH)
                     .build(textureView);
             add(lib);
             return lib;
