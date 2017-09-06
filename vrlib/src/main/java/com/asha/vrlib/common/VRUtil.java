@@ -47,12 +47,15 @@ public class VRUtil {
         float[] values = event.values;
         switch (rotation){
             case Surface.ROTATION_0:
-            case Surface.ROTATION_180: /* Notice: not supported for ROTATION_180! */
                 SensorManager.getRotationMatrixFromVector(output, values);
                 break;
             case Surface.ROTATION_90:
                 SensorManager.getRotationMatrixFromVector(sUIThreadTmp, values);
                 SensorManager.remapCoordinateSystem(sUIThreadTmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, output);
+                break;
+            case Surface.ROTATION_180:
+                SensorManager.getRotationMatrixFromVector(sUIThreadTmp, values);
+                SensorManager.remapCoordinateSystem(sUIThreadTmp, SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y, output);
                 break;
             case Surface.ROTATION_270:
                 SensorManager.getRotationMatrixFromVector(sUIThreadTmp, values);
