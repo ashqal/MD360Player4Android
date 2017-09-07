@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.asha.vrlib.MDDirectorCamUpdate;
 import com.asha.vrlib.MDVRLibrary;
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
@@ -367,9 +368,11 @@ public abstract class MD360PlayerActivity extends Activity {
 
         final TextView hotspotText = (TextView) findViewById(R.id.hotspot_text);
         final TextView directorBriefText = (TextView) findViewById(R.id.director_brief_text);
-        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickListener() {
+        getVRLibrary().setEyePickChangedListener(new MDVRLibrary.IEyePickListener2() {
             @Override
-            public void onHotspotHit(IMDHotspot hotspot, long hitTimestamp) {
+            public void onHotspotHit(MDHitEvent hitEvent) {
+                IMDHotspot hotspot = hitEvent.getHotspot();
+                long hitTimestamp = hitEvent.getTimestamp();
                 String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
                 hotspotText.setText(text);
 

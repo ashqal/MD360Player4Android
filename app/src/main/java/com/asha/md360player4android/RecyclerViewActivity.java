@@ -1,6 +1,5 @@
 package com.asha.md360player4android;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,31 +12,26 @@ import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.model.MDPinchConfig;
+import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.google.android.apps.muzei.render.GLTextureView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
-import static com.asha.vrlib.MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
-    private Uri[] sMockData;
-
     private static final String TAG = "MainActivity";
+
+    private Uri[] sMockData;
 
     private VRLibManager manager;
 
@@ -60,19 +54,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
         manager = new VRLibManager(this);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         final FeedAdapter adapter = new FeedAdapter();
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(null);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState != RecyclerView.SCROLL_STATE_DRAGGING) {
-                    int pos = layoutManager.findFirstCompletelyVisibleItemPosition();
-                    adapter.onPosition(pos);
-                }
-            }
-        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -97,16 +81,11 @@ public class RecyclerViewActivity extends AppCompatActivity {
     private static class FeedModel {
 
         private final Uri uri;
-        private final int index;
-        private int pos;
+        private final int type;
 
-        public FeedModel(int index, Uri uri) {
-            this.index = index;
+        public FeedModel(int type, Uri uri) {
+            this.type = type;
             this.uri = uri;
-        }
-
-        public void setPos(int pos) {
-            this.pos = pos;
         }
     }
 
@@ -119,10 +98,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
         public abstract void bind(FeedModel feedModel);
     }
 
-    private class FeedSimpleVH extends FeedVH {
+    private class FeedTextVH extends FeedVH {
 
-        public FeedSimpleVH(ViewGroup vp) {
-            super(vp, R.layout.feed_simple_layout);
+        public FeedTextVH(ViewGroup vp) {
+            super(vp, R.layout.feed_text_layout);
         }
 
         @Override
@@ -131,8 +110,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
     }
 
     private class FeedVRVH extends FeedVH implements MDVRLibrary.IBitmapProvider {
-
-        private ImageView cover;
 
         private TextView text;
 
@@ -144,9 +121,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         private FeedModel model;
 
+        private long ts;
+
         public FeedVRVH(ViewGroup vp) {
             super(vp, R.layout.feed_panorama_layout);
-            cover = (ImageView) itemView.findViewById(R.id.feed_img_cover);
             text = (TextView) itemView.findViewById(R.id.feed_text);
             glTextureView = (GLTextureView) itemView.findViewById(R.id.feed_texture_view);
             parent = (ViewGroup) glTextureView.getParent();
@@ -154,28 +132,27 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         @Override
         public void bind(FeedModel model) {
-            Log.d(TAG, "FeedVRVH bind.");
             this.model = model;
-            // Picasso.with(itemView.getContext()).load(model.url).into(cover);
             ensureVRLib();
             vrlib.notifyPlayerChanged();
-            /*
-            if (model.pos == model.index) {
-                text.setText("on");
-                if (glTextureView.getParent() == null) {
-                    // parent.addView(glTextureView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                }
-
-            } else {
-                text.setText("off");
-                // parent.removeView(glTextureView);
-            }
-            */
         }
 
         private void ensureVRLib() {
             if (vrlib == null) {
                 vrlib = manager.create(this, glTextureView);
+                vrlib.setEyePickChangedListener(new MDVRLibrary.IEyePickListener2() {
+                    @Override
+                    public void onHotspotHit(MDHitEvent hitEvent) {
+                        long delta = System.currentTimeMillis() - ts;
+                        if (delta < 500) {
+                            return;
+                        }
+
+                        String brief = vrlib.getDirectorBrief().toString();
+                        text.setText(brief);
+                        ts = System.currentTimeMillis();
+                    }
+                });
             }
         }
 
@@ -184,12 +161,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
             if (model == null) {
                 return;
             }
-            Log.d(TAG, "onProvideBitmap");
+
             Picasso.with(itemView.getContext()).load(model.uri).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    Log.d(TAG, "onProvideBitmap onBitmapLoaded");
-
                     vrlib.onTextureResize(bitmap.getWidth(), bitmap.getHeight());
                     callback.texture(bitmap);
                 }
@@ -217,10 +192,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
         private List<FeedModel> feeds = new ArrayList<>();
 
         public FeedAdapter() {
-            int i = -1;
+            int i = 0;
             while (i++ < 50) {
-                Uri url = sMockData[(int) (Math.random() * sMockData.length)];
-                feeds.add(new FeedModel(i, url));
+                Uri uri = sMockData[(int) (Math.random() * sMockData.length)];
+                feeds.add(new FeedModel(Math.random() > 0.3 ? 0 : 1, uri));
             }
         }
 
@@ -229,9 +204,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
             if (viewType == 0) {
                 return new FeedVRVH(parent);
             } else {
-                return new FeedSimpleVH(parent);
+                return new FeedTextVH(parent);
             }
-
         }
 
         @Override
@@ -246,81 +220,16 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            return position == 0 || position == 5 ? 0 : 1;
+            return feeds.get(position).type;
         }
 
         @Override
         public int getItemCount() {
             return feeds.size();
         }
-
-        private int prevPos = -1;
-        public void onPosition(int pos) {
-            if (prevPos == pos) {
-                return;
-            }
-
-            for (FeedModel feedModel : feeds) {
-                feedModel.setPos(pos);
-            }
-
-            notifyItemChanged(prevPos);
-            notifyItemChanged(pos);
-            prevPos = pos;
-        }
     }
 
     private static View create(ViewGroup vp, int layout) {
         return LayoutInflater.from(vp.getContext()).inflate(layout, vp, false);
-    }
-
-    private static class VRLibManager {
-        private Activity activity;
-
-        private boolean isResumed;
-
-        private List<MDVRLibrary> libs = new LinkedList<>();
-
-        public VRLibManager(Activity activity) {
-            this.activity = activity;
-        }
-
-        public MDVRLibrary create(MDVRLibrary.IBitmapProvider provider, GLTextureView textureView) {
-            MDVRLibrary lib =  MDVRLibrary.with(activity)
-                    .asBitmap(provider)
-                    .pinchConfig(new MDPinchConfig().setMin(0.8f).setSensitivity(8).setDefaultValue(0.8f))
-                    .interactiveMode(INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH)
-                    .build(textureView);
-            add(lib);
-            return lib;
-        }
-
-        private void add(MDVRLibrary lib) {
-            if (isResumed) {
-                lib.onResume(activity);
-            }
-
-            libs.add(lib);
-        }
-
-        public void fireResumed() {
-            isResumed = true;
-            for (MDVRLibrary library : libs) {
-                library.onResume(activity);
-            }
-        }
-
-        public void firePaused() {
-            isResumed = false;
-            for (MDVRLibrary library : libs) {
-                library.onPause(activity);
-            }
-        }
-
-        public void fireDestroy() {
-            for (MDVRLibrary library : libs) {
-                library.onDestroy();
-            }
-        }
     }
 }

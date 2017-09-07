@@ -149,6 +149,8 @@ public class MDVRLibrary {
         mTouchHelper.setFlingEnabled(builder.flingEnabled);
         mTouchHelper.setFlingConfig(builder.flingConfig);
 
+        mTouchHelper.setTouchSensitivity(builder.touchSensitivity);
+
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -288,7 +290,7 @@ public class MDVRLibrary {
     /**
      * Switch Display Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #DISPLAY_MODE_GLASS}
@@ -611,6 +613,7 @@ public class MDVRLibrary {
         private IDirectorFilter directorFilter;
         private boolean flingEnabled = true; // default true
         private MDFlingConfig flingConfig;
+        private float touchSensitivity = 1; // default = 1
 
         private Builder(Context context) {
             this.context = context;
@@ -781,6 +784,11 @@ public class MDVRLibrary {
 
         public Builder flingConfig(MDFlingConfig config){
             this.flingConfig = config;
+            return this;
+        }
+
+        public Builder touchSensitivity(float touchSensitivity){
+            this.touchSensitivity = touchSensitivity;
             return this;
         }
 

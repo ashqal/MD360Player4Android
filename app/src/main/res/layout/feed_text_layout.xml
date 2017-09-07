@@ -5,18 +5,12 @@
     android:layout_marginRight="10dp"
     android:layout_marginTop="10dp"
     android:layout_width="match_parent"
-    android:layout_height="275dp">
-
-    <com.google.android.apps.muzei.render.GLTextureView
-        android:id="@+id/feed_texture_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:layout_height="200dp">
 
     <TextView
-        android:text="haha"
+        android:layout_gravity="center"
         android:id="@+id/feed_text"
-        android:textColor="#FFF"
-        android:layout_gravity="right|bottom"
+        android:text="text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

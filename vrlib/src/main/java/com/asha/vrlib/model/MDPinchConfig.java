@@ -9,7 +9,7 @@ public class MDPinchConfig {
     private float max = 5;
     private float min = 1;
     private float defaultValue = 1;
-    private float mSensitivity = 3;
+    private float mSensitivity = 1;
 
     public MDPinchConfig setMax(float max) {
         this.max = max;
