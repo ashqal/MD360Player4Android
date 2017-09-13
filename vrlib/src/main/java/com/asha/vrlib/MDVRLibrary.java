@@ -33,6 +33,7 @@ import com.asha.vrlib.strategy.interactive.InteractiveModeManager;
 import com.asha.vrlib.strategy.projection.IMDProjectionFactory;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
 import com.asha.vrlib.texture.MD360BitmapTexture;
+import com.asha.vrlib.texture.MD360CubemapTexture;
 import com.asha.vrlib.texture.MD360Texture;
 import com.asha.vrlib.texture.MD360VideoTexture;
 import com.google.android.apps.muzei.render.GLTextureView;
@@ -80,6 +81,7 @@ public class MDVRLibrary {
     public static final int PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL = 211;
     public static final int PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL = 212;
     public static final int PROJECTION_MODE_STEREO_SPHERE_VERTICAL = 213;
+    public static final int PROJECTION_MODE_CUBE = 214;
 
     private RectF mTextureSize = new RectF(0, 0, 1024, 1024);
     private InteractiveModeManager mInteractiveModeManager;
@@ -146,6 +148,8 @@ public class MDVRLibrary {
 
         mTouchHelper.setFlingEnabled(builder.flingEnabled);
         mTouchHelper.setFlingConfig(builder.flingConfig);
+
+        mTouchHelper.setTouchSensitivity(builder.touchSensitivity);
 
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -286,7 +290,7 @@ public class MDVRLibrary {
     /**
      * Switch Display Mode
      *
-     * @param activity activity
+     * @param context context
      * @param mode mode
      *
      * {@link #DISPLAY_MODE_GLASS}
@@ -505,6 +509,11 @@ public class MDVRLibrary {
         void onProvideBitmap(MD360BitmapTexture.Callback callback);
     }
 
+    public interface ICubemapProvider {
+        void onProvideCubemap(MD360CubemapTexture.Callback callback, int cubeFace);
+        void onReady();
+    }
+
     public interface IImageLoadProvider {
         void onProvideBitmap(Uri uri, MD360BitmapTexture.Callback callback);
     }
@@ -604,6 +613,7 @@ public class MDVRLibrary {
         private IDirectorFilter directorFilter;
         private boolean flingEnabled = true; // default true
         private MDFlingConfig flingConfig;
+        private float touchSensitivity = 1; // default = 1
 
         private Builder(Context context) {
             this.context = context;
@@ -639,6 +649,13 @@ public class MDVRLibrary {
             notNull(bitmapProvider, "bitmap Provider can't be null!");
             texture = new MD360BitmapTexture(bitmapProvider);
             contentType = ContentType.BITMAP;
+            return this;
+        }
+
+        public Builder asCubemap(ICubemapProvider cubemapProvider){
+            notNull(cubemapProvider, "cubemap Provider can't be null!");
+            texture = new MD360CubemapTexture(cubemapProvider);
+            contentType = ContentType.CUBEMAP;
             return this;
         }
 
@@ -770,6 +787,11 @@ public class MDVRLibrary {
             return this;
         }
 
+        public Builder touchSensitivity(float touchSensitivity){
+            this.touchSensitivity = touchSensitivity;
+            return this;
+        }
+
         /**
          * build it!
          *
@@ -809,6 +831,7 @@ public class MDVRLibrary {
         int VIDEO = 0;
         int BITMAP = 1;
         int FBO = 2;
+        int CUBEMAP = 3;
         int DEFAULT = VIDEO;
     }
 }

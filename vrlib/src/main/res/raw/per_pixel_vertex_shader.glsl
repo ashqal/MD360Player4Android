@@ -2,6 +2,7 @@ uniform mat4 u_MVPMatrix;		// A constant representing the combined model/view/pr
 uniform mat4 u_MVMatrix;		// A constant representing the combined model/view matrix.
 uniform mat4 u_STMatrix;
 uniform bool u_UseSTM;
+uniform bool u_IsSkybox;
 		  			
 attribute vec4 a_Position;		// Per-vertex position information we will pass in.   				
 //attribute vec4 a_Color;			// Per-vertex color information we will pass in.
@@ -16,8 +17,13 @@ varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
 // The entry point for our vertex shader.  
 void main()                                                 	
 {                                                         
-	// Transform the vertex into eye space. 	
-	v_Position = vec3(u_MVMatrix * a_Position);
+    // Transform the vertex into eye space.
+    if(!u_IsSkybox) {
+        v_Position = vec3(u_MVMatrix * a_Position);
+    } else {
+        // When using cubemap, coordinates are the same as the position
+        v_Position = vec3(a_Position);
+    }
 		
 	// Pass through the color.
 	//v_Color = a_Color;

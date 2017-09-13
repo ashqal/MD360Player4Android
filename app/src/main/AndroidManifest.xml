@@ -21,6 +21,8 @@
         <activity android:label="IjkPlayerDemoActivity" android:name=".IjkPlayerDemoActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
         <activity android:label="VideoPlayerActivity" android:name=".VideoPlayerActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
         <activity android:label="BitmapPlayerActivity" android:name=".BitmapPlayerActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
+        <activity android:label="CubemapPlayerActivity" android:name=".CubemapPlayerActivity" android:screenOrientation="landscape" android:configChanges="screenSize|orientation" />
+        <activity android:name=".RecyclerViewActivity" android:screenOrientation="portrait" android:configChanges="screenSize|orientation" />
     </application>
 
 </manifest>

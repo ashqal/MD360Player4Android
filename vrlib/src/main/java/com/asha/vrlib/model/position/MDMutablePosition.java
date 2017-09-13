@@ -16,7 +16,7 @@ public class MDMutablePosition extends MDPosition {
 
     private float[] mModelMatrix = null;
     private float[] mRotationMatrix = null;
-    private static final float[] sSharedTmpMatrix = new float[16];
+    private final float[] mTmpMatrix = new float[16];
 
     private float mX;
     private float mY;
@@ -185,8 +185,8 @@ public class MDMutablePosition extends MDPosition {
 
         // rotation
         if (mRotationMatrix != null){
-            Matrix.multiplyMM(sSharedTmpMatrix, 0,  mRotationMatrix, 0, mModelMatrix, 0);
-            System.arraycopy(sSharedTmpMatrix, 0, mModelMatrix, 0, 16);
+            Matrix.multiplyMM(mTmpMatrix, 0,  mRotationMatrix, 0, mModelMatrix, 0);
+            System.arraycopy(mTmpMatrix, 0, mModelMatrix, 0, 16);
         }
 
         changed = false;

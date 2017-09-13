@@ -215,8 +215,11 @@ public class PlaneProjection extends AbsProjectionStrategy {
 
     private class OrthogonalDirector extends MD360Director{
 
+        private final float sNearBase;
+
         private OrthogonalDirector(Builder builder) {
             super(builder);
+            sNearBase = getNear();
         }
 
         @Override
@@ -238,12 +241,13 @@ public class PlaneProjection extends AbsProjectionStrategy {
         protected void updateProjection(){
             planeScaleCalculator.setViewportRatio(getRatio());
             planeScaleCalculator.calculate();
-            final float left = - planeScaleCalculator.getViewportWidth()/2;
-            final float right = planeScaleCalculator.getViewportWidth()/2;
-            final float bottom = - planeScaleCalculator.getViewportHeight()/2;
-            final float top = planeScaleCalculator.getViewportHeight()/2;
+            float scale = sNearBase / getNear();
+            final float left = - planeScaleCalculator.getViewportWidth() / 2 * scale;
+            final float right = planeScaleCalculator.getViewportWidth() / 2 * scale;
+            final float bottom = - planeScaleCalculator.getViewportHeight() / 2 * scale;
+            final float top = planeScaleCalculator.getViewportHeight() / 2 * scale;
             final float far = 500;
-            Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
+            Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, 1, far);
         }
     }
 

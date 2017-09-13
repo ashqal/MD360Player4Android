@@ -105,6 +105,22 @@ public class DemoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        findViewById(R.id.cubemap_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = et.getText().toString();
+
+                MD360PlayerActivity.startCubemap(DemoActivity.this, null);
+            }
+        });
+
+        findViewById(R.id.recycler_view_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerViewActivity.start(DemoActivity.this);
+            }
+        });
     }
 
     private Uri getDrawableUri(@DrawableRes int resId){

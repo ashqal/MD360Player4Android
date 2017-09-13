@@ -464,12 +464,20 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
         }
         if (mDetached && (mRenderer != null)) {
             int renderMode = RENDERMODE_CONTINUOUSLY;
+            int w = 0, h = 0;
+
             if (mGLThread != null) {
                 renderMode = mGLThread.getRenderMode();
+                w = mGLThread.mWidth;
+                h = mGLThread.mHeight;
             }
             mGLThread = new GLThread(mThisWeakRef);
             if (renderMode != RENDERMODE_CONTINUOUSLY) {
                 mGLThread.setRenderMode(renderMode);
+            }
+            if (w != 0 && h != 0) {
+                mGLThread.mWidth = w;
+                mGLThread.mHeight = h;
             }
             mGLThread.start();
         }
@@ -484,7 +492,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     @Override
     protected void onDetachedFromWindow() {
         if (LOG_ATTACH_DETACH) {
-            Log.d(TAG, "onDetachedFromWindow");
+            Log.d(TAG, "onDetachedFromWindow:" + mGLThread);
         }
         if (mGLThread != null) {
             mGLThread.requestExitAndWait();
@@ -1063,6 +1071,21 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
                 while (true) {
                     synchronized (sGLThreadManager) {
                         while (true) {
+                            if (LOG_RENDERER_DRAW_FRAME) {
+                                Log.v(TAG, "guardedRun run, tid=" + getId()
+                                        + " mHaveEglContext: " + mHaveEglContext
+                                        + " mHaveEglSurface: " + mHaveEglSurface
+                                        + " mFinishedCreatingEglSurface: " + mFinishedCreatingEglSurface
+                                        + " mPaused: " + mPaused
+                                        + " mHasSurface: " + mHasSurface
+                                        + " mSurfaceIsBad: " + mSurfaceIsBad
+                                        + " mWaitingForSurface: " + mWaitingForSurface
+                                        + " mWidth: " + mWidth
+                                        + " mHeight: " + mHeight
+                                        + " mRequestRender: " + mRequestRender
+                                        + " mRenderMode: " + mRenderMode);
+                            }
+
                             if (mShouldExit) {
                                 return;
                             }
@@ -1335,6 +1358,8 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
                     stopEglSurfaceLocked();
                     stopEglContextLocked();
                 }
+
+                Log.e(TAG, "guardedRun exit:" + Thread.currentThread());
             }
         }
 
@@ -1451,6 +1476,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
         }
 
         public void onWindowResize(int w, int h) {
+            Log.d(TAG, "onWindowResize:" + w + "," + h);
             synchronized (sGLThreadManager) {
                 mWidth = w;
                 mHeight = h;

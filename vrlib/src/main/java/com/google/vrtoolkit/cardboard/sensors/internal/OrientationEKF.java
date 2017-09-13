@@ -64,6 +64,7 @@ public class OrientationEKF {
     private Matrix3x3d magObservationFunctionForNumericalJacobianTempM = new Matrix3x3d();
     private boolean alignedToGravity;
     private boolean alignedToNorth;
+    private So3Helper so3Helper = new So3Helper();
 
     public OrientationEKF() {
         this.reset();
@@ -247,7 +248,7 @@ public class OrientationEKF {
             Matrix3x3d.mult(this.so3LastMotion, this.so3SensorFromWorld, this.so3SensorFromWorld);
             this.updateCovariancesAfterMotion();
         } else {
-            So3Util.sO3FromTwoVec(this.down, this.mz, this.so3SensorFromWorld);
+            so3Helper.sO3FromTwoVec(this.down, this.mz, this.so3SensorFromWorld);
             this.alignedToGravity = true;
         }
 
@@ -351,13 +352,13 @@ public class OrientationEKF {
 
     private void accObservationFunctionForNumericalJacobian(Matrix3x3d so3SensorFromWorldPred, Vector3d result) {
         Matrix3x3d.mult(so3SensorFromWorldPred, this.down, this.mh);
-        So3Util.sO3FromTwoVec(this.mh, this.mz, this.accObservationFunctionForNumericalJacobianTempM);
-        So3Util.muFromSO3(this.accObservationFunctionForNumericalJacobianTempM, result);
+        so3Helper.sO3FromTwoVec(this.mh, this.mz, this.accObservationFunctionForNumericalJacobianTempM);
+        so3Helper.muFromSO3(this.accObservationFunctionForNumericalJacobianTempM, result);
     }
 
     private void magObservationFunctionForNumericalJacobian(Matrix3x3d so3SensorFromWorldPred, Vector3d result) {
         Matrix3x3d.mult(so3SensorFromWorldPred, this.north, this.mh);
-        So3Util.sO3FromTwoVec(this.mh, this.mz, this.magObservationFunctionForNumericalJacobianTempM);
-        So3Util.muFromSO3(this.magObservationFunctionForNumericalJacobianTempM, result);
+        so3Helper.sO3FromTwoVec(this.mh, this.mz, this.magObservationFunctionForNumericalJacobianTempM);
+        so3Helper.muFromSO3(this.magObservationFunctionForNumericalJacobianTempM, result);
     }
 }

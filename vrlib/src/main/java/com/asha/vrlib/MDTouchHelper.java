@@ -39,6 +39,7 @@ public class MDTouchHelper {
 
     private static final int MODE_INIT = 0;
     private static final int MODE_PINCH = 1;
+    private float mTouchSensitivity;
 
     public MDTouchHelper(Context context) {
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -57,7 +58,7 @@ public class MDTouchHelper {
                 if (mCurrentMode == MODE_PINCH) return false;
 
                 if (mAdvanceGestureListener != null){
-                    mAdvanceGestureListener.onDrag(distanceX / mGlobalScale, distanceY / mGlobalScale);
+                    mAdvanceGestureListener.onDrag(scaled(distanceX), scaled(distanceY));
                 }
                 return true;
             }
@@ -71,6 +72,10 @@ public class MDTouchHelper {
                 return true;
             }
         });
+    }
+
+    private float scaled(float input) {
+        return input / mGlobalScale * mTouchSensitivity;
     }
 
     private void animCancel(){
@@ -98,7 +103,7 @@ public class MDTouchHelper {
                 lastTime = now;
 
                 if (mAdvanceGestureListener != null){
-                    mAdvanceGestureListener.onDrag(sx / mGlobalScale, sy / mGlobalScale);
+                    mAdvanceGestureListener.onDrag(scaled(sx), scaled(sy));
                 }
             }
         });
@@ -213,6 +218,10 @@ public class MDTouchHelper {
         this.mFlingConfig = flingConfig;
     }
 
+    public void setTouchSensitivity(float touchSensitivity) {
+        this.mTouchSensitivity = touchSensitivity;
+    }
+
     private class PinchInfo{
         private float x1;
         private float y1;
@@ -234,7 +243,7 @@ public class MDTouchHelper {
         public float pinch(float distance) {
             if (oDistance == 0) oDistance = distance;
             float scale = distance / oDistance - 1;
-            scale *= mSensitivity;
+            scale *= mSensitivity * 3;
             currentScale = prevScale + scale;
             // range
             currentScale = Math.max(currentScale, minScale);
