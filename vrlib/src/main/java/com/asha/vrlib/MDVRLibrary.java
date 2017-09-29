@@ -42,6 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.asha.vrlib.common.VRUtil.notNull;
+import static com.asha.vrlib.strategy.interactive.TouchStrategy.sDamping;
+import static com.asha.vrlib.strategy.interactive.TouchStrategy.sDensity;
 
 /**
  * Created by hzqiujiadi on 16/3/12.
@@ -134,13 +136,42 @@ public class MDVRLibrary {
         mTouchHelper.setAdvanceGestureListener(new IAdvanceGestureListener() {
             @Override
             public void onDrag(float distanceX, float distanceY) {
-                mInteractiveModeManager.handleDrag((int) distanceX,(int) distanceY);
+                if (mInteractiveModeManager.getDirectorList().size() > 0) {
+                    MD360Director director = mInteractiveModeManager.getDirectorList().get(0);
+
+                    float deltaY = (director.getDeltaY() - distanceY / sDensity * sDamping);
+
+                    if (90<= deltaY) {
+                        distanceY = 0;
+                        director.setDeltaY(90);
+                    }
+
+                    if (-90>= deltaY) {
+                        distanceY = 0;
+                        director.setDeltaY(-90);
+                    }
+
+                }
+                mInteractiveModeManager.handleDrag((int) distanceX, (int) distanceY);
             }
 
             @Override
             public void onPinch(final float scale) {
                 updatePinchRunnable.setScale(scale);
                 mGLHandler.post(updatePinchRunnable);
+
+                if (mInteractiveModeManager.getDirectorList().size() > 0) {
+                    MD360Director director = mInteractiveModeManager.getDirectorList().get(0);
+
+                    float deltaY = director.getDeltaY();
+
+                    if (90 <= deltaY) {
+                        director.setDeltaY(90);
+                    }
+                    if (-90>= deltaY) {
+                        director.setDeltaY(-90);
+                    }
+                }
             }
         });
         mTouchHelper.setPinchEnabled(builder.pinchEnabled);
