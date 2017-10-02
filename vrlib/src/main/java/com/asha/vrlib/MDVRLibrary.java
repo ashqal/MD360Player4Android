@@ -75,7 +75,8 @@ public class MDVRLibrary {
      * @deprecated since 2.0.4
      * use {@link #PROJECTION_MODE_STEREO_SPHERE_VERTICAL}
      */
-    @Deprecated public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
+    @Deprecated
+    public static final int PROJECTION_MODE_STEREO_SPHERE = 206;
     public static final int PROJECTION_MODE_PLANE_FIT = 207;
     public static final int PROJECTION_MODE_PLANE_CROP = 208;
     public static final int PROJECTION_MODE_PLANE_FULL = 209;
@@ -141,12 +142,12 @@ public class MDVRLibrary {
 
                     float deltaY = (director.getDeltaY() - distanceY / sDensity * sDamping);
 
-                    if (90<= deltaY) {
+                    if (90 <= deltaY) {
                         distanceY = 0;
                         director.setDeltaY(90);
                     }
 
-                    if (-90>= deltaY) {
+                    if (-90 >= deltaY) {
                         distanceY = 0;
                         director.setDeltaY(-90);
                     }
@@ -168,7 +169,7 @@ public class MDVRLibrary {
                     if (90 <= deltaY) {
                         director.setDeltaY(90);
                     }
-                    if (-90>= deltaY) {
+                    if (-90 >= deltaY) {
                         director.setDeltaY(-90);
                     }
                 }
@@ -191,7 +192,7 @@ public class MDVRLibrary {
 
     }
 
-    private class UpdatePinchRunnable implements Runnable{
+    private class UpdatePinchRunnable implements Runnable {
         private float scale;
 
         public void setScale(float scale) {
@@ -201,7 +202,7 @@ public class MDVRLibrary {
         @Override
         public void run() {
             List<MD360Director> directors = mProjectionModeManager.getDirectors();
-            for (MD360Director director : directors){
+            for (MD360Director director : directors) {
                 director.setNearScale(scale);
             }
         }
@@ -288,11 +289,11 @@ public class MDVRLibrary {
         addPlugin(mPickerManager.getEyePicker());
     }
 
-    public MDDirectorCamUpdate updateCamera(){
+    public MDDirectorCamUpdate updateCamera() {
         return mDirectorCameraUpdate;
     }
 
-    public MDDirectorBrief getDirectorBrief(){
+    public MDDirectorBrief getDirectorBrief() {
         return mProjectionModeManager.getDirectorBrief();
     }
 
@@ -304,17 +305,17 @@ public class MDVRLibrary {
      * Switch Interactive Mode
      *
      * @param context context
-     * @param mode mode
-     *
-     * {@link #INTERACTIVE_MODE_MOTION}
-     * {@link #INTERACTIVE_MODE_TOUCH}
-     * {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
+     * @param mode    mode
+     *                <p>
+     *                {@link #INTERACTIVE_MODE_MOTION}
+     *                {@link #INTERACTIVE_MODE_TOUCH}
+     *                {@link #INTERACTIVE_MODE_MOTION_WITH_TOUCH}
      */
-    public void switchInteractiveMode(final Context context, final int mode){
+    public void switchInteractiveMode(final Context context, final int mode) {
         mInteractiveModeManager.switchMode(context, mode);
     }
 
-    public void switchDisplayMode(final Context context){
+    public void switchDisplayMode(final Context context) {
         mDisplayModeManager.switchMode(context);
     }
 
@@ -322,12 +323,12 @@ public class MDVRLibrary {
      * Switch Display Mode
      *
      * @param context context
-     * @param mode mode
-     *
-     * {@link #DISPLAY_MODE_GLASS}
-     * {@link #DISPLAY_MODE_NORMAL}
+     * @param mode    mode
+     *                <p>
+     *                {@link #DISPLAY_MODE_GLASS}
+     *                {@link #DISPLAY_MODE_NORMAL}
      */
-    public void switchDisplayMode(final Context context, final int mode){
+    public void switchDisplayMode(final Context context, final int mode) {
         mDisplayModeManager.switchMode(context, mode);
     }
 
@@ -335,41 +336,41 @@ public class MDVRLibrary {
      * Switch Projection Mode
      *
      * @param context context
-     * @param mode mode
-     *
-     * {@link #PROJECTION_MODE_SPHERE}
-     * {@link #PROJECTION_MODE_DOME180}
-     * and so on.
+     * @param mode    mode
+     *                <p>
+     *                {@link #PROJECTION_MODE_SPHERE}
+     *                {@link #PROJECTION_MODE_DOME180}
+     *                and so on.
      */
     public void switchProjectionMode(final Context context, final int mode) {
         mProjectionModeManager.switchMode(context, mode);
     }
 
-    public void resetTouch(){
+    public void resetTouch() {
         mGLHandler.post(new Runnable() {
             @Override
             public void run() {
                 List<MD360Director> directors = mProjectionModeManager.getDirectors();
-                for (MD360Director director : directors){
+                for (MD360Director director : directors) {
                     director.reset();
                 }
             }
         });
     }
 
-    public void resetPinch(){
+    public void resetPinch() {
         mTouchHelper.reset();
     }
 
-    public void resetEyePick(){
+    public void resetEyePick() {
         mPickerManager.resetEyePick();
     }
 
-    public void setAntiDistortionEnabled(boolean enabled){
+    public void setAntiDistortionEnabled(boolean enabled) {
         mDisplayModeManager.setAntiDistortionEnabled(enabled);
     }
 
-    public boolean isAntiDistortionEnabled(){
+    public boolean isAntiDistortionEnabled() {
         return mDisplayModeManager.isAntiDistortionEnabled();
     }
 
@@ -382,28 +383,28 @@ public class MDVRLibrary {
     }
 
     @Deprecated
-    public void setEyePickChangedListener(IEyePickListener listener){
+    public void setEyePickChangedListener(IEyePickListener listener) {
         mPickerManager.setEyePickChangedListener(new CompactEyePickAdapter(listener));
     }
 
     @Deprecated
-    public void setTouchPickListener(ITouchPickListener listener){
+    public void setTouchPickListener(ITouchPickListener listener) {
         mPickerManager.setTouchPickListener(new CompactTouchPickAdapter(listener));
     }
 
-    public void setEyePickChangedListener(IEyePickListener2 listener){
+    public void setEyePickChangedListener(IEyePickListener2 listener) {
         mPickerManager.setEyePickChangedListener(listener);
     }
 
-    public void setTouchPickListener(ITouchPickListener2 listener){
+    public void setTouchPickListener(ITouchPickListener2 listener) {
         mPickerManager.setTouchPickListener(listener);
     }
 
-    public void setPinchScale(float scale){
+    public void setPinchScale(float scale) {
         mTouchHelper.scaleTo(scale);
     }
 
-    public boolean isPinchEnabled(){
+    public boolean isPinchEnabled() {
         return mTouchHelper.isPinchEnabled();
     }
 
@@ -411,11 +412,11 @@ public class MDVRLibrary {
         mTouchHelper.setPinchEnabled(enabled);
     }
 
-    public void setPinchConfig(MDPinchConfig pinchConfig){
+    public void setPinchConfig(MDPinchConfig pinchConfig) {
         mTouchHelper.setPinchConfig(pinchConfig);
     }
 
-    public boolean isFlingEnabled(){
+    public boolean isFlingEnabled() {
         return mTouchHelper.isFlingEnabled();
     }
 
@@ -423,57 +424,65 @@ public class MDVRLibrary {
         mTouchHelper.setFlingEnabled(enabled);
     }
 
-    public void setFlingConfig(MDFlingConfig flingConfig){
+    public void setFlingConfig(MDFlingConfig flingConfig) {
         mTouchHelper.setFlingConfig(flingConfig);
     }
 
-    public void setDirectorFilter(IDirectorFilter filter){
+    public void setView(float ath, float atv) {
+        MD360Director director = mProjectionModeManager.getDirectors().get(0);
+        ath = 90 - ath;
+        atv = -atv;
+        director.setDeltaX(ath);
+        director.setDeltaY(atv);
+    }
+
+    public void setDirectorFilter(IDirectorFilter filter) {
         mDirectorFilter.setDelegate(filter);
     }
 
-    public void addPlugin(MDAbsPlugin plugin){
+    public void addPlugin(MDAbsPlugin plugin) {
         mPluginManager.add(plugin);
     }
 
-    public void removePlugin(MDAbsPlugin plugin){
+    public void removePlugin(MDAbsPlugin plugin) {
         mPluginManager.remove(plugin);
     }
 
-    public void removePlugins(){
+    public void removePlugins() {
         mPluginManager.removeAll();
     }
 
-    public IMDHotspot findHotspotByTag(String tag){
+    public IMDHotspot findHotspotByTag(String tag) {
         return mPluginManager.findHotspotByTag(tag);
     }
 
-    public MDAbsView findViewByTag(String tag){
+    public MDAbsView findViewByTag(String tag) {
         return mPluginManager.findViewByTag(tag);
     }
 
-    public void onTextureResize(float width, float height){
-        mTextureSize.set(0,0,width,height);
+    public void onTextureResize(float width, float height) {
+        mTextureSize.set(0, 0, width, height);
     }
 
     public void onOrientationChanged(Context context) {
         mInteractiveModeManager.onOrientationChanged(context);
     }
 
-    public void onResume(Context context){
+    public void onResume(Context context) {
         mInteractiveModeManager.onResume(context);
-        if (mScreenWrapper != null){
+        if (mScreenWrapper != null) {
             mScreenWrapper.onResume();
         }
     }
 
-    public void onPause(Context context){
+    public void onPause(Context context) {
         mInteractiveModeManager.onPause(context);
-        if (mScreenWrapper != null){
+        if (mScreenWrapper != null) {
             mScreenWrapper.onPause();
         }
     }
 
-    public void onDestroy(){
+    public void onDestroy() {
         mGLHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -483,19 +492,19 @@ public class MDVRLibrary {
         mGLHandler.markAsDestroy();
     }
 
-    private void fireDestroy(){
+    private void fireDestroy() {
         Iterator<MDAbsPlugin> iterator = mPluginManager.getPlugins().iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             MDAbsPlugin plugin = iterator.next();
             plugin.destroyInGL();
         }
 
         MDAbsPlugin mainPlugin = mProjectionModeManager.getMainPlugin();
-        if (mainPlugin != null){
+        if (mainPlugin != null) {
             mainPlugin.destroyInGL();
         }
 
-        if (mTexture != null){
+        if (mTexture != null) {
             mTexture.destroy();
             mTexture.release();
             mTexture = null;
@@ -504,13 +513,13 @@ public class MDVRLibrary {
 
     /**
      * handle touch touch to rotate the model
-     * @deprecated deprecated since 2.0
      *
      * @param event
      * @return true if handled.
+     * @deprecated deprecated since 2.0
      */
     public boolean handleTouchEvent(MotionEvent event) {
-        Log.e(TAG,"please remove the handleTouchEvent in context!");
+        Log.e(TAG, "please remove the handleTouchEvent in context!");
         return false;
     }
 
@@ -518,16 +527,16 @@ public class MDVRLibrary {
         return mInteractiveModeManager.getMode();
     }
 
-    public int getDisplayMode(){
+    public int getDisplayMode() {
         return mDisplayModeManager.getMode();
     }
 
-    public int getProjectionMode(){
+    public int getProjectionMode() {
         return mProjectionModeManager.getMode();
     }
 
-    public void notifyPlayerChanged(){
-        if (mTexture != null){
+    public void notifyPlayerChanged() {
+        if (mTexture != null) {
             mTexture.notifyChanged();
         }
     }
@@ -542,6 +551,7 @@ public class MDVRLibrary {
 
     public interface ICubemapProvider {
         void onProvideCubemap(MD360CubemapTexture.Callback callback, int cubeFace);
+
         void onReady();
     }
 
@@ -549,7 +559,7 @@ public class MDVRLibrary {
         void onProvideBitmap(Uri uri, MD360BitmapTexture.Callback callback);
     }
 
-    public interface INotSupportCallback{
+    public interface INotSupportCallback {
         void onNotSupport(int mode);
     }
 
@@ -560,15 +570,17 @@ public class MDVRLibrary {
     public interface IDirectorFilter {
         /**
          * @param input pitch(x-axis, from -90 to 90 in degree)
-         * */
+         */
         float onFilterPitch(float input);
+
         /**
          * @param input yaw(y-axis, from -180 to 180 in degree)
-         * */
+         */
         float onFilterYaw(float input);
+
         /**
          * @param input roll(z-axis, from -180 to 180 in degree)
-         * */
+         */
         float onFilterRoll(float input);
     }
 
@@ -592,6 +604,7 @@ public class MDVRLibrary {
 
     interface IAdvanceGestureListener {
         void onDrag(float distanceX, float distanceY);
+
         void onPinch(float scale);
     }
 
@@ -614,7 +627,7 @@ public class MDVRLibrary {
     }
 
 
-    public static Builder with(Context context){
+    public static Builder with(Context context) {
         return new Builder(context);
     }
 
@@ -650,40 +663,40 @@ public class MDVRLibrary {
             this.context = context;
         }
 
-        public Builder displayMode(int displayMode){
+        public Builder displayMode(int displayMode) {
             this.displayMode = displayMode;
             return this;
         }
 
-        public Builder interactiveMode(int interactiveMode){
+        public Builder interactiveMode(int interactiveMode) {
             this.interactiveMode = interactiveMode;
             return this;
         }
 
-        public Builder projectionMode(int projectionMode){
+        public Builder projectionMode(int projectionMode) {
             this.projectionMode = projectionMode;
             return this;
         }
 
-        public Builder ifNotSupport(INotSupportCallback callback){
+        public Builder ifNotSupport(INotSupportCallback callback) {
             this.notSupportCallback = callback;
             return this;
         }
 
-        public Builder asVideo(IOnSurfaceReadyCallback callback){
+        public Builder asVideo(IOnSurfaceReadyCallback callback) {
             texture = new MD360VideoTexture(callback);
             contentType = ContentType.VIDEO;
             return this;
         }
 
-        public Builder asBitmap(IBitmapProvider bitmapProvider){
+        public Builder asBitmap(IBitmapProvider bitmapProvider) {
             notNull(bitmapProvider, "bitmap Provider can't be null!");
             texture = new MD360BitmapTexture(bitmapProvider);
             contentType = ContentType.BITMAP;
             return this;
         }
 
-        public Builder asCubemap(ICubemapProvider cubemapProvider){
+        public Builder asCubemap(ICubemapProvider cubemapProvider) {
             notNull(cubemapProvider, "cubemap Provider can't be null!");
             texture = new MD360CubemapTexture(cubemapProvider);
             contentType = ContentType.CUBEMAP;
@@ -693,10 +706,10 @@ public class MDVRLibrary {
         /**
          * gesture listener, e.g.
          * onClick
-         * @deprecated please use {@link #listenGesture(IGestureListener)}
          *
          * @param listener listener
          * @return builder
+         * @deprecated please use {@link #listenGesture(IGestureListener)}
          */
         @Deprecated
         public Builder gesture(IGestureListener listener) {
@@ -745,7 +758,7 @@ public class MDVRLibrary {
          * @return builder
          */
         @Deprecated
-        public Builder listenEyePick(final IEyePickListener listener){
+        public Builder listenEyePick(final IEyePickListener listener) {
             this.eyePickChangedListener = new CompactEyePickAdapter(listener);
             return this;
         }
@@ -757,14 +770,14 @@ public class MDVRLibrary {
          * @return builder
          */
         @Deprecated
-        public Builder listenTouchPick(final ITouchPickListener listener){
+        public Builder listenTouchPick(final ITouchPickListener listener) {
             this.touchPickChangedListener = new CompactTouchPickAdapter(listener);
             return this;
         }
 
         /**
          * sensor delay in motion mode.
-         *
+         * <p>
          * {@link android.hardware.SensorManager#SENSOR_DELAY_FASTEST}
          * {@link android.hardware.SensorManager#SENSOR_DELAY_GAME}
          * {@link android.hardware.SensorManager#SENSOR_DELAY_NORMAL}
@@ -773,52 +786,52 @@ public class MDVRLibrary {
          * @param motionDelay default is {@link android.hardware.SensorManager#SENSOR_DELAY_GAME}
          * @return builder
          */
-        public Builder motionDelay(int motionDelay){
+        public Builder motionDelay(int motionDelay) {
             this.motionDelay = motionDelay;
             return this;
         }
 
-        public Builder sensorCallback(SensorEventListener callback){
+        public Builder sensorCallback(SensorEventListener callback) {
             this.sensorListener = callback;
             return this;
         }
 
-        public Builder directorFactory(MD360DirectorFactory directorFactory){
+        public Builder directorFactory(MD360DirectorFactory directorFactory) {
             this.directorFactory = directorFactory;
             return this;
         }
 
-        public Builder projectionFactory(IMDProjectionFactory projectionFactory){
+        public Builder projectionFactory(IMDProjectionFactory projectionFactory) {
             this.projectionFactory = projectionFactory;
             return this;
         }
 
-        public Builder barrelDistortionConfig(BarrelDistortionConfig config){
+        public Builder barrelDistortionConfig(BarrelDistortionConfig config) {
             this.barrelDistortionConfig = config;
             return this;
         }
 
-        public Builder pinchConfig(MDPinchConfig config){
+        public Builder pinchConfig(MDPinchConfig config) {
             this.pinchConfig = config;
             return this;
         }
 
-        public Builder directorFilter(IDirectorFilter filter){
+        public Builder directorFilter(IDirectorFilter filter) {
             this.directorFilter = filter;
             return this;
         }
 
-        public Builder flingEnabled(boolean enabled){
+        public Builder flingEnabled(boolean enabled) {
             this.flingEnabled = enabled;
             return this;
         }
 
-        public Builder flingConfig(MDFlingConfig config){
+        public Builder flingConfig(MDFlingConfig config) {
             this.flingConfig = config;
             return this;
         }
 
-        public Builder touchSensitivity(float touchSensitivity){
+        public Builder touchSensitivity(float touchSensitivity) {
             this.touchSensitivity = touchSensitivity;
             return this;
         }
@@ -829,28 +842,30 @@ public class MDVRLibrary {
          * @param glView GLSurfaceView or GLTextureView
          * @return vr lib
          */
-        public MDVRLibrary build(View glView){
-            if (glView instanceof GLSurfaceView){
+        public MDVRLibrary build(View glView) {
+            if (glView instanceof GLSurfaceView) {
                 return build((GLSurfaceView) glView);
-            } else if(glView instanceof GLTextureView){
+            } else if (glView instanceof GLTextureView) {
                 return build((GLTextureView) glView);
             } else {
                 throw new RuntimeException("Please ensure the glViewId is instance of GLSurfaceView or GLTextureView");
             }
         }
 
-        public MDVRLibrary build(GLSurfaceView glSurfaceView){
+        public MDVRLibrary build(GLSurfaceView glSurfaceView) {
             return build(MDGLScreenWrapper.wrap(glSurfaceView));
         }
 
-        public MDVRLibrary build(GLTextureView glTextureView){
+        public MDVRLibrary build(GLTextureView glTextureView) {
             return build(MDGLScreenWrapper.wrap(glTextureView));
         }
 
-        private MDVRLibrary build(MDGLScreenWrapper screenWrapper){
-            notNull(texture,"You must call video/bitmap function before build");
-            if (this.directorFactory == null) this.directorFactory = new MD360DirectorFactory.DefaultImpl();
-            if (this.barrelDistortionConfig == null) this.barrelDistortionConfig = new BarrelDistortionConfig();
+        private MDVRLibrary build(MDGLScreenWrapper screenWrapper) {
+            notNull(texture, "You must call video/bitmap function before build");
+            if (this.directorFactory == null)
+                this.directorFactory = new MD360DirectorFactory.DefaultImpl();
+            if (this.barrelDistortionConfig == null)
+                this.barrelDistortionConfig = new BarrelDistortionConfig();
             if (this.pinchConfig == null) this.pinchConfig = new MDPinchConfig();
             if (this.flingConfig == null) this.flingConfig = new MDFlingConfig();
             this.screenWrapper = screenWrapper;
