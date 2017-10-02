@@ -18,7 +18,7 @@ import android.widget.Toast;
  */
 public class DemoActivity extends AppCompatActivity {
 
-    public static final String sPath = "file:///mnt/sdcard/vr/";
+    public static final String sPath = "file:///mnt/sdcard/";
 
     //public static final String sPath = "file:////storage/sdcard1/vr/";
 
@@ -42,7 +42,7 @@ public class DemoActivity extends AppCompatActivity {
 
         data.put(data.size(), "rtsp://218.204.223.237:554/live/1/66251FC11353191F/e7ooqwcfbqjoo80j.sdp");
         data.put(data.size(), sPath + "ch0_160701145544.ts");
-        data.put(data.size(), sPath + "videos_s_4.mp4");
+        data.put(data.size(), sPath + "video.mp4");
         data.put(data.size(), sPath + "28.mp4");
         data.put(data.size(), sPath + "haha.mp4");
         data.put(data.size(), sPath + "halfdome.mp4");
