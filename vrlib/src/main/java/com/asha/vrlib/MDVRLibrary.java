@@ -436,6 +436,12 @@ public class MDVRLibrary {
         director.setDeltaY(atv);
     }
 
+
+    public float getViewAth() {
+        MD360Director director = mProjectionModeManager.getDirectors().get(0);
+         return 90 - director.getDeltaX();
+    }
+
     public void setDirectorFilter(IDirectorFilter filter) {
         mDirectorFilter.setDelegate(filter);
     }

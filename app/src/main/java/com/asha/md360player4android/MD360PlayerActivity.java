@@ -311,6 +311,20 @@ public abstract class MD360PlayerActivity extends Activity {
             }
         });
 
+        findViewById(R.id.button_rotate_camera_45_right).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getVRLibrary().setView(getVRLibrary().getViewAth()+45,0);
+            }
+        });
+
+        findViewById(R.id.button_rotate_camera_45_left).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getVRLibrary().setView(getVRLibrary().getViewAth()-45,0);
+            }
+        });
+
         findViewById(R.id.button_add_md_view).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
