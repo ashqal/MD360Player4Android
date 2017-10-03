@@ -429,17 +429,25 @@ public class MDVRLibrary {
     }
 
     public void setView(float ath, float atv) {
-        MD360Director director = mProjectionModeManager.getDirectors().get(0);
-        ath = 90 - ath;
-        atv = -atv;
-        director.setDeltaX(ath);
-        director.setDeltaY(atv);
+        if (mInteractiveModeManager.getDirectorList().size() > 0) {
+            for(MD360Director director : mProjectionModeManager.getDirectors()) {
+                ath = 90 - ath;
+                atv = -atv;
+                director.setDeltaX(ath);
+                director.setDeltaY(atv);
+            }
+        }
     }
 
 
     public float getViewAth() {
-        MD360Director director = mProjectionModeManager.getDirectors().get(0);
-         return 90 - director.getDeltaX();
+        if (mInteractiveModeManager.getDirectorList().size() > 0) {
+            for (MD360Director director : mProjectionModeManager.getDirectors()) {
+                return 90 - director.getDeltaX();
+            }
+        }
+
+        return 0f;
     }
 
     public void setDirectorFilter(IDirectorFilter filter) {

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Surface;
 import android.view.View;
@@ -135,6 +136,7 @@ public abstract class MD360PlayerActivity extends Activity {
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
     private MDPosition logoPosition = MDMutablePosition.newInstance().setY(-8.0f).setYaw(-90.0f);
+    private MDPosition videoPosition = MDMutablePosition.newInstance().setZ(-8.0f).setYaw(0.0f).setRoll(-90f);
 
     private MDPosition[] positions = new MDPosition[]{
             MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
@@ -174,15 +176,17 @@ public abstract class MD360PlayerActivity extends Activity {
 
 
         mMediaPlayerWrapper.init();
-        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(IMediaPlayer mp) {
-                cancelBusy();
-                if (getVRLibrary() != null){
-                    getVRLibrary().notifyPlayerChanged();
-                }
-            }
-        });
+//        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(IMediaPlayer mp) {
+//                cancelBusy();
+//                if (getVRLibrary() != null){
+//                    getVRLibrary().notifyPlayerChanged();
+//                }
+//
+//                Log.e(TAG,"onPrepared: ");
+//            }
+//        });
 
         mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
@@ -190,13 +194,6 @@ public abstract class MD360PlayerActivity extends Activity {
                 String error = String.format("Play Error what=%d extra=%d",what,extra);
                 Toast.makeText(MD360PlayerActivity.this, error, Toast.LENGTH_SHORT).show();
                 return true;
-            }
-        });
-
-        mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
-            @Override
-            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
-                getVRLibrary().onTextureResize(width, height);
             }
         });
 
@@ -255,69 +252,63 @@ public abstract class MD360PlayerActivity extends Activity {
                 })
                 .init(R.id.spinner_distortion);
 
-        findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_add_video_hotspot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                MDPosition position = positions[0];
+                mMediaPlayerWrapper.getPlayer().setLooping(true);
+                float ratio = mMediaPlayerWrapper.getPlayer().getVideoWidth()/(float)mMediaPlayerWrapper.getPlayer().getVideoHeight();
+
                 MDVideoHotspotBuilder builder = MDVideoHotspotBuilder.create(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
                         mMediaPlayerWrapper.setSurface(surface);
                     }
                 })
-                        .size(4f, 4f)
+                .size(4f, 4f*ratio)
+                .tag("video-hotspot")
+                .position(videoPosition);
+
+                MDVideoHotspot plugin = new MDVideoHotspot(builder);
+
+                plugins.add(plugin);
+                getVRLibrary().addPlugin(plugin);
+                Toast.makeText(MD360PlayerActivity.this, "add video, position:" + videoPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int index = (int) (Math.random() * 100) % positions.length;
+                MDPosition position = positions[index];
+                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
+                        .size(4f,4f)
+                        .provider(0, activity, android.R.drawable.star_off)
+                        .provider(1, activity, android.R.drawable.star_on)
+                        .provider(10, activity, android.R.drawable.checkbox_off_background)
+                        .provider(11, activity, android.R.drawable.checkbox_on_background)
                         .listenClick(new MDVRLibrary.ITouchPickListener() {
                             @Override
                             public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
-                                if (hitHotspot instanceof MDWidgetPlugin) {
+                                if (hitHotspot instanceof MDWidgetPlugin){
                                     MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
                                     widgetPlugin.setChecked(!widgetPlugin.getChecked());
                                 }
                             }
                         })
-                        .position(position);
+                        .title("star" + index)
+                        .position(position)
+                        .status(0,1)
+                        .checkedStatus(10,11);
 
-                MDVideoHotspot plugin = new MDVideoHotspot(builder);
+                MDWidgetPlugin plugin = new MDWidgetPlugin(builder);
 
                 plugins.add(plugin);
                 getVRLibrary().addPlugin(plugin);
                 Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
             }
         });
-
-//        findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                final int index = (int) (Math.random() * 100) % positions.length;
-//                MDPosition position = positions[index];
-//                MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
-//                        .size(4f,4f)
-//                        .provider(0, activity, android.R.drawable.star_off)
-//                        .provider(1, activity, android.R.drawable.star_on)
-//                        .provider(10, activity, android.R.drawable.checkbox_off_background)
-//                        .provider(11, activity, android.R.drawable.checkbox_on_background)
-//                        .listenClick(new MDVRLibrary.ITouchPickListener() {
-//                            @Override
-//                            public void onHotspotHit(IMDHotspot hitHotspot, MDRay ray) {
-//                                if (hitHotspot instanceof MDWidgetPlugin){
-//                                    MDWidgetPlugin widgetPlugin = (MDWidgetPlugin) hitHotspot;
-//                                    widgetPlugin.setChecked(!widgetPlugin.getChecked());
-//                                }
-//                            }
-//                        })
-//                        .title("star" + index)
-//                        .position(position)
-//                        .status(0,1)
-//                        .checkedStatus(10,11);
-//
-//                MDWidgetPlugin plugin = new MDWidgetPlugin(builder);
-//
-//                plugins.add(plugin);
-//                getVRLibrary().addPlugin(plugin);
-//                Toast.makeText(MD360PlayerActivity.this, "add plugin position:" + position, Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         findViewById(R.id.button_add_plugin_logo).setOnClickListener(new View.OnClickListener() {
             @Override

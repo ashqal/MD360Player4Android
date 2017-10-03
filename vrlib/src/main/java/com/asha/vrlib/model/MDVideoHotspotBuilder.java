@@ -1,9 +1,6 @@
 package com.asha.vrlib.model;
 
-import android.view.View;
-
 import com.asha.vrlib.MDVRLibrary;
-import com.asha.vrlib.plugins.hotspot.MDLayoutParams;
 
 /**
  * Created by hzqiujiadi on 2017/4/12.
@@ -14,8 +11,6 @@ public class MDVideoHotspotBuilder {
 
     public MDPluginBuilder builderDelegate;
 
-
-    public MDLayoutParams layoutParams;
     public MDVRLibrary.IOnSurfaceReadyCallback callback;
 
     public static MDVideoHotspotBuilder create(MDVRLibrary.IOnSurfaceReadyCallback callback){
