@@ -47,8 +47,7 @@ public abstract class MDAbsObject3D {
         int textureCoordinateHandle = program.getTextureCoordinateHandle();
 
         // for cubemap variable is removed by compiler
-        if(textureCoordinateHandle == -1)
-            return;
+        if(textureCoordinateHandle == -1) return;
 
         FloatBuffer textureBuffer = getTexCoordinateBuffer(index);
         if (textureBuffer == null) return;
