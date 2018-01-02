@@ -44,16 +44,19 @@ public abstract class MDAbsObject3D {
     }
 
     public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index){
+        int textureCoordinateHandle = program.getTextureCoordinateHandle();
+
+        // for cubemap variable is removed by compiler
+        if(textureCoordinateHandle == -1) return;
+
         FloatBuffer textureBuffer = getTexCoordinateBuffer(index);
         if (textureBuffer == null) return;
 
         textureBuffer.position(0);
 
         // set data to OpenGL
-        int textureCoordinateHandle = program.getTextureCoordinateHandle();
         GLES20.glVertexAttribPointer(textureCoordinateHandle, sTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, textureBuffer);
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
-
     }
 
     abstract protected void executeLoad(Context context);
