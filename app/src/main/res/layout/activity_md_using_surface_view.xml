@@ -91,6 +91,19 @@
              android:background="@drawable/selector_button_background"
              android:layout_width="wrap_content"
              android:layout_height="42dp" />
+
+         <Button
+             android:id="@+id/button_add_video_hotspot"
+             android:textSize="13sp"
+             android:textColor="@android:color/white"
+             android:text="addVideo"
+             android:layout_marginTop="8dp"
+             android:paddingLeft="8dp"
+             android:paddingRight="8dp"
+             android:includeFontPadding="false"
+             android:background="@drawable/selector_button_background"
+             android:layout_width="wrap_content"
+             android:layout_height="42dp" />
          <Button
              android:id="@+id/button_remove_plugin"
              android:textSize="13sp"
@@ -149,6 +162,32 @@
              android:textColor="@android:color/white"
              android:layout_marginTop="8dp"
              android:text="RotateToCamera"
+             android:paddingLeft="8dp"
+             android:paddingRight="8dp"
+             android:includeFontPadding="false"
+             android:background="@drawable/selector_button_background"
+             android:layout_width="wrap_content"
+             android:layout_height="42dp" />
+
+         <Button
+             android:id="@+id/button_rotate_camera_45_right"
+             android:textSize="13sp"
+             android:textColor="@android:color/white"
+             android:layout_marginTop="8dp"
+             android:text="Rotate45Right"
+             android:paddingLeft="8dp"
+             android:paddingRight="8dp"
+             android:includeFontPadding="false"
+             android:background="@drawable/selector_button_background"
+             android:layout_width="wrap_content"
+             android:layout_height="42dp" />
+
+         <Button
+             android:id="@+id/button_rotate_camera_45_left"
+             android:textSize="13sp"
+             android:textColor="@android:color/white"
+             android:layout_marginTop="8dp"
+             android:text="Rotate45Left"
              android:paddingLeft="8dp"
              android:paddingRight="8dp"
              android:includeFontPadding="false"

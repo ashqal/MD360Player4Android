@@ -3,10 +3,13 @@ package com.asha.vrlib.strategy.interactive;
 import android.content.Context;
 import android.hardware.SensorEventListener;
 
+import com.asha.vrlib.MD360Director;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.common.MDGLHandler;
 import com.asha.vrlib.strategy.ModeManager;
 import com.asha.vrlib.strategy.projection.ProjectionModeManager;
+
+import java.util.List;
 
 /**
  * Created by hzqiujiadi on 16/3/19.
@@ -121,5 +124,9 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         if (getStrategy().isSupport(context)){
             getStrategy().onPause(context);
         }
+    }
+
+    public List<MD360Director> getDirectorList() {
+        return getStrategy().getDirectorList();
     }
 }

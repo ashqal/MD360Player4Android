@@ -12,7 +12,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,11 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asha.vrlib.MDDirectorCamUpdate;
+import com.asha.vrlib.MDGLScreenWrapper;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDHitEvent;
 import com.asha.vrlib.model.MDHotspotBuilder;
 import com.asha.vrlib.model.MDPosition;
 import com.asha.vrlib.model.MDRay;
+import com.asha.vrlib.model.MDVideoHotspotBuilder;
 import com.asha.vrlib.model.MDViewBuilder;
 import com.asha.vrlib.model.position.MDMutablePosition;
 import com.asha.vrlib.plugins.MDAbsPlugin;
@@ -33,6 +37,7 @@ import com.asha.vrlib.plugins.hotspot.IMDHotspot;
 import com.asha.vrlib.plugins.hotspot.MDAbsHotspot;
 import com.asha.vrlib.plugins.hotspot.MDAbsView;
 import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
+import com.asha.vrlib.plugins.hotspot.MDVideoHotspot;
 import com.asha.vrlib.plugins.hotspot.MDView;
 import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.squareup.picasso.Picasso;
@@ -43,13 +48,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+
 import static android.animation.PropertyValuesHolder.ofFloat;
 import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
 import static com.squareup.picasso.MemoryPolicy.NO_STORE;
 
 /**
  * using MD360Renderer
- *
+ * <p>
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
  */
@@ -65,53 +72,55 @@ public abstract class MD360PlayerActivity extends Activity {
     private static final SparseArray<String> sFlingEnabled = new SparseArray<>();
 
     static {
-        sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL,"NORMAL");
-        sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_GLASS,"GLASS");
+        sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_NORMAL, "NORMAL");
+        sDisplayMode.put(MDVRLibrary.DISPLAY_MODE_GLASS, "GLASS");
 
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION,"MOTION");
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_TOUCH,"TOUCH");
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH,"M & T");
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION,"CARDBOARD M");
-        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH,"CARDBOARD M&T");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION, "MOTION");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_TOUCH, "TOUCH");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH, "M & T");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION, "CARDBOARD M");
+        sInteractiveMode.put(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH, "CARDBOARD M&T");
 
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_SPHERE,"SPHERE");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180,"DOME 180");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230,"DOME 230");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180_UPPER,"DOME 180 UPPER");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230_UPPER,"DOME 230 UPPER");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL,"STEREO H SPHERE");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_VERTICAL,"STEREO V SPHERE");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FIT,"PLANE FIT");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_CROP,"PLANE CROP");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,"PLANE FULL");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL,"MULTI FISH EYE HORIZONTAL");
-        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL,"MULTI FISH EYE VERTICAL");
-        sProjectionMode.put(CustomProjectionFactory.CUSTOM_PROJECTION_FISH_EYE_RADIUS_VERTICAL,"CUSTOM MULTI FISH EYE");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_SPHERE, "SPHERE");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180, "DOME 180");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230, "DOME 230");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME180_UPPER, "DOME 180 UPPER");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_DOME230_UPPER, "DOME 230 UPPER");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL, "STEREO H SPHERE");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_VERTICAL, "STEREO V SPHERE");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FIT, "PLANE FIT");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_CROP, "PLANE CROP");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_PLANE_FULL, "PLANE FULL");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL, "MULTI FISH EYE HORIZONTAL");
+        sProjectionMode.put(MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL, "MULTI FISH EYE VERTICAL");
+        sProjectionMode.put(CustomProjectionFactory.CUSTOM_PROJECTION_FISH_EYE_RADIUS_VERTICAL, "CUSTOM MULTI FISH EYE");
 
-        sAntiDistortion.put(1,"ANTI-ENABLE");
-        sAntiDistortion.put(0,"ANTI-DISABLE");
+        sAntiDistortion.put(1, "ANTI-ENABLE");
+        sAntiDistortion.put(0, "ANTI-DISABLE");
 
-        sPitchFilter.put(1,"FILTER PITCH");
-        sPitchFilter.put(0,"FILTER NOP");
+        sPitchFilter.put(1, "FILTER PITCH");
+        sPitchFilter.put(0, "FILTER NOP");
 
         sFlingEnabled.put(1, "FLING ENABLED");
         sFlingEnabled.put(0, "FLING DISABLED");
     }
 
-    public static void startVideo(Context context, Uri uri){
+    private MediaPlayerWrapper mMediaPlayerWrapper = new MediaPlayerWrapper();
+
+    public static void startVideo(Context context, Uri uri) {
         start(context, uri, VideoPlayerActivity.class);
     }
 
-    public static void startBitmap(Context context, Uri uri){
+    public static void startBitmap(Context context, Uri uri) {
         start(context, uri, BitmapPlayerActivity.class);
     }
 
-    public static void startCubemap(Context context, Uri uri){
+    public static void startCubemap(Context context, Uri uri) {
         start(context, uri, CubemapPlayerActivity.class);
     }
 
-    private static void start(Context context, Uri uri, Class<? extends Activity> clz){
-        Intent i = new Intent(context,clz);
+    private static void start(Context context, Uri uri, Class<? extends Activity> clz) {
+        Intent i = new Intent(context, clz);
         i.setData(uri);
         context.startActivity(i);
     }
@@ -127,6 +136,7 @@ public abstract class MD360PlayerActivity extends Activity {
     private List<MDAbsPlugin> plugins = new LinkedList<>();
 
     private MDPosition logoPosition = MDMutablePosition.newInstance().setY(-8.0f).setYaw(-90.0f);
+    private MDPosition videoPosition = MDMutablePosition.newInstance().setZ(-8.0f).setYaw(0.0f).setRoll(-90f);
 
     private MDPosition[] positions = new MDPosition[]{
             MDPosition.newInstance().setZ(-8.0f).setYaw(-45.0f),
@@ -163,6 +173,35 @@ public abstract class MD360PlayerActivity extends Activity {
         hotspotPoints.add(findViewById(R.id.hotspot_point1));
         hotspotPoints.add(findViewById(R.id.hotspot_point2));
 
+
+
+        mMediaPlayerWrapper.init();
+//        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(IMediaPlayer mp) {
+//                cancelBusy();
+//                if (getVRLibrary() != null){
+//                    getVRLibrary().notifyPlayerChanged();
+//                }
+//
+//                Log.e(TAG,"onPrepared: ");
+//            }
+//        });
+
+        mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer mp, int what, int extra) {
+                String error = String.format("Play Error what=%d extra=%d",what,extra);
+                Toast.makeText(MD360PlayerActivity.this, error, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+
+        mMediaPlayerWrapper.openRemoteFile("file:///mnt/sdcard/video.mp4");
+        mMediaPlayerWrapper.prepare();
+
+
         SpinnerHelper.with(this)
                 .setData(sDisplayMode)
                 .setDefault(mVRLibrary.getDisplayMode())
@@ -172,7 +211,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         mVRLibrary.switchDisplayMode(MD360PlayerActivity.this, key);
                         int i = 0;
                         int size = key == MDVRLibrary.DISPLAY_MODE_GLASS ? 2 : 1;
-                        for (View point : hotspotPoints){
+                        for (View point : hotspotPoints) {
                             point.setVisibility(i < size ? View.VISIBLE : View.GONE);
                             i++;
                         }
@@ -213,6 +252,31 @@ public abstract class MD360PlayerActivity extends Activity {
                 })
                 .init(R.id.spinner_distortion);
 
+        findViewById(R.id.button_add_video_hotspot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mMediaPlayerWrapper.getPlayer().setLooping(true);
+                float ratio = mMediaPlayerWrapper.getPlayer().getVideoWidth()/(float)mMediaPlayerWrapper.getPlayer().getVideoHeight();
+
+                MDVideoHotspotBuilder builder = MDVideoHotspotBuilder.create(new MDVRLibrary.IOnSurfaceReadyCallback() {
+                    @Override
+                    public void onSurfaceReady(Surface surface) {
+                        mMediaPlayerWrapper.setSurface(surface);
+                    }
+                })
+                .size(4f, 4f*ratio)
+                .tag("video-hotspot")
+                .position(videoPosition);
+
+                MDVideoHotspot plugin = new MDVideoHotspot(builder);
+
+                plugins.add(plugin);
+                getVRLibrary().addPlugin(plugin);
+                Toast.makeText(MD360PlayerActivity.this, "add video, position:" + videoPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         findViewById(R.id.button_add_plugin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,7 +314,7 @@ public abstract class MD360PlayerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
-                        .size(4f,4f)
+                        .size(4f, 4f)
                         .provider(activity, R.drawable.moredoo_logo)
                         .title("logo")
                         .position(logoPosition)
@@ -263,14 +327,14 @@ public abstract class MD360PlayerActivity extends Activity {
                 MDAbsHotspot hotspot = new MDSimpleHotspot(builder);
                 plugins.add(hotspot);
                 getVRLibrary().addPlugin(hotspot);
-                Toast.makeText(MD360PlayerActivity.this, "add plugin logo" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(MD360PlayerActivity.this, "add plugin logo", Toast.LENGTH_SHORT).show();
             }
         });
 
         findViewById(R.id.button_remove_plugin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (plugins.size() > 0){
+                if (plugins.size() > 0) {
                     MDAbsPlugin plugin = plugins.remove(plugins.size() - 1);
                     getVRLibrary().removePlugin(plugin);
                 }
@@ -289,7 +353,7 @@ public abstract class MD360PlayerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 MDHotspotBuilder builder = MDHotspotBuilder.create(mImageLoadProvider)
-                        .size(4f,4f)
+                        .size(4f, 4f)
                         .provider(activity, R.drawable.moredoo_logo)
                         .title("front logo")
                         .tag("tag-front")
@@ -305,9 +369,23 @@ public abstract class MD360PlayerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 IMDHotspot hotspot = getVRLibrary().findHotspotByTag("tag-front");
-                if (hotspot != null){
+                if (hotspot != null) {
                     hotspot.rotateToCamera();
                 }
+            }
+        });
+
+        findViewById(R.id.button_rotate_camera_45_right).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getVRLibrary().setView(getVRLibrary().getViewAth() + 45, 0);
+            }
+        });
+
+        findViewById(R.id.button_rotate_camera_45_left).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getVRLibrary().setView(getVRLibrary().getViewAth() - 45, 0);
             }
         });
 
@@ -323,8 +401,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         .size(4, 1)
                         .position(MDPosition.newInstance().setZ(-12.0f))
                         .title("md view")
-                        .tag("tag-md-text-view")
-                        ;
+                        .tag("tag-md-text-view");
 
                 MDAbsView mdView = new MDView(builder);
                 plugins.add(mdView);
@@ -336,7 +413,7 @@ public abstract class MD360PlayerActivity extends Activity {
             @Override
             public void onClick(View v) {
                 MDAbsView mdView = getVRLibrary().findViewByTag("tag-md-text-view");
-                if (mdView != null){
+                if (mdView != null) {
                     TextView textView = mdView.castAttachedView(TextView.class);
                     textView.setText("Cheer up!");
                     textView.setBackgroundColor(0x8800FF00);
@@ -356,8 +433,7 @@ public abstract class MD360PlayerActivity extends Activity {
                         .size(3, 2)
                         .position(MDPosition.newInstance().setZ(-8.0f))
                         .title("md view")
-                        .tag("tag-md-text-view")
-                        ;
+                        .tag("tag-md-text-view");
 
                 MDAbsView mdView = new MDView(builder);
                 mdView.rotateToCamera();
@@ -373,13 +449,13 @@ public abstract class MD360PlayerActivity extends Activity {
             public void onHotspotHit(MDHitEvent hitEvent) {
                 IMDHotspot hotspot = hitEvent.getHotspot();
                 long hitTimestamp = hitEvent.getTimestamp();
-                String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f );
+                String text = hotspot == null ? "nop" : String.format(Locale.CHINESE, "%s  %fs", hotspot.getTitle(), (System.currentTimeMillis() - hitTimestamp) / 1000.0f);
                 hotspotText.setText(text);
 
                 String brief = getVRLibrary().getDirectorBrief().toString();
                 directorBriefText.setText(brief);
 
-                if (System.currentTimeMillis() - hitTimestamp > 5000){
+                if (System.currentTimeMillis() - hitTimestamp > 5000) {
                     getVRLibrary().resetEyePick();
                 }
             }
@@ -420,11 +496,11 @@ public abstract class MD360PlayerActivity extends Activity {
                         MDVRLibrary.IDirectorFilter filter = key == 0 ? null : new MDVRLibrary.DirectorFilterAdatper() {
                             @Override
                             public float onFilterPitch(float input) {
-                                if (input > 70){
+                                if (input > 70) {
                                     return 70;
                                 }
 
-                                if (input < -70){
+                                if (input < -70) {
                                     return -70;
                                 }
 
@@ -452,8 +528,8 @@ public abstract class MD360PlayerActivity extends Activity {
 
     private ValueAnimator animator;
 
-    private void startCameraAnimation(final MDDirectorCamUpdate cameraUpdate, PropertyValuesHolder... values){
-        if (animator != null){
+    private void startCameraAnimation(final MDDirectorCamUpdate cameraUpdate, PropertyValuesHolder... values) {
+        if (animator != null) {
             animator.cancel();
         }
 
@@ -481,18 +557,21 @@ public abstract class MD360PlayerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        mMediaPlayerWrapper.resume();
         mVRLibrary.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mMediaPlayerWrapper.pause();
         mVRLibrary.onPause(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mMediaPlayerWrapper.destroy();
         mVRLibrary.onDestroy();
     }
 
@@ -504,17 +583,17 @@ public abstract class MD360PlayerActivity extends Activity {
 
     protected Uri getUri() {
         Intent i = getIntent();
-        if (i == null || i.getData() == null){
+        if (i == null || i.getData() == null) {
             return null;
         }
         return i.getData();
     }
 
-    public void cancelBusy(){
+    public void cancelBusy() {
         findViewById(R.id.progress).setVisibility(View.GONE);
     }
 
-    public void busy(){
+    public void busy() {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
@@ -540,9 +619,9 @@ public abstract class MD360PlayerActivity extends Activity {
     }
 
     // picasso impl
-    private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider{
+    private class ImageLoadProvider implements MDVRLibrary.IImageLoadProvider {
 
-        private SimpleArrayMap<Uri,Target> targetMap = new SimpleArrayMap<>();
+        private SimpleArrayMap<Uri, Target> targetMap = new SimpleArrayMap<>();
 
         @Override
         public void onProvideBitmap(final Uri uri, final MD360BitmapTexture.Callback callback) {
@@ -567,7 +646,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 }
             };
             targetMap.put(uri, target);
-            Picasso.with(getApplicationContext()).load(uri).resize(callback.getMaxTextureSize(),callback.getMaxTextureSize()).onlyScaleDown().centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
+            Picasso.with(getApplicationContext()).load(uri).resize(callback.getMaxTextureSize(), callback.getMaxTextureSize()).onlyScaleDown().centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
         }
     }
 }
