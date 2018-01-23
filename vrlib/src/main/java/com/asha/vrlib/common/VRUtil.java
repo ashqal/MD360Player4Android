@@ -44,7 +44,7 @@ public class VRUtil {
             SensorManager.getRotationMatrixFromVector(sUIThreadTmp, sTruncatedVector);
         }
 
-        float[] values = event.values;
+        float[] values = sIsTruncated ? sTruncatedVector : event.values;
         switch (rotation){
             case Surface.ROTATION_0:
                 SensorManager.getRotationMatrixFromVector(output, values);
