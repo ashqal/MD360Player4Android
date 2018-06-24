@@ -154,6 +154,11 @@ public class MDVRLibrary {
         mScreenWrapper.getView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                } else if(event.getAction() == MotionEvent.ACTION_UP) {
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                }
                 return mTouchHelper.handleTouchEvent(event);
             }
         });
