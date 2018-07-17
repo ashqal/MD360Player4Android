@@ -1,6 +1,6 @@
 
 // Library Version
-ext.libVersion = '0.1.0'
+ext.libVersion = 'dev'
 
 // Append short commit hash to dev builds, i.e. "dev.a1b2c3d"
 if (libVersion == 'dev') {
@@ -17,7 +17,7 @@ try {
 
     publish {
         artifactId = 'md360'
-        description = 'MD360 VR library'
+        description = 'PlayKit MD360'
         repoName = 'android'
         userOrg = 'kaltura'
         groupId = 'com.kaltura.playkit'
