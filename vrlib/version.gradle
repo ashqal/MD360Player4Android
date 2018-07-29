@@ -16,7 +16,7 @@ try {
     apply plugin: 'bintray-release'
 
     publish {
-        artifactId = 'md360'
+        artifactId = 'md360player'
         description = 'PlayKit MD360'
         repoName = 'android'
         userOrg = 'kaltura'
