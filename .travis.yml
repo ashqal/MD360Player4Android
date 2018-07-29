@@ -1,0 +1,24 @@
+language: android
+dist: trusty
+sudo: required
+jdk:
+  - oraclejdk8
+android:
+  components:
+    - tools
+before_script:
+  - curl https://kaltura.github.io/fe-tools/android/license.sh | sh
+script:
+  - ./gradlew vrlib:build
+after_failure:
+  - cat vrlib/build/outputs/lint-results-debug.xml
+after_success:
+  - ./travis-push-to-bintray.sh
+notifications:
+  email:
+    recipients:
+      - noam.tamim@kaltura.com
+      - gilad.nadav@kaltura.com
+      - Anton.Afanasiev@kaltura.com
+    on_success: always
+    on_failure: always
