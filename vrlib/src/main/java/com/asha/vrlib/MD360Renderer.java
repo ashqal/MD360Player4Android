@@ -40,8 +40,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	private int mHeight;
 
 	// private MDBarrelDistortionPlugin mBarrelDistortionPlugin;
-
-	// final
+	
 	private final Context mContext;
 
 	private MD360Renderer(Builder params){
@@ -58,7 +57,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config){
 		// set the background clear color to black.
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		
+
 		// use culling to remove back faces.
 		GLES20.glEnable(GLES20.GL_CULL_FACE);
 
