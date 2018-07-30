@@ -233,7 +233,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     /**
      * Install a custom EGLContextFactory.
      * <p>If this method is
-     * called, it must be called before {@link #setRenderer(Renderer)}
+     * called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>
      * If this method is not called, then by default
@@ -248,7 +248,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     /**
      * Install a custom EGLWindowSurfaceFactory.
      * <p>If this method is
-     * called, it must be called before {@link #setRenderer(Renderer)}
+     * called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>
      * If this method is not called, then by default
@@ -262,7 +262,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
     /**
      * Install a custom EGLConfigChooser.
      * <p>If this method is
-     * called, it must be called before {@link #setRenderer(Renderer)}
+     * called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>
      * If no setEGLConfigChooser method is called, then by default the
@@ -281,7 +281,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * as close to 16-bit RGB as possible, with or without an optional depth
      * buffer as close to 16-bits as possible.
      * <p>If this method is
-     * called, it must be called before {@link #setRenderer(Renderer)}
+     * called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>
      * If no setEGLConfigChooser method is called, then by default the
@@ -299,7 +299,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * with at least the specified depthSize and stencilSize,
      * and exactly the specified redSize, greenSize, blueSize and alphaSize.
      * <p>If this method is
-     * called, it must be called before {@link #setRenderer(Renderer)}
+     * called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>
      * If no setEGLConfigChooser method is called, then by default the
@@ -328,7 +328,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * <p>Note: Activities which require OpenGL ES 2.0 should indicate this by
      * setting @lt;uses-feature android:glEsVersion="0x00020000" /> in the activity's
      * AndroidManifest.xml file.
-     * <p>If this method is called, it must be called before {@link #setRenderer(Renderer)}
+     * <p>If this method is called, it must be called before {@link #setRenderer(GLSurfaceView.Renderer)}
      * is called.
      * <p>This method only affects the behavior of the default EGLContexFactory and the
      * default EGLConfigChooser. If
@@ -354,7 +354,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * Using RENDERMODE_WHEN_DIRTY can improve battery life and overall system performance
      * by allowing the GPU and CPU to idle when the view does not need to be updated.
      * <p>
-     * This method can only be called after {@link #setRenderer(Renderer)}
+     * This method can only be called after {@link #setRenderer(GLSurfaceView.Renderer)}
      *
      * @param renderMode one of the RENDERMODE_X constants
      * @see #RENDERMODE_CONTINUOUSLY
@@ -537,7 +537,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * An interface for customizing the eglCreateContext and eglDestroyContext calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLContextFactory(EGLContextFactory)}
+     * {@link GLSurfaceView##setEGLContextFactory(EGLContextFactory)}
      */
     public interface EGLContextFactory {
         EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
@@ -571,7 +571,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * An interface for customizing the eglCreateWindowSurface and eglDestroySurface calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
+     * {@link GLSurfaceView##setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
      */
     public interface EGLWindowSurfaceFactory {
         /**
@@ -612,7 +612,7 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
      * potential configurations.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLConfigChooser(EGLConfigChooser)}
+     * {@link GLSurfaceView##setEGLConfigChooser(EGLConfigChooser)}
      */
     public interface EGLConfigChooser {
         /**
@@ -772,7 +772,6 @@ public class GLTextureView extends TextureView implements TextureView.SurfaceTex
 
         /**
          * Initialize EGL for a given configuration spec.
-         * @param configSpec
          */
         public void start() {
             if (LOG_EGL) {
