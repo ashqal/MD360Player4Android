@@ -24,7 +24,7 @@ public class DeviceSensorLooper implements SensorEventProvider {
     private SensorManager sensorManager;
     private Looper sensorLooper;
     private SensorEventListener sensorEventListener;
-    private final ArrayList<SensorEventListener> registeredListeners = new ArrayList();
+    private final ArrayList<SensorEventListener> registeredListeners = new ArrayList<>();
     private int level;
 
     public DeviceSensorLooper(SensorManager sensorManager, int level) {
