@@ -18,6 +18,10 @@ android {
     }
 }
 
+tasks.withType(Javadoc) {
+    options.addBooleanOption('Xdoclint:none', true)
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     testImplementation 'junit:junit:4.12'
