@@ -40,4 +40,4 @@ fi
 ./gradlew $LIB:publishMavenPublicationToMavenLocal -x mavenAndroidJavadocs
 
 # Upload
-./gradlew $LIB:bintrayUpload -PdryRun=$DRY_RUN -PbintrayUser=$BINTRAY_USER -PbintrayKey=$BINTRAY_KEY
+./gradlew $LIB:bintrayUpload -x mavenAndroidJavadocs -PdryRun=$DRY_RUN -PbintrayUser=$BINTRAY_USER -PbintrayKey=$BINTRAY_KEY
