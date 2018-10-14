@@ -1,14 +1,13 @@
 apply plugin: 'com.android.library'
+apply from: 'version.gradle'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
-
+    compileSdkVersion 28
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion 16
+        targetSdkVersion 28
         versionCode 6
-        versionName "1.0.1"
+        versionName libVersion
     }
     buildTypes {
         release {
@@ -18,7 +17,11 @@ android {
     }
 }
 
+tasks.withType(Javadoc) {
+    options.addBooleanOption('Xdoclint:none', true)
+}
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    implementation fileTree( dir: 'libs', include: '*.jar')
+    testImplementation 'junit:junit:4.12'
 }

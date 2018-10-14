@@ -24,6 +24,7 @@ import static com.squareup.picasso.MemoryPolicy.NO_STORE;
 
 /**
  * Created by hzqiujiadi on 16/4/5.
+ * 
  * hzqiujiadi ashqalcn@gmail.com
  */
 public class CubemapPlayerActivity extends MD360PlayerActivity {
