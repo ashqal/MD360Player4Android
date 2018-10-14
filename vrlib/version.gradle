@@ -1,6 +1,6 @@
 
 // Library Version
-ext.libVersion = 'dev'
+ext.libVersion = '1.0.2'
 
 // Append short commit hash to dev builds, i.e. "dev.a1b2c3d"
 if (libVersion == 'dev') {
