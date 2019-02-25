@@ -76,8 +76,9 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
         // Set our per-vertex lighting program.
         mProgram.use();
         glCheck("MDPanoramaPlugin mProgram use");
-
-        mTexture.texture(mProgram);
+        if (mTexture != null) {
+            mTexture.texture(mProgram);
+        }
 
         object3D.uploadVerticesBufferIfNeed(mProgram, index);
 
