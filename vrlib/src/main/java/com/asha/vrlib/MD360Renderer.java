@@ -131,15 +131,15 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
         // mFps.step();
 
         if (screenshot) {
-            int screenshotSize = mViewportWidth * mViewportHeight;
+            int screenshotSize = width * height;
             ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
             bb.order(ByteOrder.nativeOrder());
-            gl.glReadPixels(0, 0, mViewportWidth, mViewportHeight, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
+            gl.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
             int pixelsBuffer[] = new int[screenshotSize];
             bb.asIntBuffer().get(pixelsBuffer);
             bb = null;
-            Bitmap bitmap = Bitmap.createBitmap(mViewportWidth, mViewportHeight, Bitmap.Config.RGB_565);
-            bitmap.setPixels(pixelsBuffer, screenshotSize - mViewportWidth, -mViewportWidth, 0, 0, mViewportWidth, mViewportHeight);
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            bitmap.setPixels(pixelsBuffer, screenshotSize - width, -height, 0, 0, width, height);
             pixelsBuffer = null;
 
             short sBuffer[] = new short[screenshotSize];
