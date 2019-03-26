@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -18,6 +17,8 @@ import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360CubemapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import androidx.annotation.DrawableRes;
 
 import static com.squareup.picasso.MemoryPolicy.NO_CACHE;
 import static com.squareup.picasso.MemoryPolicy.NO_STORE;
