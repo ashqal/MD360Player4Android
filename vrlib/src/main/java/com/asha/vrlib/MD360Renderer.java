@@ -166,7 +166,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
     private ScreenshotListener screenshotListener;
 
     public static interface ScreenshotListener {
-        onScreenshot(Bitmap bitmap);
+        void onScreenshot(Bitmap bitmap);
     }
 
     public void takeScreenshot(ScreenshotListener screenshotListener) {
