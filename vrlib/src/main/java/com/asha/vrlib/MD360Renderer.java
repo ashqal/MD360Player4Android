@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 /**
  * Created by hzqiujiadi on 16/1/22.
@@ -137,19 +138,23 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
         // mFps.step();
 
         if (screenshot) {
-            int screenshotSize = width * height;
+            int screenshotSize = mWidth * mHeight;
+            Log.v(TAG, "screenshot width=" + mWidth + " height=" + mHeight);
             ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
             bb.order(ByteOrder.nativeOrder());
-            glUnused.glReadPixels(0, 0, width, height, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
+            glUnused.glReadPixels(0, 0, mWidth, mHeight, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, bb);
             int pixelsBuffer[] = new int[screenshotSize];
             bb.asIntBuffer().get(pixelsBuffer);
             bb = null;
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-            bitmap.setPixels(pixelsBuffer, screenshotSize - width, -height, 0, 0, width, height);
+            Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565);
+            bitmap.setPixels(pixelsBuffer, screenshotSize - mWidth, -mWidth, 0, 0, mWidth, mHeight);
             pixelsBuffer = null;
 
             short sBuffer[] = new short[screenshotSize];
             ShortBuffer sb = ShortBuffer.wrap(sBuffer);
+
+            sb.rewind();
+
             bitmap.copyPixelsToBuffer(sb);
 
             //Making created bitmap (from OpenGL points) compatible with Android bitmap
@@ -159,6 +164,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
             }
             sb.rewind();
             bitmap.copyPixelsFromBuffer(sb);
+
             lastScreenshot = bitmap;
             screenshotListener.onScreenshot(lastScreenshot);
             screenshotListener = null;

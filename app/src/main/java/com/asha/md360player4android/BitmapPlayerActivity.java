@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.asha.vrlib.MD360Renderer;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.hotspot.IMDHotspot;
@@ -43,6 +44,28 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 getVRLibrary().notifyPlayerChanged();
             }
         });
+
+        findViewById(R.id.screenshot).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                busy();
+                Log.v(TAG, "[takeScreenshot] start");
+                getVRLibrary().renderer.takeScreenshot(new MD360Renderer.ScreenshotListener() {
+                    @Override
+                    public void onScreenshot(Bitmap bitmap) {
+                        Log.v(TAG, "[takeScreenshot] bitmap width=" + bitmap.getWidth() + " height=" + bitmap.getHeight());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                cancelBusy();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+
     }
 
     private Target mTarget;// keep the reference for picasso.

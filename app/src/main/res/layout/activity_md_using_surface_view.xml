@@ -7,9 +7,9 @@
     tools:context=".MD360PlayerActivity">
 
     <FrameLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
         <android.opengl.GLSurfaceView
             android:id="@+id/gl_view"
@@ -17,273 +17,281 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/hotspot_point1"
-                android:text="+"
-                android:textColor="@android:color/white"
-                android:gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/hotspot_point2"
-                android:text="+"
-                android:textColor="@android:color/white"
-                android:gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="@android:color/white" />
         </LinearLayout>
     </FrameLayout>
 
     <ScrollView
         android:layout_width="160dp"
-        android:paddingBottom="20dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_interactive"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_marginTop="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_display"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_marginTop="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_projection"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_marginTop="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_distortion"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
             <Button
                 android:id="@+id/button_add_plugin"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
-                android:text="addPlugin"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="addPlugin"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_remove_plugin"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="removePlugin"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="removePlugin"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_add_plugin_logo"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="addPluginLogo"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="addPluginLogo"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_remove_plugins"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="removePlugins"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="removePlugins"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_add_hotspot_front"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
-                android:text="AddHotspotFront"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="AddHotspotFront"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_rotate_to_camera_plugin"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="RotateToCamera"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="RotateToCamera"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_add_md_view"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="add MDView"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="add MDView"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_update_md_view"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="update MDView"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="update MDView"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/control_next"
-                android:text="next"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="next"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_md_view_hover"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="MDView hover"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="MDView hover"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_camera_little_planet"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="Camera Little Planet"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="Camera Little Planet"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/button_camera_to_normal"
-                android:textSize="13sp"
-                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
                 android:layout_marginTop="8dp"
-                android:text="Camera Normal"
+                android:background="@drawable/selector_button_background"
+                android:includeFontPadding="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:includeFontPadding="false"
-                android:background="@drawable/selector_button_background"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp" />
+                android:text="Camera Normal"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_marginTop="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_pitch_filter"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
             <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_marginTop="8dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
                 android:id="@+id/spinner_fling_enable"
                 android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:minWidth="100dp"
-                android:layout_height="wrap_content" />
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
         </LinearLayout>
     </ScrollView>
 
     <TextView
-        android:layout_alignParentBottom="true"
         android:id="@+id/hotspot_text"
-        android:textColor="@android:color/white"
-        android:background="@drawable/selector_button_background"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_button_background"
+        android:textColor="@android:color/white" />
 
     <TextView
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:id="@+id/director_brief_text"
-        android:textColor="@android:color/white"
-        android:background="@drawable/selector_button_background"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_button_background"
+        android:textColor="@android:color/white" />
 
     <ProgressBar
-        android:layout_centerInParent="true"
         android:id="@+id/progress"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:textAllCaps="false"
+        android:id="@+id/screenshot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Take Screenshot" />
 
 </RelativeLayout>
