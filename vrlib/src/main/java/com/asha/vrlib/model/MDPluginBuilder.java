@@ -24,12 +24,12 @@ public class MDPluginBuilder {
     public MDPluginBuilder() {
     }
 
-    public MDPluginBuilder title(String title){
+    public MDPluginBuilder title(String title) {
         this.title = title;
         return this;
     }
 
-    public MDPluginBuilder size(float width, float height){
+    public MDPluginBuilder size(float width, float height) {
         this.width = width;
         this.height = height;
         return this;
@@ -40,7 +40,7 @@ public class MDPluginBuilder {
         return this;
     }
 
-    public MDPluginBuilder listenClick(MDVRLibrary.ITouchPickListener listener){
+    public MDPluginBuilder listenClick(MDVRLibrary.ITouchPickListener listener) {
         this.clickListener = listener;
         return this;
     }

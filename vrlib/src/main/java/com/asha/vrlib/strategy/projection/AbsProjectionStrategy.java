@@ -23,7 +23,9 @@ public abstract class AbsProjectionStrategy implements IModeStrategy, IProjectio
 
     }
 
-    protected MD360DirectorFactory hijackDirectorFactory(){ return null; }
+    protected MD360DirectorFactory hijackDirectorFactory() {
+        return null;
+    }
 
     abstract MDAbsPlugin buildMainPlugin(MDMainPluginBuilder builder);
 }

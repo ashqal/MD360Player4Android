@@ -75,7 +75,7 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url = et.getText().toString();
-                if (!TextUtils.isEmpty(url)){
+                if (!TextUtils.isEmpty(url)) {
                     MD360PlayerActivity.startVideo(DemoActivity.this, Uri.parse(url));
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
@@ -87,7 +87,7 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url = et.getText().toString();
-                if (!TextUtils.isEmpty(url)){
+                if (!TextUtils.isEmpty(url)) {
                     MD360PlayerActivity.startBitmap(DemoActivity.this, Uri.parse(url));
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
@@ -99,7 +99,7 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url = et.getText().toString();
-                if (!TextUtils.isEmpty(url)){
+                if (!TextUtils.isEmpty(url)) {
                     IjkPlayerDemoActivity.start(DemoActivity.this, Uri.parse(url));
                 } else {
                     Toast.makeText(DemoActivity.this, "empty url!", Toast.LENGTH_SHORT).show();
@@ -124,8 +124,8 @@ public class DemoActivity extends AppCompatActivity {
         });
     }
 
-    private Uri getDrawableUri(@DrawableRes int resId){
+    private Uri getDrawableUri(@DrawableRes int resId) {
         Resources resources = getResources();
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId));
     }
 }

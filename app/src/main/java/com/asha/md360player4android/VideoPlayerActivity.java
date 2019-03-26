@@ -32,7 +32,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
             @Override
             public void onPrepared(IMediaPlayer mp) {
                 cancelBusy();
-                if (getVRLibrary() != null){
+                if (getVRLibrary() != null) {
                     getVRLibrary().notifyPlayerChanged();
                 }
             }
@@ -41,7 +41,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer mp, int what, int extra) {
-                String error = String.format("Play Error what=%d extra=%d",what,extra);
+                String error = String.format("Play Error what=%d extra=%d", what, extra);
                 Toast.makeText(VideoPlayerActivity.this, error, Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -55,7 +55,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
         });
 
         Uri uri = getUri();
-        if (uri != null){
+        if (uri != null) {
             mMediaPlayerWrapper.openRemoteFile(uri.toString());
             mMediaPlayerWrapper.prepare();
         }

@@ -107,15 +107,15 @@ public class OrientationEKF {
         double x = this.so3SensorFromWorld.get(2, 0);
         double y = this.so3SensorFromWorld.get(2, 1);
         double mag = Math.sqrt(x * x + y * y);
-        if(mag < 0.1D) {
+        if (mag < 0.1D) {
             return 0.0D;
         } else {
             double heading = -90.0D - Math.atan2(y, x) / 3.141592653589793D * 180.0D;
-            if(heading < 0.0D) {
+            if (heading < 0.0D) {
                 heading += 360.0D;
             }
 
-            if(heading >= 360.0D) {
+            if (heading >= 360.0D) {
                 heading -= 360.0D;
             }
 
@@ -175,23 +175,23 @@ public class OrientationEKF {
     public synchronized void processGyro(Vector3d gyro, long sensorTimeStamp) {
         float kTimeThreshold = 0.04F;
         float kdTdefault = 0.01F;
-        if(this.sensorTimeStampGyro != 0L) {
-            float dT = (float)(sensorTimeStamp - this.sensorTimeStampGyro) * 1.0E-9F;
-            if(dT > 0.04F) {
-                dT = this.gyroFilterValid?this.filteredGyroTimestep:0.01F;
+        if (this.sensorTimeStampGyro != 0L) {
+            float dT = (float) (sensorTimeStamp - this.sensorTimeStampGyro) * 1.0E-9F;
+            if (dT > 0.04F) {
+                dT = this.gyroFilterValid ? this.filteredGyroTimestep : 0.01F;
             } else {
                 this.filterGyroTimestep(dT);
             }
 
             this.mu.set(gyro);
-            this.mu.scale((double)(-dT));
+            this.mu.scale((double) (-dT));
             So3Util.sO3FromMu(this.mu, this.so3LastMotion);
             this.processGyroTempM1.set(this.so3SensorFromWorld);
             Matrix3x3d.mult(this.so3LastMotion, this.so3SensorFromWorld, this.processGyroTempM1);
             this.so3SensorFromWorld.set(this.processGyroTempM1);
             this.updateCovariancesAfterMotion();
             this.processGyroTempM2.set(this.mQ);
-            this.processGyroTempM2.scale((double)(dT * dT));
+            this.processGyroTempM2.scale((double) (dT * dT));
             this.mP.plusEquals(this.processGyroTempM2);
         }
 
@@ -213,11 +213,11 @@ public class OrientationEKF {
     public synchronized void processAcc(Vector3d acc, long sensorTimeStamp) {
         this.mz.set(acc);
         this.updateAccelCovariance(this.mz.length());
-        if(this.alignedToGravity) {
+        if (this.alignedToGravity) {
             this.accObservationFunctionForNumericalJacobian(this.so3SensorFromWorld, this.mNu);
             double eps = 1.0E-7D;
 
-            for(int dof = 0; dof < 3; ++dof) {
+            for (int dof = 0; dof < 3; ++dof) {
                 Vector3d delta = this.processAccVDelta;
                 delta.setZero();
                 delta.setComponent(dof, eps);
@@ -255,8 +255,8 @@ public class OrientationEKF {
     }
 
     public synchronized void processMag(float[] mag, long sensorTimeStamp) {
-        if(this.alignedToGravity) {
-            this.mz.set((double)mag[0], (double)mag[1], (double)mag[2]);
+        if (this.alignedToGravity) {
+            this.mz.set((double) mag[0], (double) mag[1], (double) mag[2]);
             this.mz.normalize();
             Vector3d downInSensorFrame = new Vector3d();
             this.so3SensorFromWorld.getColumn(2, downInSensorFrame);
@@ -267,11 +267,11 @@ public class OrientationEKF {
             Vector3d magHorizontal = this.processMagTempV2;
             magHorizontal.normalize();
             this.mz.set(magHorizontal);
-            if(this.alignedToNorth) {
+            if (this.alignedToNorth) {
                 this.magObservationFunctionForNumericalJacobian(this.so3SensorFromWorld, this.mNu);
                 double eps = 1.0E-7D;
 
-                for(int dof = 0; dof < 3; ++dof) {
+                for (int dof = 0; dof < 3; ++dof) {
                     Vector3d delta = this.processMagTempV3;
                     delta.setZero();
                     delta.setComponent(dof, eps);
@@ -315,8 +315,8 @@ public class OrientationEKF {
     }
 
     private double[] glMatrixFromSo3(Matrix3x3d so3) {
-        for(int r = 0; r < 3; ++r) {
-            for(int c = 0; c < 3; ++c) {
+        for (int r = 0; r < 3; ++r) {
+            for (int c = 0; c < 3; ++c) {
                 this.rotationMatrix[4 * c + r] = so3.get(r, c);
             }
         }
@@ -330,13 +330,13 @@ public class OrientationEKF {
     private void filterGyroTimestep(float timeStep) {
         float kFilterCoeff = 0.95F;
         float kMinSamples = 10.0F;
-        if(!this.timestepFilterInit) {
+        if (!this.timestepFilterInit) {
             this.filteredGyroTimestep = timeStep;
             this.numGyroTimestepSamples = 1;
             this.timestepFilterInit = true;
         } else {
             this.filteredGyroTimestep = 0.95F * this.filteredGyroTimestep + 0.050000012F * timeStep;
-            if((float)(++this.numGyroTimestepSamples) > 10.0F) {
+            if ((float) (++this.numGyroTimestepSamples) > 10.0F) {
                 this.gyroFilterValid = true;
             }
         }

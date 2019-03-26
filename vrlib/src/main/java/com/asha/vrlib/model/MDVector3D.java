@@ -30,31 +30,31 @@ public class MDVector3D {
         return this;
     }
 
-    public float getX(){
+    public float getX() {
         return values[0];
     }
 
-    public float getY(){
+    public float getY() {
         return values[1];
     }
 
-    public float getZ(){
+    public float getZ() {
         return values[2];
     }
 
-    public float x(){
+    public float x() {
         return values[0];
     }
 
-    public float y(){
+    public float y() {
         return values[1];
     }
 
-    public float z(){
+    public float z() {
         return values[2];
     }
 
-    public void multiplyMV(float[] mat){
+    public void multiplyMV(float[] mat) {
         Matrix.multiplyMV(values, 0, mat, 0, values, 0);
     }
 
@@ -67,8 +67,10 @@ public class MDVector3D {
                 '}';
     }
 
-    /** @return The euclidean length */
-    public static float len (final float x, final float y, final float z) {
-        return (float)Math.sqrt(x * x + y * y + z * z);
+    /**
+     * @return The euclidean length
+     */
+    public static float len(final float x, final float y, final float z) {
+        return (float) Math.sqrt(x * x + y * y + z * z);
     }
 }

@@ -23,7 +23,7 @@ public class MDHotspotBuilder {
 
     public MDVRLibrary.IImageLoadProvider imageLoadProvider;
 
-    public static MDHotspotBuilder create(MDVRLibrary.IImageLoadProvider imageLoadProvider){
+    public static MDHotspotBuilder create(MDVRLibrary.IImageLoadProvider imageLoadProvider) {
         return new MDHotspotBuilder(imageLoadProvider);
     }
 
@@ -32,58 +32,58 @@ public class MDHotspotBuilder {
         this.builderDelegate = new MDPluginBuilder();
     }
 
-    private MDHotspotBuilder status(int normal, int focused, int pressed){
+    private MDHotspotBuilder status(int normal, int focused, int pressed) {
         statusList = new int[]{normal, focused, pressed};
         return this;
     }
 
-    public MDHotspotBuilder status(int normal, int focused){
+    public MDHotspotBuilder status(int normal, int focused) {
         return status(normal, focused, focused);
     }
 
-    public MDHotspotBuilder status(int normal){
-        return status(normal,normal);
+    public MDHotspotBuilder status(int normal) {
+        return status(normal, normal);
     }
 
-    private MDHotspotBuilder checkedStatus(int normal, int focused, int pressed){
+    private MDHotspotBuilder checkedStatus(int normal, int focused, int pressed) {
         checkedStatusList = new int[]{normal, focused, pressed};
         return this;
     }
 
-    public MDHotspotBuilder checkedStatus(int normal, int focused){
+    public MDHotspotBuilder checkedStatus(int normal, int focused) {
         return checkedStatus(normal, focused, focused);
     }
 
-    public MDHotspotBuilder checkedStatus(int normal){
+    public MDHotspotBuilder checkedStatus(int normal) {
         return checkedStatus(normal, normal);
     }
 
-    public MDHotspotBuilder provider(Uri uri){
+    public MDHotspotBuilder provider(Uri uri) {
         provider(0, uri);
         return this;
     }
 
-    public MDHotspotBuilder provider(String url){
+    public MDHotspotBuilder provider(String url) {
         provider(0, url);
         return this;
     }
 
-    public MDHotspotBuilder provider(Context context, int drawableRes){
+    public MDHotspotBuilder provider(Context context, int drawableRes) {
         provider(0, context, drawableRes);
         return this;
     }
 
-    public MDHotspotBuilder provider(int key, String url){
+    public MDHotspotBuilder provider(int key, String url) {
         provider(key, Uri.parse(url));
         return this;
     }
 
-    public MDHotspotBuilder provider(int key, Context context, int drawableRes){
+    public MDHotspotBuilder provider(int key, Context context, int drawableRes) {
         provider(key, MDUtil.getDrawableUri(context, drawableRes));
         return this;
     }
 
-    public MDHotspotBuilder provider(int key, Uri uri){
+    public MDHotspotBuilder provider(int key, Uri uri) {
         uriList.append(key, uri);
         return this;
     }

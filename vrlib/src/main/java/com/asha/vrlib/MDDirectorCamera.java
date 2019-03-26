@@ -86,19 +86,19 @@ public class MDDirectorCamera {
         return this;
     }
 
-    MDDirectorCamera setRoll(float roll){
+    MDDirectorCamera setRoll(float roll) {
         mRotation.setRoll(roll);
         mRotationValidate = true;
         return this;
     }
 
-    MDDirectorCamera setPitch(float pitch){
+    MDDirectorCamera setPitch(float pitch) {
         mRotation.setPitch(pitch);
         mRotationValidate = true;
         return this;
     }
 
-    MDDirectorCamera setYaw(float yaw){
+    MDDirectorCamera setYaw(float yaw) {
         mRotation.setYaw(yaw);
         mRotationValidate = true;
         return this;
@@ -116,7 +116,7 @@ public class MDDirectorCamera {
         return mRotation.getRoll();
     }
 
-    MDDirectorCamera updateViewport(int width, int height){
+    MDDirectorCamera updateViewport(int width, int height) {
         mViewportWidth = width;
         mViewportHeight = height;
         mRatio = width * 1.0f / height;

@@ -67,11 +67,11 @@ public class PlaneProjection extends AbsProjectionStrategy {
         return new OrthogonalDirectorFactory();
     }
 
-    public static PlaneProjection create(int scaleType, RectF textureSize){
-        return new PlaneProjection(new PlaneScaleCalculator(scaleType,textureSize));
+    public static PlaneProjection create(int scaleType, RectF textureSize) {
+        return new PlaneProjection(new PlaneScaleCalculator(scaleType, textureSize));
     }
 
-    public static class PlaneScaleCalculator{
+    public static class PlaneScaleCalculator {
 
         private static final float sBaseValue = 1.0f;
 
@@ -94,25 +94,25 @@ public class PlaneProjection extends AbsProjectionStrategy {
             this.mTextureSize = textureSize;
         }
 
-        public float getTextureRatio(){
+        public float getTextureRatio() {
             return mTextureSize.width() / mTextureSize.height();
         }
 
-        public void setViewportRatio(float viewportRatio){
+        public void setViewportRatio(float viewportRatio) {
             this.mViewportRatio = viewportRatio;
         }
 
-        public void calculate(){
+        public void calculate() {
             float viewportRatio = mViewportRatio;
             float textureRatio = getTextureRatio();
 
-            switch (this.mScaleType){
+            switch (this.mScaleType) {
                 case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
                     // fullscreen
                     mViewportWidth = mViewportHeight = mTextureWidth = mTextureHeight = sBaseValue;
                     break;
                 case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
-                    if (textureRatio  > viewportRatio){
+                    if (textureRatio > viewportRatio) {
                         /**
                          * crop width of texture
                          *
@@ -150,7 +150,7 @@ public class PlaneProjection extends AbsProjectionStrategy {
                     break;
                 case MDVRLibrary.PROJECTION_MODE_PLANE_FIT:
                 default:
-                    if (viewportRatio > textureRatio){
+                    if (viewportRatio > textureRatio) {
                         /**
                          * fit height of viewport
                          *
@@ -161,7 +161,7 @@ public class PlaneProjection extends AbsProjectionStrategy {
                          * |    |         |    |
                          * ---------------------
                          * */
-                        mViewportWidth = sBaseValue * viewportRatio ;
+                        mViewportWidth = sBaseValue * viewportRatio;
                         mViewportHeight = sBaseValue;
 
                         mTextureWidth = sBaseValue * textureRatio;
@@ -189,31 +189,31 @@ public class PlaneProjection extends AbsProjectionStrategy {
             }
         }
 
-        public float getViewportWidth(){
+        public float getViewportWidth() {
             return mViewportWidth;
         }
 
-        public float getViewportHeight(){
+        public float getViewportHeight() {
             return mViewportHeight;
         }
 
-        public float getTextureWidth(){
+        public float getTextureWidth() {
             return mTextureWidth;
         }
 
-        public float getTextureHeight(){
+        public float getTextureHeight() {
             return mTextureHeight;
         }
     }
 
-    private class OrthogonalDirectorFactory extends MD360DirectorFactory{
+    private class OrthogonalDirectorFactory extends MD360DirectorFactory {
         @Override
         public MD360Director createDirector(int index) {
             return new OrthogonalDirector(new MD360Director.Builder());
         }
     }
 
-    private class OrthogonalDirector extends MD360Director{
+    private class OrthogonalDirector extends MD360Director {
 
         private final float sNearBase;
 
@@ -238,13 +238,13 @@ public class PlaneProjection extends AbsProjectionStrategy {
         }
 
         @Override
-        protected void updateProjection(){
+        protected void updateProjection() {
             planeScaleCalculator.setViewportRatio(getRatio());
             planeScaleCalculator.calculate();
             float scale = sNearBase / getNear();
-            final float left = - planeScaleCalculator.getViewportWidth() / 2 * scale;
+            final float left = -planeScaleCalculator.getViewportWidth() / 2 * scale;
             final float right = planeScaleCalculator.getViewportWidth() / 2 * scale;
-            final float bottom = - planeScaleCalculator.getViewportHeight() / 2 * scale;
+            final float bottom = -planeScaleCalculator.getViewportHeight() / 2 * scale;
             final float top = planeScaleCalculator.getViewportHeight() / 2 * scale;
             final float far = 500;
             Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, 1, far);

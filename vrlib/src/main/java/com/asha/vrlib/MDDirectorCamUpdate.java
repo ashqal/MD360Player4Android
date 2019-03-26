@@ -118,7 +118,7 @@ public class MDDirectorCamUpdate {
         delegate.consumeRotationValidate();
     }
 
-    public void clear(){
+    public void clear() {
         setLookX(0);
         setLookY(0);
         setEyeX(0);

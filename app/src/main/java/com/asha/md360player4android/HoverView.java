@@ -57,7 +57,7 @@ public class HoverView extends View {
         super.onHoverEvent(event);
 
         final int action = event.getActionMasked();
-        switch (action){
+        switch (action) {
             case MotionEvent.ACTION_HOVER_ENTER:
             case MotionEvent.ACTION_HOVER_MOVE:
                 x = event.getX();
@@ -74,7 +74,7 @@ public class HoverView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (radius != 0){
+        if (radius != 0) {
             canvas.drawCircle(x, y, radius, paint);
         }
     }

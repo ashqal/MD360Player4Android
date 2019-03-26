@@ -25,9 +25,9 @@ import static com.asha.vrlib.common.GLUtil.glCheck;
 /**
  * Created by hzqiujiadi on 16/7/27.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * Barrel Distortion
- *
+ * <p>
  * For more info,
  * http://stackoverflow.com/questions/12620025/barrel-distortion-correction-algorithm-to-correct-fisheye-lens-failing-to-impl
  */
@@ -59,17 +59,17 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
     @Override
     public void init(final Context context) {
         mProgram.build(context);
-        MDObject3DHelper.loadObj(context,object3D);
+        MDObject3DHelper.loadObj(context, object3D);
     }
 
     @Override
     public void takeOver(int totalWidth, int totalHeight, int size) {
         mEnabled = mDisplayModeManager.isAntiDistortionEnabled();
-        if (!mEnabled){
+        if (!mEnabled) {
             return;
         }
 
-        mDrawingCache.bind(totalWidth,totalHeight);
+        mDrawingCache.bind(totalWidth, totalHeight);
 
         mDirector.setViewport(totalWidth, totalHeight);
         object3D.setMode(size);
@@ -79,14 +79,14 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
     }
 
     @Override
-    public void commit(int totalWidth, int totalHeight, int size){
-        if (!mEnabled){
+    public void commit(int totalWidth, int totalHeight, int size) {
+        if (!mEnabled) {
             return;
         }
         mDrawingCache.unbind();
 
         int width = totalWidth / size;
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             GLES20.glViewport(width * i, 0, width, totalHeight);
             GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
             GLES20.glScissor(width * i, 0, width, totalHeight);
@@ -95,7 +95,7 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
         }
     }
 
-    private void draw(int index){
+    private void draw(int index) {
         // Set our per-vertex lighting program.
         mProgram.use();
         glCheck("MDBarrelDistortionLinePipe mProgram use");
@@ -124,9 +124,9 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
         @Override
         public FloatBuffer getTexCoordinateBuffer(int index) {
-            if (mode == 1){
+            if (mode == 1) {
                 return singleTexCoordinateBuffer;
-            } else if (mode == 2){
+            } else if (mode == 2) {
                 return super.getTexCoordinateBuffer(index);
             } else {
                 return null;
@@ -138,14 +138,14 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
             generateMesh(this);
         }
 
-        private void generateMesh(MDAbsObject3D object3D){
+        private void generateMesh(MDAbsObject3D object3D) {
             int rows = 10;
             int columns = 10;
             int numPoint = (rows + 1) * (columns + 1);
             short r, s;
             float z = -8;
-            float R = 1f/(float) rows;
-            float S = 1f/(float) columns;
+            float R = 1f / (float) rows;
+            float S = 1f / (float) columns;
 
             float[] vertexs = new float[numPoint * 3];
             float[] texcoords = new float[numPoint * 2];
@@ -156,19 +156,19 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
             int t = 0;
             int v = 0;
-            for(r = 0; r < rows + 1; r++) {
-                for(s = 0; s < columns + 1; s++) {
+            for (r = 0; r < rows + 1; r++) {
+                for (s = 0; s < columns + 1; s++) {
                     int tu = t++;
                     int tv = t++;
 
-                    texcoords[tu] = s*S;
-                    texcoords[tv] = r*R;
+                    texcoords[tu] = s * S;
+                    texcoords[tv] = r * R;
 
-                    texcoords1[tu] = s*S*0.5f;
-                    texcoords1[tv] = r*R;
+                    texcoords1[tu] = s * S * 0.5f;
+                    texcoords1[tv] = r * R;
 
-                    texcoords2[tu] = s*S*0.5f + 0.5f;
-                    texcoords2[tv] = r*R;
+                    texcoords2[tu] = s * S * 0.5f + 0.5f;
+                    texcoords2[tv] = r * R;
 
                     vertexs[v++] = (s * S * 2 - 1);
                     vertexs[v++] = (r * R * 2 - 1);
@@ -180,14 +180,14 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
 
             int counter = 0;
             int sectorsPlusOne = columns + 1;
-            for(r = 0; r < rows; r++){
-                for(s = 0; s < columns; s++) {
-                    short k0 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                    short k1 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+            for (r = 0; r < rows; r++) {
+                for (s = 0; s < columns; s++) {
+                    short k0 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                    short k1 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
                     short k2 = (short) (r * sectorsPlusOne + s);       //(a);
-                    short k3 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                    short k4 = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
-                    short k5 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+                    short k3 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                    short k4 = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
+                    short k5 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
 
                     indices[counter++] = k0;
                     indices[counter++] = k1;
@@ -241,10 +241,10 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
             indexBuffer.position(0);
 
             object3D.setIndicesBuffer(indexBuffer);
-            object3D.setTexCoordinateBuffer(0,texBuffer1);
-            object3D.setTexCoordinateBuffer(1,texBuffer2);
-            object3D.setVerticesBuffer(0,vertexBuffer);
-            object3D.setVerticesBuffer(1,vertexBuffer);
+            object3D.setTexCoordinateBuffer(0, texBuffer1);
+            object3D.setTexCoordinateBuffer(1, texBuffer2);
+            object3D.setVerticesBuffer(0, vertexBuffer);
+            object3D.setVerticesBuffer(1, vertexBuffer);
             object3D.setNumIndices(indices.length);
 
             singleTexCoordinateBuffer = texBuffer;
@@ -253,13 +253,13 @@ public class MDBarrelDistortionLinePipe extends MDAbsLinePipe {
         private void applyBarrelDistortion(int numPoint, float[] vertexs) {
             PointF pointF = new PointF();
 
-            for (int i = 0; i < numPoint; i++){
+            for (int i = 0; i < numPoint; i++) {
                 int xIndex = i * 3;
                 int yIndex = i * 3 + 1;
                 float xValue = vertexs[xIndex];
                 float yValue = vertexs[yIndex];
 
-                pointF.set(xValue,yValue);
+                pointF.set(xValue, yValue);
                 VRUtil.barrelDistortion(mConfiguration.getParamA(),
                         mConfiguration.getParamB(),
                         mConfiguration.getParamC(),

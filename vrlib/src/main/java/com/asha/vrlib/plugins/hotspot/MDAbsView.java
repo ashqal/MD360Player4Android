@@ -41,7 +41,7 @@ public abstract class MDAbsView extends MDAbsHotspot {
 
     private TouchStatus mTouchStatus;
 
-    private enum TouchStatus{
+    private enum TouchStatus {
         NOP, DOWN
     }
 
@@ -54,15 +54,15 @@ public abstract class MDAbsView extends MDAbsHotspot {
         try {
             this.mBitmap = Bitmap.createBitmap(mLayoutParams.width, mLayoutParams.height, Bitmap.Config.ARGB_8888);
             this.mCanvas = new Canvas(mBitmap);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         requestLayout();
     }
 
-    public void invalidate(){
-        if (mBitmap == null){
+    public void invalidate() {
+        if (mBitmap == null) {
             return;
         }
 
@@ -75,8 +75,8 @@ public abstract class MDAbsView extends MDAbsHotspot {
         mInvalidate = true;
     }
 
-    public void requestLayout(){
-        if (mBitmap == null){
+    public void requestLayout() {
+        if (mBitmap == null) {
             return;
         }
 
@@ -100,7 +100,7 @@ public abstract class MDAbsView extends MDAbsHotspot {
         mTexture = new MD360BitmapTexture(new MDVRLibrary.IBitmapProvider() {
             @Override
             public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
-                if (mBitmap != null){
+                if (mBitmap != null) {
                     callback.texture(mBitmap);
                 }
             }
@@ -110,18 +110,18 @@ public abstract class MDAbsView extends MDAbsHotspot {
 
     @Override
     public void renderer(int index, int width, int height, MD360Director director) {
-        if (mTexture == null || mBitmap == null){
+        if (mTexture == null || mBitmap == null) {
             return;
         }
 
-        if (mInvalidate){
+        if (mInvalidate) {
             mInvalidate = false;
             mTexture.notifyChanged();
         }
 
         mTexture.texture(program);
 
-        if (mTexture.isReady()){
+        if (mTexture.isReady()) {
             super.renderer(index, width, height, director);
         }
     }
@@ -150,7 +150,7 @@ public abstract class MDAbsView extends MDAbsHotspot {
     @Override
     public void onEyeHitOut(long timestamp) {
         super.onEyeHitOut(timestamp);
-        if (mTouchStatus == TouchStatus.DOWN){
+        if (mTouchStatus == TouchStatus.DOWN) {
             MotionEvent motionEvent = MotionEvent.obtain(timestamp, System.currentTimeMillis(), MotionEvent.ACTION_HOVER_EXIT, 0, 0, 0);
             motionEvent.setSource(InputDevice.SOURCE_CLASS_POINTER);
             mAttachedView.dispatchGenericMotionEvent(motionEvent);
@@ -161,7 +161,7 @@ public abstract class MDAbsView extends MDAbsHotspot {
         invalidate();
     }
 
-    public <T extends View> T castAttachedView(Class<T> clazz){
+    public <T extends View> T castAttachedView(Class<T> clazz) {
         notNull(clazz, "param clz can't be null.");
         return clazz.cast(mAttachedView);
     }

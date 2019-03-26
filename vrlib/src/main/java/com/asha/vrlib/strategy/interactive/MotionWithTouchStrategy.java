@@ -10,7 +10,7 @@ import com.asha.vrlib.MD360Director;
  */
 public class MotionWithTouchStrategy extends MotionStrategy {
 
-    private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
+    private static final float sDensity = Resources.getSystem().getDisplayMetrics().density;
 
     private static final float sDamping = 0.2f;
 
@@ -20,7 +20,7 @@ public class MotionWithTouchStrategy extends MotionStrategy {
 
     @Override
     public boolean handleDrag(int distanceX, int distanceY) {
-        for (MD360Director director : getDirectorList()){
+        for (MD360Director director : getDirectorList()) {
             director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
             director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
         }

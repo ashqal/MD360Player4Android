@@ -63,7 +63,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
     @Override
     public void turnOnInGL(Context context) {
         isOn = true;
-        for (MD360Director director : getDirectorList()){
+        for (MD360Director director : getDirectorList()) {
             director.reset();
         }
     }
@@ -81,7 +81,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public boolean isSupport(Context context) {
-        if (mIsSupport == null){
+        if (mIsSupport == null) {
             SensorManager mSensorManager = (SensorManager) context
                     .getSystemService(Context.SENSOR_SERVICE);
             Sensor sensor1 = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -91,24 +91,24 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
         return mIsSupport;
     }
 
-    private void registerSensor(Context context){
+    private void registerSensor(Context context) {
         if (mRegistered) return;
 
         SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor1 = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor sensor2 = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        if (sensor1 == null && sensor2 == null){
-            Log.e(TAG,"TYPE_ACCELEROMETER TYPE_GYROSCOPE sensor not support!");
+        if (sensor1 == null && sensor2 == null) {
+            Log.e(TAG, "TYPE_ACCELEROMETER TYPE_GYROSCOPE sensor not support!");
             return;
         }
 
-        if (mDeviceSensorLooper == null){
+        if (mDeviceSensorLooper == null) {
             mDeviceSensorLooper = new DeviceSensorLooper(mSensorManager, getParams().mMotionDelay);
         }
 
-        if (headTracker == null){
-            Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        if (headTracker == null) {
+            Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
             headTracker = new HeadTracker(mDeviceSensorLooper, new SystemClock(), display);
         }
 
@@ -119,7 +119,7 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
         mRegistered = true;
     }
 
-    private void unregisterSensor(Context context){
+    private void unregisterSensor(Context context) {
         if (!mRegistered) return;
 
         // stop the tracker
@@ -131,12 +131,12 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
-        if (isOn && event.accuracy != 0){
-            if (getParams().mSensorListener != null){
+        if (isOn && event.accuracy != 0) {
+            if (getParams().mSensorListener != null) {
                 getParams().mSensorListener.onSensorChanged(event);
             }
 
-            synchronized (matrixLock){
+            synchronized (matrixLock) {
                 Matrix.setIdentityM(mTmpMatrix, 0);
                 headTracker.getLastHeadView(mTmpMatrix, 0);
             }
@@ -147,11 +147,11 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        if (getParams().mSensorListener != null){
-            getParams().mSensorListener.onAccuracyChanged(sensor,accuracy);
+        if (getParams().mSensorListener != null) {
+            getParams().mSensorListener.onAccuracyChanged(sensor, accuracy);
         }
 
-        synchronized (matrixLock){
+        synchronized (matrixLock) {
             Matrix.setIdentityM(mTmpMatrix, 0);
             headTracker.getLastHeadView(mTmpMatrix, 0);
         }
@@ -165,8 +165,8 @@ public class CardboardMotionStrategy extends AbsInteractiveStrategy implements S
         public void run() {
             if (!mRegistered || !isOn) return;
 
-            synchronized (matrixLock){
-                for (MD360Director director : getDirectorList()){
+            synchronized (matrixLock) {
+                for (MD360Director director : getDirectorList()) {
                     director.updateSensorMatrix(mTmpMatrix);
                 }
             }

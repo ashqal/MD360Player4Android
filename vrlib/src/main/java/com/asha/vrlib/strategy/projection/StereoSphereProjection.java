@@ -19,7 +19,7 @@ import com.asha.vrlib.plugins.MDPanoramaPlugin;
  */
 public class StereoSphereProjection extends AbsProjectionStrategy {
 
-    private static class FixedDirectorFactory extends MD360DirectorFactory{
+    private static class FixedDirectorFactory extends MD360DirectorFactory {
         @Override
         public MD360Director createDirector(int index) {
             return MD360Director.builder().build();

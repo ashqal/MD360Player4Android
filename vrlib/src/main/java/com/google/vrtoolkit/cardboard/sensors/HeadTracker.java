@@ -49,8 +49,8 @@ public class HeadTracker implements SensorEventListener {
     private final Vector3d latestAcc = new Vector3d();
 
     public static HeadTracker createFromContext(Context context) {
-        SensorManager sensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-        Display display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         return new HeadTracker(new DeviceSensorLooper(sensorManager), new SystemClock(), display);
     }
 
@@ -65,33 +65,33 @@ public class HeadTracker implements SensorEventListener {
 
     public void onSensorChanged(SensorEvent event) {
         Object var2;
-        if(event.sensor.getType() == 1) {
-            this.latestAcc.set((double)event.values[0], (double)event.values[1], (double)event.values[2]);
+        if (event.sensor.getType() == 1) {
+            this.latestAcc.set((double) event.values[0], (double) event.values[1], (double) event.values[2]);
             this.tracker.processAcc(this.latestAcc, event.timestamp);
             var2 = this.gyroBiasEstimatorMutex;
-            synchronized(this.gyroBiasEstimatorMutex) {
-                if(this.gyroBiasEstimator != null) {
+            synchronized (this.gyroBiasEstimatorMutex) {
+                if (this.gyroBiasEstimator != null) {
                     this.gyroBiasEstimator.processAccelerometer(this.latestAcc, event.timestamp);
                 }
             }
-        } else if(event.sensor.getType() == 4 || event.sensor.getType() == 16) {
+        } else if (event.sensor.getType() == 4 || event.sensor.getType() == 16) {
             this.latestGyroEventClockTimeNs = this.clock.nanoTime();
-            if(event.sensor.getType() == 16) {
-                if(this.firstGyroValue && event.values.length == 6) {
+            if (event.sensor.getType() == 16) {
+                if (this.firstGyroValue && event.values.length == 6) {
                     this.initialSystemGyroBias[0] = event.values[3];
                     this.initialSystemGyroBias[1] = event.values[4];
                     this.initialSystemGyroBias[2] = event.values[5];
                 }
 
-                this.latestGyro.set((double)(event.values[0] - this.initialSystemGyroBias[0]), (double)(event.values[1] - this.initialSystemGyroBias[1]), (double)(event.values[2] - this.initialSystemGyroBias[2]));
+                this.latestGyro.set((double) (event.values[0] - this.initialSystemGyroBias[0]), (double) (event.values[1] - this.initialSystemGyroBias[1]), (double) (event.values[2] - this.initialSystemGyroBias[2]));
             } else {
-                this.latestGyro.set((double)event.values[0], (double)event.values[1], (double)event.values[2]);
+                this.latestGyro.set((double) event.values[0], (double) event.values[1], (double) event.values[2]);
             }
 
             this.firstGyroValue = false;
             var2 = this.gyroBiasEstimatorMutex;
-            synchronized(this.gyroBiasEstimatorMutex) {
-                if(this.gyroBiasEstimator != null) {
+            synchronized (this.gyroBiasEstimatorMutex) {
+                if (this.gyroBiasEstimator != null) {
                     this.gyroBiasEstimator.processGyroscope(this.latestGyro, event.timestamp);
                     this.gyroBiasEstimator.getGyroBias(this.gyroBias);
                     Vector3d.sub(this.latestGyro, this.gyroBias, this.latestGyro);
@@ -107,11 +107,11 @@ public class HeadTracker implements SensorEventListener {
     }
 
     public void startTracking() {
-        if(!this.tracking) {
+        if (!this.tracking) {
             this.tracker.reset();
             Object var1 = this.gyroBiasEstimatorMutex;
-            synchronized(this.gyroBiasEstimatorMutex) {
-                if(this.gyroBiasEstimator != null) {
+            synchronized (this.gyroBiasEstimatorMutex) {
+                if (this.gyroBiasEstimator != null) {
                     this.gyroBiasEstimator.reset();
                 }
             }
@@ -128,7 +128,7 @@ public class HeadTracker implements SensorEventListener {
     }
 
     public void stopTracking() {
-        if(this.tracking) {
+        if (this.tracking) {
             this.sensorEventProvider.unregisterListener(this);
             this.sensorEventProvider.stop();
             this.tracking = false;
@@ -136,7 +136,7 @@ public class HeadTracker implements SensorEventListener {
     }
 
     public void setNeckModelEnabled(boolean enabled) {
-        if(enabled) {
+        if (enabled) {
             this.setNeckModelFactor(1.0F);
         } else {
             this.setNeckModelFactor(0.0F);
@@ -146,15 +146,15 @@ public class HeadTracker implements SensorEventListener {
 
     public float getNeckModelFactor() {
         Object var1 = this.neckModelFactorMutex;
-        synchronized(this.neckModelFactorMutex) {
+        synchronized (this.neckModelFactorMutex) {
             return this.neckModelFactor;
         }
     }
 
     public void setNeckModelFactor(float factor) {
         Object var2 = this.neckModelFactorMutex;
-        synchronized(this.neckModelFactorMutex) {
-            if(factor >= 0.0F && factor <= 1.0F) {
+        synchronized (this.neckModelFactorMutex) {
+            if (factor >= 0.0F && factor <= 1.0F) {
                 this.neckModelFactor = factor;
             } else {
                 throw new IllegalArgumentException("factor should be within [0.0, 1.0]");
@@ -164,10 +164,10 @@ public class HeadTracker implements SensorEventListener {
 
     public void setGyroBiasEstimationEnabled(boolean enabled) {
         Object var2 = this.gyroBiasEstimatorMutex;
-        synchronized(this.gyroBiasEstimatorMutex) {
-            if(!enabled) {
+        synchronized (this.gyroBiasEstimatorMutex) {
+            if (!enabled) {
                 this.gyroBiasEstimator = null;
-            } else if(this.gyroBiasEstimator == null) {
+            } else if (this.gyroBiasEstimator == null) {
                 this.gyroBiasEstimator = new GyroscopeBiasEstimator();
             }
 
@@ -176,17 +176,17 @@ public class HeadTracker implements SensorEventListener {
 
     public boolean getGyroBiasEstimationEnabled() {
         Object var1 = this.gyroBiasEstimatorMutex;
-        synchronized(this.gyroBiasEstimatorMutex) {
+        synchronized (this.gyroBiasEstimatorMutex) {
             return this.gyroBiasEstimator != null;
         }
     }
 
     public void getLastHeadView(float[] headView, int offset) {
-        if(offset + 16 > headView.length) {
+        if (offset + 16 > headView.length) {
             throw new IllegalArgumentException("Not enough space to write the result");
         } else {
             float rotation = 0.0F;
-            switch(this.display.getRotation()) {
+            switch (this.display.getRotation()) {
                 case 0:
                     rotation = 0.0F;
                     break;
@@ -200,29 +200,29 @@ public class HeadTracker implements SensorEventListener {
                     rotation = 270.0F;
             }
 
-            if(rotation != this.displayRotation) {
+            if (rotation != this.displayRotation) {
                 this.displayRotation = rotation;
                 Matrix.setRotateEulerM(this.sensorToDisplay, 0, 0.0F, 0.0F, -rotation);
                 Matrix.setRotateEulerM(this.ekfToHeadTracker, 0, -90.0F, 0.0F, rotation);
             }
 
             OrientationEKF var4 = this.tracker;
-            synchronized(this.tracker) {
-                if(!this.tracker.isReady()) {
+            synchronized (this.tracker) {
+                if (!this.tracker.isReady()) {
                     return;
                 }
 
-                double secondsSinceLastGyroEvent = (double)TimeUnit.NANOSECONDS.toSeconds(this.clock.nanoTime() - this.latestGyroEventClockTimeNs);
+                double secondsSinceLastGyroEvent = (double) TimeUnit.NANOSECONDS.toSeconds(this.clock.nanoTime() - this.latestGyroEventClockTimeNs);
                 double secondsToPredictForward = secondsSinceLastGyroEvent + 0.057999998331069946D;
                 double[] mat = this.tracker.getPredictedGLMatrix(secondsToPredictForward);
                 int i = 0;
 
-                while(true) {
-                    if(i >= headView.length) {
+                while (true) {
+                    if (i >= headView.length) {
                         break;
                     }
 
-                    this.tmpHeadView[i] = (float)mat[i];
+                    this.tmpHeadView[i] = (float) mat[i];
                     ++i;
                 }
             }
@@ -242,7 +242,7 @@ public class HeadTracker implements SensorEventListener {
 
     void setGyroBiasEstimator(GyroscopeBiasEstimator estimator) {
         Object var2 = this.gyroBiasEstimatorMutex;
-        synchronized(this.gyroBiasEstimatorMutex) {
+        synchronized (this.gyroBiasEstimatorMutex) {
             this.gyroBiasEstimator = estimator;
         }
     }

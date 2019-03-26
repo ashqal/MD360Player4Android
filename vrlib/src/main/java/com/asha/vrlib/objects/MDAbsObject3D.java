@@ -30,7 +30,7 @@ public abstract class MDAbsObject3D {
 
     }
 
-    public void uploadVerticesBufferIfNeed(MD360Program program, int index){
+    public void uploadVerticesBufferIfNeed(MD360Program program, int index) {
         FloatBuffer vertexBuffer = getVerticesBuffer(index);
         if (vertexBuffer == null) return;
 
@@ -43,7 +43,7 @@ public abstract class MDAbsObject3D {
 
     }
 
-    public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index){
+    public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index) {
         FloatBuffer textureBuffer = getTexCoordinateBuffer(index);
         if (textureBuffer == null) return;
 
@@ -71,7 +71,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void setVerticesBuffer(int index, FloatBuffer verticesBuffer) {
-        mVerticesBuffers.put(index,verticesBuffer);
+        mVerticesBuffers.put(index, verticesBuffer);
     }
 
     public FloatBuffer getTexCoordinateBuffer(int index) {
@@ -79,7 +79,7 @@ public abstract class MDAbsObject3D {
     }
 
     public void setTexCoordinateBuffer(int index, FloatBuffer texCoordinateBuffer) {
-        mTexCoordinateBuffers.put(index,texCoordinateBuffer);
+        mTexCoordinateBuffers.put(index, texCoordinateBuffer);
     }
 
     public ShortBuffer getIndicesBuffer() {
@@ -92,7 +92,7 @@ public abstract class MDAbsObject3D {
 
     public void draw() {
         // Draw
-        if (getIndicesBuffer() != null){
+        if (getIndicesBuffer() != null) {
             getIndicesBuffer().position(0);
             GLES20.glDrawElements(GLES20.GL_TRIANGLES, getNumIndices(), GLES20.GL_UNSIGNED_SHORT, getIndicesBuffer());
         } else {

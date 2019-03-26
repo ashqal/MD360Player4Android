@@ -29,7 +29,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
 
     public static int[] sModes = {MDVRLibrary.PROJECTION_MODE_SPHERE, MDVRLibrary.PROJECTION_MODE_DOME180, MDVRLibrary.PROJECTION_MODE_DOME230};
 
-    public static class Params{
+    public static class Params {
         public RectF textureSize;
         public MD360DirectorFactory directorFactory;
         public MDMainPluginBuilder mainPluginBuilder;
@@ -61,10 +61,10 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
         this.mMainPluginBuilder = projectionManagerParams.mainPluginBuilder;
         this.mMainPluginBuilder.setProjectionModeManager(this);
         this.mDirectorBrief = new MDDirectorBrief();
-        this.mDirectorUpdatePlugin = new MDPluginAdapter(){
+        this.mDirectorUpdatePlugin = new MDPluginAdapter() {
             @Override
             public void beforeRenderer(int totalWidth, int totalHeight) {
-                if (mDirectors.size() > 0){
+                if (mDirectors.size() > 0) {
                     mDirectorBrief.make(mDirectors.get(0).getViewQuaternion());
                 }
             }
@@ -72,7 +72,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
     }
 
     public MDAbsPlugin getMainPlugin() {
-        if (mMainPlugin == null){
+        if (mMainPlugin == null) {
             mMainPlugin = getStrategy().buildMainPlugin(mMainPluginBuilder);
         }
         return mMainPlugin;
@@ -88,7 +88,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
         super.on(context);
 
         // destroy prev main plugin
-        if( mMainPlugin != null){
+        if (mMainPlugin != null) {
             getGLHandler().post(new PluginDestroyTask(mMainPlugin));
             mMainPlugin = null;
         }
@@ -98,27 +98,27 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
         MD360DirectorFactory factory = getStrategy().hijackDirectorFactory();
         factory = factory == null ? mCustomDirectorFactory : factory;
 
-        for (int i = 0; i < MDVRLibrary.sMultiScreenSize; i++){
+        for (int i = 0; i < MDVRLibrary.sMultiScreenSize; i++) {
             mDirectors.add(factory.createDirector(i));
         }
     }
 
     @Override
     protected AbsProjectionStrategy createStrategy(int mode) {
-        if (mProjectionFactory != null){
+        if (mProjectionFactory != null) {
             AbsProjectionStrategy strategy = mProjectionFactory.createStrategy(mode);
             if (strategy != null) return strategy;
         }
-        
-        switch (mode){
+
+        switch (mode) {
             case MDVRLibrary.PROJECTION_MODE_DOME180:
-                return new DomeProjection(this.mTextureSize,180f,false);
+                return new DomeProjection(this.mTextureSize, 180f, false);
             case MDVRLibrary.PROJECTION_MODE_DOME230:
-                return new DomeProjection(this.mTextureSize,230f,false);
+                return new DomeProjection(this.mTextureSize, 230f, false);
             case MDVRLibrary.PROJECTION_MODE_DOME180_UPPER:
-                return new DomeProjection(this.mTextureSize,180f,true);
+                return new DomeProjection(this.mTextureSize, 180f, true);
             case MDVRLibrary.PROJECTION_MODE_DOME230_UPPER:
-                return new DomeProjection(this.mTextureSize,230f,true);
+                return new DomeProjection(this.mTextureSize, 230f, true);
             case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE_HORIZONTAL:
                 return new StereoSphereProjection(MDDirection.HORIZONTAL);
             case MDVRLibrary.PROJECTION_MODE_STEREO_SPHERE:
@@ -127,7 +127,7 @@ public class ProjectionModeManager extends ModeManager<AbsProjectionStrategy> im
             case MDVRLibrary.PROJECTION_MODE_PLANE_FIT:
             case MDVRLibrary.PROJECTION_MODE_PLANE_CROP:
             case MDVRLibrary.PROJECTION_MODE_PLANE_FULL:
-                return PlaneProjection.create(mode,this.mTextureSize);
+                return PlaneProjection.create(mode, this.mTextureSize);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_HORIZONTAL:
                 return new MultiFishEyeProjection(1f, MDDirection.HORIZONTAL);
             case MDVRLibrary.PROJECTION_MODE_MULTI_FISH_EYE_VERTICAL:

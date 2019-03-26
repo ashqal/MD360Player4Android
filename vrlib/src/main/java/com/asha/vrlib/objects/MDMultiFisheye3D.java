@@ -25,8 +25,8 @@ public class MDMultiFisheye3D extends MDAbsObject3D {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
-        float R = 1f/(float)rings;
-        float S = 1f/(float)sectors;
+        float R = 1f / (float) rings;
+        float S = 1f / (float) sectors;
         short r, s;
         float x, y, z;
 
@@ -36,31 +36,31 @@ public class MDMultiFisheye3D extends MDAbsObject3D {
         short[] indices = new short[numPoint * 6];
 
         int t = 0, v = 0;
-        for(r = 0; r < rings + 1; r++) {
-            for(s = 0; s < sectors + 1; s++) {
-                x = (float) (Math.cos(2*PI * s * S) * Math.sin( PI * r * R ));
-                y = - (float) Math.sin( -PI_2 + PI * r * R );
-                z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
+        for (r = 0; r < rings + 1; r++) {
+            for (s = 0; s < sectors + 1; s++) {
+                x = (float) (Math.cos(2 * PI * s * S) * Math.sin(PI * r * R));
+                y = -(float) Math.sin(-PI_2 + PI * r * R);
+                z = (float) (Math.sin(2 * PI * s * S) * Math.sin(PI * r * R));
 
                 vertexs[v++] = x * radius;
                 vertexs[v++] = y * radius;
                 vertexs[v++] = z * radius;
 
 
-                if (t * 2 < numPoint){
+                if (t * 2 < numPoint) {
 
-                    float a = (float) (Math.sin( 2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
-                    float b = (float) (Math.cos( 2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
+                    float a = (float) (Math.sin(2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos(2 * PI * s * S) * r * R * 2 * 0.65f) * 0.5f + 0.5f;
 
-                    texcoords[t*2] = a;
-                    texcoords[t*2 + 1] = b * 0.5f;
+                    texcoords[t * 2] = a;
+                    texcoords[t * 2 + 1] = b * 0.5f;
 
                 } else {
-                    float a = (float) (Math.sin( 2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
-                    float b = (float) (Math.cos( 2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
+                    float a = (float) (Math.sin(2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
+                    float b = (float) (Math.cos(2 * PI * s * S) * (1 - r * R) * 2 * 0.65f) * 0.5f + 0.5f;
 
-                    texcoords[t*2] = 1 - a;
-                    texcoords[t*2 + 1] = b * 0.5f + 0.5f;
+                    texcoords[t * 2] = 1 - a;
+                    texcoords[t * 2 + 1] = b * 0.5f + 0.5f;
                 }
                 t++;
                 /*
@@ -77,25 +77,23 @@ public class MDMultiFisheye3D extends MDAbsObject3D {
             }
         }
 
-        for (int k = 0; k < numPoint; k++){
-            Log.e(TAG,String.format("p %d,",k));
-            Log.e(TAG,String.format("v %d, x=%f y=%f z=%f",k,vertexs[k*3],vertexs[k*3+1],vertexs[k*3+2]));
-            Log.e(TAG,String.format("t %d, x=%f y=%f",k,texcoords[k*2],texcoords[k*2+1]));
+        for (int k = 0; k < numPoint; k++) {
+            Log.e(TAG, String.format("p %d,", k));
+            Log.e(TAG, String.format("v %d, x=%f y=%f z=%f", k, vertexs[k * 3], vertexs[k * 3 + 1], vertexs[k * 3 + 2]));
+            Log.e(TAG, String.format("t %d, x=%f y=%f", k, texcoords[k * 2], texcoords[k * 2 + 1]));
         }
-
-
 
 
         int counter = 0;
         int sectorsPlusOne = sectors + 1;
-        for(r = 0; r < rings; r++){
-            for(s = 0; s < sectors; s++) {
+        for (r = 0; r < rings; r++) {
+            for (s = 0; s < sectors; s++) {
                 indices[counter++] = (short) (r * sectorsPlusOne + s);       //(a)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
             }
         }
 
@@ -126,10 +124,10 @@ public class MDMultiFisheye3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer);
-        object3D.setVerticesBuffer(0,vertexBuffer);
-        object3D.setVerticesBuffer(1,vertexBuffer);
+        object3D.setTexCoordinateBuffer(0, texBuffer);
+        object3D.setTexCoordinateBuffer(1, texBuffer);
+        object3D.setVerticesBuffer(0, vertexBuffer);
+        object3D.setVerticesBuffer(1, vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 

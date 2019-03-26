@@ -50,22 +50,22 @@ public class IjkPlayerDemoActivity extends Activity implements TextureView.Surfa
         textureView.setSurfaceTextureListener(this);
 
         Uri uri = getUri();
-        if (uri != null){
+        if (uri != null) {
             mMediaPlayerWrapper.openRemoteFile(uri.toString());
             mMediaPlayerWrapper.prepare();
         }
 
     }
 
-    public static void start(Context context, Uri uri){
-        Intent i = new Intent(context,IjkPlayerDemoActivity.class);
+    public static void start(Context context, Uri uri) {
+        Intent i = new Intent(context, IjkPlayerDemoActivity.class);
         i.setData(uri);
         context.startActivity(i);
     }
 
     protected Uri getUri() {
         Intent i = getIntent();
-        if (i == null || i.getData() == null){
+        if (i == null || i.getData() == null) {
             return null;
         }
         return i.getData();
@@ -113,7 +113,7 @@ public class IjkPlayerDemoActivity extends Activity implements TextureView.Surfa
         mMediaPlayerWrapper.resume();
     }
 
-    public void cancelBusy(){
+    public void cancelBusy() {
         findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }

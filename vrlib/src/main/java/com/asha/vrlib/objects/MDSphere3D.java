@@ -21,7 +21,7 @@ public class MDSphere3D extends MDAbsObject3D {
     }
 
     private static void generateSphere(MDAbsObject3D object3D) {
-        generateSphere(18,75,150,object3D);
+        generateSphere(18, 75, 150, object3D);
     }
 
     /****
@@ -31,8 +31,8 @@ public class MDSphere3D extends MDAbsObject3D {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
-        float R = 1f/(float)rings;
-        float S = 1f/(float)sectors;
+        float R = 1f / (float) rings;
+        float S = 1f / (float) sectors;
         short r, s;
         float x, y, z;
 
@@ -42,14 +42,14 @@ public class MDSphere3D extends MDAbsObject3D {
         short[] indices = new short[numPoint * 6];
 
         int t = 0, v = 0;
-        for(r = 0; r < rings + 1; r++) {
-            for(s = 0; s < sectors + 1; s++) {
-                x = (float) (Math.cos(2*PI * s * S) * Math.sin( PI * r * R ));
-                y = - (float) Math.sin( -PI_2 + PI * r * R );
-                z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
+        for (r = 0; r < rings + 1; r++) {
+            for (s = 0; s < sectors + 1; s++) {
+                x = (float) (Math.cos(2 * PI * s * S) * Math.sin(PI * r * R));
+                y = -(float) Math.sin(-PI_2 + PI * r * R);
+                z = (float) (Math.sin(2 * PI * s * S) * Math.sin(PI * r * R));
 
-                texcoords[t++] = s*S;
-                texcoords[t++] = 1 - r*R;
+                texcoords[t++] = s * S;
+                texcoords[t++] = 1 - r * R;
 
                 vertexs[v++] = x * radius;
                 vertexs[v++] = y * radius;
@@ -59,14 +59,14 @@ public class MDSphere3D extends MDAbsObject3D {
 
         int counter = 0;
         int sectorsPlusOne = sectors + 1;
-        for(r = 0; r < rings; r++){
-            for(s = 0; s < sectors; s++) {
+        for (r = 0; r < rings; r++) {
+            for (s = 0; s < sectors; s++) {
                 indices[counter++] = (short) (r * sectorsPlusOne + s);       //(a)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
             }
         }
 
@@ -97,10 +97,10 @@ public class MDSphere3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer);
-        object3D.setVerticesBuffer(0,vertexBuffer);
-        object3D.setVerticesBuffer(1,vertexBuffer);
+        object3D.setTexCoordinateBuffer(0, texBuffer);
+        object3D.setTexCoordinateBuffer(1, texBuffer);
+        object3D.setVerticesBuffer(0, vertexBuffer);
+        object3D.setVerticesBuffer(1, vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 }

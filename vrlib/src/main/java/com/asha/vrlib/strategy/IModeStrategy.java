@@ -11,7 +11,7 @@ public interface IModeStrategy {
     void turnOnInGL(Context context);
 
     void turnOffInGL(Context context);
-    
+
     boolean isSupport(Context context);
 
     void onResume(Context context);

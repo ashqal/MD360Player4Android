@@ -27,17 +27,17 @@ public class MDWidgetPlugin extends MDHotspotPlugin {
         super(builder);
         this.mStatusList = builder.statusList;
         this.mCheckedStatusList = builder.checkedStatusList;
-        if (this.mStatusList == null){
+        if (this.mStatusList == null) {
             mStatusList = new int[]{0, 0, 0};
         }
     }
 
-    public void setChecked(boolean checked){
+    public void setChecked(boolean checked) {
         this.mChecked = checked;
         updateStatus();
     }
 
-    public boolean getChecked(){
+    public boolean getChecked() {
         return mChecked;
     }
 
@@ -56,13 +56,13 @@ public class MDWidgetPlugin extends MDHotspotPlugin {
         updateStatus();
     }
 
-    private void updateStatus(){
+    private void updateStatus() {
         int[] statusList = mChecked ? mCheckedStatusList : mStatusList;
-        if (statusList == null){
+        if (statusList == null) {
             statusList = mStatusList;
         }
 
-        if (statusList != null && mCurrentStatus < statusList.length){
+        if (statusList != null && mCurrentStatus < statusList.length) {
             useTexture(statusList[mCurrentStatus]);
         }
 

@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.MathUtils;
  * Generic Quaternion
  * Written for maximum portability between desktop and Android
  * Not in performance critical sections
- *
+ * <p>
  * copy from package com.example.android.rs.vr.engine.Quaternion;
  */
 public class MDQuaternion {
@@ -55,7 +55,7 @@ public class MDQuaternion {
         System.arraycopy(src.q, 0, q, 0, q.length);
     }
 
-    public void idt(){
+    public void idt() {
         set(1, 0, 0, 0);
     }
 
@@ -176,38 +176,45 @@ public class MDQuaternion {
                 matrix[8], matrix[9], matrix[10]);
     }
 
-    /** Sets the quaternion components from the given axis and angle around that axis.
-     * @param x X direction of the axis
-     * @param y Y direction of the axis
-     * @param z Z direction of the axis
+    /**
+     * Sets the quaternion components from the given axis and angle around that axis.
+     *
+     * @param x       X direction of the axis
+     * @param y       Y direction of the axis
+     * @param z       Z direction of the axis
      * @param degrees The angle in degrees
-     * @return This quaternion for chaining. */
-    public void setFromAxis (final float x, final float y, final float z, final float degrees) {
+     * @return This quaternion for chaining.
+     */
+    public void setFromAxis(final float x, final float y, final float z, final float degrees) {
         setFromAxisRad(x, y, z, degrees * MathUtils.degreesToRadians);
     }
 
-    /** Sets the quaternion components from the given axis and angle around that axis.
-     * @param x X direction of the axis
-     * @param y Y direction of the axis
-     * @param z Z direction of the axis
+    /**
+     * Sets the quaternion components from the given axis and angle around that axis.
+     *
+     * @param x       X direction of the axis
+     * @param y       Y direction of the axis
+     * @param z       Z direction of the axis
      * @param radians The angle in radians
-     * @return This quaternion for chaining. */
-    public void setFromAxisRad (final float x, final float y, final float z, final float radians) {
+     * @return This quaternion for chaining.
+     */
+    public void setFromAxisRad(final float x, final float y, final float z, final float radians) {
         float d = MDVector3D.len(x, y, z);
-        if (d == 0f){
+        if (d == 0f) {
             idt();
             return;
         }
 
         d = 1f / d;
         float l_ang = radians < 0 ? MathUtils.PI2 - (-radians % MathUtils.PI2) : radians % MathUtils.PI2;
-        float l_sin = (float)Math.sin(l_ang / 2);
-        float l_cos = (float)Math.cos(l_ang / 2);
+        float l_sin = (float) Math.sin(l_ang / 2);
+        float l_cos = (float) Math.cos(l_ang / 2);
         this.set(l_cos, d * x * l_sin, d * y * l_sin, d * z * l_sin);
         this.nor();
     }
 
-    /** <p>
+    /**
+     * <p>
      * Sets the Quaternion from the given x-, y- and z-axis.
      * </p>
      *
@@ -217,18 +224,19 @@ public class MDQuaternion {
      * </p>
      *
      * @param normalizeAxes whether to normalize the axes (necessary when they contain scaling)
-     * @param xx x-axis x-coordinate
-     * @param xy x-axis y-coordinate
-     * @param xz x-axis z-coordinate
-     * @param yx y-axis x-coordinate
-     * @param yy y-axis y-coordinate
-     * @param yz y-axis z-coordinate
-     * @param zx z-axis x-coordinate
-     * @param zy z-axis y-coordinate
-     * @param zz z-axis z-coordinate */
-    private void setFromAxes (boolean normalizeAxes, float xx, float xy, float xz, float yx, float yy, float yz, float zx,
-                                   float zy, float zz) {
-        float w,x,y,z;
+     * @param xx            x-axis x-coordinate
+     * @param xy            x-axis y-coordinate
+     * @param xz            x-axis z-coordinate
+     * @param yx            y-axis x-coordinate
+     * @param yy            y-axis y-coordinate
+     * @param yz            y-axis z-coordinate
+     * @param zx            z-axis x-coordinate
+     * @param zy            z-axis y-coordinate
+     * @param zz            z-axis z-coordinate
+     */
+    private void setFromAxes(boolean normalizeAxes, float xx, float xy, float xz, float yx, float yy, float yz, float zx,
+                             float zy, float zz) {
+        float w, x, y, z;
         if (normalizeAxes) {
             final float lx = 1f / MDVector3D.len(xx, xy, xz);
             final float ly = 1f / MDVector3D.len(yx, yy, yz);
@@ -249,28 +257,28 @@ public class MDQuaternion {
 
         // we protect the division by s by ensuring that s>=1
         if (t >= 0) { // |w| >= .5
-            float s = (float)Math.sqrt(t + 1); // |s|>=1 ...
+            float s = (float) Math.sqrt(t + 1); // |s|>=1 ...
             w = 0.5f * s;
             s = 0.5f / s; // so this division isn't bad
             x = (zy - yz) * s;
             y = (xz - zx) * s;
             z = (yx - xy) * s;
         } else if ((xx > yy) && (xx > zz)) {
-            float s = (float)Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
+            float s = (float) Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
             x = s * 0.5f; // |x| >= .5
             s = 0.5f / s;
             y = (yx + xy) * s;
             z = (xz + zx) * s;
             w = (zy - yz) * s;
         } else if (yy > zz) {
-            float s = (float)Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
+            float s = (float) Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
             y = s * 0.5f; // |y| >= .5
             s = 0.5f / s;
             x = (yx + xy) * s;
             z = (zy + yz) * s;
             w = (xz - zx) * s;
         } else {
-            float s = (float)Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
+            float s = (float) Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
             z = s * 0.5f; // |z| >= .5
             s = 0.5f / s;
             x = (xz + zx) * s;
@@ -281,25 +289,28 @@ public class MDQuaternion {
         set(w, x, y, z);
     }
 
-    public void setEulerAngles (float pitch, float yaw, float roll) {
+    public void setEulerAngles(float pitch, float yaw, float roll) {
         setEulerAnglesRad(pitch * MathUtils.degreesToRadians, yaw * MathUtils.degreesToRadians, roll * MathUtils.degreesToRadians);
     }
 
-    /** Sets the quaternion to the given euler angles in radians.
+    /**
+     * Sets the quaternion to the given euler angles in radians.
+     *
      * @param pitch the rotation around the x axis in radians
-     * @param yaw the rotation around the y axis in radians
-     * @param roll the rotation around the z axis in radians
-     * @return this quaternion */
-    public void setEulerAnglesRad (float pitch, float yaw, float roll) {
+     * @param yaw   the rotation around the y axis in radians
+     * @param roll  the rotation around the z axis in radians
+     * @return this quaternion
+     */
+    public void setEulerAnglesRad(float pitch, float yaw, float roll) {
         final float hr = roll * 0.5f;
-        final float shr = (float)Math.sin(hr);
-        final float chr = (float)Math.cos(hr);
+        final float shr = (float) Math.sin(hr);
+        final float chr = (float) Math.cos(hr);
         final float hp = pitch * 0.5f;
-        final float shp = (float)Math.sin(hp);
-        final float chp = (float)Math.cos(hp);
+        final float shp = (float) Math.sin(hp);
+        final float chp = (float) Math.cos(hp);
         final float hy = yaw * 0.5f;
-        final float shy = (float)Math.sin(hy);
-        final float chy = (float)Math.cos(hy);
+        final float shy = (float) Math.sin(hy);
+        final float chy = (float) Math.cos(hy);
         final float chy_shp = chy * shp;
         final float shy_chp = shy * chp;
         final float chy_chp = chy * chp;
@@ -313,9 +324,12 @@ public class MDQuaternion {
         q[0] = (chy_chp * chr) + (shy_shp * shr); // cos(yaw/2) * cos(pitch/2) * cos(roll/2) + sin(yaw/2) * sin(pitch/2) * sin(roll/2)
     }
 
-    /** Get the pole of the gimbal lock, if any.
-     * @return positive (+1) for north pole, negative (-1) for south pole, zero (0) when no gimbal lock */
-    public int getGimbalPole () {
+    /**
+     * Get the pole of the gimbal lock, if any.
+     *
+     * @return positive (+1) for north pole, negative (-1) for south pole, zero (0) when no gimbal lock
+     */
+    public int getGimbalPole() {
         float w = q[0];
         float x = q[1];
         float y = q[2];
@@ -325,46 +339,61 @@ public class MDQuaternion {
         return t > 0.499f ? 1 : (t < -0.499f ? -1 : 0);
     }
 
-    /** Get the roll euler angle in radians, which is the rotation around the z axis. Requires that this quaternion is normalized.
-     * @return the rotation around the z axis in radians (between -PI and +PI) */
-    public float getRollRad () {
+    /**
+     * Get the roll euler angle in radians, which is the rotation around the z axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the z axis in radians (between -PI and +PI)
+     */
+    public float getRollRad() {
         float w = q[0];
         float x = q[1];
         float y = q[2];
         float z = q[3];
 
         final int pole = getGimbalPole();
-        return pole == 0 ? MathUtils.atan2(2f * (w * z + y * x), 1f - 2f * (x * x + z * z)) : (float)pole * 2f
+        return pole == 0 ? MathUtils.atan2(2f * (w * z + y * x), 1f - 2f * (x * x + z * z)) : (float) pole * 2f
                 * MathUtils.atan2(y, w);
     }
 
-    /** Get the roll euler angle in degrees, which is the rotation around the z axis. Requires that this quaternion is normalized.
-     * @return the rotation around the z axis in degrees (between -180 and +180) */
-    public float getRoll () {
+    /**
+     * Get the roll euler angle in degrees, which is the rotation around the z axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the z axis in degrees (between -180 and +180)
+     */
+    public float getRoll() {
         return getRollRad() * MathUtils.radiansToDegrees;
     }
 
-    /** Get the pitch euler angle in radians, which is the rotation around the x axis. Requires that this quaternion is normalized.
-     * @return the rotation around the x axis in radians (between -(PI/2) and +(PI/2)) */
-    public float getPitchRad () {
+    /**
+     * Get the pitch euler angle in radians, which is the rotation around the x axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the x axis in radians (between -(PI/2) and +(PI/2))
+     */
+    public float getPitchRad() {
         float w = q[0];
         float x = q[1];
         float y = q[2];
         float z = q[3];
 
         final int pole = getGimbalPole();
-        return pole == 0 ? (float)Math.asin(MathUtils.clamp(2f * (w * x - z * y), -1f, 1f)) : (float)pole * MathUtils.PI * 0.5f;
+        return pole == 0 ? (float) Math.asin(MathUtils.clamp(2f * (w * x - z * y), -1f, 1f)) : (float) pole * MathUtils.PI * 0.5f;
     }
 
-    /** Get the pitch euler angle in degrees, which is the rotation around the x axis. Requires that this quaternion is normalized.
-     * @return the rotation around the x axis in degrees (between -90 and +90) */
-    public float getPitch () {
+    /**
+     * Get the pitch euler angle in degrees, which is the rotation around the x axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the x axis in degrees (between -90 and +90)
+     */
+    public float getPitch() {
         return getPitchRad() * MathUtils.radiansToDegrees;
     }
 
-    /** Get the yaw euler angle in radians, which is the rotation around the y axis. Requires that this quaternion is normalized.
-     * @return the rotation around the y axis in radians (between -PI and +PI) */
-    public float getYawRad () {
+    /**
+     * Get the yaw euler angle in radians, which is the rotation around the y axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the y axis in radians (between -PI and +PI)
+     */
+    public float getYawRad() {
         float w = q[0];
         float x = q[1];
         float y = q[2];
@@ -373,13 +402,16 @@ public class MDQuaternion {
         return getGimbalPole() == 0 ? MathUtils.atan2(2f * (y * w + x * z), 1f - 2f * (y * y + x * x)) : 0f;
     }
 
-    /** Get the yaw euler angle in degrees, which is the rotation around the y axis. Requires that this quaternion is normalized.
-     * @return the rotation around the y axis in degrees (between -180 and +180) */
-    public float getYaw () {
+    /**
+     * Get the yaw euler angle in degrees, which is the rotation around the y axis. Requires that this quaternion is normalized.
+     *
+     * @return the rotation around the y axis in degrees (between -180 and +180)
+     */
+    public float getYaw() {
         return getYawRad() * MathUtils.radiansToDegrees;
     }
 
-    public void nor () {
+    public void nor() {
         float w = q[0];
         float x = q[1];
         float y = q[2];
@@ -387,7 +419,7 @@ public class MDQuaternion {
 
         float len = x * x + y * y + z * z + w * w;
         if (len != 0.f && !MathUtils.isEqual(len, 1f)) {
-            len = (float)Math.sqrt(len);
+            len = (float) Math.sqrt(len);
             w /= len;
             x /= len;
             y /= len;

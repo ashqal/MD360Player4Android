@@ -13,7 +13,7 @@ public class MDDirectorFilter implements IDirectorFilter {
 
     @Override
     public float onFilterPitch(float input) {
-        if (delegate != null){
+        if (delegate != null) {
             return delegate.onFilterPitch(input);
         }
 
@@ -22,7 +22,7 @@ public class MDDirectorFilter implements IDirectorFilter {
 
     @Override
     public float onFilterYaw(float input) {
-        if (delegate != null){
+        if (delegate != null) {
             return delegate.onFilterYaw(input);
         }
 
@@ -31,7 +31,7 @@ public class MDDirectorFilter implements IDirectorFilter {
 
     @Override
     public float onFilterRoll(float input) {
-        if (delegate != null){
+        if (delegate != null) {
             return delegate.onFilterRoll(input);
         }
 
