@@ -102,6 +102,7 @@ public class MDMutablePosition extends MDPosition {
 
     /**
      * setAngleX
+     *
      * @param angleX in degree
      * @return self
      */
@@ -117,6 +118,7 @@ public class MDMutablePosition extends MDPosition {
 
     /**
      * setAngleY
+     *
      * @param angleY in degree
      * @return self
      */
@@ -132,6 +134,7 @@ public class MDMutablePosition extends MDPosition {
 
     /**
      * setAngleZ
+     *
      * @param angleZ in degree
      * @return self
      */
@@ -141,7 +144,7 @@ public class MDMutablePosition extends MDPosition {
         return this;
     }
 
-    public static MDMutablePosition newInstance(){
+    public static MDMutablePosition newInstance() {
         return new MDMutablePosition();
     }
 
@@ -160,14 +163,14 @@ public class MDMutablePosition extends MDPosition {
                 '}';
     }
 
-    private void ensure(){
+    private void ensure() {
         // model
-        if (mModelMatrix == null){
+        if (mModelMatrix == null) {
             mModelMatrix = new float[16];
             Matrix.setIdentityM(mModelMatrix, 0);
         }
 
-        if (!changed){
+        if (!changed) {
             return;
         }
 
@@ -177,15 +180,15 @@ public class MDMutablePosition extends MDPosition {
         Matrix.rotateM(mModelMatrix, 0, getAngleY(), 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, getAngleZ(), 0.0f, 0.0f, 1.0f);
 
-        Matrix.translateM(mModelMatrix, 0, getX(),getY(),getZ());
+        Matrix.translateM(mModelMatrix, 0, getX(), getY(), getZ());
 
         Matrix.rotateM(mModelMatrix, 0, getYaw(), 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, getPitch(), 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, getRoll(), 0.0f, 0.0f, 1.0f);
 
         // rotation
-        if (mRotationMatrix != null){
-            Matrix.multiplyMM(mTmpMatrix, 0,  mRotationMatrix, 0, mModelMatrix, 0);
+        if (mRotationMatrix != null) {
+            Matrix.multiplyMM(mTmpMatrix, 0, mRotationMatrix, 0, mModelMatrix, 0);
             System.arraycopy(mTmpMatrix, 0, mModelMatrix, 0, 16);
         }
 
@@ -193,11 +196,11 @@ public class MDMutablePosition extends MDPosition {
     }
 
     @Override
-    public void setRotationMatrix(float[] rotationMatrix){
+    public void setRotationMatrix(float[] rotationMatrix) {
         notNull(rotationMatrix, "rotationMatrix can't be null!");
         checkGLThread("setRotationMatrix must called in gl thread!");
 
-        if (mRotationMatrix == null){
+        if (mRotationMatrix == null) {
             mRotationMatrix = new float[16];
         }
 

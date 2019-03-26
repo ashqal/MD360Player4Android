@@ -17,14 +17,14 @@ public abstract class MDAbsPlugin {
 
     private MDPosition mPosition = MDPosition.getOriginalPosition();
 
-    public final void setupInGL(Context context){
+    public final void setupInGL(Context context) {
         long tid = Thread.currentThread().getId();
         if (tid != mTid) {
             mTid = tid;
             mIsInit = false;
         }
 
-        if (!mIsInit){
+        if (!mIsInit) {
             initInGL(context);
             mIsInit = true;
         }
@@ -38,7 +38,7 @@ public abstract class MDAbsPlugin {
 
     abstract public void renderer(int index, int itemWidth, int itemHeight, MD360Director director);
 
-    protected MDPosition getModelPosition(){
+    protected MDPosition getModelPosition() {
         return mPosition;
     }
 

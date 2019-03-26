@@ -45,7 +45,7 @@ public class MD360BitmapTexture extends MD360Texture {
     // gl thread
     @Override
     public boolean texture(MD360Program program) {
-        if (mTextureDirty.get()){
+        if (mTextureDirty.get()) {
             loadTexture();
             mTextureDirty.set(false);
         }
@@ -53,14 +53,14 @@ public class MD360BitmapTexture extends MD360Texture {
 
         AsyncCallback asyncCallback = mTmpAsyncCallback;
         int textureId = getCurrentTextureId();
-        if (asyncCallback != null && asyncCallback.hasBitmap()){
+        if (asyncCallback != null && asyncCallback.hasBitmap()) {
             Bitmap bitmap = asyncCallback.getBitmap();
             textureInThread(textureId, program, bitmap);
             asyncCallback.releaseBitmap();
             mIsReady = true;
         }
 
-        if (isReady() && textureId != 0){
+        if (isReady() && textureId != 0) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
             GLES20.glUniform1i(program.getTextureUniformHandle(), 0);
@@ -74,9 +74,9 @@ public class MD360BitmapTexture extends MD360Texture {
     }
 
     // call from gl thread
-    private void loadTexture(){
+    private void loadTexture() {
         // release the ref before
-        if (mTmpAsyncCallback != null){
+        if (mTmpAsyncCallback != null) {
             mTmpAsyncCallback.releaseBitmap();
             mTmpAsyncCallback = null;
         }
@@ -106,7 +106,7 @@ public class MD360BitmapTexture extends MD360Texture {
     @Override
     public void destroy() {
         // release the ref before
-        if (mTmpAsyncCallback != null){
+        if (mTmpAsyncCallback != null) {
             mTmpAsyncCallback.releaseBitmap();
             mTmpAsyncCallback = null;
         }
@@ -131,8 +131,8 @@ public class MD360BitmapTexture extends MD360Texture {
         // Set filtering
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         // Load the bitmap into the bound texture.
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
@@ -162,16 +162,16 @@ public class MD360BitmapTexture extends MD360Texture {
             return maxSize;
         }
 
-        public Bitmap getBitmap(){
+        public Bitmap getBitmap() {
             return bitmapRef != null ? bitmapRef.get() : null;
         }
 
-        public boolean hasBitmap(){
-            return  bitmapRef != null && bitmapRef.get() != null;
+        public boolean hasBitmap() {
+            return bitmapRef != null && bitmapRef.get() != null;
         }
 
-        public void releaseBitmap(){
-            if (bitmapRef != null){
+        public void releaseBitmap() {
+            if (bitmapRef != null) {
                 bitmapRef.clear();
             }
             bitmapRef = null;
@@ -180,6 +180,7 @@ public class MD360BitmapTexture extends MD360Texture {
 
     public interface Callback {
         void texture(Bitmap bitmap);
+
         int getMaxTextureSize();
     }
 }

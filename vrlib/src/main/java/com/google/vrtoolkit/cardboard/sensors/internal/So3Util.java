@@ -13,15 +13,14 @@ public class So3Util {
     private static Matrix3x3d sO3FromTwoVec33R2;
     private static Vector3d muFromSO3R2;
     private static Vector3d rotationPiAboutAxisTemp;
-    
+
     public static void sO3FromTwoVec(final Vector3d a, final Vector3d b, final Matrix3x3d result) {
         Vector3d.cross(a, b, So3Util.sO3FromTwoVecN);
         if (So3Util.sO3FromTwoVecN.length() == 0.0) {
             final double dot = Vector3d.dot(a, b);
             if (dot >= 0.0) {
                 result.setIdentity();
-            }
-            else {
+            } else {
                 Vector3d.ortho(a, So3Util.sO3FromTwoVecRotationAxis);
                 rotationPiAboutAxis(So3Util.sO3FromTwoVecRotationAxis, result);
             }
@@ -45,7 +44,7 @@ public class So3Util {
         r1.transpose();
         Matrix3x3d.mult(r2, r1, result);
     }
-    
+
     private static void rotationPiAboutAxis(final Vector3d v, final Matrix3x3d result) {
         So3Util.rotationPiAboutAxisTemp.set(v);
         So3Util.rotationPiAboutAxisTemp.scale(3.141592653589793 / So3Util.rotationPiAboutAxisTemp.length());
@@ -54,7 +53,7 @@ public class So3Util {
         final double kB = 0.20264236728467558;
         rodriguesSo3Exp(So3Util.rotationPiAboutAxisTemp, kA, kB, result);
     }
-    
+
     public static void sO3FromMu(final Vector3d w, final Matrix3x3d result) {
         final double thetaSq = Vector3d.dot(w, w);
         final double theta = Math.sqrt(thetaSq);
@@ -63,19 +62,17 @@ public class So3Util {
         if (thetaSq < 1.0E-8) {
             kA = 1.0 - 0.1666666716337204 * thetaSq;
             kB = 0.5;
-        }
-        else if (thetaSq < 1.0E-6) {
+        } else if (thetaSq < 1.0E-6) {
             kB = 0.5 - 0.0416666679084301 * thetaSq;
             kA = 1.0 - thetaSq * 0.1666666716337204 * (1.0 - 0.1666666716337204 * thetaSq);
-        }
-        else {
+        } else {
             final double invTheta = 1.0 / theta;
             kA = Math.sin(theta) * invTheta;
             kB = (1.0 - Math.cos(theta)) * (invTheta * invTheta);
         }
         rodriguesSo3Exp(w, kA, kB, result);
     }
-    
+
     public static void muFromSO3(final Matrix3x3d so3, final Vector3d result) {
         final double cosAngle = (so3.get(0, 0) + so3.get(1, 1) + so3.get(2, 2) - 1.0) * 0.5;
         result.set((so3.get(2, 1) - so3.get(1, 2)) / 2.0, (so3.get(0, 2) - so3.get(2, 0)) / 2.0, (so3.get(1, 0) - so3.get(0, 1)) / 2.0);
@@ -84,12 +81,10 @@ public class So3Util {
             if (sinAngleAbs > 0.0) {
                 result.scale(Math.asin(sinAngleAbs) / sinAngleAbs);
             }
-        }
-        else if (cosAngle > -0.7071067811865476) {
+        } else if (cosAngle > -0.7071067811865476) {
             final double angle = Math.acos(cosAngle);
             result.scale(angle / sinAngleAbs);
-        }
-        else {
+        } else {
             final double angle = 3.141592653589793 - Math.asin(sinAngleAbs);
             final double d0 = so3.get(0, 0) - cosAngle;
             final double d = so3.get(1, 1) - cosAngle;
@@ -97,11 +92,9 @@ public class So3Util {
             final Vector3d r2 = So3Util.muFromSO3R2;
             if (d0 * d0 > d * d && d0 * d0 > d2 * d2) {
                 r2.set(d0, (so3.get(1, 0) + so3.get(0, 1)) / 2.0, (so3.get(0, 2) + so3.get(2, 0)) / 2.0);
-            }
-            else if (d * d > d2 * d2) {
+            } else if (d * d > d2 * d2) {
                 r2.set((so3.get(1, 0) + so3.get(0, 1)) / 2.0, d, (so3.get(2, 1) + so3.get(1, 2)) / 2.0);
-            }
-            else {
+            } else {
                 r2.set((so3.get(0, 2) + so3.get(2, 0)) / 2.0, (so3.get(2, 1) + so3.get(1, 2)) / 2.0, d2);
             }
             if (Vector3d.dot(r2, result) < 0.0) {
@@ -112,7 +105,7 @@ public class So3Util {
             result.set(r2);
         }
     }
-    
+
     private static void rodriguesSo3Exp(final Vector3d w, final double kA, final double kB, final Matrix3x3d result) {
         final double wx2 = w.x * w.x;
         final double wy2 = w.y * w.y;
@@ -133,16 +126,16 @@ public class So3Util {
         result.set(1, 2, b - a);
         result.set(2, 1, b + a);
     }
-    
+
     public static void generatorField(final int i, final Matrix3x3d pos, final Matrix3x3d result) {
         result.set(i, 0, 0.0);
         result.set((i + 1) % 3,
-                   0,
-                   -pos.get((i + 2) % 3, 0));
+                0,
+                -pos.get((i + 2) % 3, 0));
         result.set((i + 2) % 3,
-                   0, pos.get((i + 1) % 3,0));
+                0, pos.get((i + 1) % 3, 0));
     }
-    
+
     static {
         So3Util.temp31 = new Vector3d();
         So3Util.sO3FromTwoVecN = new Vector3d();

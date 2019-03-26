@@ -22,7 +22,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
             MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION,
     };
 
-    public static class Params{
+    public static class Params {
         public int mMotionDelay;
         public SensorEventListener mSensorListener;
         public ProjectionModeManager projectionModeManager;
@@ -44,7 +44,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
 
     @Override
     protected AbsInteractiveStrategy createStrategy(int mode) {
-        switch (mode){
+        switch (mode) {
             case MDVRLibrary.INTERACTIVE_MODE_MOTION:
                 return new MotionStrategy(mParams);
             case MDVRLibrary.INTERACTIVE_MODE_MOTION_WITH_TOUCH:
@@ -89,7 +89,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
         private int distanceX;
         private int distanceY;
 
-        private void handleDrag(int distanceX, int distanceY){
+        private void handleDrag(int distanceX, int distanceY) {
             this.distanceX = distanceX;
             this.distanceY = distanceY;
         }
@@ -102,7 +102,7 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
 
     public void onResume(Context context) {
         mIsResumed = true;
-        if (getStrategy().isSupport(context)){
+        if (getStrategy().isSupport(context)) {
             getStrategy().onResume(context);
         }
     }
@@ -111,14 +111,14 @@ public class InteractiveModeManager extends ModeManager<AbsInteractiveStrategy> 
     public void on(Context context) {
         super.on(context);
 
-        if (mIsResumed){
+        if (mIsResumed) {
             onResume(context);
         }
     }
 
     public void onPause(Context context) {
         mIsResumed = false;
-        if (getStrategy().isSupport(context)){
+        if (getStrategy().isSupport(context)) {
             getStrategy().onPause(context);
         }
     }

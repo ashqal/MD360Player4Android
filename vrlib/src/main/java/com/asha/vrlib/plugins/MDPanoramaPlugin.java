@@ -49,10 +49,10 @@ public class MDPanoramaPlugin extends MDAbsPlugin {
     @Override
     public void beforeRenderer(int totalWidth, int totalHeight) {
         List<MD360Director> directors = mProjectionModeManager.getDirectors();
-        if (directors != null){
+        if (directors != null) {
             // apply the update
-            for (MD360Director director : directors){
-                if (mDirectorCameraUpdate.isChanged()){
+            for (MD360Director director : directors) {
+                if (mDirectorCameraUpdate.isChanged()) {
                     director.applyUpdate(mDirectorCameraUpdate);
                 }
 

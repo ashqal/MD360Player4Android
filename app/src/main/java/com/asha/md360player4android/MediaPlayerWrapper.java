@@ -14,7 +14,7 @@ import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
 /**
  * Created by hzqiujiadi on 16/4/5.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * http://developer.android.com/intl/zh-cn/reference/android/media/MediaPlayer.html
  * status
  */
@@ -29,7 +29,7 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
     private static final int STATUS_STOPPED = 5;
     private int mStatus = STATUS_IDLE;
 
-    public void init(){
+    public void init() {
         mStatus = STATUS_IDLE;
         mPlayer = new IjkMediaPlayer();
         mPlayer.setOnPreparedListener(this);
@@ -43,8 +43,8 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         enableHardwareDecoding();
     }
 
-    private void enableHardwareDecoding(){
-        if (mPlayer instanceof IjkMediaPlayer){
+    private void enableHardwareDecoding() {
+        if (mPlayer instanceof IjkMediaPlayer) {
             IjkMediaPlayer player = (IjkMediaPlayer) mPlayer;
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1);
@@ -55,13 +55,13 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
-    public void setSurface(Surface surface){
-        if (getPlayer() != null){
+    public void setSurface(Surface surface) {
+        if (getPlayer() != null) {
             getPlayer().setSurface(surface);
         }
     }
 
-    public void openRemoteFile(String url){
+    public void openRemoteFile(String url) {
         try {
             mPlayer.setDataSource(url);
         } catch (IOException e) {
@@ -100,21 +100,21 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
 
     public void prepare() {
         if (mPlayer == null) return;
-        if (mStatus == STATUS_IDLE || mStatus == STATUS_STOPPED){
+        if (mStatus == STATUS_IDLE || mStatus == STATUS_STOPPED) {
             mPlayer.prepareAsync();
             mStatus = STATUS_PREPARING;
         }
     }
 
-    public void stop(){
+    public void stop() {
         if (mPlayer == null) return;
-        if (mStatus == STATUS_STARTED || mStatus ==  STATUS_PAUSED){
+        if (mStatus == STATUS_STARTED || mStatus == STATUS_PAUSED) {
             mPlayer.stop();
             mStatus = STATUS_STOPPED;
         }
     }
 
-    public void pause(){
+    public void pause() {
         if (mPlayer == null) return;
         if (mPlayer.isPlaying() && mStatus == STATUS_STARTED) {
             mPlayer.pause();
@@ -122,9 +122,9 @@ public class MediaPlayerWrapper implements IMediaPlayer.OnPreparedListener {
         }
     }
 
-    private void start(){
+    private void start() {
         if (mPlayer == null) return;
-        if (mStatus == STATUS_PREPARED || mStatus == STATUS_PAUSED){
+        if (mStatus == STATUS_PREPARED || mStatus == STATUS_PAUSED) {
             mPlayer.start();
             mStatus = STATUS_STARTED;
         }

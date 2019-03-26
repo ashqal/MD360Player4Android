@@ -15,10 +15,11 @@ public class CustomProjectionFactory implements IMDProjectionFactory {
 
     @Override
     public AbsProjectionStrategy createStrategy(int mode) {
-        switch (mode){
+        switch (mode) {
             case CUSTOM_PROJECTION_FISH_EYE_RADIUS_VERTICAL:
                 return new MultiFishEyeProjection(0.745f, MDDirection.VERTICAL);
-            default:return null;
+            default:
+                return null;
         }
     }
 }

@@ -28,7 +28,7 @@ public class VRLibManager {
     }
 
     public MDVRLibrary create(MDVRLibrary.IBitmapProvider provider, GLTextureView textureView) {
-        MDVRLibrary lib =  MDVRLibrary.with(context)
+        MDVRLibrary lib = MDVRLibrary.with(context)
                 .asBitmap(provider)
                 .pinchConfig(new MDPinchConfig().setMin(0.8f).setSensitivity(1).setDefaultValue(0.8f))
                 .touchSensitivity(2)

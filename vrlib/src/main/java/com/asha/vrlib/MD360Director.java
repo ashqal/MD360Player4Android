@@ -11,7 +11,7 @@ import com.asha.vrlib.model.position.MDMutablePosition;
 /**
  * Created by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * response for model * view * projection
  */
 public class MD360Director {
@@ -66,13 +66,13 @@ public class MD360Director {
         mWorldRotationMatrixInvalidate = true;
     }
 
-    private void initModel(){
+    private void initModel() {
         Matrix.setIdentityM(mViewMatrix, 0);
         Matrix.setIdentityM(mSensorMatrix, 0);
         mViewQuaternion.fromMatrix(mViewMatrix);
     }
 
-    public void beforeShot(){
+    public void beforeShot() {
         updateProjectionIfNeed();
         updateViewMatrixIfNeed();
     }
@@ -94,17 +94,17 @@ public class MD360Director {
         GLES20.glUniformMatrix4fv(program.getMVPMatrixHandle(), 1, false, mMVPMatrix, 0);
     }
 
-    private void updateViewMatrixIfNeed(){
+    private void updateViewMatrixIfNeed() {
         boolean camera = mCamera.isPositionValidate() || mCameraUpdate.isPositionValidate();
         boolean world = mWorldRotationMatrixInvalidate || mCamera.isRotationValidate() || mCameraUpdate.isRotationValidate();
 
-        if (camera){
+        if (camera) {
             updateCameraMatrix();
             mCamera.consumePositionValidate();
             mCameraUpdate.consumePositionValidate();
         }
 
-        if (world){
+        if (world) {
             mCameraRotation.setPitch(mCamera.getPitch() + mCameraUpdate.getPitch());
             mCameraRotation.setRoll(mCamera.getRoll() + mCameraUpdate.getRoll());
             mCameraRotation.setYaw(mCamera.getYaw() + mCameraUpdate.getYaw());
@@ -116,7 +116,7 @@ public class MD360Director {
             mCameraUpdate.consumeRotationValidate();
         }
 
-        if (camera || world){
+        if (camera || world) {
             Matrix.multiplyMM(mViewMatrix, 0, mCameraMatrix, 0, mWorldRotationMatrix, 0);
             filterViewMatrix();
         }
@@ -136,47 +136,47 @@ public class MD360Director {
         float filterYaw = mDirectorFilter.onFilterYaw(yaw);
         float filterRoll = mDirectorFilter.onFilterRoll(roll);
 
-        if (pitch != filterPitch || yaw != filterYaw || roll != filterRoll){
+        if (pitch != filterPitch || yaw != filterYaw || roll != filterRoll) {
             mViewQuaternion.setEulerAngles(filterPitch, filterYaw, filterRoll);
             mViewQuaternion.toMatrix(mViewMatrix);
         }
     }
 
-    public void setViewport(int width, int height){
+    public void setViewport(int width, int height) {
         // Projection Matrix
         mCamera.updateViewport(width, height);
     }
 
-    public void setNearScale(float scale){
+    public void setNearScale(float scale) {
         mCamera.setNearScale(scale);
     }
 
-    private void updateProjectionIfNeed(){
-        if (mCamera.isProjectionValidate() || mCameraUpdate.isProjectionValidate()){
+    private void updateProjectionIfNeed() {
+        if (mCamera.isProjectionValidate() || mCameraUpdate.isProjectionValidate()) {
             updateProjection();
             mCamera.consumeProjectionValidate();
             mCameraUpdate.consumeProjectionValidate();
         }
     }
 
-    protected void updateProjection(){
-        final float left = -mCamera.getRatio()/2;
-        final float right = mCamera.getRatio()/2;
+    protected void updateProjection() {
+        final float left = -mCamera.getRatio() / 2;
+        final float right = mCamera.getRatio() / 2;
         final float bottom = -0.5f;
         final float top = 0.5f;
         final float far = 500;
         Matrix.frustumM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);
     }
 
-    protected float getNear(){
+    protected float getNear() {
         return (mCamera.getNearScale() + mCameraUpdate.getNearScale()) * sNear;
     }
 
-    protected float getRatio(){
+    protected float getRatio() {
         return mCamera.getRatio();
     }
 
-    public float[] getProjectionMatrix(){
+    public float[] getProjectionMatrix() {
         return mProjectionMatrix;
     }
 
@@ -210,7 +210,7 @@ public class MD360Director {
         Matrix.setLookAtM(mCameraMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
     }
 
-    private void updateWorldRotationMatrix(){
+    private void updateWorldRotationMatrix() {
         Matrix.setIdentityM(mWorldRotationMatrix, 0);
         Matrix.rotateM(mWorldRotationMatrix, 0, -mDeltaY, 1.0f, 0.0f, 0.0f);
         Matrix.setIdentityM(mCurrentRotationPost, 0);
@@ -224,7 +224,7 @@ public class MD360Director {
         System.arraycopy(mTempMatrix, 0, mWorldRotationMatrix, 0, 16);
 
         boolean success = VRUtil.invertM(mWorldRotationInvertMatrix, mWorldRotationMatrix);
-        if (!success){
+        if (!success) {
             Matrix.setIdentityM(mWorldRotationInvertMatrix, 0);
         }
 
@@ -244,13 +244,13 @@ public class MD360Director {
     }
 
     // call in gl thread
-    public void reset(){
+    public void reset() {
         mDeltaX = mDeltaY = 0;
         Matrix.setIdentityM(mSensorMatrix, 0);
         mWorldRotationMatrixInvalidate = true;
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -270,7 +270,7 @@ public class MD360Director {
 
         private MDDirectorCamera mCamera = new MDDirectorCamera();
 
-        private MDDirectorCamera camera(){
+        private MDDirectorCamera camera() {
             return mCamera;
         }
 
@@ -304,22 +304,22 @@ public class MD360Director {
             return this;
         }
 
-        public Builder setRoll(float roll){
+        public Builder setRoll(float roll) {
             camera().setRoll(roll);
             return this;
         }
 
-        public Builder setPitch(float pitch){
+        public Builder setPitch(float pitch) {
             camera().setPitch(pitch);
             return this;
         }
 
-        public Builder setYaw(float yaw){
+        public Builder setYaw(float yaw) {
             camera().setYaw(yaw);
             return this;
         }
 
-        public MD360Director build(){
+        public MD360Director build() {
             return new MD360Director(this);
         }
     }
