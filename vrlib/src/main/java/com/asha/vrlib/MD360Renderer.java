@@ -170,7 +170,7 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
     }
 
     public void takeScreenshot(ScreenshotListener screenshotListener) {
-        this.screenshotListener = screenshotListener
+        this.screenshotListener = screenshotListener;
         screenshot = true;
     }
 
