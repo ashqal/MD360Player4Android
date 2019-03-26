@@ -161,6 +161,8 @@ public class MD360Renderer implements GLSurfaceView.Renderer {
         }
     }
 
+    private Bitmap lastScreenshot;
+
     private volatile boolean screenshot = false;
 
     private ScreenshotListener screenshotListener;
