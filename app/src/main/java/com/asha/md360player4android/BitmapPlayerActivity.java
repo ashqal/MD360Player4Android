@@ -1,12 +1,9 @@
 package com.asha.md360player4android;
 
-import android.content.ContentResolver;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 
@@ -38,7 +35,6 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
             @Override
             public void onClick(View v) {
                 busy();
-                nextUri = getDrawableUri(R.drawable.texture);
                 getVRLibrary().notifyPlayerChanged();
             }
         });
@@ -46,37 +42,41 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
 
     private Target mTarget;// keep the reference for picasso.
 
-    private void loadImage(Uri uri, final MD360BitmapTexture.Callback callback){
-        mTarget = new Target() {
+    private void loadImage(final MD360BitmapTexture.Callback callback){
+        mTarget = new com.squareup.picasso.Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Log.d(TAG, "loaded image, size:" + bitmap.getWidth() + "," + bitmap.getHeight());
+                Log.d(TAG, "onBitmapLoaded: "+bitmap);
 
                 // notify if size changed
                 getVRLibrary().onTextureResize(bitmap.getWidth(), bitmap.getHeight());
 
                 // texture
                 callback.texture(bitmap);
-                cancelBusy();
+
             }
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
+                Log.d(TAG, "onBitmapFailed: "+errorDrawable);
 
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
+                Log.d(TAG, "onPrepareLoad: "+placeHolderDrawable);
 
             }
         };
         Log.d(TAG, "load image with max texture size:" + callback.getMaxTextureSize());
         Picasso.with(getApplicationContext())
-                .load(uri)
+                .load("https://previews.123rf.com/images/svetlanasf/svetlanasf1803/svetlanasf180300010/97034756-panorama-with-the-iluminated-palace-of-fine-arts-during-the-blue-hour-at-sunset-in-san-francisco-cal.jpg")
                 .resize(callback.getMaxTextureSize(),callback.getMaxTextureSize())
                 .onlyScaleDown()
                 .centerInside()
-                .memoryPolicy(NO_CACHE, NO_STORE)
+                //.memoryPolicy(NO_CACHE, NO_STORE)
+                //.networkPolicy(NetworkPolicy.OFFLINE)
                 .into(mTarget);
     }
 
@@ -92,11 +92,11 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
     protected MDVRLibrary createVRLibrary() {
         return MDVRLibrary.with(this)
                 .displayMode(MDVRLibrary.DISPLAY_MODE_NORMAL)
-                .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_TOUCH)
+                .interactiveMode(MDVRLibrary.INTERACTIVE_MODE_CARDBORAD_MOTION_WITH_TOUCH)
                 .asBitmap(new MDVRLibrary.IBitmapProvider() {
                     @Override
-                    public void onProvideBitmap(final MD360BitmapTexture.Callback callback) {
-                        loadImage(currentUri(), callback);
+                    public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
+                        loadImage(callback);
                     }
                 })
                 .listenTouchPick(new MDVRLibrary.ITouchPickListener() {
@@ -110,8 +110,5 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 .build(findViewById(R.id.gl_view));
     }
 
-    private Uri getDrawableUri(@DrawableRes int resId){
-        Resources resources = getResources();
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
-    }
+
 }
