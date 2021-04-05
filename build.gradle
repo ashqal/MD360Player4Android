@@ -25,3 +25,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+apply from: './gradle-mvn-push.gradle'
