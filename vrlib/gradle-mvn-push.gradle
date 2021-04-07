@@ -31,7 +31,8 @@ afterEvaluate { project ->
 
                 pom.groupId = GROUP
                 pom.artifactId = POM_ARTIFACT_ID
-                pom.version = VERSION_NAME //playkitVersion
+                VERSION_NAME = libVersion
+                pom.version = VERSION_NAME
 
                 repository(url: getReleaseRepositoryUrl()) {
                     authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
@@ -72,6 +73,10 @@ afterEvaluate { project ->
     }
 
     signing {
+        allprojects { ext."signing.keyId" = System.getenv("MAVEN_KEYID" ) }
+        allprojects { ext."signing.password" = System.getenv("MAVEN_PASSWORD") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("MAVEN_SECRING_PATH") }
+
         required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
     }
