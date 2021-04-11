@@ -10,21 +10,3 @@ if (libVersion == 'dev') {
     ext.libVersion = 'dev.' + commit
 }
 
-
-// Publish to Bintray
-try {
-    apply plugin: 'bintray-release'
-
-    publish {
-        artifactId = 'md360player'
-        description = 'PlayKit MD360'
-        repoName = 'android'
-        userOrg = 'kaltura'
-        groupId = 'com.kaltura.playkit'
-        version = libVersion
-        autoPublish = true
-        licences = ['AGPL-3.0']
-    }
-} catch (UnknownPluginException ignored) {
-    // Ignore - it's ok not to have this plugin - it's only used for bintray uploads.
-}
