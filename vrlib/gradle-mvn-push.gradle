@@ -75,7 +75,7 @@ afterEvaluate { project ->
     signing {
         allprojects { ext."signing.keyId" = System.getenv("MAVEN_KEYID") }
         allprojects { ext."signing.password" = System.getenv("MAVEN_PASSWORD") }
-        allprojects { ext."signing.secretKeyRingFile" = System.getenv("MAVEN_SECRING_PATH") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("MAVEN_SECRING_PATH_DUMMY") }
 
         required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
