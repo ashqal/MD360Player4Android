@@ -30,5 +30,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-apply from: './gradle-mvn-push.gradle'
+if (hasProperty('VERSION_NAME')) {
+    apply from: './gradle-mvn-push.gradle'
+}
 
