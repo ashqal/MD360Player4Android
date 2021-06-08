@@ -30,7 +30,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-if (hasProperty('VERSION_NAME') && !ext.libVersion.contains('dev')) {
+if (!ext.libVersion.contains('dev')) {
     apply from: './gradle-mvn-push.gradle'
 }
 
