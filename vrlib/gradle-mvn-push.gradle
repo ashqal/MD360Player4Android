@@ -27,7 +27,7 @@ afterEvaluate { project ->
     publishing {
         publications {
             mavenJava(MavenPublication) {
-
+                from components.release
                 groupId = GROUP
                 artifactId = POM_ARTIFACT_ID
 
@@ -79,8 +79,8 @@ afterEvaluate { project ->
         allprojects { ext."signing.password" = System.getenv("MAVEN_PASSWORD") }
         allprojects { ext."signing.secretKeyRingFile" = System.getenv("MAVEN_SECRING_PATH") }
 
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
+        required { isReleaseBuild() && gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.mavenJava
     }
 
     task androidJavadocs(type: Javadoc) {
