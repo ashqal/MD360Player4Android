@@ -1,6 +1,7 @@
 package com.asha.md360player4android;
 
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.View;
@@ -102,7 +103,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 })
                 .projectionFactory(new CustomProjectionFactory())
                 .barrelDistortionConfig(new BarrelDistortionConfig().setDefaultEnabled(false).setScale(0.95f))
-                .build(findViewById(R.id.gl_view));
+                .build((GLSurfaceView) findViewById(R.id.gl_view));
     }
 
     @Override
