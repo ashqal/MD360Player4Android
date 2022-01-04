@@ -5,8 +5,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.MDRay;
 import com.asha.vrlib.plugins.hotspot.IMDHotspot;
-import com.asha.vrlib.texture.MD360BitmapTexture;
 import com.asha.vrlib.texture.MD360CubemapTexture;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -143,7 +143,7 @@ public class CubemapPlayerActivity extends MD360PlayerActivity {
                     }
                 })
                 .pinchEnabled(true)
-                .build(findViewById(R.id.gl_view));
+                .build((GLSurfaceView) findViewById(R.id.gl_view));
     }
 
     private Uri getDrawableUri(@DrawableRes int resId){
