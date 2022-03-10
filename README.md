@@ -1,3 +1,8 @@
+[![CI Status](https://api.travis-ci.org/kaltura/MD360Player4Android.svg?branch=develop)](https://travis-ci.com/github/kaltura/MD360Player4Android)
+[![Download](https://img.shields.io/maven-central/v/com.kaltura.playkit/md360player?label=Download)](https://search.maven.org/artifact/com.kaltura.playkit/md360player)
+[![License](https://img.shields.io/badge/license-AGPLv3-black.svg)](https://github.com/kaltura/playkit-android/blob/master/LICENSE)
+![Android](https://img.shields.io/badge/platform-android-green.svg)
+
 # MD360Player4Android
 It is a lite library to render 360 degree panorama video for Android.
 [![](https://jitpack.io/v/ashqal/MD360Player4Android.svg)](https://jitpack.io/#ashqal/MD360Player4Android)

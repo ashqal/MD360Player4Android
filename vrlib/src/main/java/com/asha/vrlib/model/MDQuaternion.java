@@ -190,8 +190,7 @@ public class MDQuaternion {
      * @param x X direction of the axis
      * @param y Y direction of the axis
      * @param z Z direction of the axis
-     * @param radians The angle in radians
-     * @return This quaternion for chaining. */
+     * @param radians The angle in radians */
     public void setFromAxisRad (final float x, final float y, final float z, final float radians) {
         float d = MDVector3D.len(x, y, z);
         if (d == 0f){
@@ -288,8 +287,7 @@ public class MDQuaternion {
     /** Sets the quaternion to the given euler angles in radians.
      * @param pitch the rotation around the x axis in radians
      * @param yaw the rotation around the y axis in radians
-     * @param roll the rotation around the z axis in radians
-     * @return this quaternion */
+     * @param roll the rotation around the z axis in radians */
     public void setEulerAnglesRad (float pitch, float yaw, float roll) {
         final float hr = roll * 0.5f;
         final float shr = (float)Math.sin(hr);

@@ -44,7 +44,7 @@
           android:orientation="vertical"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:paddingLeft="0dp"
              android:paddingRight="0dp"
              android:id="@+id/spinner_interactive"
@@ -52,7 +52,7 @@
              android:minWidth="100dp"
              android:layout_height="wrap_content"/>
 
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:layout_marginTop="8dp"
              android:paddingLeft="0dp"
              android:paddingRight="0dp"
@@ -61,7 +61,7 @@
              android:minWidth="100dp"
              android:layout_height="wrap_content"/>
 
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:layout_marginTop="8dp"
              android:paddingLeft="0dp"
              android:paddingRight="0dp"
@@ -70,7 +70,7 @@
              android:minWidth="100dp"
              android:layout_height="wrap_content"/>
 
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:layout_marginTop="8dp"
              android:paddingLeft="0dp"
              android:paddingRight="0dp"
@@ -234,7 +234,7 @@
              android:layout_width="wrap_content"
              android:layout_height="42dp" />
 
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:layout_marginTop="8dp"
              android:paddingLeft="0dp"
              android:paddingRight="0dp"
@@ -243,7 +243,7 @@
              android:minWidth="100dp"
              android:layout_height="wrap_content"/>
 
-         <android.support.v7.widget.AppCompatSpinner
+         <androidx.appcompat.widget.AppCompatSpinner
              android:layout_marginTop="8dp"
              android:paddingLeft="0dp"
              android:paddingRight="0dp"

@@ -5,8 +5,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.util.Log;
 import android.view.View;
 
@@ -107,7 +108,7 @@ public class BitmapPlayerActivity extends MD360PlayerActivity {
                 })
                 .pinchEnabled(true)
                 .projectionFactory(new CustomProjectionFactory())
-                .build(findViewById(R.id.gl_view));
+                .build((GLSurfaceView) findViewById(R.id.gl_view));
     }
 
     private Uri getDrawableUri(@DrawableRes int resId){
