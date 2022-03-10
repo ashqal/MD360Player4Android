@@ -86,6 +86,8 @@ afterEvaluate { project ->
     task androidJavadocs(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        exclude '**/*.kt'
+        include '**/BuildConfig.java' 
     }
 
     afterEvaluate {
@@ -95,17 +97,17 @@ afterEvaluate { project ->
     }
 
     task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-        classifier = 'javadoc'
+        classifier 'javadoc'
         from androidJavadocs.destinationDir
     }
 
     task androidSourcesJar(type: Jar) {
-        classifier = 'sources'
+        classifier 'sources'
         from android.sourceSets.main.java.sourceFiles
     }
 
     artifacts {
         archives androidSourcesJar
-        //archives androidJavadocsJar
+        archives androidJavadocsJar
     }
 }
