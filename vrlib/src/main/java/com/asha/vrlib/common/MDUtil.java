@@ -11,8 +11,8 @@ import android.net.Uri;
  */
 
 public class MDUtil {
-    public static Uri getDrawableUri(Context context, int resId){
+    public static Uri getDrawableUri(Context context, int resId) {
         Resources resources = context.getResources();
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId) );
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(resId) + '/' + resources.getResourceTypeName(resId) + '/' + resources.getResourceEntryName(resId));
     }
 }

@@ -8,15 +8,15 @@ import android.content.Context;
  */
 public class MDObject3DHelper {
 
-    public interface LoadComplete{
+    public interface LoadComplete {
         void onComplete(MDAbsObject3D object3D);
     }
 
-    public static void loadObj(final Context context, final MDAbsObject3D object3D){
+    public static void loadObj(final Context context, final MDAbsObject3D object3D) {
         loadObj(context, object3D, null);
     }
 
-    public static void loadObj(final Context context, final MDAbsObject3D object3D, final LoadComplete loadComplete){
+    public static void loadObj(final Context context, final MDAbsObject3D object3D, final LoadComplete loadComplete) {
         new Thread(new Runnable() {
             @Override
             public void run() {

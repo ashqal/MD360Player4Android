@@ -9,5 +9,6 @@ import com.asha.vrlib.objects.MDAbsObject3D;
  */
 public interface IProjectionMode {
     MDAbsObject3D getObject3D();
+
     MDPosition getModelPosition();
 }

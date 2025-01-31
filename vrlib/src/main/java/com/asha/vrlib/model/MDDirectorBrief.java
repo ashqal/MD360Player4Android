@@ -11,7 +11,7 @@ public class MDDirectorBrief {
     private float yaw;
     private float roll;
 
-    public void make(MDQuaternion quaternion){
+    public void make(MDQuaternion quaternion) {
         this.pitch = quaternion.getPitch();
         this.yaw = quaternion.getYaw();
         this.roll = quaternion.getRoll();
@@ -19,24 +19,27 @@ public class MDDirectorBrief {
 
     /**
      * getPitch
+     *
      * @return value in degree
-     * */
+     */
     public float getPitch() {
         return pitch;
     }
 
     /**
      * getYaw
+     *
      * @return value in degree
-     * */
+     */
     public float getYaw() {
         return yaw;
     }
 
     /**
      * getRoll
+     *
      * @return value in degree
-     * */
+     */
     public float getRoll() {
         return roll;
     }

@@ -162,7 +162,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 return;
             }
 
-            Picasso.with(itemView.getContext()).load(model.uri).into(new Target() {
+            Picasso.get().load(model.uri).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     vrlib.onTextureResize(bitmap.getWidth(), bitmap.getHeight());
@@ -170,7 +170,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
                 }
 

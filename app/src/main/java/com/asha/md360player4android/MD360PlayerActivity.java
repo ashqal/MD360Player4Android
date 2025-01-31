@@ -557,7 +557,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 }
 
                 @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                     targetMap.remove(uri);
                 }
 
@@ -567,7 +567,7 @@ public abstract class MD360PlayerActivity extends Activity {
                 }
             };
             targetMap.put(uri, target);
-            Picasso.with(getApplicationContext()).load(uri).resize(callback.getMaxTextureSize(),callback.getMaxTextureSize()).onlyScaleDown().centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
+            Picasso.get().load(uri).resize(callback.getMaxTextureSize(),callback.getMaxTextureSize()).onlyScaleDown().centerInside().memoryPolicy(NO_CACHE, NO_STORE).into(target);
         }
     }
 }

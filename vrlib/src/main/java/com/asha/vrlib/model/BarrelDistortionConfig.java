@@ -3,7 +3,7 @@ package com.asha.vrlib.model;
 /**
  * Created by hzqiujiadi on 16/7/29.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * http://mipav.cit.nih.gov/pubwiki/index.php/Barrel_Distortion_Correction
  */
 public class BarrelDistortionConfig {

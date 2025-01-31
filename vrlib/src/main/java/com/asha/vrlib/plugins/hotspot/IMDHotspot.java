@@ -15,7 +15,7 @@ public interface IMDHotspot {
 
     /**
      * @param timestamp down timestamp
-     * */
+     */
     void onEyeHitOut(long timestamp);
 
     void onTouchHit(MDRay ray);

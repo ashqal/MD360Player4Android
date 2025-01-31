@@ -32,8 +32,7 @@ public class So3Helper {
             final double dot = Vector3d.dot(a, b);
             if (dot >= 0.0) {
                 result.setIdentity();
-            }
-            else {
+            } else {
                 Vector3d.ortho(a, sO3FromTwoVecRotationAxis);
                 rotationPiAboutAxis(sO3FromTwoVecRotationAxis, result);
             }
@@ -57,7 +56,7 @@ public class So3Helper {
         r1.transpose();
         Matrix3x3d.mult(r2, r1, result);
     }
-    
+
     private void rotationPiAboutAxis(final Vector3d v, final Matrix3x3d result) {
         rotationPiAboutAxisTemp.set(v);
         rotationPiAboutAxisTemp.scale(3.141592653589793 / rotationPiAboutAxisTemp.length());
@@ -66,7 +65,7 @@ public class So3Helper {
         final double kB = 0.20264236728467558;
         rodriguesSo3Exp(rotationPiAboutAxisTemp, kA, kB, result);
     }
-    
+
     public void muFromSO3(final Matrix3x3d so3, final Vector3d result) {
         final double cosAngle = (so3.get(0, 0) + so3.get(1, 1) + so3.get(2, 2) - 1.0) * 0.5;
         result.set((so3.get(2, 1) - so3.get(1, 2)) / 2.0, (so3.get(0, 2) - so3.get(2, 0)) / 2.0, (so3.get(1, 0) - so3.get(0, 1)) / 2.0);
@@ -75,12 +74,10 @@ public class So3Helper {
             if (sinAngleAbs > 0.0) {
                 result.scale(Math.asin(sinAngleAbs) / sinAngleAbs);
             }
-        }
-        else if (cosAngle > -0.7071067811865476) {
+        } else if (cosAngle > -0.7071067811865476) {
             final double angle = Math.acos(cosAngle);
             result.scale(angle / sinAngleAbs);
-        }
-        else {
+        } else {
             final double angle = 3.141592653589793 - Math.asin(sinAngleAbs);
             final double d0 = so3.get(0, 0) - cosAngle;
             final double d = so3.get(1, 1) - cosAngle;
@@ -88,11 +85,9 @@ public class So3Helper {
             final Vector3d r2 = muFromSO3R2;
             if (d0 * d0 > d * d && d0 * d0 > d2 * d2) {
                 r2.set(d0, (so3.get(1, 0) + so3.get(0, 1)) / 2.0, (so3.get(0, 2) + so3.get(2, 0)) / 2.0);
-            }
-            else if (d * d > d2 * d2) {
+            } else if (d * d > d2 * d2) {
                 r2.set((so3.get(1, 0) + so3.get(0, 1)) / 2.0, d, (so3.get(2, 1) + so3.get(1, 2)) / 2.0);
-            }
-            else {
+            } else {
                 r2.set((so3.get(0, 2) + so3.get(2, 0)) / 2.0, (so3.get(2, 1) + so3.get(1, 2)) / 2.0, d2);
             }
             if (Vector3d.dot(r2, result) < 0.0) {
@@ -103,7 +98,7 @@ public class So3Helper {
             result.set(r2);
         }
     }
-    
+
     private static void rodriguesSo3Exp(final Vector3d w, final double kA, final double kB, final Matrix3x3d result) {
         final double wx2 = w.x * w.x;
         final double wy2 = w.y * w.y;

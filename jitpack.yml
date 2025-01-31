@@ -1,4 +1,2 @@
 jdk:
-   - openjdk11
-before_install:
-   - curl https://kaltura.github.io/fe-tools/android/license.sh | sh
+  - openjdk17

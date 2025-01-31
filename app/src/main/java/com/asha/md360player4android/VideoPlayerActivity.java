@@ -13,7 +13,6 @@ import com.asha.vrlib.MDVRLibrary;
 import com.asha.vrlib.model.BarrelDistortionConfig;
 import com.asha.vrlib.model.MDPinchConfig;
 
-import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 /**
  * Created by hzqiujiadi on 16/4/5.
@@ -22,55 +21,55 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 public class VideoPlayerActivity extends MD360PlayerActivity {
 
     private static final String TAG = "VideoPlayerActivity";
-    private MediaPlayerWrapper mMediaPlayerWrapper = new MediaPlayerWrapper();
+//    private MediaPlayerWrapper mMediaPlayerWrapper = new MediaPlayerWrapper();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMediaPlayerWrapper.init();
-        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(IMediaPlayer mp) {
-                cancelBusy();
-                if (getVRLibrary() != null){
-                    getVRLibrary().notifyPlayerChanged();
-                }
-            }
-        });
+//        mMediaPlayerWrapper.init();
+//        mMediaPlayerWrapper.setPreparedListener(new IMediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(IMediaPlayer mp) {
+//                cancelBusy();
+//                if (getVRLibrary() != null) {
+//                    getVRLibrary().notifyPlayerChanged();
+//                }
+//            }
+//        });
 
-        mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(IMediaPlayer mp, int what, int extra) {
-                String error = String.format("Play Error what=%d extra=%d",what,extra);
-                Toast.makeText(VideoPlayerActivity.this, error, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+//        mMediaPlayerWrapper.getPlayer().setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+//            @Override
+//            public boolean onError(IMediaPlayer mp, int what, int extra) {
+//                String error = String.format("Play Error what=%d extra=%d", what, extra);
+//                Toast.makeText(VideoPlayerActivity.this, error, Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
+//
+//        mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
+//            @Override
+//            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
+//                getVRLibrary().onTextureResize(width, height);
+//            }
+//        });
 
-        mMediaPlayerWrapper.getPlayer().setOnVideoSizeChangedListener(new IMediaPlayer.OnVideoSizeChangedListener() {
-            @Override
-            public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
-                getVRLibrary().onTextureResize(width, height);
-            }
-        });
-
-        Uri uri = getUri();
-        if (uri != null){
-            mMediaPlayerWrapper.openRemoteFile(uri.toString());
-            mMediaPlayerWrapper.prepare();
-        }
-
-        findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMediaPlayerWrapper.pause();
-                mMediaPlayerWrapper.destroy();
-                mMediaPlayerWrapper.init();
-                mMediaPlayerWrapper.openRemoteFile(DemoActivity.sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");
-                mMediaPlayerWrapper.prepare();
-            }
-        });
+//        Uri uri = getUri();
+//        if (uri != null) {
+//            mMediaPlayerWrapper.openRemoteFile(uri.toString());
+//            mMediaPlayerWrapper.prepare();
+//        }
+//
+//        findViewById(R.id.control_next).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mMediaPlayerWrapper.pause();
+//                mMediaPlayerWrapper.destroy();
+//                mMediaPlayerWrapper.init();
+//                mMediaPlayerWrapper.openRemoteFile(DemoActivity.sPath + "video_31b451b7ca49710719b19d22e19d9e60.mp4");
+//                mMediaPlayerWrapper.prepare();
+//            }
+//        });
 
     }
 
@@ -82,7 +81,7 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
                 .asVideo(new MDVRLibrary.IOnSurfaceReadyCallback() {
                     @Override
                     public void onSurfaceReady(Surface surface) {
-                        mMediaPlayerWrapper.setSurface(surface);
+//                        mMediaPlayerWrapper.setSurface(surface);
                     }
                 })
                 .ifNotSupport(new MDVRLibrary.INotSupportCallback() {
@@ -109,18 +108,18 @@ public class VideoPlayerActivity extends MD360PlayerActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMediaPlayerWrapper.destroy();
+//        mMediaPlayerWrapper.destroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaPlayerWrapper.pause();
+//        mMediaPlayerWrapper.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMediaPlayerWrapper.resume();
+//        mMediaPlayerWrapper.resume();
     }
 }

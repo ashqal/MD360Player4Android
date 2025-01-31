@@ -67,7 +67,7 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
     public void beforeRenderer(int totalWidth, int totalHeight) {
         mFixedDirector.setViewport(totalWidth, totalHeight);
         mDrawingCache.bind(totalWidth, totalHeight);
-        drawConverter(totalWidth,totalHeight);
+        drawConverter(totalWidth, totalHeight);
         mDrawingCache.unbind();
     }
 
@@ -113,12 +113,12 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
         return false;
     }
 
-    private void drawConverter(int width, int height){
+    private void drawConverter(int width, int height) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         glCheck("MDMultiFisheyeConvertLinePipe glClear");
 
         int itemWidth = width / 2;
-        for (int index = 0; index < 2; index++){
+        for (int index = 0; index < 2; index++) {
             GLES20.glViewport(itemWidth * index, 0, itemWidth, height);
             GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
             GLES20.glScissor(itemWidth * index, 0, itemWidth, height);
@@ -159,15 +159,15 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
             generateMesh(this);
         }
 
-        private void generateMesh(MDAbsObject3D object3D){
+        private void generateMesh(MDAbsObject3D object3D) {
             final float PI = (float) Math.PI;
             int rows = 16;
             int columns = 16;
             int numPoint = (rows + 1) * (columns + 1);
             short r, s;
             float z = -8;
-            float R = 1f/(float) rows;
-            float S = 1f/(float) columns;
+            float R = 1f / (float) rows;
+            float S = 1f / (float) columns;
 
             float[] vertexs = new float[numPoint * 3];
             float[] texcoords = new float[numPoint * 2];
@@ -176,8 +176,8 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
 
             int t = 0;
             int v = 0;
-            for(r = 0; r < rows + 1; r++) {
-                for(s = 0; s < columns + 1; s++) {
+            for (r = 0; r < rows + 1; r++) {
+                for (s = 0; s < columns + 1; s++) {
 
                     vertexs[v++] = (s * S * 2 - 1);
                     vertexs[v++] = (r * R * 2 - 1);
@@ -195,22 +195,22 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
                     float psphz = (float) Math.sin(phi);
 
                     theta = (float) Math.atan2(psphz, psphx);
-                    phi = (float) Math.atan2(Math.sqrt(psphx*psphx + psphz*psphz), psphy);
+                    phi = (float) Math.atan2(Math.sqrt(psphx * psphx + psphz * psphz), psphy);
                     float rr = radius * phi / FOV;
 
                     float a = (float) (0.5f * width + rr * Math.cos(theta));
                     float b = (float) (0.5f * height + rr * Math.sin(theta));
 
-                    if (direction == MDDirection.HORIZONTAL){
-                        texcoords[t*2] = a * 0.5f;
-                        texcoords[t*2 + 1] = b;
-                        texcoords2[t*2] = a * 0.5f + 0.5f;
-                        texcoords2[t*2 + 1] = b;
+                    if (direction == MDDirection.HORIZONTAL) {
+                        texcoords[t * 2] = a * 0.5f;
+                        texcoords[t * 2 + 1] = b;
+                        texcoords2[t * 2] = a * 0.5f + 0.5f;
+                        texcoords2[t * 2 + 1] = b;
                     } else {
-                        texcoords[t*2] = a;
-                        texcoords[t*2 + 1] = b * 0.5f;
-                        texcoords2[t*2] = a;
-                        texcoords2[t*2 + 1] = b * 0.5f + 0.5f;
+                        texcoords[t * 2] = a;
+                        texcoords[t * 2 + 1] = b * 0.5f;
+                        texcoords2[t * 2] = a;
+                        texcoords2[t * 2 + 1] = b * 0.5f + 0.5f;
                     }
 
 
@@ -220,17 +220,16 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
             }
 
 
-
             int counter = 0;
             int sectorsPlusOne = columns + 1;
-            for(r = 0; r < rows; r++){
-                for(s = 0; s < columns; s++) {
-                    short k0 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                    short k1 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+            for (r = 0; r < rows; r++) {
+                for (s = 0; s < columns; s++) {
+                    short k0 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                    short k1 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
                     short k2 = (short) (r * sectorsPlusOne + s);       //(a);
-                    short k3 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                    short k4 = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
-                    short k5 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+                    short k3 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                    short k4 = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
+                    short k5 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
 
                     indices[counter++] = k0;
                     indices[counter++] = k1;
@@ -276,10 +275,10 @@ public class MDMultiFishEyePlugin extends MDAbsPlugin {
             indexBuffer.position(0);
 
             object3D.setIndicesBuffer(indexBuffer);
-            object3D.setTexCoordinateBuffer(0,texBuffer);
-            object3D.setTexCoordinateBuffer(1,texBuffer2);
-            object3D.setVerticesBuffer(0,vertexBuffer);
-            object3D.setVerticesBuffer(1,vertexBuffer);
+            object3D.setTexCoordinateBuffer(0, texBuffer);
+            object3D.setTexCoordinateBuffer(1, texBuffer2);
+            object3D.setVerticesBuffer(0, vertexBuffer);
+            object3D.setVerticesBuffer(1, vertexBuffer);
             object3D.setNumIndices(indices.length);
         }
     }

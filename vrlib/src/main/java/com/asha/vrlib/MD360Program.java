@@ -1,4 +1,5 @@
 package com.asha.vrlib;
+
 import android.content.Context;
 import android.opengl.GLES20;
 
@@ -29,14 +30,15 @@ public class MD360Program {
 
     /**
      * build the program
-     *
+     * <p>
      * 1. create a program handle
      * 2. compileShader
      * 3. link program
      * 4. get attribute handle && uniform handle
+     *
      * @param context
      */
-    public void build(Context context){
+    public void build(Context context) {
         final String vertexShader = getVertexShader(context);
         final String fragmentShader = getFragmentShader(context);
 
@@ -44,7 +46,7 @@ public class MD360Program {
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
         mProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-                new String[] {"a_Position", "a_TexCoordinate"});
+                new String[]{"a_Position", "a_TexCoordinate"});
 
         // Set program handles for cube drawing.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
@@ -57,11 +59,11 @@ public class MD360Program {
         mIsSkyboxHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_IsSkybox");
     }
 
-    protected String getVertexShader(Context context){
+    protected String getVertexShader(Context context) {
         return readTextFileFromRaw(context, R.raw.per_pixel_vertex_shader);
     }
 
-    protected String getFragmentShader(Context context){
+    protected String getFragmentShader(Context context) {
         return FragmentShaderFactory.fs(context, mContentType);
     }
 
@@ -103,9 +105,9 @@ public class MD360Program {
 
     private static class FragmentShaderFactory {
 
-        static String fs(Context context, int type){
+        static String fs(Context context, int type) {
             int resId;
-            switch (type){
+            switch (type) {
                 case MDVRLibrary.ContentType.BITMAP:
                     resId = R.raw.per_pixel_fragment_shader_bitmap;
                     break;

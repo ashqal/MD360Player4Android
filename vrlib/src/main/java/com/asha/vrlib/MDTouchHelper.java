@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by hzqiujiadi on 16/5/6.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * reference
  * https://github.com/boycy815/PinchImageView/blob/master/pinchimageview/src/main/java/com/boycy815/pinchimageview/PinchImageView.java
  */
@@ -47,7 +47,7 @@ public class MDTouchHelper {
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
-                for (MDVRLibrary.IGestureListener listener : mClickListeners){
+                for (MDVRLibrary.IGestureListener listener : mClickListeners) {
                     listener.onClick(e);
                 }
                 return true;
@@ -57,7 +57,7 @@ public class MDTouchHelper {
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (mCurrentMode == MODE_PINCH) return false;
 
-                if (mAdvanceGestureListener != null){
+                if (mAdvanceGestureListener != null) {
                     mAdvanceGestureListener.onDrag(scaled(distanceX), scaled(distanceY));
                 }
                 return true;
@@ -78,8 +78,8 @@ public class MDTouchHelper {
         return input / mGlobalScale * mTouchSensitivity;
     }
 
-    private void animCancel(){
-        if (valueAnimator != null){
+    private void animCancel() {
+        if (valueAnimator != null) {
             valueAnimator.cancel();
         }
     }
@@ -102,7 +102,7 @@ public class MDTouchHelper {
                 float sy = (float) animation.getAnimatedValue("vy") * dur / -1000 * mFlingConfig.getSensitivity();
                 lastTime = now;
 
-                if (mAdvanceGestureListener != null){
+                if (mAdvanceGestureListener != null) {
                     mAdvanceGestureListener.onDrag(scaled(sx), scaled(sy));
                 }
             }
@@ -112,7 +112,7 @@ public class MDTouchHelper {
 
     public boolean handleTouchEvent(MotionEvent event) {
         int action = event.getAction() & MotionEvent.ACTION_MASK;
-        if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mCurrentMode == MODE_PINCH) {
                 // end anim
             }
@@ -136,14 +136,14 @@ public class MDTouchHelper {
             mCurrentMode = MODE_PINCH;
             markPinchInfo(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
         } else if (action == MotionEvent.ACTION_MOVE) {
-                // >= 2 pointer
-                if (mCurrentMode == MODE_PINCH && event.getPointerCount() > 1) {
-                    float distance = calDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
-                    // float[] lineCenter = MathUtils.getCenterPoint(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
-                    // mLastMovePoint.set(lineCenter[0], lineCenter[1]);
-                    handlePinch(distance);
-                }
-        } else if (action == MotionEvent.ACTION_DOWN){
+            // >= 2 pointer
+            if (mCurrentMode == MODE_PINCH && event.getPointerCount() > 1) {
+                float distance = calDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+                // float[] lineCenter = MathUtils.getCenterPoint(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+                // mLastMovePoint.set(lineCenter[0], lineCenter[1]);
+                handlePinch(distance);
+            }
+        } else if (action == MotionEvent.ACTION_DOWN) {
             animCancel();
         }
 
@@ -152,21 +152,21 @@ public class MDTouchHelper {
     }
 
 
-    public void scaleTo(float scale){
+    public void scaleTo(float scale) {
         setScaleInner(mPinchInfo.setScale(scale));
     }
 
-    public void reset(){
+    public void reset() {
         setScaleInner(mPinchInfo.reset());
     }
 
     private void handlePinch(float distance) {
-        if (mPinchEnabled){
+        if (mPinchEnabled) {
             setScaleInner(mPinchInfo.pinch(distance));
         }
     }
 
-    private void setScaleInner(float scale){
+    private void setScaleInner(float scale) {
         if (mAdvanceGestureListener != null)
             mAdvanceGestureListener.onPinch(scale);
         mGlobalScale = scale;
@@ -222,7 +222,7 @@ public class MDTouchHelper {
         this.mTouchSensitivity = touchSensitivity;
     }
 
-    private class PinchInfo{
+    private class PinchInfo {
         private float x1;
         private float y1;
         private float x2;
@@ -231,7 +231,7 @@ public class MDTouchHelper {
         private float prevScale;
         private float currentScale;
 
-        public void mark(float x1, float y1, float x2, float y2){
+        public void mark(float x1, float y1, float x2, float y2) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
@@ -251,13 +251,13 @@ public class MDTouchHelper {
             return currentScale;
         }
 
-        public float setScale(float scale){
+        public float setScale(float scale) {
             prevScale = scale;
             currentScale = scale;
             return currentScale;
         }
 
-        public float reset(){
+        public float reset() {
             return setScale(defaultScale);
         }
     }

@@ -19,7 +19,7 @@ public class CompactTouchPickAdapter implements ITouchPickListener2 {
 
     @Override
     public void onHotspotHit(MDHitEvent hitEvent) {
-        if (listener != null){
+        if (listener != null) {
             listener.onHotspotHit(hitEvent.getHotspot(), hitEvent.getRay());
         }
     }

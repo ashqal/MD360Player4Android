@@ -12,9 +12,10 @@ public abstract class MD360DirectorFactory {
     public static class DefaultImpl extends MD360DirectorFactory {
         @Override
         public MD360Director createDirector(int index) {
-            switch (index){
+            switch (index) {
                 // case 1:   return MD360Director.builder().setEyeX(-2.0f).setLookX(-2.0f).build();
-                default:  return MD360Director.builder().build();
+                default:
+                    return MD360Director.builder().build();
             }
         }
     }
@@ -23,14 +24,15 @@ public abstract class MD360DirectorFactory {
 
         @Override
         public MD360Director createDirector(int index) {
-            switch (index){
-                default:  return new OrthogonalDirector(new MD360Director.Builder());
+            switch (index) {
+                default:
+                    return new OrthogonalDirector(new MD360Director.Builder());
             }
         }
     }
 
 
-    private static class OrthogonalDirector extends MD360Director{
+    private static class OrthogonalDirector extends MD360Director {
 
         private OrthogonalDirector(Builder builder) {
             super(builder);
@@ -52,10 +54,10 @@ public abstract class MD360DirectorFactory {
         }
 
         @Override
-        protected void updateProjection(){
-            final float left = - 1f;
+        protected void updateProjection() {
+            final float left = -1f;
             final float right = 1f;
-            final float bottom = - 1f;
+            final float bottom = -1f;
             final float top = 1f;
             final float far = 500;
             Matrix.orthoM(getProjectionMatrix(), 0, left, right, bottom, top, getNear(), far);

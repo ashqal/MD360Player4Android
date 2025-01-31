@@ -1,38 +1,106 @@
 apply plugin: 'com.android.library'
-apply from: 'version.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 31
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    namespace "com.asha.vrlib"
+    compileSdk compileSdkVer
+    buildToolsVersion = buildToolsVer
+
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 6
-        versionName libVersion
+        minSdk minSdkVer
+        targetSdk targetSdkVer
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        consumerProguardFiles "consumer-rules.pro"
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-}
 
-tasks.withType(Javadoc) {
-    options.addBooleanOption('Xdoclint:none', true)
+    // region java compile options
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // endregion
+
+    // region kotlin compile options
+
+    kotlinOptions {
+        jvmTarget = "17"
+        allWarningsAsErrors = false
+        kotlinOptions.verbose = true
+
+        //## Hint: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#default-methods-in-interfaces
+        //## Hint: "-Xjvm-default=all-compatibility" and "-Xjvm-default=all-compatibility" will also work.
+        freeCompilerArgs += [
+                "-Xjvm-default=all-compatibility",
+                // disable linting for opt-in annotations
+                "-opt-in=kotlin.RequiresOptIn"
+        ]
+    }
+
+    // endregion
+
+    // region lint options
+
+    lint {
+        disable 'TypographyFractions', 'TypographyQuotes', 'InvalidPackage'
+        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        checkOnly 'NewApi', 'InlinedApi'
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        checkDependencies true
+        ignoreTestSources true
+        checkAllWarnings false
+    }
+
+    // endregion
+
+    // region exclude duplicated meta inf files
+
+    packagingOptions {
+        // DebugProbesKt.bin is used for java debugging (not needed for android)
+        // Hint: https://github.com/Kotlin/kotlinx.coroutines/issues/2274
+        exclude 'DebugProbesKt.bin'
+
+        // https://stackoverflow.com/a/61893957/1006741
+        excludes -= "/META-INF/*.kotlin_module"
+    }
+
+    // endregion
 }
 
 dependencies {
-    implementation fileTree( dir: 'libs', include: '*.jar')
-    testImplementation 'junit:junit:4.13.2'
+    coreLibraryDesugaring desugaring.jdk
 }
 
-if (!ext.libVersion.contains('dev')) {
-    apply from: './gradle-mvn-push.gradle'
-} else {
-    apply from: './gradle-mvn-local.gradle'
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "com.github.kibotu"
+                artifactId = 'MD360Player4Android'
+                version = VERSION_NAME
+            }
+        }
+    }
 }
-

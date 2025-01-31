@@ -54,15 +54,15 @@ public class MDHitEvent {
 
     // pool
 
-    public static MDHitEvent obtain(){
+    public static MDHitEvent obtain() {
         MDHitEvent event = sPool.poll();
-        if (event == null){
+        if (event == null) {
             event = new MDHitEvent();
         }
         return event;
     }
 
-    public static void recycle(MDHitEvent event){
+    public static void recycle(MDHitEvent event) {
         event.hotspot = null;
         event.timestamp = 0;
         event.ray = null;

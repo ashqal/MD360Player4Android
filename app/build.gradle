@@ -1,36 +1,117 @@
+ext {
+    versionName = VERSION_NAME
+    VERSION_CODE = 1
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+
+    namespace "com.asha.md360player4android"
+    compileSdk compileSdkVer
+    buildToolsVersion = buildToolsVer
+
     defaultConfig {
         applicationId "com.asha.md360player4android"
-        minSdkVersion 16
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdk minSdkVer
+        targetSdk targetSdkVer
+        multiDexEnabled true
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        release {
+        debug {
+            pseudoLocalesEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources = false
+        }
+        release {
+            minifyEnabled true
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-}
 
-tasks.withType(Javadoc) {
-    options.addBooleanOption('Xdoclint:none', true)
+    buildFeatures {
+        viewBinding true
+    }
+
+    // region java compile options
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // endregion
+
+    // region kotlin compile options
+
+    kotlinOptions {
+        jvmTarget = "17"
+        allWarningsAsErrors = false
+        kotlinOptions.verbose = true
+
+        //## Hint: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#default-methods-in-interfaces
+        //## Hint: "-Xjvm-default=all-compatibility" and "-Xjvm-default=all-compatibility" will also work.
+        freeCompilerArgs += [
+                "-Xjvm-default=all-compatibility",
+                // disable linting for opt-in annotations
+                "-opt-in=kotlin.RequiresOptIn"
+        ]
+    }
+
+    // endregion
+
+    // region lint options
+
+    lint {
+        disable 'TypographyFractions', 'TypographyQuotes', 'InvalidPackage'
+        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        checkOnly 'NewApi', 'InlinedApi'
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        checkDependencies true
+        ignoreTestSources true
+        checkAllWarnings false
+    }
+
+    // endregion
+
+    // region exclude duplicated meta inf files
+
+    packagingOptions {
+        // DebugProbesKt.bin is used for java debugging (not needed for android)
+        // Hint: https://github.com/Kotlin/kotlinx.coroutines/issues/2274
+        exclude 'DebugProbesKt.bin'
+
+        // https://stackoverflow.com/a/61893957/1006741
+        excludes -= "/META-INF/*.kotlin_module"
+    }
+
+    // endregion
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: '*.jar')
-    testImplementation 'junit:junit:4.12'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
-    //required, enough for most devices.
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.6.0'
-    implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.6.0'
+    coreLibraryDesugaring desugaring.jdk
+    implementation libs.supportAppCompat
+    implementation libs.material
+    implementation libs.picasso
+    implementation libs.recyclerview
+    implementation libs.cardview
     implementation project(path: ':vrlib')
 }

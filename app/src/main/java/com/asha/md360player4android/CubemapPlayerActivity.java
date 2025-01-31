@@ -64,7 +64,7 @@ public class CubemapPlayerActivity extends MD360PlayerActivity {
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
             }
 
@@ -75,7 +75,7 @@ public class CubemapPlayerActivity extends MD360PlayerActivity {
         };
 
         Log.d(TAG, "load image with max texture size:" + callback.getMaxTextureSize());
-        Picasso.with(getApplicationContext())
+        Picasso.get()
                 .load(uri)
                 .resize(callback.getMaxTextureSize(),callback.getMaxTextureSize())
                 .onlyScaleDown()

@@ -19,7 +19,7 @@ import com.asha.vrlib.common.VRUtil;
 public class MotionStrategy extends AbsInteractiveStrategy implements SensorEventListener {
 
     private static final String TAG = "MotionStrategy";
-	
+
     private WindowManager windowManager;
 
     private float[] mSensorMatrix = new float[16];
@@ -60,8 +60,8 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
     @Override
     public void turnOnInGL(Context context) {
         isOn = true;
-        windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        for (MD360Director director : getDirectorList()){
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        for (MD360Director director : getDirectorList()) {
             director.reset();
         }
     }
@@ -79,7 +79,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public boolean isSupport(Context context) {
-        if (mIsSupport == null){
+        if (mIsSupport == null) {
             SensorManager mSensorManager = (SensorManager) context
                     .getSystemService(Context.SENSOR_SERVICE);
             Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
@@ -88,15 +88,15 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
         return mIsSupport;
     }
 
-    protected void registerSensor(Context context){
+    protected void registerSensor(Context context) {
         if (mRegistered) return;
 
         SensorManager mSensorManager = (SensorManager) context
                 .getSystemService(Context.SENSOR_SERVICE);
         Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
-        if (sensor == null){
-            Log.e(TAG,"TYPE_ROTATION_VECTOR sensor not support!");
+        if (sensor == null) {
+            Log.e(TAG, "TYPE_ROTATION_VECTOR sensor not support!");
             return;
         }
 
@@ -105,7 +105,7 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
         mRegistered = true;
     }
 
-    protected void unregisterSensor(Context context){
+    protected void unregisterSensor(Context context) {
         if (!mRegistered) return;
 
         SensorManager mSensorManager = (SensorManager) context
@@ -117,19 +117,19 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public void onSensorChanged(final SensorEvent event) {
-        if (isOn && event.accuracy != 0){
-            if (getParams().mSensorListener != null){
+        if (isOn && event.accuracy != 0) {
+            if (getParams().mSensorListener != null) {
                 getParams().mSensorListener.onSensorChanged(event);
             }
 
             int type = event.sensor.getType();
-            switch (type){
+            switch (type) {
                 case Sensor.TYPE_ROTATION_VECTOR:
                     // post
                     VRUtil.sensorRotationVector2Matrix(event, windowManager.getDefaultDisplay().getRotation(), mSensorMatrix);
 
                     // mTmpMatrix will be used in multi thread.
-                    synchronized (mMatrixLock){
+                    synchronized (mMatrixLock) {
                         System.arraycopy(mSensorMatrix, 0, mTmpMatrix, 0, 16);
                     }
                     getParams().glHandler.post(updateSensorRunnable);
@@ -143,8 +143,8 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
         public void run() {
             if (!mRegistered || !isOn) return;
             // mTmpMatrix will be used in multi thread.
-            synchronized (mMatrixLock){
-                for (MD360Director director : getDirectorList()){
+            synchronized (mMatrixLock) {
+                for (MD360Director director : getDirectorList()) {
                     director.updateSensorMatrix(mTmpMatrix);
                 }
             }
@@ -153,8 +153,8 @@ public class MotionStrategy extends AbsInteractiveStrategy implements SensorEven
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        if (getParams().mSensorListener != null){
-            getParams().mSensorListener.onAccuracyChanged(sensor,accuracy);
+        if (getParams().mSensorListener != null) {
+            getParams().mSensorListener.onAccuracyChanged(sensor, accuracy);
         }
     }
 }

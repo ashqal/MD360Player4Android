@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Created by nitro888 on 15. 4. 5..
- *
+ * <p>
  * modify by hzqiujiadi on 16/1/22.
  * hzqiujiadi ashqalcn@gmail.com
  */
@@ -44,7 +44,7 @@ public class GLUtil {
      * @param context
      * @return true:supported
      */
-    public static boolean supportsEs2(Context context){
+    public static boolean supportsEs2(Context context) {
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         return configurationInfo.reqGlEsVersion >= 0x20000;
@@ -165,49 +165,49 @@ public class GLUtil {
     }
 
     public static void loadObject3D(final Context context, final int resourceId, final MDAbsObject3D output) {
-        ArrayList<String> vertexes  = new ArrayList<String>();
-        ArrayList<String> textures  = new ArrayList<String>();
-        ArrayList<String> faces     = new ArrayList<String>();
+        ArrayList<String> vertexes = new ArrayList<String>();
+        ArrayList<String> textures = new ArrayList<String>();
+        ArrayList<String> faces = new ArrayList<String>();
 
-        InputStream iStream         = context.getResources().openRawResource(resourceId);
-        InputStreamReader isr       = new InputStreamReader(iStream);
-        BufferedReader bReader      = new BufferedReader(isr);
+        InputStream iStream = context.getResources().openRawResource(resourceId);
+        InputStreamReader isr = new InputStreamReader(iStream);
+        BufferedReader bReader = new BufferedReader(isr);
         String line;
         try {
             while ((line = bReader.readLine()) != null) {
-                if (line.startsWith("v "))  vertexes.add(line.substring(2));
+                if (line.startsWith("v ")) vertexes.add(line.substring(2));
                 if (line.startsWith("vt ")) textures.add(line.substring(3));
-                if (line.startsWith("f "))  faces.add(line.substring(2));
+                if (line.startsWith("f ")) faces.add(line.substring(2));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        final float[] vertexBuffer  = new float[faces.size() * 3 * 3];
+        final float[] vertexBuffer = new float[faces.size() * 3 * 3];
         final float[] textureBuffer = new float[faces.size() * 3 * 2];
-        final short[] indexBuffer   = new short[faces.size() * 3];
+        final short[] indexBuffer = new short[faces.size() * 3];
 
         int vertexIndex = 0;
-        int textureIndex= 0;
+        int textureIndex = 0;
         // int normalIndex = 0;
-        int faceIndex   = 0;
+        int faceIndex = 0;
 
         for (String i : faces) {
             for (String j : i.split(" ")) {
-                indexBuffer[faceIndex] = (short)faceIndex++;
+                indexBuffer[faceIndex] = (short) faceIndex++;
                 String[] faceComponent = j.split("/");
 
                 // only support f v/t/n mode
-                String vertex   = vertexes.get(Integer.parseInt(faceComponent[0]) - 1);
-                String texture  = textures.get(Integer.parseInt(faceComponent[1]) - 1);
+                String vertex = vertexes.get(Integer.parseInt(faceComponent[0]) - 1);
+                String texture = textures.get(Integer.parseInt(faceComponent[1]) - 1);
                 //String normal   = normals.get(Integer.parseInt(faceComponent[2]) - 1);
 
-                String vertexComp[]     = vertex.split(" ");
-                String textureComp[]    = texture.split(" ");
+                String vertexComp[] = vertex.split(" ");
+                String textureComp[] = texture.split(" ");
                 //String normalComp[]     = normal.split(" ");
 
-                for (String v : vertexComp)     vertexBuffer[vertexIndex++]= Float.parseFloat(v);
-                for (String t : textureComp)    textureBuffer[textureIndex++]  = Float.parseFloat(t);
+                for (String v : vertexComp) vertexBuffer[vertexIndex++] = Float.parseFloat(v);
+                for (String t : textureComp) textureBuffer[textureIndex++] = Float.parseFloat(t);
                 //for (String n : normalComp)     normalBuffer[normalIndex++]= Float.parseFloat(n);
             }
         }
@@ -222,10 +222,10 @@ public class GLUtil {
                 order(ByteOrder.nativeOrder()).asFloatBuffer().put(textureBuffer);
         texture.position(0);
 
-        output.setVerticesBuffer(0,vertex);
-        output.setVerticesBuffer(1,vertex);
-        output.setTexCoordinateBuffer(0,texture);
-        output.setTexCoordinateBuffer(1,texture);
+        output.setVerticesBuffer(0, vertex);
+        output.setVerticesBuffer(1, vertex);
+        output.setTexCoordinateBuffer(0, texture);
+        output.setTexCoordinateBuffer(1, texture);
         output.setNumIndices(indexBuffer.length);
 
         //ByteBuffer.allocateDirect(normalBuffer.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer().put(normalBuffer).position(0);

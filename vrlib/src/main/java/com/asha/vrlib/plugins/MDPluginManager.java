@@ -22,7 +22,7 @@ public class MDPluginManager {
         mList = new CopyOnWriteArrayList<>();
     }
 
-    public void add(MDAbsPlugin plugin){
+    public void add(MDAbsPlugin plugin) {
         mList.add(plugin);
     }
 
@@ -31,7 +31,7 @@ public class MDPluginManager {
     }
 
     public void remove(MDAbsPlugin plugin) {
-        if (plugin != null){
+        if (plugin != null) {
             mList.remove(plugin);
         }
     }
@@ -48,7 +48,7 @@ public class MDPluginManager {
         for (MDAbsPlugin plugin : mList) {
             if (plugin.removable() && plugin instanceof IMDHotspot) {
                 IMDHotspot hotspot = (IMDHotspot) plugin;
-                if (TextUtils.equals(tag, hotspot.getTag())){
+                if (TextUtils.equals(tag, hotspot.getTag())) {
                     return hotspot;
                 }
             }
@@ -60,7 +60,7 @@ public class MDPluginManager {
         for (MDAbsPlugin plugin : mList) {
             if (plugin.removable() && plugin instanceof MDAbsView) {
                 MDAbsView mdView = (MDAbsView) plugin;
-                if (TextUtils.equals(tag, mdView.getTag())){
+                if (TextUtils.equals(tag, mdView.getTag())) {
                     return mdView;
                 }
             }

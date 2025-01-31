@@ -28,23 +28,24 @@ public abstract class ModeManager<T extends IModeStrategy> {
 
     /**
      * must call after new instance
+     *
      * @param context context
      */
-    public void prepare(Context context, MDVRLibrary.INotSupportCallback callback){
+    public void prepare(Context context, MDVRLibrary.INotSupportCallback callback) {
         mCallback = callback;
-        initMode(context,mMode);
+        initMode(context, mMode);
     }
 
     abstract protected T createStrategy(int mode);
 
     abstract protected int[] getModes();
 
-    private void initMode(Context context, final int mode){
-        if (mStrategy != null){
+    private void initMode(Context context, final int mode) {
+        if (mStrategy != null) {
             off(context);
         }
         mStrategy = createStrategy(mode);
-        if (!mStrategy.isSupport(context)){
+        if (!mStrategy.isSupport(context)) {
             MDMainHandler.sharedHandler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -60,17 +61,17 @@ public abstract class ModeManager<T extends IModeStrategy> {
         on(context);
     }
 
-    public void switchMode(final Context context){
+    public void switchMode(final Context context) {
         int[] modes = getModes();
         int mode = getMode();
         int index = Arrays.binarySearch(modes, mode);
-        int nextIndex = (index + 1) %  modes.length;
+        int nextIndex = (index + 1) % modes.length;
         int nextMode = modes[nextIndex];
 
         switchMode(context, nextMode);
     }
 
-    public void switchMode(final Context context, final int mode){
+    public void switchMode(final Context context, final int mode) {
         if (mode == getMode()) return;
         mMode = mode;
 
@@ -81,7 +82,7 @@ public abstract class ModeManager<T extends IModeStrategy> {
         checkMainThread("strategy on must call from main thread!");
 
         final T tmpStrategy = mStrategy;
-        if (tmpStrategy.isSupport(context)){
+        if (tmpStrategy.isSupport(context)) {
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -95,7 +96,7 @@ public abstract class ModeManager<T extends IModeStrategy> {
         checkMainThread("strategy off must call from main thread!");
 
         final T tmpStrategy = mStrategy;
-        if (tmpStrategy.isSupport(context)){
+        if (tmpStrategy.isSupport(context)) {
             getGLHandler().post(new Runnable() {
                 @Override
                 public void run() {

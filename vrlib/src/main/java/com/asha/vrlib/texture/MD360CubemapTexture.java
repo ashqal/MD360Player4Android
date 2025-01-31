@@ -26,7 +26,7 @@ public class MD360CubemapTexture extends MD360Texture {
     public static final int CUBE_TOP = 4;
     public static final int CUBE_BOTTOM = 5;
 
-    private static final int[] CUBE_TARGETS = new int[] {
+    private static final int[] CUBE_TARGETS = new int[]{
             GLES20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
             GLES20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
             GLES20.GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -62,7 +62,7 @@ public class MD360CubemapTexture extends MD360Texture {
     // gl thread
     @Override
     public boolean texture(MD360Program program) {
-        if (mTextureDirty.get()){
+        if (mTextureDirty.get()) {
             mTextureDirty.set(false);
             currentFaceLoading = CUBE_FRONT;
 
@@ -77,22 +77,22 @@ public class MD360CubemapTexture extends MD360Texture {
 
         if (!mIsReady && asyncCallback != null) {
 
-            if (asyncCallback.hasBitmap()){
+            if (asyncCallback.hasBitmap()) {
                 Bitmap bitmap = asyncCallback.getBitmap();
-                Log.d(TAG, "Set texture "+currentFaceLoading);
+                Log.d(TAG, "Set texture " + currentFaceLoading);
 
                 textureInThread(textureId, program, bitmap, currentFaceLoading);
                 asyncCallback.releaseBitmap();
 
                 currentFaceLoading++;
-                if(currentFaceLoading < 6)
+                if (currentFaceLoading < 6)
                     requestBitmap();
             }
 
-            if(currentFaceLoading >= 6) {
+            if (currentFaceLoading >= 6) {
                 mIsReady = true;
 
-                if(mCubemapProvider != null) {
+                if (mCubemapProvider != null) {
                     MDMainHandler.sharedHandler().post(new Runnable() {
                         @Override
                         public void run() {
@@ -103,7 +103,7 @@ public class MD360CubemapTexture extends MD360Texture {
             }
         }
 
-        if (isReady() && textureId != 0){
+        if (isReady() && textureId != 0) {
             // Bind texture
             // Set texture 0 as active texture
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
@@ -124,9 +124,9 @@ public class MD360CubemapTexture extends MD360Texture {
     }
 
     // call from gl thread
-    private void loadTexture(){
+    private void loadTexture() {
         // release the ref before
-        if (mTmpAsyncCallback != null){
+        if (mTmpAsyncCallback != null) {
             mTmpAsyncCallback.releaseBitmap();
             mTmpAsyncCallback = null;
         }
@@ -158,7 +158,7 @@ public class MD360CubemapTexture extends MD360Texture {
     @Override
     public void destroy() {
         // release the ref before
-        if (mTmpAsyncCallback != null){
+        if (mTmpAsyncCallback != null) {
             mTmpAsyncCallback.releaseBitmap();
             mTmpAsyncCallback = null;
         }
@@ -215,16 +215,16 @@ public class MD360CubemapTexture extends MD360Texture {
             return maxSize;
         }
 
-        public Bitmap getBitmap(){
+        public Bitmap getBitmap() {
             return bitmapRef != null ? bitmapRef.get() : null;
         }
 
-        public boolean hasBitmap(){
-            return  bitmapRef != null && bitmapRef.get() != null;
+        public boolean hasBitmap() {
+            return bitmapRef != null && bitmapRef.get() != null;
         }
 
-        public void releaseBitmap(){
-            if(bitmapRef != null) {
+        public void releaseBitmap() {
+            if (bitmapRef != null) {
                 bitmapRef.clear();
                 bitmapRef = null;
             }
@@ -233,6 +233,7 @@ public class MD360CubemapTexture extends MD360Texture {
 
     public interface Callback {
         void texture(Bitmap bitmap);
+
         int getMaxTextureSize();
     }
 }

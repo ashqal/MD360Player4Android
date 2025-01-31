@@ -44,7 +44,7 @@ public class MDSimpleHotspot extends MDAbsHotspot {
             @Override
             public void onProvideBitmap(MD360BitmapTexture.Callback callback) {
                 Uri uri = uriList.get(mCurrentTextureKey);
-                if (uri != null){
+                if (uri != null) {
                     provider.onProvideBitmap(uri, callback);
                 }
             }
@@ -54,18 +54,18 @@ public class MDSimpleHotspot extends MDAbsHotspot {
 
     @Override
     public void renderer(int index, int width, int height, MD360Director director) {
-        if (texture == null){
+        if (texture == null) {
             return;
         }
 
-        if (mPendingTextureKey != mCurrentTextureKey){
+        if (mPendingTextureKey != mCurrentTextureKey) {
             mCurrentTextureKey = mPendingTextureKey;
             texture.notifyChanged();
         }
 
         texture.texture(program);
 
-        if (texture.isReady()){
+        if (texture.isReady()) {
             super.renderer(index, width, height, director);
         }
     }

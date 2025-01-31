@@ -61,7 +61,7 @@ public class MD360VideoTexture extends MD360Texture {
     }
 
     private void onCreateSurface(int glSurfaceTextureId) {
-        if ( mSurfaceTexture == null ) {
+        if (mSurfaceTexture == null) {
             //attach the texture to a surface.
             //It's a clue class for rendering an android view to gl level
             mSurfaceTexture = new SurfaceTexture(glSurfaceTextureId);

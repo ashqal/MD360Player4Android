@@ -37,18 +37,18 @@ public class DeviceSensorLooper implements SensorEventProvider {
     }
 
     private Sensor getUncalibratedGyro() {
-        return Build.MANUFACTURER.equals("HTC")?null:this.sensorManager.getDefaultSensor(16);
+        return Build.MANUFACTURER.equals("HTC") ? null : this.sensorManager.getDefaultSensor(16);
     }
 
     public void start() {
-        if(!this.isRunning) {
+        if (!this.isRunning) {
             this.sensorEventListener = new SensorEventListener() {
                 public void onSensorChanged(SensorEvent event) {
-                    synchronized(DeviceSensorLooper.this.registeredListeners) {
+                    synchronized (DeviceSensorLooper.this.registeredListeners) {
                         Iterator var3 = DeviceSensorLooper.this.registeredListeners.iterator();
 
-                        while(var3.hasNext()) {
-                            SensorEventListener listener = (SensorEventListener)var3.next();
+                        while (var3.hasNext()) {
+                            SensorEventListener listener = (SensorEventListener) var3.next();
                             listener.onSensorChanged(event);
                         }
 
@@ -56,11 +56,11 @@ public class DeviceSensorLooper implements SensorEventProvider {
                 }
 
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                    synchronized(DeviceSensorLooper.this.registeredListeners) {
+                    synchronized (DeviceSensorLooper.this.registeredListeners) {
                         Iterator var4 = DeviceSensorLooper.this.registeredListeners.iterator();
 
-                        while(var4.hasNext()) {
-                            SensorEventListener listener = (SensorEventListener)var4.next();
+                        while (var4.hasNext()) {
+                            SensorEventListener listener = (SensorEventListener) var4.next();
                             listener.onAccuracyChanged(sensor, accuracy);
                         }
 
@@ -73,7 +73,7 @@ public class DeviceSensorLooper implements SensorEventProvider {
                     Sensor accelerometer = DeviceSensorLooper.this.sensorManager.getDefaultSensor(1);
                     DeviceSensorLooper.this.sensorManager.registerListener(DeviceSensorLooper.this.sensorEventListener, accelerometer, level, handler);
                     Sensor gyroscope = DeviceSensorLooper.this.getUncalibratedGyro();
-                    if(gyroscope == null) {
+                    if (gyroscope == null) {
                         Log.i(DeviceSensorLooper.LOG_TAG, "Uncalibrated gyroscope unavailable, default to regular gyroscope.");
                         gyroscope = DeviceSensorLooper.this.sensorManager.getDefaultSensor(4);
                     }
@@ -88,7 +88,7 @@ public class DeviceSensorLooper implements SensorEventProvider {
     }
 
     public void stop() {
-        if(this.isRunning) {
+        if (this.isRunning) {
             this.sensorManager.unregisterListener(this.sensorEventListener);
             this.sensorEventListener = null;
             this.sensorLooper.quit();
@@ -99,14 +99,14 @@ public class DeviceSensorLooper implements SensorEventProvider {
 
     public void registerListener(SensorEventListener listener) {
         ArrayList var2 = this.registeredListeners;
-        synchronized(this.registeredListeners) {
+        synchronized (this.registeredListeners) {
             this.registeredListeners.add(listener);
         }
     }
 
     public void unregisterListener(SensorEventListener listener) {
         ArrayList var2 = this.registeredListeners;
-        synchronized(this.registeredListeners) {
+        synchronized (this.registeredListeners) {
             this.registeredListeners.remove(listener);
         }
     }

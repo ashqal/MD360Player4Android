@@ -32,11 +32,11 @@ public class MDPlane extends MDAbsObject3D {
     }
 
     public MDPlane(PlaneProjection.PlaneScaleCalculator calculator) {
-        this(calculator,new RectF(0,0,1.0f,1.0f));
+        this(calculator, new RectF(0, 0, 1.0f, 1.0f));
     }
 
     public MDPlane(RectF size) {
-        this(new PlaneProjection.PlaneScaleCalculator(MDVRLibrary.PROJECTION_MODE_PLANE_FULL,new RectF(0,0,100,100)),size);
+        this(new PlaneProjection.PlaneScaleCalculator(MDVRLibrary.PROJECTION_MODE_PLANE_FULL, new RectF(0, 0, 100, 100)), size);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class MDPlane extends MDAbsObject3D {
 
     @Override
     public void uploadVerticesBufferIfNeed(MD360Program program, int index) {
-        if (super.getVerticesBuffer(index) == null){
+        if (super.getVerticesBuffer(index) == null) {
             return;
         }
 
         // update the texture only if the index == 0
-        if (index == 0){
+        if (index == 0) {
             float ratio = mCalculator.getTextureRatio();
             if (ratio != mPrevRatio) {
 
@@ -66,8 +66,8 @@ public class MDPlane extends MDAbsObject3D {
                 buffer.put(vertexs);
                 buffer.position(0);
 
-                setVerticesBuffer(0,buffer);
-                setVerticesBuffer(1,buffer);
+                setVerticesBuffer(0, buffer);
+                setVerticesBuffer(1, buffer);
 
                 mPrevRatio = ratio;
             }
@@ -76,7 +76,7 @@ public class MDPlane extends MDAbsObject3D {
         super.uploadVerticesBufferIfNeed(program, index);
     }
 
-    private float[] generateVertex(){
+    private float[] generateVertex() {
         int z = 0;
         mCalculator.calculate();
         mPrevRatio = mCalculator.getTextureRatio();
@@ -86,13 +86,13 @@ public class MDPlane extends MDAbsObject3D {
         float[] vertexs = new float[getNumPoint() * 3];
         int rows = getNumRow();
         int columns = getNumColumn();
-        float R = 1f/(float) rows;
-        float S = 1f/(float) columns;
+        float R = 1f / (float) rows;
+        float S = 1f / (float) columns;
         short r, s;
 
         int v = 0;
-        for(r = 0; r < rows + 1; r++) {
-            for(s = 0; s < columns + 1; s++) {
+        for (r = 0; r < rows + 1; r++) {
+            for (s = 0; s < columns + 1; s++) {
                 vertexs[v++] = (s * S - 0.5f) * width;
                 vertexs[v++] = (r * R - 0.5f) * height;
                 vertexs[v++] = z;
@@ -102,27 +102,27 @@ public class MDPlane extends MDAbsObject3D {
         return vertexs;
     }
 
-    private float[] generateTexcoords(){
+    private float[] generateTexcoords() {
         float[] texcoords = new float[getNumPoint() * 2];
 
         int rows = getNumRow();
         int columns = getNumColumn();
-        float R = 1f/(float) rows;
-        float S = 1f/(float) columns;
+        float R = 1f / (float) rows;
+        float S = 1f / (float) columns;
         short r, s;
 
         int t = 0;
-        for(r = 0; r < rows + 1; r++) {
-            for(s = 0; s < columns + 1; s++) {
-                texcoords[t++] = s*S;
-                texcoords[t++] = r*R;
+        for (r = 0; r < rows + 1; r++) {
+            for (s = 0; s < columns + 1; s++) {
+                texcoords[t++] = s * S;
+                texcoords[t++] = r * R;
             }
         }
 
         return texcoords;
     }
 
-    private void generateMesh(MDAbsObject3D object3D){
+    private void generateMesh(MDAbsObject3D object3D) {
         int rows = getNumRow();
         int columns = getNumColumn();
         short r, s;
@@ -134,14 +134,14 @@ public class MDPlane extends MDAbsObject3D {
 
         int counter = 0;
         int sectorsPlusOne = columns + 1;
-        for(r = 0; r < rows; r++){
-            for(s = 0; s < columns; s++) {
-                short k0 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                short k1 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+        for (r = 0; r < rows; r++) {
+            for (s = 0; s < columns; s++) {
+                short k0 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                short k1 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
                 short k2 = (short) (r * sectorsPlusOne + s);       //(a);
-                short k3 = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                short k4 = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
-                short k5 = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
+                short k3 = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                short k4 = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
+                short k5 = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
 
                 indices[counter++] = k0;
                 indices[counter++] = k1;
@@ -179,22 +179,22 @@ public class MDPlane extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer);
-        object3D.setVerticesBuffer(0,vertexBuffer);
-        object3D.setVerticesBuffer(1,vertexBuffer);
+        object3D.setTexCoordinateBuffer(0, texBuffer);
+        object3D.setTexCoordinateBuffer(1, texBuffer);
+        object3D.setVerticesBuffer(0, vertexBuffer);
+        object3D.setVerticesBuffer(1, vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 
-    private int getNumPoint(){
+    private int getNumPoint() {
         return (getNumRow() + 1) * (getNumColumn() + 1);
     }
 
-    private int getNumRow(){
+    private int getNumRow() {
         return 1;
     }
 
-    private int getNumColumn(){
+    private int getNumColumn() {
         return 1;
     }
 }

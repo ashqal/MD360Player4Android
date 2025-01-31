@@ -22,11 +22,11 @@ public class MDViewBuilder {
         this.builderDelegate = new MDPluginBuilder();
     }
 
-    public MDViewBuilder provider(View view, int widthInPx, int heightInPx){
+    public MDViewBuilder provider(View view, int widthInPx, int heightInPx) {
         return provider(view, new MDLayoutParams(widthInPx, heightInPx));
     }
 
-    public MDViewBuilder provider(View view, MDLayoutParams layoutParams){
+    public MDViewBuilder provider(View view, MDLayoutParams layoutParams) {
         this.attachedView = view;
         this.layoutParams = layoutParams;
         return this;

@@ -73,13 +73,13 @@ public class MDPickerManager {
         // gl thread
         @Override
         public void beforeRenderer(int totalWidth, int totalHeight) {
-            synchronized (mDirectorLock){
+            synchronized (mDirectorLock) {
                 mDirectorContext.snapshot(mProjectionModeManager.getDirectors());
             }
 
-            if (isEyePickEnable()){
+            if (isEyePickEnable()) {
                 long current = System.currentTimeMillis();
-                if (current - pickTs > 100){
+                if (current - pickTs > 100) {
                     MDMainHandler.sharedHandler().post(mRayPickAsEyeRunnable);
                     pickTs = current;
                 }
@@ -102,26 +102,26 @@ public class MDPickerManager {
     }
 
     // main thread.
-    private void rayPickAsTouch(float  x, float y, DirectorContext directorContext) {
+    private void rayPickAsTouch(float x, float y, DirectorContext directorContext) {
         int size = mDisplayModeManager.getVisibleSize();
-        if (size == 0){
+        if (size == 0) {
             return;
         }
 
         MDDirectorSnapshot snapshot = directorContext.getSnapshot(0);
-        if (snapshot == null){
+        if (snapshot == null) {
             return;
         }
 
         int itemWidth = (int) snapshot.getViewportWidth();
 
         int index = (int) (x / itemWidth);
-        if (index >= size){
+        if (index >= size) {
             return;
         }
 
         snapshot = directorContext.getSnapshot(index);
-        if (snapshot == null){
+        if (snapshot == null) {
             return;
         }
 
@@ -133,7 +133,7 @@ public class MDPickerManager {
     // main thread.
     private void rayPickAsEye(DirectorContext mDirectorContext) {
         MDDirectorSnapshot snapshot = mDirectorContext.getSnapshot(0);
-        if (snapshot == null){
+        if (snapshot == null) {
             return;
         }
         MDRay ray = VRUtil.point2Ray(snapshot.getViewportWidth() / 2, snapshot.getViewportHeight() / 2, snapshot);
@@ -141,7 +141,7 @@ public class MDPickerManager {
         pick(ray, HIT_FROM_EYE);
     }
 
-    private IMDHotspot pick(MDRay ray, int hitType){
+    private IMDHotspot pick(MDRay ray, int hitType) {
         if (ray == null) return null;
         return hitTest(ray, hitType);
     }
@@ -158,7 +158,7 @@ public class MDPickerManager {
             if (plugin instanceof IMDHotspot) {
                 IMDHotspot hotspot = (IMDHotspot) plugin;
                 MDHitPoint tmpDistance = hotspot.hit(ray);
-                if (!tmpDistance.isNotHit() && tmpDistance.nearThen(currentDistance)){
+                if (!tmpDistance.isNotHit() && tmpDistance.nearThen(currentDistance)) {
                     hitHotspot = hotspot;
                     currentDistance = tmpDistance;
                 }
@@ -168,7 +168,7 @@ public class MDPickerManager {
         switch (hitType) {
             case HIT_FROM_TOUCH:
                 // only post the hotspot which is hit.
-                if (hitHotspot != null && !currentDistance.isNotHit()){
+                if (hitHotspot != null && !currentDistance.isNotHit()) {
                     hitHotspot.onTouchHit(ray);
                     mTouchPickPoster.fire(hitHotspot, ray, currentDistance);
                 }
@@ -202,8 +202,8 @@ public class MDPickerManager {
         this.mTouchPickListener = touchPickListener;
     }
 
-    void resetEyePick(){
-        if (mEyePickPoster != null){
+    void resetEyePick() {
+        if (mEyePickPoster != null) {
             mEyePickPoster.setHit(null);
         }
     }
@@ -216,7 +216,7 @@ public class MDPickerManager {
         private Builder() {
         }
 
-        public MDPickerManager build(){
+        public MDPickerManager build() {
             return new MDPickerManager(this);
         }
 
@@ -240,14 +240,14 @@ public class MDPickerManager {
         float x;
         float y;
 
-        public void setEvent(float x, float y){
+        public void setEvent(float x, float y) {
             this.x = x;
             this.y = y;
         }
 
         @Override
         public void run() {
-            synchronized (mDirectorLock){
+            synchronized (mDirectorLock) {
                 rayPickAsTouch(x, y, mDirectorContext);
             }
         }
@@ -257,7 +257,7 @@ public class MDPickerManager {
 
         @Override
         public void run() {
-            synchronized (mDirectorLock){
+            synchronized (mDirectorLock) {
                 rayPickAsEye(mDirectorContext);
             }
         }
@@ -278,21 +278,21 @@ public class MDPickerManager {
             event.setTimestamp(timestamp);
             event.setHitPoint(hitPoint);
 
-            if (this.hit != null){
+            if (this.hit != null) {
                 this.hit.onEyeHitIn(event);
             }
 
-            if (mEyePickChangedListener != null){
+            if (mEyePickChangedListener != null) {
                 mEyePickChangedListener.onHotspotHit(event);
             }
 
             MDHitEvent.recycle(event);
         }
 
-        void setHit(IMDHotspot hit){
+        void setHit(IMDHotspot hit) {
 
-            if (this.hit != hit){
-                if (this.hit != null){
+            if (this.hit != hit) {
+                if (this.hit != null) {
                     this.hit.onEyeHitOut(timestamp);
                 }
 
@@ -307,7 +307,7 @@ public class MDPickerManager {
 
         void fire(IMDHotspot hitHotspot, MDRay ray, MDHitPoint hitPoint) {
 
-            if (mTouchPickListener != null){
+            if (mTouchPickListener != null) {
                 MDHitEvent event = MDHitEvent.obtain();
                 event.setHotspot(hitHotspot);
                 event.setRay(ray);
@@ -325,25 +325,25 @@ public class MDPickerManager {
 
         private List<MDDirectorSnapshot> list = new LinkedList<>();
 
-        public void snapshot(List<MD360Director> directorList){
+        public void snapshot(List<MD360Director> directorList) {
             checkGLThread("snapshot must in gl thread!");
 
             ensureSize(directorList.size());
-            for (int i = 0; i < directorList.size(); i++){
+            for (int i = 0; i < directorList.size(); i++) {
                 list.get(i).copy(directorList.get(i));
             }
         }
 
-        private void ensureSize(int size){
+        private void ensureSize(int size) {
             this.size = size;
 
-            while (list.size() < size){
+            while (list.size() < size) {
                 list.add(new MDDirectorSnapshot());
             }
         }
 
         public MDDirectorSnapshot getSnapshot(int i) {
-            if (i < size){
+            if (i < size) {
                 return list.get(0);
             }
 

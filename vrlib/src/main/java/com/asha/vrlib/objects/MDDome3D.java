@@ -35,18 +35,18 @@ public class MDDome3D extends MDAbsObject3D {
 
     @Override
     public void uploadTexCoordinateBufferIfNeed(MD360Program program, int index) {
-        if (super.getTexCoordinateBuffer(index) == null){
+        if (super.getTexCoordinateBuffer(index) == null) {
             return;
         }
 
-        if (index == 0){
+        if (index == 0) {
             float ratio = mTextureSize.width() / mTextureSize.height();
-            if (ratio != mPrevRatio){
+            if (ratio != mPrevRatio) {
                 int size = texCoordinates.length;
                 float[] tmp = new float[size];
-                for (int i = 0; i < size; i += 2){
-                    tmp[i] = (texCoordinates[i]- 0.5f)/ratio + 0.5f;
-                    tmp[i+1] = texCoordinates[i+1];
+                for (int i = 0; i < size; i += 2) {
+                    tmp[i] = (texCoordinates[i] - 0.5f) / ratio + 0.5f;
+                    tmp[i + 1] = texCoordinates[i + 1];
                 }
 
                 ByteBuffer cc = ByteBuffer.allocateDirect(
@@ -55,8 +55,8 @@ public class MDDome3D extends MDAbsObject3D {
                 FloatBuffer buffer = cc.asFloatBuffer();
                 buffer.put(tmp);
                 buffer.position(0);
-                setTexCoordinateBuffer(0,buffer);
-                setTexCoordinateBuffer(1,buffer);
+                setTexCoordinateBuffer(0, buffer);
+                setTexCoordinateBuffer(1, buffer);
                 mPrevRatio = ratio;
             }
         }
@@ -80,8 +80,8 @@ public class MDDome3D extends MDAbsObject3D {
         float percent = degreeY / 360;
         int rings = sectors >> 1;
 
-        float R = 1f/rings;
-        float S = 1f/sectors;
+        float R = 1f / rings;
+        float S = 1f / sectors;
         short r, s;
         float x, y, z;
 
@@ -96,14 +96,14 @@ public class MDDome3D extends MDAbsObject3D {
         int upper = isUpper ? 1 : -1;
 
         int t = 0, v = 0;
-        for(r = 0; r < lenRings; r++) {
-            for(s = 0; s < lenSectors; s++) {
-                x = (float) (Math.cos( 2 * PI * s * S ) * Math.sin( PI * r * R )) * upper;
-                y = (float) Math.sin( -PI_2 + PI * r * R ) * -upper;
-                z = (float) (Math.sin( 2 * PI * s * S ) * Math.sin( PI * r * R ));
+        for (r = 0; r < lenRings; r++) {
+            for (s = 0; s < lenSectors; s++) {
+                x = (float) (Math.cos(2 * PI * s * S) * Math.sin(PI * r * R)) * upper;
+                y = (float) Math.sin(-PI_2 + PI * r * R) * -upper;
+                z = (float) (Math.sin(2 * PI * s * S) * Math.sin(PI * r * R));
 
-                float a = (float) (Math.cos( 2 * PI * s * S) * r * R / percent)/2.0f + 0.5f;
-                float b = (float) (Math.sin( 2 * PI * s * S) * r * R / percent)/2.0f + 0.5f;
+                float a = (float) (Math.cos(2 * PI * s * S) * r * R / percent) / 2.0f + 0.5f;
+                float b = (float) (Math.sin(2 * PI * s * S) * r * R / percent) / 2.0f + 0.5f;
 
                 texcoords[t++] = b;
                 texcoords[t++] = a;
@@ -115,14 +115,14 @@ public class MDDome3D extends MDAbsObject3D {
         }
 
         int counter = 0;
-        for(r = 0; r < lenRings - 1; r++){
-            for(s = 0; s < lenSectors - 1; s++) {
+        for (r = 0; r < lenRings - 1; r++) {
+            for (s = 0; s < lenSectors - 1; s++) {
                 indices[counter++] = (short) (r * lenSectors + s);       //(a)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s));    //(b)
-                indices[counter++] = (short) ((r) * lenSectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * lenSectors + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * lenSectors + (s+1));  // (d)
+                indices[counter++] = (short) ((r + 1) * lenSectors + (s));    //(b)
+                indices[counter++] = (short) ((r) * lenSectors + (s + 1));  // (c)
+                indices[counter++] = (short) ((r) * lenSectors + (s + 1));  // (c)
+                indices[counter++] = (short) ((r + 1) * lenSectors + (s));    //(b)
+                indices[counter++] = (short) ((r + 1) * lenSectors + (s + 1));  // (d)
             }
         }
 
@@ -153,10 +153,10 @@ public class MDDome3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer);
-        object3D.setVerticesBuffer(0,vertexBuffer);
-        object3D.setVerticesBuffer(1,vertexBuffer);
+        object3D.setTexCoordinateBuffer(0, texBuffer);
+        object3D.setTexCoordinateBuffer(1, texBuffer);
+        object3D.setVerticesBuffer(0, vertexBuffer);
+        object3D.setVerticesBuffer(1, vertexBuffer);
         object3D.setNumIndices(indices.length);
 
         object3D.texCoordinates = texcoords;

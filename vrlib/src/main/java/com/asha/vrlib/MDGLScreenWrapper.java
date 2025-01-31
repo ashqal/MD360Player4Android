@@ -12,16 +12,20 @@ import com.google.android.apps.muzei.render.GLTextureView;
  */
 public abstract class MDGLScreenWrapper {
     abstract public View getView();
+
     abstract public void setRenderer(GLSurfaceView.Renderer renderer);
+
     abstract public void init(Context context);
+
     abstract public void onResume();
+
     abstract public void onPause();
 
-    public static MDGLScreenWrapper wrap(GLSurfaceView glSurfaceView){
+    public static MDGLScreenWrapper wrap(GLSurfaceView glSurfaceView) {
         return new MDGLSurfaceViewImpl(glSurfaceView);
     }
 
-    public static MDGLScreenWrapper wrap(GLTextureView glTextureView){
+    public static MDGLScreenWrapper wrap(GLTextureView glTextureView) {
         return new MDGLTextureViewImpl(glTextureView);
     }
 

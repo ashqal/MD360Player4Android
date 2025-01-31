@@ -18,7 +18,7 @@ public class SpinnerHelper {
     private ClickHandler clickHandler;
     private int defaultKey;
 
-    public interface ClickHandler{
+    public interface ClickHandler {
         void onSpinnerClicked(int index, int key, String value);
     }
 
@@ -26,30 +26,30 @@ public class SpinnerHelper {
         this.activity = activity;
     }
 
-    public SpinnerHelper setDefault(int key){
+    public SpinnerHelper setDefault(int key) {
         defaultKey = key;
         return this;
     }
 
-    public SpinnerHelper setData(SparseArray<String> data){
+    public SpinnerHelper setData(SparseArray<String> data) {
         this.data = data;
         return this;
     }
 
-    public SpinnerHelper setClickHandler(ClickHandler clickHandler){
+    public SpinnerHelper setClickHandler(ClickHandler clickHandler) {
         this.clickHandler = clickHandler;
         return this;
     }
 
-    public void init(int id){
-        if (data == null){
+    public void init(int id) {
+        if (data == null) {
             return;
         }
 
         Spinner spinner = (Spinner) activity.findViewById(id);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        for (int i = 0; i < data.size(); i++){
+        for (int i = 0; i < data.size(); i++) {
             String value = data.valueAt(i);
             adapter.add(value);
         }
@@ -63,8 +63,8 @@ public class SpinnerHelper {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int key = data.keyAt(position);
                 String value = data.valueAt(position);
-                if (clickHandler != null){
-                    clickHandler.onSpinnerClicked(position,key,value);
+                if (clickHandler != null) {
+                    clickHandler.onSpinnerClicked(position, key, value);
                 }
             }
 
@@ -75,7 +75,7 @@ public class SpinnerHelper {
         });
     }
 
-    public static SpinnerHelper with(Activity activity){
+    public static SpinnerHelper with(Activity activity) {
         return new SpinnerHelper(activity);
     }
 }

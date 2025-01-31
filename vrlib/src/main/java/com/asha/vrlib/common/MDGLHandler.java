@@ -23,19 +23,19 @@ public class MDGLHandler {
     }
 
     // main thread
-    public void post(Runnable runnable){
+    public void post(Runnable runnable) {
         // destroyed ?
-        if (died){
+        if (died) {
             return;
         }
 
         // check the runnable is not null
-        if (runnable == null){
+        if (runnable == null) {
             return;
         }
 
-        if (Looper.getMainLooper() == Looper.myLooper()){
-            synchronized (addLock){
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            synchronized (addLock) {
                 mAddQueue.remove(runnable);
                 mAddQueue.offer(runnable);
             }
@@ -46,13 +46,13 @@ public class MDGLHandler {
     }
 
     // gl thread
-    public void dealMessage(){
-        synchronized (addLock){
+    public void dealMessage() {
+        synchronized (addLock) {
             mWorkQueue.addAll(mAddQueue);
             mAddQueue.clear();
         }
 
-        while (mWorkQueue.size() > 0){
+        while (mWorkQueue.size() > 0) {
             Runnable runnable = mWorkQueue.poll();
             runnable.run();
         }

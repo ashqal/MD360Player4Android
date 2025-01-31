@@ -8,7 +8,7 @@ import com.asha.vrlib.plugins.hotspot.MDSimpleHotspot;
  * hzqiujiadi ashqalcn@gmail.com
  *
  * @deprecated MDHotspotPlugin
- *
+ * <p>
  * Please use {@link MDSimpleHotspot} instead.
  */
 @Deprecated

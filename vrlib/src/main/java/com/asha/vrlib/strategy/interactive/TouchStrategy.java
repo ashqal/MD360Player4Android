@@ -11,7 +11,7 @@ import com.asha.vrlib.MD360Director;
  */
 public class TouchStrategy extends AbsInteractiveStrategy {
 
-    private static final float sDensity =  Resources.getSystem().getDisplayMetrics().density;
+    private static final float sDensity = Resources.getSystem().getDisplayMetrics().density;
 
     private static final float sDamping = 0.2f;
 
@@ -22,14 +22,16 @@ public class TouchStrategy extends AbsInteractiveStrategy {
     }
 
     @Override
-    public void onResume(Context context) {}
+    public void onResume(Context context) {
+    }
 
     @Override
-    public void onPause(Context context) {}
+    public void onPause(Context context) {
+    }
 
     @Override
     public boolean handleDrag(final int distanceX, final int distanceY) {
-        for (MD360Director director : getDirectorList()){
+        for (MD360Director director : getDirectorList()) {
             director.setDeltaX(director.getDeltaX() - distanceX / sDensity * sDamping);
             director.setDeltaY(director.getDeltaY() - distanceY / sDensity * sDamping);
         }
@@ -43,7 +45,7 @@ public class TouchStrategy extends AbsInteractiveStrategy {
 
     @Override
     public void turnOnInGL(Context context) {
-        for (MD360Director director : getDirectorList()){
+        for (MD360Director director : getDirectorList()) {
             director.reset();
         }
     }

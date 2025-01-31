@@ -11,13 +11,13 @@ public class MDMainHandler {
 
     private static Handler sMainHandler;
 
-    public static void init(){
-        if (sMainHandler == null){
+    public static void init() {
+        if (sMainHandler == null) {
             sMainHandler = new Handler(Looper.getMainLooper());
         }
     }
 
-    public static Handler sharedHandler(){
+    public static Handler sharedHandler() {
         return sMainHandler;
     }
 }

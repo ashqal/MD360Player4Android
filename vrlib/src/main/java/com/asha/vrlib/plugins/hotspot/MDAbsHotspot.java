@@ -46,14 +46,14 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
 
     private MDVRLibrary.ITouchPickListener clickListener;
 
-    private MDHitPoint hitPoint1 = new MDHitPoint(){
+    private MDHitPoint hitPoint1 = new MDHitPoint() {
         @Override
         public float getV() {
             return 1 - super.getV();
         }
     };
 
-    private MDHitPoint hitPoint2 = new MDHitPoint(){
+    private MDHitPoint hitPoint2 = new MDHitPoint() {
         @Override
         public float getU() {
             return 1 - super.getU();
@@ -77,7 +77,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
 
         // load obj
         object3D = new MDPlane(size);
-        MDObject3DHelper.loadObj(context,object3D);
+        MDObject3DHelper.loadObj(context, object3D);
     }
 
     @Override
@@ -143,7 +143,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
 
     @Override
     public MDHitPoint hit(MDRay ray) {
-        if (object3D == null || object3D.getVerticesBuffer(0) == null){
+        if (object3D == null || object3D.getVerticesBuffer(0) == null) {
             return MDHitPoint.notHit();
         }
 
@@ -155,7 +155,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
         FloatBuffer buffer = object3D.getVerticesBuffer(0);
         int numPoints = buffer.capacity() / 3;
 
-        for (int i = 0; i < numPoints; i++){
+        for (int i = 0; i < numPoints; i++) {
             MDVector3D v = new MDVector3D();
             v.setX(buffer.get(i * 3)).setY(buffer.get(i * 3 + 1)).setZ(buffer.get(i * 3 + 2));
             v.multiplyMV(model);
@@ -163,7 +163,7 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
         }
         MDHitPoint hit1 = hitPoint1;
         MDHitPoint hit2 = hitPoint2;
-        if (points.size() == 4){
+        if (points.size() == 4) {
             VRUtil.intersectTriangle(ray, points.get(0), points.get(1), points.get(2), hitPoint1);
             VRUtil.intersectTriangle(ray, points.get(3), points.get(2), points.get(1), hitPoint2);
         }
@@ -183,18 +183,18 @@ public abstract class MDAbsHotspot extends MDAbsPlugin implements IMDHotspot {
 
     @Override
     public void onTouchHit(MDRay ray) {
-        if (clickListener != null){
+        if (clickListener != null) {
             clickListener.onHotspotHit(this, ray);
         }
     }
 
     @Override
-    public void rotateToCamera(){
+    public void rotateToCamera() {
         mPendingRotateToCamera.set(true);
     }
 
     private void consumePendingRotateToCamera(MD360Director director) {
-        if (mPendingRotateToCamera.get()){
+        if (mPendingRotateToCamera.get()) {
             MDPosition position = getModelPosition();
             float[] rotation = director.getWorldRotationInvert();
             position.setRotationMatrix(rotation);

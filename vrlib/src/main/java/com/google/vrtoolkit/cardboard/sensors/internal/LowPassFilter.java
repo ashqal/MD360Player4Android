@@ -29,11 +29,11 @@ public class LowPassFilter {
 
     public void addWeightedSample(Vector3d sampleData, long timestampNs, double weight) {
         ++this.numSamples;
-        if(this.numSamples == 1) {
+        if (this.numSamples == 1) {
             this.filteredData.set(sampleData);
             this.lastTimestampNs = timestampNs;
         } else {
-            double weightedDeltaSecs = weight * (double)(timestampNs - this.lastTimestampNs) * NANOS_TO_SECONDS;
+            double weightedDeltaSecs = weight * (double) (timestampNs - this.lastTimestampNs) * NANOS_TO_SECONDS;
             double alpha = weightedDeltaSecs / (this.timeConstantSecs + weightedDeltaSecs);
             this.filteredData.scale(1.0D - alpha);
             this.temp.set(sampleData);
@@ -48,6 +48,6 @@ public class LowPassFilter {
     }
 
     static {
-        NANOS_TO_SECONDS = 1.0D / (double)TimeUnit.NANOSECONDS.convert(1L, TimeUnit.SECONDS);
+        NANOS_TO_SECONDS = 1.0D / (double) TimeUnit.NANOSECONDS.convert(1L, TimeUnit.SECONDS);
     }
 }

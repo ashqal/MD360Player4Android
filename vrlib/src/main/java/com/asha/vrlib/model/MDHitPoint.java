@@ -21,15 +21,15 @@ public class MDHitPoint {
         asNotHit();
     }
 
-    public void asNotHit(){
+    public void asNotHit() {
         this.distance = sNotHit;
     }
 
-    public boolean isNotHit(){
+    public boolean isNotHit() {
         return this.distance == sNotHit;
     }
 
-    public boolean nearThen(MDHitPoint other){
+    public boolean nearThen(MDHitPoint other) {
         return this.distance <= other.distance;
     }
 
@@ -47,11 +47,11 @@ public class MDHitPoint {
         this.v = v;
     }
 
-    public static MDHitPoint min(MDHitPoint a, MDHitPoint b){
+    public static MDHitPoint min(MDHitPoint a, MDHitPoint b) {
         return a.distance < b.distance ? a : b;
     }
 
-    public static MDHitPoint notHit(){
+    public static MDHitPoint notHit() {
         return sPointNotHit;
     }
 

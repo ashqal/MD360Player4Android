@@ -39,13 +39,13 @@ public class VRUtil {
             }
         }
 
-        if (sIsTruncated){
+        if (sIsTruncated) {
             System.arraycopy(event.values, 0, sTruncatedVector, 0, 4);
             SensorManager.getRotationMatrixFromVector(sUIThreadTmp, sTruncatedVector);
         }
 
         float[] values = event.values;
-        switch (rotation){
+        switch (rotation) {
             case Surface.ROTATION_0:
                 SensorManager.getRotationMatrixFromVector(output, values);
                 break;
@@ -65,19 +65,19 @@ public class VRUtil {
         Matrix.rotateM(output, 0, 90.0F, 1.0F, 0.0F, 0.0F);
     }
 
-    public static void notNull(Object object, String error){
+    public static void notNull(Object object, String error) {
         if (object == null) {
             throw new RuntimeException(error);
         }
     }
 
-    public static void checkMainThread(String error){
+    public static void checkMainThread(String error) {
         if (Looper.getMainLooper() != Looper.myLooper()) {
             throw new RuntimeException(error);
         }
     }
 
-    public static void checkGLThread(String error){
+    public static void checkGLThread(String error) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             throw new RuntimeException(error);
         }
@@ -101,7 +101,7 @@ public class VRUtil {
         }
     }
 
-    public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src){
+    public static void barrelDistortion(double paramA, double paramB, double paramC, PointF src) {
 
         double paramD = 1.0 - paramA - paramB - paramC; // describes the linear scaling of the image
 
@@ -111,7 +111,7 @@ public class VRUtil {
         double centerX = 0f;
         double centerY = 0f;
 
-        if (src.x == centerX && src.y == centerY){
+        if (src.x == centerX && src.y == centerY) {
             return;
         }
 
@@ -132,45 +132,45 @@ public class VRUtil {
         float xResult = (float) (centerX + (deltaX * factor * d));
         float yResult = (float) (centerY + (deltaY * factor * d));
 
-        src.set(xResult,yResult);
+        src.set(xResult, yResult);
     }
 
-    public static MDVector3D vec3Sub(MDVector3D v1, MDVector3D v2){
+    public static MDVector3D vec3Sub(MDVector3D v1, MDVector3D v2) {
         return new MDVector3D().setX(v1.getX() - v2.getX()).setY(v1.getY() - v2.getY()).setZ(v1.getZ() - v2.getZ());
     }
 
-    public static MDVector3D vec3Cross(MDVector3D v1, MDVector3D v2){
+    public static MDVector3D vec3Cross(MDVector3D v1, MDVector3D v2) {
         return new MDVector3D().setX(v1.getY() * v2.getZ() - v2.getY() * v1.getZ())
                 .setY(v1.getZ() * v2.getX() - v2.getZ() * v1.getX())
                 .setZ(v1.getX() * v2.getY() - v2.getX() * v1.getY());
     }
 
-    public static float vec3Dot(MDVector3D v1, MDVector3D v2){
+    public static float vec3Dot(MDVector3D v1, MDVector3D v2) {
         return vec3Dot(v1.getX(), v1.getY(), v1.getZ(), v2.getX(), v2.getY(), v2.getZ());
     }
 
-    public static float vec3Dot(float x1, float y1, float z1, float x2, float y2, float z2){
+    public static float vec3Dot(float x1, float y1, float z1, float x2, float y2, float z2) {
         return x1 * x2 + y1 * y2 + z1 * z2;
     }
 
-    public static boolean invertM(float[] output, float[] input){
-        if (input == output){
+    public static boolean invertM(float[] output, float[] input) {
+        if (input == output) {
             return false;
         }
 
         return Matrix.invertM(output, 0, input, 0);
     }
 
-    public static MDRay point2Ray(float x, float y, MDDirectorSnapshot info){
+    public static MDRay point2Ray(float x, float y, MDDirectorSnapshot info) {
         checkMainThread("point2Ray must called in main Thread");
         float[] view = info.getViewMatrix();
         float[] temp = sUIThreadTmp;
         boolean success = invertM(temp, view);
-        if (success){
+        if (success) {
             MDVector3D v = new MDVector3D();
             float[] projection = info.getProjectionMatrix();
-            v.setX(- ( ( ( 2.0f * x ) / info.getViewportWidth() ) - 1 ) / projection[0]);
-            v.setY(( ( ( 2.0f * y ) / info.getViewportHeight() ) - 1 ) / projection[5]);
+            v.setX(-(((2.0f * x) / info.getViewportWidth()) - 1) / projection[0]);
+            v.setY((((2.0f * y) / info.getViewportHeight()) - 1) / projection[5]);
             v.setZ(1.0f);
 
             MDVector3D vPickRayDir = new MDVector3D();
@@ -182,40 +182,40 @@ public class VRUtil {
             vPickRayOrig.setX(temp[12]);
             vPickRayOrig.setY(temp[13]);
             vPickRayOrig.setZ(temp[14]);
-            return new MDRay(vPickRayOrig,vPickRayDir);
+            return new MDRay(vPickRayOrig, vPickRayDir);
         } else {
             return null;
         }
     }
 
-    public static void intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2, MDHitPoint result){
+    public static void intersectTriangle(MDRay ray, MDVector3D v0, MDVector3D v1, MDVector3D v2, MDHitPoint result) {
         // Find vectors for two edges sharing vert0
-        MDVector3D edge1 = vec3Sub(v1 , v0);
-        MDVector3D edge2 = vec3Sub(v2 , v0);
+        MDVector3D edge1 = vec3Sub(v1, v0);
+        MDVector3D edge2 = vec3Sub(v2, v0);
 
         // Begin calculating determinant - also used to calculate U parameter
         MDVector3D pvec;
-        pvec = vec3Cross( ray.getDir(), edge2 );
+        pvec = vec3Cross(ray.getDir(), edge2);
 
         // If determinant is near zero, ray lies in plane of triangle
-        float det = vec3Dot( edge1, pvec );
+        float det = vec3Dot(edge1, pvec);
 
         MDVector3D tvec;
-        if( det > 0 ) {
-            tvec = vec3Sub(ray.getOrig() , v0);
+        if (det > 0) {
+            tvec = vec3Sub(ray.getOrig(), v0);
         } else {
-            tvec = vec3Sub(v0 , ray.getOrig());
+            tvec = vec3Sub(v0, ray.getOrig());
             det = -det;
         }
 
-        if( det < 0.0001f ){
+        if (det < 0.0001f) {
             result.asNotHit();
             return;
         }
 
         // Calculate U parameter and test bounds
         float u = vec3Dot(tvec, pvec);
-        if( u < 0.0f || u > det ){
+        if (u < 0.0f || u > det) {
             result.asNotHit();
             return;
         }
@@ -226,7 +226,7 @@ public class VRUtil {
 
         // Calculate V parameter and test bounds
         float v = vec3Dot(ray.getDir(), qvec);
-        if( v < 0.0f || u + v > det ){
+        if (v < 0.0f || u + v > det) {
             result.asNotHit();
             return;
         }
@@ -238,7 +238,7 @@ public class VRUtil {
         u *= fInvDet;
         v *= fInvDet;
 
-        if (t > 0){
+        if (t > 0) {
             result.asNotHit();
             return;
         }
@@ -267,12 +267,12 @@ public class VRUtil {
         Log.e(TAG, String.format("pitchAngle=%f, yawAngle=%f, rollAngle=%f", pitchAngle, yawAngle, rollAngle));
     }
 
-    public static void printMatrix(float[] m){
+    public static void printMatrix(float[] m) {
         Log.d(TAG, "printMatrix");
-        Log.d(TAG, String.format("%f, %f, %f, %f",m[0],m[1],m[2],m[3]));
-        Log.d(TAG, String.format("%f, %f, %f, %f",m[4],m[5],m[6],m[7]));
-        Log.d(TAG, String.format("%f, %f, %f, %f",m[8],m[9],m[10],m[11]));
-        Log.d(TAG, String.format("%f, %f, %f, %f",m[12],m[13],m[14],m[15]));
+        Log.d(TAG, String.format("%f, %f, %f, %f", m[0], m[1], m[2], m[3]));
+        Log.d(TAG, String.format("%f, %f, %f, %f", m[4], m[5], m[6], m[7]));
+        Log.d(TAG, String.format("%f, %f, %f, %f", m[8], m[9], m[10], m[11]));
+        Log.d(TAG, String.format("%f, %f, %f, %f", m[12], m[13], m[14], m[15]));
     }
 
 }

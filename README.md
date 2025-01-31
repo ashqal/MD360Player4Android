@@ -1,10 +1,7 @@
-[![CI Status](https://api.travis-ci.org/kaltura/MD360Player4Android.svg?branch=develop)](https://travis-ci.com/github/kaltura/MD360Player4Android)
-[![Download](https://img.shields.io/maven-central/v/com.kaltura.playkit/md360player?label=Download)](https://search.maven.org/artifact/com.kaltura.playkit/md360player)
-[![License](https://img.shields.io/badge/license-AGPLv3-black.svg)](https://github.com/kaltura/playkit-android/blob/master/LICENSE)
-![Android](https://img.shields.io/badge/platform-android-green.svg)
+# MD360Player4Android  [![Android CI](https://github.com/kibotu/MD360Player4Android/actions/workflows/android.yml/badge.svg)](https://github.com/kibotu/MD360Player4Android/actions/workflows/android.yml) [![](https://jitpack.io/v/kibotu/MD360Player4Android.svg)](https://jitpack.io/#kibotu/MD360Player4Android) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21) [![Gradle Version](https://img.shields.io/badge/gradle-8.11.1-green.svg)](https://docs.gradle.org/current/release-notes) [![Kotlin](https://img.shields.io/badge/kotlin-2.1.0-green.svg)](https://kotlinlang.org/)
 
-# MD360Player4Android
 It is a lite library to render 360 degree panorama video for Android.
+
 [![](https://jitpack.io/v/ashqal/MD360Player4Android.svg)](https://jitpack.io/#ashqal/MD360Player4Android)
 
 ## Preview
@@ -21,24 +18,23 @@ It is a lite library to render 360 degree panorama video for Android.
 * [Working with vlc](https://github.com/ashqal/MD-vlc-sample)
 
 ## Gradle
-```java
-allprojects {
+```groovy
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        ...
-        maven { url "https://jitpack.io" }
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
-```
-```java
 dependencies {
-    compile 'com.github.ashqal:MD360Player4Android:2.5.0'
+    implementation 'com.github.kibotu:NumberProgressBar:Tag'
 }
 ```
 
 ## USAGE
 ### Using with GLSurfaceView
 **STEP1** Define `GLSurfaceView` in the layout xml.
-```java
+```xml
 <android.opengl.GLSurfaceView
    android:id="@+id/surface_view"
    android:layout_width="match_parent"

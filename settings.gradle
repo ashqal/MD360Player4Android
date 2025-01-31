@@ -1,1 +1,2 @@
-include ':app', ':vrlib'
+include ':app'
+include ':vrlib'

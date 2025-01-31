@@ -27,7 +27,7 @@ public class DisplayModeManager extends ModeManager<AbsDisplayStrategy> implemen
 
     @Override
     protected AbsDisplayStrategy createStrategy(int mode) {
-        switch (mode){
+        switch (mode) {
             case MDVRLibrary.DISPLAY_MODE_GLASS:
                 return new GlassStrategy();
             case MDVRLibrary.DISPLAY_MODE_NORMAL:

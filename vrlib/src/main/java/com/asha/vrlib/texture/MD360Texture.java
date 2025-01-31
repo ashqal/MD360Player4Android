@@ -5,7 +5,7 @@ import com.asha.vrlib.MD360Program;
 /**
  * Created by hzqiujiadi on 16/1/25.
  * hzqiujiadi ashqalcn@gmail.com
- *
+ * <p>
  * copied from surfaceTexture
  * Created by nitro888 on 15. 4. 5..
  * https://github.com/Nitro888/NitroAction360
@@ -22,7 +22,7 @@ public abstract class MD360Texture {
     public void create() {
         int glTexture = createTextureId();
 
-        if (glTexture != TEXTURE_EMPTY){
+        if (glTexture != TEXTURE_EMPTY) {
             mTextureId = glTexture;
         }
     }
@@ -33,11 +33,11 @@ public abstract class MD360Texture {
 
     abstract public void release();
 
-    public int getCurrentTextureId(){
+    public int getCurrentTextureId() {
         return mTextureId;
     }
 
-    final protected boolean isEmpty(int textureId){
+    final protected boolean isEmpty(int textureId) {
         return textureId == TEXTURE_EMPTY;
     }
 

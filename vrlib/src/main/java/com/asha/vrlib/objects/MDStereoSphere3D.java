@@ -34,8 +34,8 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         final float PI = (float) Math.PI;
         final float PI_2 = (float) (Math.PI / 2);
 
-        float R = 1f/(float)rings;
-        float S = 1f/(float)sectors;
+        float R = 1f / (float) rings;
+        float S = 1f / (float) sectors;
         short r, s;
         float x, y, z;
 
@@ -46,27 +46,27 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         short[] indices = new short[numPoint * 6];
 
         int t = 0, v = 0;
-        for(r = 0; r < rings + 1; r++) {
-            for(s = 0; s < sectors + 1; s++) {
-                x = (float) (Math.cos(2*PI * s * S) * Math.sin( PI * r * R ));
-                y = - (float) Math.sin( -PI_2 + PI * r * R );
-                z = (float) (Math.sin(2*PI * s * S) * Math.sin( PI * r * R ));
+        for (r = 0; r < rings + 1; r++) {
+            for (s = 0; s < sectors + 1; s++) {
+                x = (float) (Math.cos(2 * PI * s * S) * Math.sin(PI * r * R));
+                y = -(float) Math.sin(-PI_2 + PI * r * R);
+                z = (float) (Math.sin(2 * PI * s * S) * Math.sin(PI * r * R));
 
-                if (MDDirection.VERTICAL == direction){
-                    texcoords[t] = s*S;
-                    texcoords2[t] = s*S;
+                if (MDDirection.VERTICAL == direction) {
+                    texcoords[t] = s * S;
+                    texcoords2[t] = s * S;
                     t++;
 
-                    texcoords[t] = 1 - r*R/2;
-                    texcoords2[t] = 0.5f - r*R/2;
+                    texcoords[t] = 1 - r * R / 2;
+                    texcoords2[t] = 0.5f - r * R / 2;
                     t++;
                 } else {
-                    texcoords[t] = s*S/2;
-                    texcoords2[t] = s*S/2 + 0.5f;
+                    texcoords[t] = s * S / 2;
+                    texcoords2[t] = s * S / 2 + 0.5f;
                     t++;
 
-                    texcoords[t] = 1 - r*R;
-                    texcoords2[t] = 1 - r*R;
+                    texcoords[t] = 1 - r * R;
+                    texcoords2[t] = 1 - r * R;
                     t++;
                 }
 
@@ -78,14 +78,14 @@ public class MDStereoSphere3D extends MDAbsObject3D {
 
         int counter = 0;
         int sectorsPlusOne = sectors + 1;
-        for(r = 0; r < rings; r++){
-            for(s = 0; s < sectors; s++) {
+        for (r = 0; r < rings; r++) {
+            for (s = 0; s < sectors; s++) {
                 indices[counter++] = (short) (r * sectorsPlusOne + s);       //(a)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r) * sectorsPlusOne + (s+1));  // (c)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s));    //(b)
-                indices[counter++] = (short) ((r+1) * sectorsPlusOne + (s+1));  // (d)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r) * sectorsPlusOne + (s + 1));  // (c)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s));    //(b)
+                indices[counter++] = (short) ((r + 1) * sectorsPlusOne + (s + 1));  // (d)
             }
         }
 
@@ -124,10 +124,10 @@ public class MDStereoSphere3D extends MDAbsObject3D {
         indexBuffer.position(0);
 
         object3D.setIndicesBuffer(indexBuffer);
-        object3D.setTexCoordinateBuffer(0,texBuffer);
-        object3D.setTexCoordinateBuffer(1,texBuffer2);
-        object3D.setVerticesBuffer(0,vertexBuffer);
-        object3D.setVerticesBuffer(1,vertexBuffer);
+        object3D.setTexCoordinateBuffer(0, texBuffer);
+        object3D.setTexCoordinateBuffer(1, texBuffer2);
+        object3D.setVerticesBuffer(0, vertexBuffer);
+        object3D.setVerticesBuffer(1, vertexBuffer);
         object3D.setNumIndices(indices.length);
     }
 }

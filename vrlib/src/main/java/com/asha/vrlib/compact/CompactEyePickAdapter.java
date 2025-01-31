@@ -18,7 +18,7 @@ public class CompactEyePickAdapter implements MDVRLibrary.IEyePickListener2 {
 
     @Override
     public void onHotspotHit(MDHitEvent hitEvent) {
-        if (listener != null){
+        if (listener != null) {
             listener.onHotspotHit(hitEvent.getHotspot(), hitEvent.getTimestamp());
         }
     }

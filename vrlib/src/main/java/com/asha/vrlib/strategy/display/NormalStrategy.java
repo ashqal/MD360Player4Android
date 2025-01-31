@@ -9,10 +9,12 @@ import android.content.Context;
 public class NormalStrategy extends AbsDisplayStrategy {
 
     @Override
-    public void turnOnInGL(Context context) {}
+    public void turnOnInGL(Context context) {
+    }
 
     @Override
-    public void turnOffInGL(Context context) {}
+    public void turnOffInGL(Context context) {
+    }
 
     @Override
     public boolean isSupport(Context context) {

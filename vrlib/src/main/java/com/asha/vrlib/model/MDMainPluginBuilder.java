@@ -47,10 +47,11 @@ public class MDMainPluginBuilder {
 
     /**
      * set surface{@link MD360Texture} to this render
+     *
      * @param texture {@link MD360Texture} surface may used by multiple render{@link com.asha.vrlib.MD360Renderer}
      * @return builder
      */
-    public MDMainPluginBuilder setTexture(MD360Texture texture){
+    public MDMainPluginBuilder setTexture(MD360Texture texture) {
         this.texture = texture;
         return this;
     }

@@ -41,7 +41,7 @@ public class GyroscopeBiasEstimator {
         this.gyroLowPass.addSample(gyro, sensorTimestampNs);
         Vector3d.sub(gyro, this.gyroLowPass.getFilteredData(), this.smoothedGyroDiff);
         this.isGyroStatic.appendFrame(this.smoothedGyroDiff.length() < 0.00800000037997961D);
-        if(this.isGyroStatic.isRecentlyStatic() && this.isAccelStatic.isRecentlyStatic()) {
+        if (this.isGyroStatic.isRecentlyStatic() && this.isAccelStatic.isRecentlyStatic()) {
             this.updateGyroBias(gyro, sensorTimestampNs);
         }
 
@@ -54,18 +54,18 @@ public class GyroscopeBiasEstimator {
     }
 
     public void getGyroBias(Vector3d result) {
-        if(this.gyroBiasLowPass.getNumSamples() < 30) {
+        if (this.gyroBiasLowPass.getNumSamples() < 30) {
             result.setZero();
         } else {
             result.set(this.gyroBiasLowPass.getFilteredData());
-            double rampUpRatio = Math.min(1.0D, (double)(this.gyroBiasLowPass.getNumSamples() - 30) / 100.0D);
+            double rampUpRatio = Math.min(1.0D, (double) (this.gyroBiasLowPass.getNumSamples() - 30) / 100.0D);
             result.scale(rampUpRatio);
         }
 
     }
 
     private void updateGyroBias(Vector3d gyro, long sensorTimestampNs) {
-        if(gyro.length() < 0.3499999940395355D) {
+        if (gyro.length() < 0.3499999940395355D) {
             double updateWeight = Math.max(0.0D, 1.0D - gyro.length() / 0.3499999940395355D);
             updateWeight *= updateWeight;
             this.gyroBiasLowPass.addWeightedSample(this.gyroLowPass.getFilteredData(), sensorTimestampNs, updateWeight);
@@ -81,7 +81,7 @@ public class GyroscopeBiasEstimator {
         }
 
         void appendFrame(boolean isStatic) {
-            if(!isStatic) {
+            if (!isStatic) {
                 this.consecutiveIsStatic = 0;
             } else {
                 ++this.consecutiveIsStatic;
